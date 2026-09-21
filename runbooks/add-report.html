@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-14">
+<title>ATLAS 維護手冊 — 加 / 改 Crystal 報表</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-適用範圍與前提">0. 適用範圍與前提</a>
+<a class="l3" href="#0-1-r-畫面是七層不是六層">0.1 R 畫面是七層不是六層</a>
+<a class="l3" href="#0-2-一支畫面可以掛多個版型">0.2 一支畫面可以掛多個版型</a>
+<a class="l3" href="#0-3-r-畫面沒有四眼">0.3 R 畫面沒有四眼</a>
+<a class="l2" href="#1-資料流總覽">1. 資料流總覽</a>
+<a class="l2" href="#2-動工前先分辨-你要改哪一條">2. 動工前先分辨:你要改哪一條</a>
+<a class="l2" href="#3-資料端-sp-回-refcursor">3. 資料端:SP 回 RefCursor</a>
+<a class="l3" href="#3-1-現況">3.1 現況</a>
+<a class="l3" href="#3-2-改法">3.2 改法</a>
+<a class="l3" href="#3-3-commandtimeout-0">3.3 ⚠ CommandTimeout = 0</a>
+<a class="l2" href="#4-結果集-model-xsd-與-view-xsd">4. 結果集:Model.xsd 與 View.xsd</a>
+<a class="l3" href="#4-1-casr001-是結果集形狀不是實體表">4.1 CASR001 是結果集形狀不是實體表</a>
+<a class="l3" href="#4-2-改法">4.2 改法</a>
+<a class="l3" href="#4-3-model-view-的轉換">4.3 Model → View 的轉換</a>
+<a class="l2" href="#5-版型-rpt">5. 版型:.rpt</a>
+<a class="l3" href="#5-1-rpt-有一支自動產生的伴生-cs">5.1 .rpt 有一支自動產生的伴生 .cs</a>
+<a class="l3" href="#5-2-改法">5.2 改法</a>
+<a class="l3" href="#5-3-部署-範本是-build-出來的">5.3 部署:範本是 build 出來的</a>
+<a class="l2" href="#6-加一個新版型">6. 加一個新版型</a>
+<a class="l2" href="#7-版型是客戶端選的-伺服端只負責傳檔">7. 版型是客戶端選的,伺服端只負責傳檔</a>
+<a class="l2" href="#8-驗證清單">8. 驗證清單</a>
+<a class="l2" href="#9-常見錯誤與症狀">9. 常見錯誤與症狀</a>
+<a class="l2" href="#附錄-a-本手冊引用的檔案清單">附錄 A 本手冊引用的檔案清單</a>
+<a class="l2" href="#附錄-b-待輸入回填">附錄 B 待輸入回填</a>
+<a class="l2" href="#附錄-c-本手冊的驗證程度">附錄 C 本手冊的驗證程度</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-14</span></div>
+<h1 id="atlas-維護手冊-加-改-crystal-報表">ATLAS 維護手冊 — 加 / 改 Crystal 報表</h1>
+<blockquote><p>產出日期:2026-09-14(v1)。本手冊為<strong>純程式碼閱讀彙整 + 操作步驟</strong>,未修改任何 ATLAS 原始碼。每一步附程式錨點,行號為分析當下版本,動手前以最新程式為準。</p>
+<p>⚠ 標「<strong>〔假設〕缺:輸入</strong>」的段落是目前拿不到該輸入只能從結構推論,附錄 B 彙整。</p>
+<p>前提知識在 <code>architecture.md §6</code>(畫面型別)與 <code>architecture.md §5</code>(typed DataSet)。<strong>不要整份讀</strong>。</p></blockquote>
+<section class="sec" data-sec="0-適用範圍與前提"><h2 id="0-適用範圍與前提"><button class="tg" aria-label="收合/展開" type="button"></button>0. 適用範圍與前提</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>項目</th><th>內容</th></tr></thead><tbody><tr><td>適用情境</td><td>在既有報表上加 / 改欄位;替既有 R 畫面加一個新報表版型</td></tr><tr><td>範例</td><td><code>CASR001</code>,<code>Dev/ATLAS.CAS.Report</code>——七層齊全,而且一支畫面掛六個版型,對照方便</td></tr><tr><td>不適用</td><td>從零建一支 R 畫面(骨架同 <code>runbooks/add-screen.md</code>,再加本手冊的第七層)</td></tr><tr><td>前提工具</td><td>Visual Studio 2022 + <strong>Crystal Reports for VS</strong>(版本見 <code>runbooks/build-env.md §2</code>,<strong>13.0.4000.0 與 13.0.2000.0 兩版並存</strong>)</td></tr><tr><td>變數</td><td><code>%PTPF%</code> = <code>C:\Program Files\Vendor\PTPFBlock</code></td></tr></tbody></table></div>
+<h3 id="0-1-r-畫面是七層不是六層">0.1 R 畫面是七層不是六層</h3>
+<p><code>architecture.md §6</code> 講過的命名例外,這裡要用到全部細節。<code>CASR001</code> 的七層:</p>
+<div class="tw"><table><thead><tr><th>層</th><th>專案</th><th>檔</th></tr></thead><tbody><tr><td>UI</td><td><code>ReportUI.CAS</code></td><td><code>Dev/ATLAS.CAS.Report/Source/UI/ReportUI.CAS/CASR001.cs</code></td></tr><tr><td>FormProxy</td><td><code>ReportFormProxy.CAS</code></td><td><code>Dev/ATLAS.CAS.Report/Source/FormProxy/ReportFormProxy.CAS/CASR001_Pxy.cs</code></td></tr><tr><td>Control</td><td><code>ReportControl.CAS</code></td><td><code>Dev/ATLAS.CAS.Report/Source/Control/ReportControl.CAS/CASR001_Ctl.cs</code></td></tr><tr><td>PO</td><td><code>ReportPO.CAS</code></td><td><code>Dev/ATLAS.CAS.Report/Source/PO/ReportPO.CAS/CASR001_PO.cs</code></td></tr><tr><td>DataEntity</td><td><code>ReportDataEntity.CAS</code></td><td><code>Dev/ATLAS.CAS.Report/Source/Entity/ReportDataEntity.CAS/CASR001Model.xsd</code></td></tr><tr><td>UIEntity</td><td><code>ReportUIEntity.CAS</code></td><td><code>Dev/ATLAS.CAS.Report/Source/Entity/ReportUIEntity.CAS/CASR001View.xsd</code></td></tr><tr><td><strong>報表</strong></td><td><strong><code>Report.CAS</code></strong></td><td><code>Dev/ATLAS.CAS.Report/Source/CrystalReports/Report.CAS/CASR001RPS.rpt</code></td></tr></tbody></table></div>
+<p><strong>六層全部加 <code>Report</code> 前綴、住在 <code>&lt;模組&gt;.Report</code> 專案資料夾裡。</strong>任何按六層命名寫的工具對 322 支 R 畫面都會失準。</p>
+<h3 id="0-2-一支畫面可以掛多個版型">0.2 一支畫面可以掛多個版型</h3>
+<p><code>CASR001</code> 有六個:<code>CASR001RPS.rpt</code> · <code>RPS2</code> · <code>RPS3</code> · <code>RPS4</code> · <code>RPS5</code> · <code>RPS6</code>。</p>
+<p><strong>選哪一個是客戶端決定的</strong>(<a class="sec" href="#3-3-commandtimeout-0">§3.3</a>)。所以「加一個新版型」不用改伺服端邏輯,只要多一支 <code>.rpt</code> 加上客戶端能選到它。</p>
+<h3 id="0-3-r-畫面沒有四眼">0.3 R 畫面沒有四眼</h3>
+<p><code>CASR001_PO</code> <strong>沒有宣告 <code>MasterTable</code> 或 <code>DetailTable</code></strong>(<code>py -V:3.12 %ATLAS_ROOT%\docs\tools\atlas_scan.py --screen CASR001</code> 回報主檔明細皆空),也不繼承 EVA 基底。報表是唯讀的,不走 <code>architecture.md §3</code> 的四眼流程。</p>
+</div></section><section class="sec" data-sec="1-資料流總覽"><h2 id="1-資料流總覽"><button class="tg" aria-label="收合/展開" type="button"></button>1. 資料流總覽</h2><div class="sec-body">
+<figure><svg viewBox="0 0 1010 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="報表的兩條路:資料經 SP 的 RefCursor 進結果集 xsd,版型是獨立的 rpt 檔由伺服端傳給客戶端,執行時才合併"><defs><marker id="ah_addrpt" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 資料這條路</text><g class="bx vend">
+<rect x="20" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="62" text-anchor="middle">Oracle SP</text>
+<text class="t2" x="135" y="82" text-anchor="middle">84% 不在 repo,要先撈</text>
+</g><g class="bx">
+<rect x="280" y="40" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="380" y="62" text-anchor="middle">RefCursor C_RES</text>
+<text class="t2" x="380" y="82" text-anchor="middle">AddOutParameter</text>
+</g><g class="bx">
+<rect x="510" y="40" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="610" y="62" text-anchor="middle">LoadDataSet</text>
+<text class="t2" x="610" y="82" text-anchor="middle">填進結果集那張表</text>
+</g><g class="bx accent">
+<rect x="740" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="865" y="62" text-anchor="middle">Model.xsd 結果集</text>
+<text class="t2" x="865" y="82" text-anchor="middle">不是實體表,免 ALTER</text>
+</g><path class="ar" d="M 250 68 L 280 68" marker-end="url(#ah_addrpt)"/><path class="ar" d="M 480 68 L 510 68" marker-end="url(#ah_addrpt)"/><path class="ar" d="M 710 68 L 740 68" marker-end="url(#ah_addrpt)"/><text class="lane" x="20" y="130">② Model → View 逐欄照名複製</text><g class="bx accent">
+<rect x="20" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="166" text-anchor="middle">View.xsd</text>
+<text class="t2" x="135" y="186" text-anchor="middle">欄名必須與 Model 一致</text>
+</g><g class="bx dash">
+<rect x="280" y="144" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="380" y="166" text-anchor="middle">Control 轉換</text>
+<text class="t2" x="380" y="186" text-anchor="middle">不用改(泛型逐欄)</text>
+</g><g class="bx vend">
+<rect x="510" y="144" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="610" y="166" text-anchor="middle">⚠ 只加一邊</text>
+<text class="t2" x="610" y="186" text-anchor="middle">靜默失敗,不報錯</text>
+</g><g class="bx dash">
+<rect x="740" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="865" y="166" text-anchor="middle">FormProxy</text>
+<text class="t2" x="865" y="186" text-anchor="middle">不用改</text>
+</g><path class="ar" d="M 865 96 L 865 144" marker-end="url(#ah_addrpt)"/><path class="ar" d="M 740 172 L 480 172" marker-end="url(#ah_addrpt)"/><path class="ar" d="M 280 172 L 250 172" marker-end="url(#ah_addrpt)"/><path class="ar lnk" d="M 610 144 L 610 130"/><text class="lane" x="20" y="234">③ 版型這條路 —— 與資料完全分開</text><g class="bx accent">
+<rect x="20" y="248" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="270" text-anchor="middle">.rpt 版型檔</text>
+<text class="t2" x="135" y="290" text-anchor="middle">一支畫面可掛多個</text>
+</g><g class="bx dash">
+<rect x="280" y="248" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="380" y="270" text-anchor="middle">伴生 .cs</text>
+<text class="t2" x="380" y="290" text-anchor="middle">AutoGen,不要手改</text>
+</g><g class="bx">
+<rect x="510" y="248" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="610" y="270" text-anchor="middle">PostBuild xcopy</text>
+<text class="t2" x="610" y="290" text-anchor="middle">build 時複製,不是部署時</text>
+</g><g class="bx">
+<rect x="740" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="865" y="270" text-anchor="middle">PTPFBlock CrystalReports</text>
+<text class="t2" x="865" y="290" text-anchor="middle">609 支範本</text>
+</g><path class="ar lnk" d="M 250 276 L 280 276"/><path class="ar" d="M 480 276 L 510 276" marker-end="url(#ah_addrpt)"/><path class="ar" d="M 710 276 L 740 276" marker-end="url(#ah_addrpt)"/><text class="lane" x="20" y="338">④ 執行時才會合</text><g class="bx">
+<rect x="20" y="352" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="170" y="374" text-anchor="middle">客戶端指定版型類別名</text>
+<text class="t2" x="170" y="394" text-anchor="middle">ReportParameters[0].ReportClass</text>
+</g><g class="bx ext">
+<rect x="350" y="352" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="465" y="374" text-anchor="middle">CRReportTransfer</text>
+<text class="t2" x="465" y="394" text-anchor="middle">PTPFBlock,無原始碼</text>
+</g><g class="bx">
+<rect x="610" y="352" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="700" y="385" text-anchor="middle">回傳 .rpt 位元組</text>
+</g><g class="bx accent">
+<rect x="820" y="352" rx="10" ry="10" width="170" height="56"/>
+<text class="t1" x="905" y="374" text-anchor="middle">Crystal 檢視器合併</text>
+<text class="t2" x="905" y="394" text-anchor="middle">資料 + 版型</text>
+</g><path class="ar" d="M 320 380 L 350 380" marker-end="url(#ah_addrpt)"/><path class="ar" d="M 580 380 L 610 380" marker-end="url(#ah_addrpt)"/><path class="ar" d="M 790 380 L 820 380" marker-end="url(#ah_addrpt)"/><path class="ar dsh" d="M 905 200 L 905 330 L 905 352" marker-end="url(#ah_addrpt)"/></svg><figcaption>圖 1 報表資料流。上兩排=資料,第三排=版型,兩條路各走各的,只在客戶端的檢視器裡合併。橘實框=加欄位要改的四處;灰虛框=不用改;橘虛框=陷阱。</figcaption></figure>
+<p>一句話:<strong>資料走 SP,版型走檔案傳輸,兩條路各走各的。</strong></p>
+</div></section><section class="sec" data-sec="2-動工前先分辨-你要改哪一條"><h2 id="2-動工前先分辨-你要改哪一條"><button class="tg" aria-label="收合/展開" type="button"></button>2. 動工前先分辨:你要改哪一條</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>需求</th><th>要改</th><th>節</th></tr></thead><tbody><tr><td>報表<strong>多印一個欄位</strong></td><td>SP + <code>Model.xsd</code> + <code>View.xsd</code> + <code>.rpt</code> <strong>四處</strong></td><td><a class="sec" href="#3-資料端-sp-回-refcursor">§3</a> <a class="sec" href="#4-結果集-model-xsd-與-view-xsd">§4</a> <a class="sec" href="#5-版型-rpt">§5</a></td></tr><tr><td>只改<strong>版面</strong>(位置、字體、群組、小計)</td><td>只改 <code>.rpt</code></td><td><a class="sec" href="#5-版型-rpt">§5</a></td></tr><tr><td>加一個<strong>新版型</strong>(同資料不同排版)</td><td>新增 <code>.rpt</code> + csproj + 客戶端選項</td><td><a class="sec" href="#6-加一個新版型">§6</a></td></tr><tr><td>改<strong>查詢條件</strong></td><td>SP + PO 的參數 + UI 的條件控件</td><td><a class="sec" href="#3-2-改法">§3.2</a> <a class="sec" href="#7-版型是客戶端選的-伺服端只負責傳檔">§7</a></td></tr></tbody></table></div>
+<p><strong>最常見的是第一種,而且四處漏一處就會出錯,症狀各不相同(<a class="sec" href="#9-常見錯誤與症狀">§9</a>)。</strong></p>
+</div></section><section class="sec" data-sec="3-資料端-sp-回-refcursor"><h2 id="3-資料端-sp-回-refcursor"><button class="tg" aria-label="收合/展開" type="button"></button>3. 資料端:SP 回 RefCursor</h2><div class="sec-body">
+<h3 id="3-1-現況">3.1 現況</h3>
+<p><code>CASR001_PO.GetData</code> 的全部邏輯(<code>Dev/ATLAS.CAS.Report/Source/PO/ReportPO.CAS/CASR001_PO.cs:46-79</code>):</p>
+<pre class="code lang-csharp"><code>using (DbCommand cmd = m_db.GetStoredProcCommand("S_TA_CASR001_GET"))
+{
+    cmd.CommandTimeout = 0; //此程式讓它永久跑  
+    m_db.AddInParameter(cmd, "iSDATE",   OracleDbType.Varchar2, SQLEVAHelper.GetParamValue(model, "SDATE"));
+    m_db.AddInParameter(cmd, "iEDATE",   OracleDbType.Varchar2, SQLEVAHelper.GetParamValue(model, "EDATE"));
+    m_db.AddInParameter(cmd, "iEMP_NO",  OracleDbType.Varchar2, SQLEVAHelper.GetParamValue(model, "EMP_NO"));
+    m_db.AddInParameter(cmd, "iRPT_KIND",OracleDbType.Varchar2, SQLEVAHelper.GetParamValue(model, "RPT_KIND"));
+
+    m_db.AddOutParameter(cmd, "C_RES", OracleDbType.RefCursor, int.MaxValue);
+    m_db.LoadDataSet(cmd, model.DataEntity, tran, new string[] { model.DataEntity.CASR001.TableName });
+}</code></pre>
+<p>四個慣例,加報表欄位時要照著:</p>
+<div class="tw"><table><thead><tr><th>慣例</th><th>說明</th></tr></thead><tbody><tr><td>參數前綴 <code>i</code></td><td><code>iSDATE</code> / <code>iEDATE</code> / <code>iEMP_NO</code> / <code>iRPT_KIND</code>,都是 <code>Varchar2</code></td></tr><tr><td>回傳走 <code>RefCursor</code></td><td>固定名為 <code>C_RES</code>,Oracle 的游標回傳法</td></tr><tr><td>值從 model 取</td><td><code>SQLEVAHelper.GetParamValue(model, "&lt;條件欄名&gt;")</code></td></tr><tr><td><code>LoadDataSet</code> 指定表名</td><td>填進 <code>model.DataEntity.CASR001</code> 這一張</td></tr></tbody></table></div>
+<p>查無資料時寫 <code>model.Utility.Result.AddResultRow(false, 0, "查無資料")</code>(<code>Dev/ATLAS.CAS.Report/Source/PO/ReportPO.CAS/CASR001_PO.cs:75</code>),不是丟例外。</p>
+<h3 id="3-2-改法">3.2 改法</h3>
+<p><strong>多印一個欄位 = 改 SP 的 <code>RefCursor</code> 查詢,把欄位加進 SELECT。</strong></p>
+<p>⚠ <strong><code>S_TA_CASR001_GET</code> 不在 repo 裡。</strong><code>DB/SP/</code> 沒有這支。全庫程式呼叫 380 支 SP,repo 只有 61 支有腳本(<code>architecture.md 附錄 B.0</code>)。</p>
+<p>所以第一步是<strong>先從資料庫把它撈出來</strong>:</p>
+<pre class="code lang-sql"><code>SELECT text FROM all_source
+ WHERE name = 'S_TA_CASR001_GET' ORDER BY line;</code></pre>
+<p>撈出來、存成檔案進版控、再改。<strong>不要憑空重寫一支同名 SP</strong>,會覆蓋線上邏輯。完整流程見 <code>runbooks/change-sp-fn-trigger.md</code>。</p>
+<p>改查詢條件則要三處一起:SP 的參數、PO 的 <code>AddInParameter</code>、UI 的條件控件。</p>
+<h3 id="3-3-commandtimeout-0">3.3 ⚠ <code>CommandTimeout = 0</code></h3>
+<p><code>Dev/ATLAS.CAS.Report/Source/PO/ReportPO.CAS/CASR001_PO.cs:60</code> 註解寫「此程式讓它永久跑」。</p>
+<p><strong>這代表報表查詢沒有逾時保護。</strong>SP 寫壞、條件給太寬,連線會一直掛著不放。加欄位如果讓查詢變重,先自己估一下資料量。</p>
+</div></section><section class="sec" data-sec="4-結果集-model-xsd-與-view-xsd"><h2 id="4-結果集-model-xsd-與-view-xsd"><button class="tg" aria-label="收合/展開" type="button"></button>4. 結果集:<code>Model.xsd</code> 與 <code>View.xsd</code></h2><div class="sec-body">
+<h3 id="4-1-casr001-是結果集形狀不是實體表">4.1 <code>CASR001</code> 是結果集形狀不是實體表</h3>
+<p><code>model.DataEntity.CASR001</code> 這張表<strong>只存在於 xsd 裡</strong>,資料庫沒有這張表。全庫有 1,635 個這種形狀(<code>architecture.md §5</code>)。</p>
+<p>判斷方法:</p>
+<pre class="code lang-bash"><code>py -V:3.12 %ATLAS_ROOT%\docs\tools\atlas_scan.py --table CASR001</code></pre>
+<p>掃描器會標示它不是實體表(<code>physical</code> 為否)。</p>
+<h3 id="4-2-改法">4.2 改法</h3>
+<p><strong>SP 的 SELECT 多回一欄,xsd 就要多一個 <code>&lt;xs:element&gt;</code>,兩邊欄名必須一致。</strong></p>
+<p>加法完全照 <code>runbooks/add-column.md §3.2</code>(Model)與 <code>§4.2</code>(View),包括:四個 <code>msprop:Generator_*</code> 屬性、<code>msdata:Caption</code> 給中文名、<code>minOccurs="0"</code>、<strong>改完要重生 <code>Designer.cs</code></strong>。</p>
+<p>差別只有兩點:</p>
+<div class="tw"><table><thead><tr><th></th><th>一般 M 畫面</th><th>報表</th></tr></thead><tbody><tr><td>要不要 <code>ALTER TABLE</code></td><td>要(實體欄)</td><td><strong>不用</strong>,結果集不是實體表</td></tr><tr><td>四眼欄位</td><td>有 15 個</td><td><strong>沒有</strong>,結果集不帶四眼</td></tr></tbody></table></div>
+<h3 id="4-3-model-view-的轉換">4.3 Model → View 的轉換</h3>
+<p><code>CASR001_Ctl</code> 的轉換方法同樣走 <code>TransferVDBHelper</code> 的泛型逐欄複製,所以<strong>兩邊欄名一致就不用改 Control</strong>——理由與 <code>runbooks/add-column.md §6.1</code> 完全相同,包括只加一邊會<strong>靜默失敗</strong>的代價。</p>
+</div></section><section class="sec" data-sec="5-版型-rpt"><h2 id="5-版型-rpt"><button class="tg" aria-label="收合/展開" type="button"></button>5. 版型:<code>.rpt</code></h2><div class="sec-body">
+<h3 id="5-1-rpt-有一支自動產生的伴生-cs">5.1 <code>.rpt</code> 有一支自動產生的伴生 <code>.cs</code></h3>
+<p><code>Dev/ATLAS.CAS.Report/Source/CrystalReports/Report.CAS/Report.CAS.csproj:120-125</code>:</p>
+<pre class="code lang-xml"><code>&lt;Compile Include="CASR001RPS.cs"&gt;
+  &lt;AutoGen&gt;True&lt;/AutoGen&gt;
+  &lt;DesignTime&gt;True&lt;/DesignTime&gt;
+  &lt;DependentUpon&gt;CASR001RPS.rpt&lt;/DependentUpon&gt;
+  &lt;SubType&gt;Component&lt;/SubType&gt;
+&lt;/Compile&gt;</code></pre>
+<p>伴生 <code>.cs</code> 是 <code>CrystalDecisions.CrystalReports.Engine.ReportClass</code> 的子類(<code>Dev/ATLAS.CAS.Report/Source/CrystalReports/Report.CAS/CASR001RPS.cs:19</code>),檔頭寫明「這段程式碼是由工具產生的…變更將會遺失」。</p>
+<p><strong>這與 xsd / Designer.cs 是同一種關係:改 <code>.rpt</code>,伴生 <code>.cs</code> 由 Crystal 設計工具重生,不要手改 <code>.cs</code>。</strong></p>
+<h3 id="5-2-改法">5.2 改法</h3>
+<ol><li>VS 內開 <code>.rpt</code>(Crystal 設計檢視)。</li><li>報表的資料來源接的是 typed DataSet——<strong>先做完 <a class="sec" href="#4-結果集-model-xsd-與-view-xsd">§4</a>,<code>.rpt</code> 的欄位清單裡才看得到新欄位</strong>。</li><li>把欄位拉到版面上,設好格式、群組、小計。</li><li>存檔,確認伴生 <code>.cs</code> 時間戳有更新。</li></ol>
+<blockquote><p><strong>〔假設〕缺:Crystal 設計工具。</strong>本機沒裝,<code>.rpt</code> 是二進位檔讀不了內容,所以上述步驟未實測。依據是伴生 <code>.cs</code> 的 <code>AutoGen</code> / <code>DependentUpon</code> 設定與 <code>ReportClass</code> 繼承關係——這是 Crystal for VS 的標準運作方式。</p></blockquote>
+<h3 id="5-3-部署-範本是-build-出來的">5.3 部署:範本是 build 出來的</h3>
+<p><code>Report.&lt;模組&gt;</code> 專案帶 PostBuild(25 支都有):</p>
+<pre class="code"><code>xcopy "$(ProjectDir)*.rpt" "C:\Program Files\Vendor\PTPFBlock\CrystalReports\." /d /r /y</code></pre>
+<p>所以 <strong><code>.rpt</code> 在 build 時就被複製到 <code>%PTPF%\CrystalReports\</code></strong>,不是部署時才搬。細節見 <code>runbooks/build-env.md §5.3</code> 與 <code>runbooks/deploy.md §7</code>。</p>
+<p><strong>改了 <code>.rpt</code> 一定要編 <code>Report.&lt;模組&gt;</code> 專案</strong>,否則新版型不會進到那個目錄。</p>
+</div></section><section class="sec" data-sec="6-加一個新版型"><h2 id="6-加一個新版型"><button class="tg" aria-label="收合/展開" type="button"></button>6. 加一個新版型</h2><div class="sec-body">
+<p><code>CASR001</code> 掛了六個版型,加第七個:</p>
+<ol><li>在 <code>Dev/ATLAS.CAS.Report/Source/CrystalReports/Report.CAS/</code> 新增 <code>CASR001RPS7.rpt</code>(照現有那六支的命名)。</li><li>csproj 加一段,照 <code>Dev/ATLAS.CAS.Report/Source/CrystalReports/Report.CAS/Report.CAS.csproj:120-125</code> 的樣板,把 <code>CASR001RPS</code> 換成 <code>CASR001RPS7</code>。</li><li>客戶端要能選到它——見 <a class="sec" href="#7-版型是客戶端選的-伺服端只負責傳檔">§7</a>。</li></ol>
+<p><strong>不用改 PO、Control、xsd</strong>,因為資料來源沒變。</p>
+</div></section><section class="sec" data-sec="7-版型是客戶端選的-伺服端只負責傳檔"><h2 id="7-版型是客戶端選的-伺服端只負責傳檔"><button class="tg" aria-label="收合/展開" type="button"></button>7. 版型是客戶端選的,伺服端只負責傳檔</h2><div class="sec-body">
+<p><code>CASR001_Ctl.GetReportObject</code>(<code>Dev/ATLAS.CAS.Report/Source/Control/ReportControl.CAS/CASR001_Ctl.cs:59-63</code>):</p>
+<pre class="code lang-csharp"><code>string rpt = Convert.ToString(ClassData.Util.ReportParameters[0].ReportClass); // 取得前端所傳的報表類別名稱
+return CRReportTransfer.TransferFileByte(rpt); // 呼叫報表傳送器傳回報表物件</code></pre>
+<p>流程:</p>
+<div class="tw"><table><thead><tr><th>步</th><th>誰做</th><th>做什麼</th></tr></thead><tbody><tr><td>1</td><td>客戶端</td><td>把版型類別名放進 <code>Util.ReportParameters[0].ReportClass</code></td></tr><tr><td>2</td><td>客戶端</td><td><code>this.FormProxy.GetReportData(...)</code>(<code>Dev/ATLAS.CAS.Report/Source/UI/ReportUI.CAS/CASR001.cs:220</code>)取資料</td></tr><tr><td>3</td><td>伺服端</td><td><code>GetReportObject</code> 依名字回傳 <code>.rpt</code> 的<strong>檔案位元組</strong></td></tr><tr><td>4</td><td>客戶端</td><td>Crystal 檢視器把資料與版型組起來顯示</td></tr></tbody></table></div>
+<p>所以「加新版型」在客戶端要做的是:讓使用者能選到 <code>CASR001RPS7</code> 這個名字,並把它填進 <code>ReportParameters[0].ReportClass</code>。</p>
+<blockquote><p><code>CRReportTransfer</code> 在 PTPFBlock 裡(<strong>無原始碼,從呼叫端反推</strong>),repo 內找不到 <code>class CRReportTransfer</code>。它怎麼解析名字到檔案、找不到時回傳什麼,都看不到。</p>
+<p>⚠ <strong>版型類別名是客戶端傳來、伺服端直接拿去載入的。</strong>這是一個由客戶端控制的字串進到伺服端檔案存取路徑,<code>architecture.md 附錄 E</code> 已記錄。加新版型時照現有機制走即可,但<strong>不要</strong>擴大成「讓使用者自由輸入檔名」。</p></blockquote>
+</div></section><section class="sec" data-sec="8-驗證清單"><h2 id="8-驗證清單"><button class="tg" aria-label="收合/展開" type="button"></button>8. 驗證清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>#</th><th>動作</th><th>過關標準</th></tr></thead><tbody><tr><td>1</td><td>直接在資料庫跑改過的 SP</td><td>回傳的游標<strong>有新欄位</strong>且值正確</td></tr><tr><td>2</td><td><code>grep -c "&lt;NEW_COL&gt;" …/CASR001Model.Designer.cs</code></td><td>大於 0(驗 xsd 重生了)</td></tr><tr><td>3</td><td>同上,<code>CASR001View.Designer.cs</code></td><td>大於 0</td></tr><tr><td>4</td><td>編 <code>Report.CAS</code> 專案</td><td>成功,且 <code>%PTPF%\CrystalReports\</code> 的 <code>.rpt</code> 時間戳有更新</td></tr><tr><td>5</td><td>開 R 畫面、給條件、預覽</td><td>新欄位印得出來</td></tr><tr><td>6</td><td>換一個版型再印一次</td><td>其他版型不受影響</td></tr><tr><td>7</td><td>給一組<strong>查無資料</strong>的條件</td><td>出現「查無資料」而不是空白報表或例外</td></tr><tr><td>8</td><td>給一組資料量大的條件</td><td>跑得完(注意 <a class="sec" href="#3-3-commandtimeout-0">§3.3</a> 沒有逾時保護)</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="9-常見錯誤與症狀"><h2 id="9-常見錯誤與症狀"><button class="tg" aria-label="收合/展開" type="button"></button>9. 常見錯誤與症狀</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>病因</th><th>回去做</th></tr></thead><tbody><tr><td><strong><code>.rpt</code> 設計檢視裡看不到新欄位</strong></td><td>xsd 沒加或沒重生 Designer.cs</td><td><a class="sec" href="#4-2-改法">§4.2</a></td></tr><tr><td><strong>報表印出來該欄空白</strong></td><td>SP 沒回這一欄(xsd 有、資料沒有)</td><td><a class="sec" href="#3-2-改法">§3.2</a></td></tr><tr><td><strong>資料有、報表沒印</strong></td><td><code>.rpt</code> 版面沒把欄位拉上去</td><td><a class="sec" href="#5-2-改法">§5.2</a></td></tr><tr><td><strong>改了 <code>.rpt</code> 但印出來還是舊的</strong></td><td>沒編 <code>Report.&lt;模組&gt;</code> 專案,<code>%PTPF%\CrystalReports\</code> 沒更新</td><td><a class="sec" href="#5-3-部署-範本是-build-出來的">§5.3</a></td></tr><tr><td><strong>手改了伴生 <code>.cs</code>,下次開 <code>.rpt</code> 就不見了</strong></td><td>那支是 <code>AutoGen</code>,由設計工具重生</td><td><a class="sec" href="#5-1-rpt-有一支自動產生的伴生-cs">§5.1</a></td></tr><tr><td><strong>只加了 Model 沒加 View(或反之)</strong></td><td><code>TransferVDBHelper</code> 逐欄比對,對不上就靜默跳過</td><td><a class="sec" href="#4-3-model-view-的轉換">§4.3</a></td></tr><tr><td><strong>報表跑很久不回來也不逾時</strong></td><td><code>CommandTimeout = 0</code></td><td><a class="sec" href="#3-3-commandtimeout-0">§3.3</a></td></tr><tr><td><strong>找不到 SP 可以改</strong></td><td>84% 的 SP 不在 repo</td><td><a class="sec" href="#3-2-改法">§3.2</a></td></tr><tr><td><strong>新版型選不到</strong></td><td>csproj 沒加,或客戶端沒提供選項</td><td><a class="sec" href="#6-加一個新版型">§6</a> <a class="sec" href="#7-版型是客戶端選的-伺服端只負責傳檔">§7</a></td></tr><tr><td><strong>按六層去找 R 畫面的檔卻找不到</strong></td><td>R 是七層,而且各層加 <code>Report</code> 前綴</td><td><a class="sec" href="#0-1-r-畫面是七層不是六層">§0.1</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-a-本手冊引用的檔案清單"><h2 id="附錄-a-本手冊引用的檔案清單"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 A 本手冊引用的檔案清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>檔</th><th>錨點</th><th>用在</th></tr></thead><tbody><tr><td><code>Dev/ATLAS.CAS.Report/Source/PO/ReportPO.CAS/CASR001_PO.cs</code></td><td><code>:46-79</code> <code>:60</code> <code>:75</code></td><td><a class="sec" href="#3-資料端-sp-回-refcursor">§3</a></td></tr><tr><td><code>Dev/ATLAS.CAS.Report/Source/Control/ReportControl.CAS/CASR001_Ctl.cs</code></td><td><code>:48-53</code> <code>:59-63</code></td><td><a class="sec" href="#4-3-model-view-的轉換">§4.3</a> <a class="sec" href="#7-版型是客戶端選的-伺服端只負責傳檔">§7</a></td></tr><tr><td><code>Dev/ATLAS.CAS.Report/Source/UI/ReportUI.CAS/CASR001.cs</code></td><td><code>:220</code></td><td><a class="sec" href="#7-版型是客戶端選的-伺服端只負責傳檔">§7</a></td></tr><tr><td><code>Dev/ATLAS.CAS.Report/Source/CrystalReports/Report.CAS/Report.CAS.csproj</code></td><td><code>:120-125</code></td><td><a class="sec" href="#5-1-rpt-有一支自動產生的伴生-cs">§5.1</a> <a class="sec" href="#6-加一個新版型">§6</a></td></tr><tr><td><code>Dev/ATLAS.CAS.Report/Source/CrystalReports/Report.CAS/CASR001RPS.cs</code></td><td><code>:1-19</code> <code>:19</code></td><td><a class="sec" href="#5-1-rpt-有一支自動產生的伴生-cs">§5.1</a></td></tr><tr><td><code>Dev/ATLAS.CAS.Report/Source/Entity/ReportDataEntity.CAS/CASR001Model.xsd</code></td><td><code>:1</code></td><td><a class="sec" href="#4-結果集-model-xsd-與-view-xsd">§4</a></td></tr><tr><td><code>Dev/ATLAS.CAS.Report/Source/Entity/ReportUIEntity.CAS/CASR001View.xsd</code></td><td><code>:1</code></td><td><a class="sec" href="#4-結果集-model-xsd-與-view-xsd">§4</a></td></tr><tr><td><code>Dev/ATLAS.CAS.Report/Source/FormProxy/ReportFormProxy.CAS/CASR001_Pxy.cs</code></td><td><code>:1</code></td><td><a class="sec" href="#0-1-r-畫面是七層不是六層">§0.1</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-b-待輸入回填"><h2 id="附錄-b-待輸入回填"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 B 待輸入回填</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>缺什麼</th><th>影響哪幾段</th><th>補進來後要改什麼</th></tr></thead><tbody><tr><td><strong>Crystal Reports for VS</strong></td><td><a class="sec" href="#5-版型-rpt">§5</a> 全節</td><td><code>.rpt</code> 是二進位檔,本機讀不了也開不了。裝好後把設計工具的實際操作步驟、欄位清單長相回填</td></tr><tr><td><strong><code>S_TA_CASR001_GET</code> 的原始碼</strong></td><td><a class="sec" href="#3-2-改法">§3.2</a></td><td>目前只知道它吃 4 個參數回一個 RefCursor;撈出來後可以貼出實際的 SELECT 當範本</td></tr><tr><td><strong>PTPFBlock DLL</strong></td><td><a class="sec" href="#7-版型是客戶端選的-伺服端只負責傳檔">§7</a></td><td><code>CRReportTransfer</code> 怎麼解析版型名、找不到時的行為都看不到</td></tr><tr><td><strong>選單 / 權限表</strong></td><td><a class="sec" href="#6-加一個新版型">§6</a> <a class="sec" href="#7-版型是客戶端選的-伺服端只負責傳檔">§7</a></td><td>新版型要怎麼出現在使用者的選項裡,查不到</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-c-本手冊的驗證程度"><h2 id="附錄-c-本手冊的驗證程度"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 C 本手冊的驗證程度</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>節</th><th>依據</th><th>程度</th></tr></thead><tbody><tr><td><a class="sec" href="#0-1-r-畫面是七層不是六層">§0.1</a> 七層 · <a class="sec" href="#0-3-r-畫面沒有四眼">§0.3</a> 無四眼</td><td>實際檔案結構 + 掃描器</td><td><strong>已驗證</strong></td></tr><tr><td><a class="sec" href="#3-資料端-sp-回-refcursor">§3</a> SP / RefCursor / 參數慣例</td><td>讀 <code>CASR001_PO.cs</code> 原文</td><td><strong>已驗證</strong></td></tr><tr><td><a class="sec" href="#4-結果集-model-xsd-與-view-xsd">§4</a> 結果集 xsd</td><td>同 <code>runbooks/add-column.md</code> 的機制</td><td><strong>已驗證</strong></td></tr><tr><td><a class="sec" href="#5-1-rpt-有一支自動產生的伴生-cs">§5.1</a> 伴生 <code>.cs</code> 由工具產生</td><td>csproj 的 <code>AutoGen</code> / <code>DependentUpon</code> + 檔頭註解</td><td><strong>已驗證</strong></td></tr><tr><td><a class="sec" href="#5-2-改法">§5.2</a> 設計工具操作步驟</td><td>Crystal 標準做法</td><td><strong>未實測</strong>,缺工具</td></tr><tr><td><a class="sec" href="#5-3-部署-範本是-build-出來的">§5.3</a> build 時複製範本</td><td>csproj 的 PostBuild 原文</td><td><strong>已驗證</strong>(但未實跑)</td></tr><tr><td><a class="sec" href="#7-版型是客戶端選的-伺服端只負責傳檔">§7</a> 版型傳輸</td><td>讀 <code>CASR001_Ctl.cs</code> 原文;<code>CRReportTransfer</code> 本身無原始碼</td><td>呼叫端已驗證,被呼叫端是黑箱</td></tr></tbody></table></div></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-14 14:23 產生 · 標題 26 · 圖 1 · 表格 11 · 程式錨點 23 · § 連結 46 · 引用檢查：畫面 1（缺 0） · Report 1（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

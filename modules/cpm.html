@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-15">
+<title>ATLAS CPM 模組 全流程商業邏輯</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-系統邊界與角色">0. 系統邊界與角色</a>
+<a class="l3" href="#0-1-這模組管什麼-推測">0.1 這模組管什麼(推測)</a>
+<a class="l3" href="#0-2-兩條業務線互不相通">0.2 兩條業務線互不相通</a>
+<a class="l3" href="#0-3-這模組最反直覺的三件事">0.3 這模組最反直覺的三件事</a>
+<a class="l3" href="#0-4-不管什麼">0.4 不管什麼</a>
+<a class="l3" href="#0-5-使用角色-推測">0.5 使用角色(推測)</a>
+<a class="l3" href="#0-6-全域開關">0.6 全域開關</a>
+<a class="l2" href="#1-全景與各式流程圖">1. 全景與各式流程圖</a>
+<a class="l3" href="#1-1-全景圖">1.1 全景圖</a>
+<a class="l3" href="#1-2-資料表關係">1.2 資料表關係</a>
+<a class="l3" href="#1-3-主要維護畫面的四眼與卡控順序">1.3 主要維護畫面的四眼與卡控順序</a>
+<a class="l3" href="#1-4-批次資料流">1.4 批次資料流</a>
+<a class="l3" href="#1-5-一日作業泳道">1.5 一日作業泳道</a>
+<a class="l2" href="#2-資料模型">2. 資料模型</a>
+<a class="l3" href="#2-1-主表與明細-來自-po-的-xtablemapping">2.1 主表與明細(來自 PO 的 xTableMapping)</a>
+<a class="l3" href="#2-2-主鍵與四眼欄位">2.2 主鍵與四眼欄位</a>
+<a class="l3" href="#2-3-cpm004a-的-33-個流程欄位-五道關卡各寫哪一組">2.3 CPM004A 的 33 個流程欄位:五道關卡各寫哪一組</a>
+<a class="l3" href="#2-4-代碼值域-哪些查表-哪些寫死">2.4 代碼值域:哪些查表、哪些寫死</a>
+<a class="l3" href="#2-5-欄位中文名總表-來自-xsd-msdata-caption">2.5 欄位中文名總表(來自 xsd msdata:Caption)</a>
+<a class="l3" href="#2-6-與其他模組共用的表">2.6 與其他模組共用的表</a>
+<a class="l3" href="#2-7-狀態碼-從程式反推">2.7 狀態碼(從程式反推)</a>
+<a class="l2" href="#3-畫面清冊">3. 畫面清冊</a>
+<a class="l3" href="#3-1-維護-m-4-支">3.1 維護 M(4 支)</a>
+<a class="l3" href="#3-2-查詢-i">3.2 查詢 I</a>
+<a class="l3" href="#3-3-批次-b-6-支">3.3 批次 B(6 支)</a>
+<a class="l3" href="#3-4-報表-r-3-支-住在-atlas-cpm-report-七層">3.4 報表 R(3 支,住在 ATLAS.CPM.Report,七層)</a>
+<a class="l3" href="#3-5-命名與層級的四個例外">3.5 命名與層級的四個例外</a>
+<a class="l3" href="#3-6-一眼看出差別的五件事">3.6 一眼看出差別的五件事</a>
+<a class="l2" href="#4-維護畫面-m-一支一節">4. 維護畫面(M)— 一支一節</a>
+<a class="l3" href="#4-1-cpmm001-功能通知名單維護">4.1 CPMM001 — 功能通知名單維護</a>
+<a class="l3" href="#4-2-cpmm003-關卡權限與管轄部門維護">4.2 CPMM003 — 關卡權限與管轄部門維護</a>
+<a class="l3" href="#4-3-cpmm004-處理件建檔-本模組的入口">4.3 CPMM004 — 處理件建檔(本模組的入口)</a>
+<a class="l3" href="#4-4-cpmm005-客訴件建檔">4.4 CPMM005 — 客訴件建檔</a>
+<a class="l2" href="#5-查詢畫面-i">5. 查詢畫面(I)</a>
+<a class="l2" href="#6-批次-b-與-windowsservice">6. 批次(B)與 WindowsService</a>
+<a class="l3" href="#6-1-六支的共同外殼">6.1 六支的共同外殼</a>
+<a class="l3" href="#6-2-執行-按鈕是空操作-這是本節最需要先講清楚的事">6.2 「執行」按鈕是空操作 —— 這是本節最需要先講清楚的事</a>
+<a class="l3" href="#6-3-cpmb001-第一關-受理部門確認-指定處理部門">6.3 CPMB001 — 第一關:受理部門確認 + 指定處理部門</a>
+<a class="l3" href="#6-4-cpmb002-第二關-指定處理部門簽核-一般兩關-股代三關">6.4 CPMB002 — 第二關:指定處理部門簽核(一般兩關、股代三關)</a>
+<a class="l3" href="#6-5-cpmb003-第三關-處理部門簽核">6.5 CPMB003 — 第三關:處理部門簽核</a>
+<a class="l3" href="#6-6-cpmb004-第四關-結案或退回重辦">6.6 CPMB004 — 第四關:結案或退回重辦</a>
+<a class="l3" href="#6-7-四支關卡的執行順序與相依-能不能亂跑">6.7 四支關卡的執行順序與相依 —— 「能不能亂跑?」</a>
+<a class="l3" href="#6-8-cpmb005-客訴件第二關-主管確認">6.8 CPMB005 — 客訴件第二關:主管確認</a>
+<a class="l3" href="#6-9-cpmb006-客訴件第三關-收件窗口結案">6.9 CPMB006 — 客訴件第三關:收件窗口結案</a>
+<a class="l3" href="#6-10-cpmb005-cpmb006-為什麼沒宣告主明細">6.10 CPMB005 / CPMB006 為什麼沒宣告主明細</a>
+<a class="l2" href="#7-報表-r">7. 報表(R)</a>
+<a class="l3" href="#7-1-cpmr004-處理件明細清單-實質是-i-畫面">7.1 CPMR004 — 處理件明細清單(實質是 I 畫面)</a>
+<a class="l3" href="#7-2-cpmr005-處理件種類統計">7.2 CPMR005 — 處理件種類統計</a>
+<a class="l3" href="#7-3-cpmr006-處理件件數與天數統計">7.3 CPMR006 — 處理件件數與天數統計</a>
+<a class="l3" href="#7-4-三支報表的權限模型不一致">7.4 三支報表的權限模型不一致</a>
+<a class="l3" href="#7-5-兩支-m-畫面的列印">7.5 兩支 M 畫面的列印</a>
+<a class="l2" href="#8-跨模組共用">8. 跨模組共用</a>
+<a class="l3" href="#8-1-cpm007a-cpm-寫-ofd-讀">8.1 CPM007A:CPM 寫、OFD 讀</a>
+<a class="l3" href="#8-2-cpm001a-cpm-維護-全系統讀">8.2 CPM001A:CPM 維護、全系統讀</a>
+<a class="l3" href="#8-3-cpm-借用的共用元件">8.3 CPM 借用的共用元件</a>
+<a class="l3" href="#8-4-改動影響面速查">8.4 改動影響面速查</a>
+<a class="l2" href="#附錄-a-資料表總表">附錄 A. 資料表總表</a>
+<a class="l2" href="#附錄-b-sp-function-trigger-view">附錄 B. SP / Function / Trigger / View</a>
+<a class="l2" href="#附錄-c-代碼對照">附錄 C. 代碼對照</a>
+<a class="l3" href="#c-1-complain-status-cod006a-code-sort-q2">C.1 COMPLAIN_STATUS(COD006A.CODE_SORT = 'Q2')</a>
+<a class="l3" href="#c-2-claim-status-cod006a-code-sort-p7">C.2 CLAIM_STATUS(COD006A.CODE_SORT = 'P7')</a>
+<a class="l3" href="#c-3-complain-kind-ctl014-sourcetype-486">C.3 COMPLAIN_KIND(CTL014.SOURCETYPE = '486')</a>
+<a class="l3" href="#c-4-其他代碼類別">C.4 其他代碼類別</a>
+<a class="l3" href="#c-5-本模組寫死的值-客戶特定">C.5 本模組寫死的值〔客戶特定〕</a>
+<a class="l3" href="#c-6-四眼-status">C.6 四眼 STATUS</a>
+<a class="l2" href="#附錄-d-掃描母體與覆蓋率">附錄 D. 掃描母體與覆蓋率</a>
+<a class="l2" href="#附錄-e-讀本文時要注意的地方">附錄 E. 讀本文時要注意的地方</a>
+<a class="l3" href="#e-1-因參數格式改變而永久失效的通知分支">E.1 因參數格式改變而永久失效的通知分支</a>
+<a class="l3" href="#e-2-權限檢查缺口-三處">E.2 權限檢查缺口(三處)</a>
+<a class="l3" href="#e-3-整段寫入被註解-按鈕變空操作">E.3 整段寫入被註解,按鈕變空操作</a>
+<a class="l3" href="#e-4-被註解掉但外殼還在的檢核-四處">E.4 被註解掉但外殼還在的檢核(四處)</a>
+<a class="l3" href="#e-5-顯示欄位-join-錯人-兩支畫面-三個欄位">E.5 顯示欄位 join 錯人(兩支畫面、三個欄位)</a>
+<a class="l3" href="#e-6-位置取參數-掛錯控件-caption-對調">E.6 位置取參數 / 掛錯控件 / Caption 對調</a>
+<a class="l3" href="#e-7-寫死常數與跨模組借用">E.7 寫死常數與跨模組借用</a>
+<a class="l3" href="#e-8-有訊息但行為不符-檢核永遠不成立">E.8 有訊息但行為不符 / 檢核永遠不成立</a>
+<a class="l3" href="#e-9-oracle-三值邏輯與-sql-寫法">E.9 Oracle 三值邏輯與 SQL 寫法</a>
+<a class="l3" href="#e-10-一律回報成功-回傳值丟掉">E.10 一律回報成功 / 回傳值丟掉</a>
+<a class="l3" href="#e-11-其他讀碼陷阱">E.11 其他讀碼陷阱</a>
+<a class="l3" href="#e-12-標-假設-的地方一覽">E.12 標「假設」的地方一覽</a>
+<a class="l2" href="#附錄-f-版本紀錄">附錄 F. 版本紀錄</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-15</span></div>
+<h1 id="atlas-cpm-模組-全流程商業邏輯">ATLAS CPM 模組 全流程商業邏輯</h1>
+<blockquote><p>產出日期:2026-09-15(v1)。本文為<strong>純程式碼閱讀彙整</strong>,未修改任何 ATLAS 原始碼。每條規則附程式錨點(<code>Dev/…/X.cs:行號</code>),行號為分析當下版本,動手前以最新程式為準。 <strong>建議讀法</strong>:CPM 的重心不在維護畫面而在<strong>簽核鏈</strong>。趕時間只讀三段:<a class="sec" href="#0-2-兩條業務線互不相通">§0.2</a>(兩條互不相通的業務線)、<strong><a class="sec" href="#6-批次-b-與-windowsservice">§6</a>(六支 B 畫面 —— 四支是同一組表上的四道關卡,這是全篇最重要的一節)</strong>、附錄 E(踩雷)。要查某個 <code>COMPLAIN_STATUS</code> 值是誰寫的、下一關是誰,直接翻 <a class="sec" href="#2-7-狀態碼-從程式反推">§2.7</a> 與 <a class="sec" href="#6-7-四支關卡的執行順序與相依-能不能亂跑">§6.7</a>。</p>
+<p>⚠ <strong>本模組的業務意義</strong>(<a class="sec" href="#0-系統邊界與角色">§0</a>)由表名、欄位中文名(<code>msdata:Caption</code>)、<code>CPM003A</code> 的權限欄位中文名、以及程式內寄發的 EMAIL 主旨<strong>推測</strong>。ATLAS 沒有把畫面中文名放進版控;本模組 13 支畫面沒有任何一支有 <code>this.Text</code>。 ⚠ <strong>〔客戶特定〕</strong>:部門代碼(<code>OP1</code> 股務代理 / <code>M2</code> / <code>C3</code> / <code>C4</code> / <code>C5</code> / <code>E</code> / <code>E1</code> / <code>G2</code> / <code>G3</code> / <code>G12</code> / <code>G13</code> / <code>G17</code> / <code>GA</code>)、員工代號 <code>920406</code> / <code>102744</code>、寄件人 <code>ta-it@example.com</code>、<code>op%</code> 帳號前綴為本站台的值,換站一定要重新確認。 ⚠ <strong>〔共用〕</strong>:<code>CPM007A</code> 被 OFD 的 <code>OFDI011</code> 讀、<code>CPM001A</code> 被全系統的 <code>MailUtility</code> 讀(見 <a class="sec" href="#8-跨模組共用">§8</a>),改動要一起看。</p>
+<p>前提知識在 <code>architecture.md</code>:六層看 <code>architecture.md §2</code>、四眼看 <code>architecture.md §3</code>、typed DataSet 看 <code>architecture.md §5</code>、畫面型別看 <code>architecture.md §6</code>、<code>TA.MappingCode</code> 看 <code>architecture.md §7.2</code>。<strong>不要整份讀</strong>。</p></blockquote>
+<section class="sec" data-sec="0-系統邊界與角色"><h2 id="0-系統邊界與角色"><button class="tg" aria-label="收合/展開" type="button"></button>0. 系統邊界與角色</h2><div class="sec-body">
+<h3 id="0-1-這模組管什麼-推測">0.1 這模組管什麼(推測)</h3>
+<p><strong>一句話:CPM 管「客戶／業務員提出的意見案件從受理到結案的簽核流轉」,而且是兩套完全獨立的流程 —— 需求處理件／抱怨記錄件(<code>CPM004A</code>)走五道關卡,客訴件(<code>CPM007A</code>)走三道關卡。</strong></p>
+<p>推測依據逐條可查:</p>
+<div class="tw"><table><thead><tr><th>依據</th><th>內容</th><th>出處</th></tr></thead><tbody><tr><td>權限欄位中文名(最強證據)</td><td><code>CPM003A</code> 六個旗標欄位的 <code>msdata:Caption</code> 直接寫出五道關卡的名字:「處理件維護權限」「處理件確認權限」「處理件指定部門處理權限」「處理件指定部門處理確認權限」「處理件結案權限」「客訴件結案權限」</td><td><code>Dev/ATLAS.CPM/SOURCE/Entity/DataEntity.CPM/CPMM003Model.xsd:21-25</code>、<code>:46</code></td></tr><tr><td>主表欄位中文名</td><td><code>CPM004A</code> 有「處理件單號」「受理日期」「受理部門」「指定處理部門」「處理部門」「預計完成日」「展延日期」「結案日期」「回覆情形」</td><td><code>Dev/ATLAS.CPM/SOURCE/Entity/DataEntity.CPM/CPMM004Model.xsd</code>(欄位表見 <a class="sec" href="#2-5-欄位中文名總表-來自-xsd-msdata-caption">§2.5</a>)</td></tr><tr><td>EMAIL 主旨與內文</td><td>「【簽核通知】需求處理件(CPMB001)」「簽核程式:CPMB002 指定部門處理確認」「【指定處理部門確認通知】…簽核程式:CPMB003 處理部門處理確認」</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:372-376</code>、<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:414-417</code></td></tr><tr><td>資料型態分流</td><td><code>DECODE(CPM004A.DATA_TYPE,'1','需求處理件','2','抱怨記錄件',' ')</code></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:251</code></td></tr><tr><td>客訴件欄位中文名</td><td><code>CPM007A</code> 有「客訴件單號」「申請人」「組主管」「部門主管」「主管確認日期」「客戶訴求」「業務單位建議」「Compliance建議」「客訴收件窗口建議」「CEO審核」「改善建議」</td><td><code>Dev/ATLAS.CPM/SOURCE/Entity/DataEntity.CPM/CPMB005Model.xsd</code>(欄位表見 <a class="sec" href="#2-5-欄位中文名總表-來自-xsd-msdata-caption">§2.5</a>)</td></tr></tbody></table></div>
+<p>「CPM」三個字母的展開在 repo 裡找不到定義,<strong>不要猜</strong>。本文一律用「處理件」與「客訴件」描述兩條線,這是從上表推出來的,不是官方名稱。</p>
+<p>兩條業務線與對應畫面:</p>
+<div class="tw"><table><thead><tr><th>線</th><th>在管什麼(推測)</th><th>畫面</th><th>主要資料</th></tr></thead><tbody><tr><td><strong>A 處理件線</strong>(需求處理件 <code>DATA_TYPE='1'</code> / 抱怨記錄件 <code>DATA_TYPE='2'</code>)</td><td>受理 → 受理部門確認並指定處理部門 → 指定處理部門簽核 → 處理部門簽核 → 結案或退回重辦</td><td><code>CPMM004</code>(建檔)+ <code>CPMB001</code>~<code>CPMB004</code>(四道關卡)+ <code>CPMR004</code>~<code>CPMR006</code>(報表)</td><td><code>CPM004A</code> 主檔 + <code>CPM005A</code> / <code>CPM006A</code> / <code>CPM0061A</code> 三張代碼明細</td></tr><tr><td><strong>B 客訴件線</strong></td><td>業務員申請 → 主管確認 → 收件窗口結案</td><td><code>CPMM005</code>(建檔)+ <code>CPMB005</code>(主管確認)+ <code>CPMB006</code>(結案)</td><td><code>CPM007A</code> 單一主檔,<strong>無明細</strong></td></tr><tr><td>C 權限與通知設定</td><td>誰能過哪一關、誰要收簽核通知信</td><td><code>CPMM003</code>(關卡權限 + 管轄部門)、<code>CPMM001</code>(各功能的通知名單)</td><td><code>CPM003A</code> / <code>CPM0031A</code>、<code>CPM001A</code></td></tr></tbody></table></div>
+<h3 id="0-2-兩條業務線互不相通">0.2 兩條業務線互不相通</h3>
+<p>看起來兩條線都叫「客戶意見」,但程式上<strong>零交集</strong>:</p>
+<div class="tw"><table><thead><tr><th>面向</th><th>處理件線</th><th>客訴件線</th></tr></thead><tbody><tr><td>主表</td><td><code>CPM004A</code>(69 欄)</td><td><code>CPM007A</code>(43 欄)</td></tr><tr><td>單號欄</td><td><code>COMPLAIN_NO</code>,流水號類別 <code>SrNo.COMPLAIN_NO = "CPM004A"</code>(<code>Dev/Common/Source/MappingCode/TA.MappingCode/SysCode.cs:331</code>)</td><td><code>CLAIM_NO</code>,流水號類別 <code>SrNo.CLAIM_NO = "CPM007A"</code>(<code>Dev/Common/Source/MappingCode/TA.MappingCode/SysCode.cs:336</code>)</td></tr><tr><td>狀態欄</td><td><code>COMPLAIN_STATUS</code>,值域 <code>COD006A.CODE_SORT = 'Q2'</code></td><td><code>CLAIM_STATUS</code>,值域 <code>COD006A.CODE_SORT = 'P7'</code></td></tr><tr><td>權限來源</td><td><code>CPM003A.MGM_CD_CPMM004</code> / <code>MGM_CD_CPMB001</code>~<code>MGM_CD_CPMB004</code> + <code>CPM0031A.DEPT_NO</code> 管轄部門</td><td>只有 <code>CPM003A.MGM_CD_CPMB006</code>(結案關),<strong>申請關與主管確認關完全沒有權限檢查</strong></td></tr><tr><td>PO 基底</td><td><code>BaseEVADaoPO</code>(四眼引擎)</td><td><code>CPMM005</code> 是 <code>BaseEVADaoPO</code>;<code>CPMB005</code> / <code>CPMB006</code> <strong>不繼承任何基底</strong>,是裸 DAO</td></tr><tr><td>兩條線唯一交集</td><td>都用 <code>CPM001A</code> 當「找不到收件者時的備援通知名單」(<code>MailUtility.GetNotifyMail</code>)</td><td>同左</td></tr></tbody></table></div>
+<p><strong>沒有任何程式把一張 <code>CPM004A</code> 轉成 <code>CPM007A</code>(或反向)</strong>。全庫 grep <code>CLAIM_NO</code> 與 <code>COMPLAIN_NO</code> 同時出現的檔案,只有 <code>SysCode.cs</code> 的流水號常數清單。</p>
+<h3 id="0-3-這模組最反直覺的三件事">0.3 這模組最反直覺的三件事</h3>
+<p><strong>一、六支 <code>B</code> 畫面沒有一支是排程批次。</strong> 六支全部繼承 <code>xOneStepProcessForm</code>,畫面長相是「查詢 → 清單 Grid → 雙擊某一列 → 跳出彈出視窗 → 按確定」,一次處理一筆。<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001.cs:139-171</code> 的 <code>ugrdCPMB001_DoubleClickRow</code> 就是整個 B 畫面唯一會寫資料的入口。repo 內沒有任何 <code>WindowsService.CPM*</code> 專案,也沒有排程設定。<strong>它們是「簽核工作佇列」,不是批次。</strong></p>
+<p><strong>二、四支處理件關卡畫面的「執行」按鈕是空操作。</strong> <code>CPMB001</code>~<code>CPMB004</code> 的 PO 都有 <code>ExecuteNonQuery</code>,但四支的本體都是同一段:</p>
+<pre class="code lang-csharp"><code>public T ExecuteNonQuery&lt;T&gt;(T mModel, params object[] args)
+{
+    CPMB001ModelVDB model = mModel as CPMB001ModelVDB;
+    //UpdateDataList(model);
+    return mModel;
+}</code></pre>
+<p>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:210-215</code>;<code>CPMB002_PO.cs:229-234</code>、<code>CPMB003_PO.cs:231-236</code>、<code>CPMB004_PO.cs:234-239</code> 逐字相同)</p>
+<p>原本的 <code>UpdateDataList</code> 整支(約 90 行 UPDATE + 參數綁定)被註解在檔案裡(例 <code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:221-310</code>)。按下「執行」會走一趟 Remoting、回傳一個沒改過的 VDB,<strong>畫面不會報錯</strong>。真正寫資料的是雙擊後彈出視窗按「確定」→ <code>pxy.Modify()</code>。詳見 <a class="sec" href="#6-2-執行-按鈕是空操作-這是本節最需要先講清楚的事">§6.2</a> 與附錄 E.3。</p>
+<p><strong>三、四支關卡共用同一組主明細,但每一關寫的是不同欄位。</strong> <code>CPMB001</code> / <code>CPMB002</code> / <code>CPMB003</code> / <code>CPMB004</code> / <code>CPMM004</code> 五支的 <code>xTableMapping</code> 宣告<strong>逐字相同</strong>(主 <code>CPM004A</code>,明細 <code>CPM005A</code> / <code>CPM006A</code> / <code>CPM0061A</code>),差別全在三個地方:(1) Grid 的 <code>SELECT</code> 撈哪些 <code>COMPLAIN_STATUS</code>、(2) 彈出視窗把 <code>COMPLAIN_STATUS</code> 推到哪一個值、(3) 彈出視窗填哪一組 <code>*_UID</code> / <code>*_DATE</code> / <code>*_TIME</code> 欄位。<a class="sec" href="#6-批次-b-與-windowsservice">§6</a> 把三件事逐支攤開。</p>
+<h3 id="0-4-不管什麼">0.4 不管什麼</h3>
+<div class="tw"><table><thead><tr><th>不管</th><th>誰在管</th></tr></thead><tbody><tr><td>受益人／戶號基本資料</td><td><code>BMS001A</code>,CPM 只讀(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:330-354</code>)</td></tr><tr><td>員工、部門、離職日</td><td><code>COD009</code>,CPM 只讀</td></tr><tr><td>部門中文名</td><td><code>OFD002</code>,CPM 只讀</td></tr><tr><td>代碼說明</td><td><code>COD006A</code>(<code>CODE_SORT</code> = <code>12</code> / <code>13</code> / <code>Q2</code> / <code>P7</code>)與 <code>CTL014</code>(<code>SOURCETYPE</code> = <code>486</code> / <code>487</code> / <code>492</code>),CPM 只讀</td></tr><tr><td>使用者帳號與 EMAIL</td><td><code>TA_AA_USER</code>,CPM 只讀</td></tr><tr><td>待辦事項(ToDo)清單</td><td>四眼引擎與 PTPF 庫,見 <code>architecture.md §3</code></td></tr><tr><td>真正的信件寄送</td><td><code>MailUtility</code>(<code>Dev/Common/Source/Utility/TA.ClientUtility/MailUtility.cs</code>),CPM 只組收件者與內文</td></tr></tbody></table></div>
+<h3 id="0-5-使用角色-推測">0.5 使用角色(推測)</h3>
+<div class="tw"><table><thead><tr><th>角色</th><th>由什麼決定</th><th>能做什麼</th></tr></thead><tbody><tr><td>受理人員</td><td><code>CPM003A.MGM_CD_CPMM004 = 'Y'</code> 且 <code>CPM0031A.DEPT_NO</code> 含該案的 <code>COMPLAIN_DEPT</code></td><td>用 <code>CPMM004</code> 建檔、修改、作廢申請</td></tr><tr><td>受理部門主管</td><td><code>CPM003A.MGM_CD_CPMB001 = 'Y'</code> + 同上部門條件</td><td>用 <code>CPMB001</code> 確認案件、指定處理部門</td></tr><tr><td>指定處理部門主管</td><td><code>CPM003A.MGM_CD_CPMB002 = 'Y'</code> 且 <code>CPM0031A.DEPT_NO</code> = 該案 <code>ASN_SOLVE_DEPT_NO</code>;第二關另需 <code>CPM003A.MANGR_CODE = 'Y'</code></td><td>用 <code>CPMB002</code> 簽核、指派處理部門</td></tr><tr><td>處理部門主管</td><td><code>CPM003A.MGM_CD_CPMB003 = 'Y'</code> 且 <code>CPM0031A.DEPT_NO</code> = 該案 <code>SOLVE_DEPT_NO</code>;第二關另需 <code>MANGR_CODE = 'Y'</code></td><td>用 <code>CPMB003</code> 簽核、填處理說明</td></tr><tr><td>結案人員</td><td><code>CPM003A.MGM_CD_CPMB004 = 'Y'</code> + <code>CPM0031A.DEPT_NO</code> 含 <code>COMPLAIN_DEPT</code></td><td>用 <code>CPMB004</code> 結案或退回重辦</td></tr><tr><td>股代人員〔客戶特定〕</td><td>帳號 <code>USERID LIKE 'op%'</code>,或所屬 <code>COD009.DEPT_NO = 'M2'</code></td><td><code>ASN_SOLVE_DEPT_NO = 'OP1'</code> 的案件多一道股代簽核,見 <a class="sec" href="#6-4-cpmb002-第二關-指定處理部門簽核-一般兩關-股代三關">§6.4</a></td></tr><tr><td>客訴件申請人</td><td>無任何旗標</td><td>用 <code>CPMM005</code> 建檔</td></tr><tr><td>客訴件主管</td><td><strong>無檢查</strong>(見附錄 E.2)</td><td>用 <code>CPMB005</code> 確認</td></tr><tr><td>客訴件收件窗口</td><td><code>CPM003A.MGM_CD_CPMB006 = 'Y'</code></td><td>用 <code>CPMB006</code> 結案</td></tr><tr><td>全模組管理者</td><td>出現在資料庫 View <code>CPMB001_MGN_V</code> 內</td><td><code>CPMB001</code> 彈出視窗才會顯示「刪除」鈕(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:654-681</code>)</td></tr></tbody></table></div>
+<p><code>CPMB001_MGN_V</code> 這個 View <strong>不在版控</strong>(<code>DB/View/</code> 底下找不到),內容只能到現場查。標<strong>假設</strong>:從 <code>SELECT EMP_NO, UID_CODE, EMP_NAME FROM CPMB001_MGN_V WHERE UID_CODE = :UID_CODE</code> 推測它是一張「主管白名單」。</p>
+<h3 id="0-6-全域開關">0.6 全域開關</h3>
+<div class="tw"><table><thead><tr><th>開關</th><th>位置</th><th>效果</th></tr></thead><tbody><tr><td><code>CPM003A.MGM_CD_CPMM004</code> … <code>MGM_CD_CPMB004</code>、<code>MGM_CD_CPMB006</code></td><td><code>CPMM003</code> 維護</td><td>六個 <code>Y</code>/<code>N</code> 旗標,逐關卡決定誰看得到工作佇列</td></tr><tr><td><code>CPM003A.MANGR_CODE</code>(主管辨識碼)</td><td><code>CPMM003</code> 維護</td><td><code>CPMB002</code> / <code>CPMB003</code> 的<strong>第二關</strong>(<code>03H</code>→<code>03</code>、<code>04H</code>→<code>04</code>)只有 <code>Y</code> 的人看得到</td></tr><tr><td><code>CPM003A.SEND_EMAIL_YN</code></td><td><code>CPMM003</code> 維護</td><td>逐人決定要不要收簽核通知信</td></tr><tr><td><code>CPM003A.CLOSE_SEND_EMAIL_YN</code></td><td><code>CPMM003</code> 維護</td><td>逐人決定要不要收<strong>結案</strong>通知信,只有 <code>CPMB004</code> 的 <code>GetCloseEmail</code> 在用(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB004_PO.cs:653</code>)</td></tr><tr><td><code>CPM0031A.DEPT_NO</code></td><td><code>CPMM003</code> 明細</td><td>一個人可以掛多個管轄部門;<strong>沒有掛部門的人,四支關卡畫面一筆都查不到</strong></td></tr><tr><td><code>CPM001A</code>(FUNCTIONID + USERID)</td><td><code>CPMM001</code> 維護</td><td>「找不到收件者」時的備援通知名單。跨模組共用,見 <a class="sec" href="#8-2-cpm001a-cpm-維護-全系統讀">§8.2</a></td></tr><tr><td><code>CPM004A.CC_EMAIL_YN</code> + 五個 <code>CC_EMAIL_*</code></td><td><code>CPMM004</code> 逐案設定</td><td>決定要不要副知法律顧問 / 法令遵循 / 風險管理 / 行銷 / 通路五個部門〔客戶特定〕</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="1-全景與各式流程圖"><h2 id="1-全景與各式流程圖"><button class="tg" aria-label="收合/展開" type="button"></button>1. 全景與各式流程圖</h2><div class="sec-body">
+<h3 id="1-1-全景圖">1.1 全景圖</h3>
+<figure><svg viewBox="0 0 1180 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CPM 全景:處理件五道關卡、抱怨記錄件兩關、客訴件三關,以及權限與通知設定"><defs><marker id="ah_cpm_all" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 處理件線:一支建檔 + 四道關卡,全掛在 CPM004A 上</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="110" y="62" text-anchor="middle">CPMM004</text>
+<text class="t2" x="110" y="82" text-anchor="middle">建檔</text>
+</g><g class="bx accent">
+<rect x="220" y="40" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="325" y="62" text-anchor="middle">CPMB001</text>
+<text class="t2" x="325" y="82" text-anchor="middle">第一關 確認</text>
+</g><g class="bx accent">
+<rect x="450" y="40" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="560" y="62" text-anchor="middle">CPMB002</text>
+<text class="t2" x="560" y="82" text-anchor="middle">第二關 指定部門</text>
+</g><g class="bx accent">
+<rect x="690" y="40" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="800" y="62" text-anchor="middle">CPMB003</text>
+<text class="t2" x="800" y="82" text-anchor="middle">第三關 處理部門</text>
+</g><g class="bx accent">
+<rect x="930" y="40" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="1040" y="62" text-anchor="middle">CPMB004</text>
+<text class="t2" x="1040" y="82" text-anchor="middle">第四關 結案退回</text>
+</g><path class="ar" d="M 200 68 L 220 68" marker-end="url(#ah_cpm_all)"/><path class="ar" d="M 430 68 L 450 68" marker-end="url(#ah_cpm_all)"/><path class="ar" d="M 670 68 L 690 68" marker-end="url(#ah_cpm_all)"/><path class="ar" d="M 910 68 L 930 68" marker-end="url(#ah_cpm_all)"/><text class="lane" x="20" y="156">② 狀態機:COMPLAIN_STATUS 一路被推,沒有任何一關檢查前一關</text><g class="bx">
+<rect x="20" y="170" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="110" y="192" text-anchor="middle">01 待確認</text>
+<text class="t2" x="110" y="212" text-anchor="middle">CPMM004 寫</text>
+</g><g class="bx">
+<rect x="220" y="170" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="325" y="192" text-anchor="middle">02 待指定部門</text>
+<text class="t2" x="325" y="212" text-anchor="middle">CPMB001 寫</text>
+</g><g class="bx">
+<rect x="450" y="170" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="560" y="192" text-anchor="middle">03H 03O 03</text>
+<text class="t2" x="560" y="212" text-anchor="middle">CPMB002 寫 股代三關</text>
+</g><g class="bx">
+<rect x="690" y="170" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="800" y="192" text-anchor="middle">04H 04O 04</text>
+<text class="t2" x="800" y="212" text-anchor="middle">CPMB003 寫 股代三關</text>
+</g><g class="bx">
+<rect x="930" y="170" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="1040" y="192" text-anchor="middle">06 結案 / 05 退回</text>
+<text class="t2" x="1040" y="212" text-anchor="middle">CPMB004 寫</text>
+</g><path class="ar" d="M 200 198 L 220 198" marker-end="url(#ah_cpm_all)"/><path class="ar" d="M 430 198 L 450 198" marker-end="url(#ah_cpm_all)"/><path class="ar" d="M 670 198 L 690 198" marker-end="url(#ah_cpm_all)"/><path class="ar" d="M 910 198 L 930 198" marker-end="url(#ah_cpm_all)"/><path class="ar" d="M 110 96 L 110 170" marker-end="url(#ah_cpm_all)"/><path class="ar dsh" d="M 1040 198 L 1040 226 L 110 226 L 110 198" marker-end="url(#ah_cpm_all)"/><text class="lane" x="20" y="286">③ 抱怨記錄件 DATA_TYPE=2 只走兩關</text><g class="bx">
+<rect x="20" y="300" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="125" y="322" text-anchor="middle">CPMM004 建檔</text>
+<text class="t2" x="125" y="342" text-anchor="middle">DATA_TYPE=2</text>
+</g><g class="bx vend">
+<rect x="250" y="300" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="355" y="322" text-anchor="middle">CPMB001 確認</text>
+<text class="t2" x="355" y="342" text-anchor="middle">直接推 04S</text>
+</g><g class="bx vend">
+<rect x="480" y="300" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="595" y="322" text-anchor="middle">CPMB004 結案</text>
+<text class="t2" x="595" y="342" text-anchor="middle">跳過 B002 B003</text>
+</g><path class="ar" d="M 230 328 L 250 328" marker-end="url(#ah_cpm_all)"/><path class="ar" d="M 460 328 L 480 328" marker-end="url(#ah_cpm_all)"/><text class="lane" x="20" y="416">④ 客訴件線:另一組表、另一套狀態、權限只有最後一關有</text><g class="bx accent">
+<rect x="20" y="430" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="110" y="452" text-anchor="middle">CPMM005</text>
+<text class="t2" x="110" y="472" text-anchor="middle">建檔 狀態01</text>
+</g><g class="bx vend">
+<rect x="220" y="430" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="350" y="452" text-anchor="middle">CPMB005</text>
+<text class="t2" x="350" y="472" text-anchor="middle">主管確認 無權限檢查</text>
+</g><g class="bx vend">
+<rect x="500" y="430" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="620" y="452" text-anchor="middle">CPMB006</text>
+<text class="t2" x="620" y="472" text-anchor="middle">結案 有旗標才推狀態</text>
+</g><g class="bx">
+<rect x="760" y="430" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="870" y="452" text-anchor="middle">CPM007A</text>
+<text class="t2" x="870" y="472" text-anchor="middle">客訴件主檔 43 欄</text>
+</g><path class="ar" d="M 200 458 L 220 458" marker-end="url(#ah_cpm_all)"/><path class="ar" d="M 480 458 L 500 458" marker-end="url(#ah_cpm_all)"/><path class="ar lnk" d="M 740 458 L 760 458"/><text class="lane" x="20" y="546">⑤ 設定與通知</text><g class="bx accent">
+<rect x="20" y="560" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="582" text-anchor="middle">CPMM003</text>
+<text class="t2" x="135" y="602" text-anchor="middle">六個關卡權限旗標</text>
+</g><g class="bx">
+<rect x="270" y="560" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="395" y="582" text-anchor="middle">CPM003A CPM0031A</text>
+<text class="t2" x="395" y="602" text-anchor="middle">使用者 x 管轄部門</text>
+</g><g class="bx accent">
+<rect x="540" y="560" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="640" y="582" text-anchor="middle">CPMM001</text>
+<text class="t2" x="640" y="602" text-anchor="middle">備援通知名單</text>
+</g><g class="bx dash">
+<rect x="760" y="560" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="890" y="582" text-anchor="middle">CPM001A 全系統共用</text>
+<text class="t2" x="890" y="602" text-anchor="middle">DSM 也讀</text>
+</g><path class="ar lnk" d="M 250 588 L 270 588"/><path class="ar lnk" d="M 740 588 L 760 588"/></svg><figcaption>圖 1 CPM 全景。橘框=本模組主要入口;橘虛框=行為要留意(跳關、缺權限檢查);灰虛框=跨模組共用。五支處理件畫面掛的是同一組主明細,差別只在狀態與欄位群 —— 見圖 4。</figcaption></figure>
+<h3 id="1-2-資料表關係">1.2 資料表關係</h3>
+<p>八張表分兩群:處理件群(<code>CPM004A</code> + 三張代碼明細)、客訴件群(<code>CPM007A</code> 單張),外加設定群(<code>CPM003A</code>/<code>CPM0031A</code>、<code>CPM001A</code>)。圖見 <a class="sec" href="#2-資料模型">§2</a> 開頭。</p>
+<h3 id="1-3-主要維護畫面的四眼與卡控順序">1.3 主要維護畫面的四眼與卡控順序</h3>
+<p><code>CPMM004</code> 與 <code>CPMM005</code> 是模組內唯二掛滿八個 <code>After*</code> 事件的畫面,但兩支的 <code>After*</code> <strong>只做跳號一覽表</strong>(<code>SrNoCommentProcessor.AddCommentHistory</code>),零業務 SQL —— 也就是 <code>architecture.md §3.8.1</code> 講的「四眼只留軌跡,不把關資料」那一型。圖見 <a class="sec" href="#4-維護畫面-m-一支一節">§4</a> 開頭。</p>
+<h3 id="1-4-批次資料流">1.4 批次資料流</h3>
+<p>四支關卡畫面在 <code>CPM004A</code> 上依 <code>COMPLAIN_STATUS</code> 接力。圖見 <a class="sec" href="#6-批次-b-與-windowsservice">§6</a> 開頭,那是本篇最重要的一張。</p>
+<h3 id="1-5-一日作業泳道">1.5 一日作業泳道</h3>
+<p>沒有排程,所以沒有「一日」的概念。實際節奏是<strong>事件驅動</strong>:</p>
+<div class="tw"><table><thead><tr><th>順序</th><th>誰</th><th>動作</th><th>觸發下一步的方式</th></tr></thead><tbody><tr><td>1</td><td>受理人員</td><td><code>CPMM004</code> 建檔 → <code>COMPLAIN_STATUS = '01'</code></td><td><code>CPMM004_AfterAddButtonClicked</code> 寄信給該部門有 <code>MGM_CD_CPMB001</code> 的人(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:657-660</code>)</td></tr><tr><td>2</td><td>受理部門主管</td><td><code>CPMB001</code> 確認 → <code>'02'</code>(或客訴型態直接 <code>'04S'</code>)</td><td>寄信給指定處理部門有 <code>MGM_CD_CPMB002</code> 的人(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:372-380</code>)</td></tr><tr><td>3</td><td>指定處理部門</td><td><code>CPMB002</code> 兩關(一般)或三關(股代)→ <code>'03'</code></td><td><code>COMPLAIN_STATUS == "03"</code> 才寄信(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:324-325</code>)</td></tr><tr><td>4</td><td>處理部門</td><td><code>CPMB003</code> 兩關或三關 → <code>'04'</code></td><td><code>COMPLAIN_STATUS == "04"</code> 才寄信(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB003p0.cs:352-353</code>)</td></tr><tr><td>5</td><td>結案人員</td><td><code>CPMB004</code> 選 <code>'06'</code> 結案或 <code>'05'</code> 退回重辦</td><td>一律寄信(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:280</code>)</td></tr><tr><td>5'</td><td>(退回時)</td><td>回到步驟 2,由 <code>CPMB001</code> 以 <code>'05'</code> 重新確認</td><td>見 <a class="sec" href="#6-7-四支關卡的執行順序與相依-能不能亂跑">§6.7</a> 的回圈</td></tr></tbody></table></div>
+<p><strong>沒有任何一步有時限檢查。</strong> <code>COMPLAIN_PRV_DATE</code>(預計完成日)只在 <code>CPMM004</code> 依 <code>COMPLAIN_KIND</code> 算出來存著(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:868-886</code>),之後沒有任何程式拿它跟今天比。逾期靠 <code>CPMR004</code> / <code>CPMR006</code> 報表人工看。</p>
+</div></section><section class="sec" data-sec="2-資料模型"><h2 id="2-資料模型"><button class="tg" aria-label="收合/展開" type="button"></button>2. 資料模型</h2><div class="sec-body"><figure><svg viewBox="0 0 1190 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CPM 八張表的主明細關係、主鍵組成,以及外部唯讀表"><defs><marker id="ah_cpm_tbl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">處理件群:一主三明細,四支關卡 + CPMM004 共用</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="160" y="62" text-anchor="middle">CPM004A</text>
+<text class="t2" x="160" y="82" text-anchor="middle">主檔 69 欄 PK COMPLAIN_NO</text>
+</g><g class="bx">
+<rect x="330" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="445" y="62" text-anchor="middle">CPM005A</text>
+<text class="t2" x="445" y="82" text-anchor="middle">明細 處理件分類 12</text>
+</g><g class="bx">
+<rect x="580" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="62" text-anchor="middle">CPM006A</text>
+<text class="t2" x="695" y="82" text-anchor="middle">明細 處理方式 13</text>
+</g><g class="bx">
+<rect x="830" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="945" y="62" text-anchor="middle">CPM0061A</text>
+<text class="t2" x="945" y="82" text-anchor="middle">明細 指定部門方式 13</text>
+</g><path class="ar" d="M 300 60 L 330 60" marker-end="url(#ah_cpm_tbl)"/><path class="ar" d="M 160 96 L 160 110 L 695 110 L 695 96" marker-end="url(#ah_cpm_tbl)"/><path class="ar" d="M 160 96 L 160 128 L 945 128 L 945 96" marker-end="url(#ah_cpm_tbl)"/><text class="lane" x="20" y="176">客訴件群:單張主檔,沒有明細</text><g class="bx accent">
+<rect x="20" y="190" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="160" y="212" text-anchor="middle">CPM007A</text>
+<text class="t2" x="160" y="232" text-anchor="middle">主檔 43 欄 PK CLAIM_NO</text>
+</g><g class="bx dash">
+<rect x="330" y="190" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="450" y="212" text-anchor="middle">OFDI011 唯讀</text>
+<text class="t2" x="450" y="232" text-anchor="middle">OFD 模組客戶查詢</text>
+</g><path class="ar lnk" d="M 300 218 L 330 218"/><text class="lane" x="20" y="286">設定群</text><g class="bx accent">
+<rect x="20" y="300" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="322" text-anchor="middle">CPM003A</text>
+<text class="t2" x="135" y="342" text-anchor="middle">使用者權限 六旗標</text>
+</g><g class="bx">
+<rect x="270" y="300" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="385" y="322" text-anchor="middle">CPM0031A</text>
+<text class="t2" x="385" y="342" text-anchor="middle">管轄部門 一對多</text>
+</g><g class="bx accent">
+<rect x="520" y="300" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="635" y="322" text-anchor="middle">CPM001A</text>
+<text class="t2" x="635" y="342" text-anchor="middle">功能 x 通知名單</text>
+</g><g class="bx dash">
+<rect x="770" y="300" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="895" y="322" text-anchor="middle">DSMR007 等外部</text>
+<text class="t2" x="895" y="342" text-anchor="middle">透過 MailUtility 讀</text>
+</g><path class="ar" d="M 250 328 L 270 328" marker-end="url(#ah_cpm_tbl)"/><path class="ar lnk" d="M 750 328 L 770 328"/><text class="lane" x="20" y="416">外部唯讀表(join 進來,不屬本模組)</text><g class="bx ext">
+<rect x="20" y="430" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="452" text-anchor="middle">COD009</text>
+<text class="t2" x="120" y="472" text-anchor="middle">員工 部門 離職日</text>
+</g><g class="bx ext">
+<rect x="240" y="430" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="452" text-anchor="middle">COD006A</text>
+<text class="t2" x="340" y="472" text-anchor="middle">12 13 Q2 P7</text>
+</g><g class="bx ext">
+<rect x="460" y="430" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="452" text-anchor="middle">CTL014</text>
+<text class="t2" x="560" y="472" text-anchor="middle">486 487 492</text>
+</g><g class="bx ext">
+<rect x="680" y="430" rx="10" ry="10" width="190" height="56"/>
+<text class="t1" x="775" y="452" text-anchor="middle">OFD002</text>
+<text class="t2" x="775" y="472" text-anchor="middle">部門中文名</text>
+</g><g class="bx ext">
+<rect x="890" y="430" rx="10" ry="10" width="270" height="56"/>
+<text class="t1" x="1025" y="452" text-anchor="middle">BMS001A TA_AA_USER</text>
+<text class="t2" x="1025" y="472" text-anchor="middle">受益人 帳號 EMAIL</text>
+</g></svg><figcaption>圖 2 資料模型。橘框=主檔;實線箭頭=主明細(同一次 EVA 一起送審);灰虛框=跨模組;黑框=外部唯讀表。CPM006A 與 CPM0061A 欄位結構完全相同,只差語意。</figcaption></figure>
+<h3 id="2-1-主表與明細-來自-po-的-xtablemapping">2.1 主表與明細(來自 PO 的 <code>xTableMapping</code>)</h3>
+<div class="tw"><table><thead><tr><th>畫面</th><th>PO 基底</th><th>主檔</th><th>明細</th><th>錨點</th></tr></thead><tbody><tr><td><code>CPMM001</code></td><td><code>BaseMultiRowEVADaoPO</code></td><td><code>CPM001A</code>(多筆主檔)</td><td>無</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM001_PO.cs:33-35</code></td></tr><tr><td><code>CPMM003</code></td><td><code>BaseEVADaoPO</code></td><td><code>CPM003A</code></td><td><code>CPM0031A</code></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM003_PO.cs:40-41</code></td></tr><tr><td><code>CPMM004</code></td><td><code>BaseEVADaoPO</code></td><td><code>CPM004A</code></td><td><code>CPM005A</code>、<code>CPM006A</code>、<code>CPM0061A</code></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:62-65</code></td></tr><tr><td><code>CPMM005</code></td><td><code>BaseEVADaoPO</code></td><td><code>CPM007A</code></td><td>無</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:49</code></td></tr><tr><td><code>CPMB001</code></td><td><code>BaseEVADaoPO</code></td><td><code>CPM004A</code></td><td><code>CPM005A</code>、<code>CPM006A</code>、<code>CPM0061A</code></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:49-52</code></td></tr><tr><td><code>CPMB002</code></td><td><code>BaseEVADaoPO</code></td><td><code>CPM004A</code></td><td>同上</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB002_PO.cs:50-53</code></td></tr><tr><td><code>CPMB003</code></td><td><code>BaseEVADaoPO</code></td><td><code>CPM004A</code></td><td>同上</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB003_PO.cs:50-53</code></td></tr><tr><td><code>CPMB004</code></td><td><code>BaseEVADaoPO</code></td><td><code>CPM004A</code></td><td>同上</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB004_PO.cs:50-53</code></td></tr><tr><td><code>CPMB005</code></td><td><strong>無基底</strong>(<code>: ICPMB005_PO</code>)</td><td><strong>沒宣告</strong></td><td>沒宣告</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:37</code>、<code>:43-47</code></td></tr><tr><td><code>CPMB006</code></td><td><strong>無基底</strong></td><td><strong>沒宣告</strong></td><td>沒宣告</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:38</code>、<code>:44-47</code></td></tr><tr><td><code>CPMR004</code></td><td><code>BaseEVADaoPO</code></td><td><code>CPM004A</code></td><td><code>CPM005A</code>、<code>CPM006A</code>(<strong>少 <code>CPM0061A</code></strong>)</td><td><code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR004_PO.cs:46-48</code></td></tr><tr><td><code>CPMR005</code> / <code>CPMR006</code></td><td><strong>無基底</strong></td><td>沒宣告</td><td>沒宣告</td><td><code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR005_PO.cs:28</code>、<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR006_PO.cs:27</code></td></tr></tbody></table></div>
+<p>兩件事要記住:</p>
+<ol><li><strong><code>CPMB005</code> / <code>CPMB006</code> 沒宣告主明細,是因為它們根本不走四眼引擎。</strong> 兩支的 PO 只實作 <code>Select</code> / <code>Update</code> / <code>ExecuteNonQuery</code> 三個自訂方法,<code>UpdateDataList</code> 用手寫的 <code>UPDATE CPM007A … WHERE CLAIM_NO = :CLAIM_NO</code> 自己開交易(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:216-329</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:216-337</code>)。建構子裡那行 <code>//this.MasterTable = new TableMapping("OFD701", "SEAL");</code> 是從 OFD 複製過來忘了刪的殘骸(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:46</code>)。詳見 <a class="sec" href="#6-10-cpmb005-cpmb006-為什麼沒宣告主明細">§6.10</a>。</li><li><strong><code>CPMR004</code> 的明細少一張。</strong> 它宣告 <code>CPM005A</code> + <code>CPM006A</code>,沒有 <code>CPM0061A</code>(指定處理部門處理方式)。同一張主檔在報表側與維護側的明細組不一致,<code>CPMR004p0</code> 彈出視窗看不到指定處理部門的處理方式代碼。</li></ol>
+<h3 id="2-2-主鍵與四眼欄位">2.2 主鍵與四眼欄位</h3>
+<div class="tw"><table><thead><tr><th>表</th><th>主鍵(反推自 PO 的 WHERE 與 <code>SetMasterToDetail</code>)</th><th>四眼 13 欄</th><th><code>DATAFLAG</code></th><th>欄位數</th></tr></thead><tbody><tr><td><code>CPM001A</code></td><td><code>FUNCTIONID</code> + <code>USERID</code>(<code>MasterPKey</code>,<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM001_PO.cs:33-34</code>)</td><td>有</td><td>有</td><td>20</td></tr><tr><td><code>CPM003A</code></td><td><code>USERID</code></td><td>有</td><td>有</td><td>29</td></tr><tr><td><code>CPM0031A</code></td><td><code>USERID</code> + <code>DEPT_NO</code></td><td>有</td><td>有</td><td>18</td></tr><tr><td><code>CPM004A</code></td><td><code>COMPLAIN_NO</code></td><td>有</td><td>有</td><td>69</td></tr><tr><td><code>CPM005A</code></td><td><code>COMPLAIN_NO</code> + <code>COMPLAIN_CODE</code></td><td>有</td><td>有</td><td>18</td></tr><tr><td><code>CPM006A</code></td><td><code>COMPLAIN_NO</code> + <code>SOLVE_CODE</code></td><td>有</td><td>有</td><td>18</td></tr><tr><td><code>CPM0061A</code></td><td><code>COMPLAIN_NO</code> + <code>SOLVE_CODE</code></td><td>有</td><td>有</td><td>18</td></tr><tr><td><code>CPM007A</code></td><td><code>CLAIM_NO</code></td><td>有</td><td>有</td><td>43</td></tr></tbody></table></div>
+<p>明細 PK 的第二段來自 <code>CPMM004</code> 的 <code>m_PkeyNotInMaster.Add("COMPLAIN_CODE")</code> 與 <code>.Add("SOLVE_CODE")</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:218-219</code>)—— 這是框架用來判斷「明細自己的 PK 欄位」的宣告。<code>CPM006A</code> 與 <code>CPM0061A</code> 欄位結構<strong>完全相同</strong>(<code>DATAID</code> / <code>COMPLAIN_NO</code> / <code>SOLVE_CODE</code> + 四眼 + <code>CODE_DESCRP</code>),差別只在語意:<code>CPM006A</code> 是處理部門的處理方式、<code>CPM0061A</code> 是指定處理部門的處理方式。</p>
+<p>八張表的四眼欄位都齊,但<strong>只有 <code>CPMM003</code> / <code>CPMM004</code> / <code>CPMM005</code> / <code>CPMM001</code> 四支 M 畫面真的走四眼按鈕</strong>。四支 B 關卡畫面(<a class="sec" href="#6-批次-b-與-windowsservice">§6</a>)是直接叫 <code>Modify</code>,<code>CPMB005</code> / <code>CPMB006</code> 更是自己寫 <code>UPDATE</code>,一律把 <code>STATUS</code> 硬塞 <code>'301'</code>。見 <a class="sec" href="#2-7-狀態碼-從程式反推">§2.7</a> 與附錄 E.1。</p>
+<h3 id="2-3-cpm004a-的-33-個流程欄位-五道關卡各寫哪一組">2.3 <code>CPM004A</code> 的 33 個流程欄位:五道關卡各寫哪一組</h3>
+<p><code>CPM004A</code> 69 欄裡有 33 欄是「某一關的人、日期、時間」。這張表是讀本模組最需要的一張,因為欄名跟關卡的對應<strong>完全不直觀</strong>(例:第三關 <code>CPMB003</code> 寫的是 <code>SOLVE_CFM_*</code>,第二關 <code>CPMB002</code> 寫的卻是 <code>SOLVE_*</code>):</p>
+<div class="tw"><table><thead><tr><th>關卡</th><th>欄位</th><th>中文名(<code>msdata:Caption</code>)</th><th>寫入錨點</th></tr></thead><tbody><tr><td>建檔 <code>CPMM004</code></td><td><code>COMPLAIN_UID</code> / <code>COMPLAIN_DEPT</code> / <code>COMPLAIN_DATE</code> / <code>COMPLAIN_TIME</code></td><td>受理人員 / 受理部門 / 受理日期 / 受理時間</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:53</code>、<code>:66-74</code></td></tr><tr><td>建檔 <code>CPMM004</code></td><td><code>COMPLAIN_KIND</code> / <code>COMPLAIN_PRV_DATE</code></td><td>處理時效 / 預計完成日</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:85-87</code>,算法在 <code>:868-886</code></td></tr><tr><td>第一關 <code>CPMB001</code>(正常件)</td><td><code>COMPLAIN_CFM_UID</code> / <code>COMPLAIN_CFM_DATE</code> / <code>COMPLAIN_CFM_TIME</code></td><td>受理部門主管 / 受理單位完成日期 / 時間</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:236-241</code></td></tr><tr><td>第一關 <code>CPMB001</code>(重辦件,原狀態 <code>05</code>)</td><td><code>SOLVE_CFM_UID1</code> / <code>SOLVE_CFM_DATE1</code> / <code>SOLVE_CFM_TIME1</code></td><td>重新處理受埋部門主管 / 確認日期 / 時間</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:242-247</code></td></tr><tr><td>第一關 <code>CPMB001</code></td><td><code>ASN_SOLVE_DEPT_NO</code> / <code>COMPLAIN_COMM</code></td><td>指定處理部門 / 受理內容說明</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:232-234</code></td></tr><tr><td>第二關 <code>CPMB002</code>(首辦)</td><td><code>SOLVE_UID</code> / <code>SOLVE_DATE</code> / <code>SOLVE_TIME</code></td><td>指定處理部門主管 / 完成日期 / 時間</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:302-308</code></td></tr><tr><td>第二關 <code>CPMB002</code>(重辦)</td><td><code>SOLVE_UID1</code> / <code>SOLVE_DATE1</code> / <code>SOLVE_TIME1</code></td><td>重新處理指定處理部門主管 / 日期 / 時間</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:309-315</code></td></tr><tr><td>第二關 <code>CPMB002</code></td><td><code>SOLVE_DEPT_NO</code> / <code>ASN_EMP_NO</code> / <code>COMPLAIN_SOLUTION_SOLVE</code> / <code>COMPLAIN_DELAY_DATE</code></td><td>處理部門 / 指定處理部門處理人員 / 指定處理部門處理說明 / 展延日期</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:289-296</code></td></tr><tr><td>第三關 <code>CPMB003</code>(首辦)</td><td><code>SOLVE_CFM_UID</code> / <code>SOLVE_CFM_DATE</code> / <code>SOLVE_CFM_TIME</code></td><td>處理部門主管 / 完成日期 / 時間</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB003p0.cs:331-336</code></td></tr><tr><td>第三關 <code>CPMB003</code>(重辦)</td><td><code>COMPLAIN_CFM_UID1</code> / <code>COMPLAIN_CFM_DATE1</code> / <code>COMPLAIN_CFM_TIME1</code></td><td>重新處理件處理部門主管 / 完成日期 / 時間</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB003p0.cs:337-342</code></td></tr><tr><td>第三關 <code>CPMB003</code></td><td><code>DEPT_SOLVE_EMP_NO</code> / <code>COMPLAIN_SOLUTION</code></td><td>處理人員 / 處理部門處理說明</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB003p0.cs:323-325</code></td></tr><tr><td>第四關 <code>CPMB004</code>(結案)</td><td><code>CLOSE_DATE</code> / <code>COMPLAIN_REMARK</code></td><td>結案日期 / 回覆情形</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:246-251</code></td></tr><tr><td>第四關 <code>CPMB004</code>(退回重辦)</td><td><code>VERIFY_DATE</code> / <code>COMPLAIN_DELAY_DATE</code> / <code>COMPLAIN_PRV_DATE1</code>,並清空六個重辦欄位</td><td>處理件退件日期 / 展延日期 / 預計完成日(退件)</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:256-272</code></td></tr></tbody></table></div>
+<p><strong>「首辦 / 重辦」怎麼判?</strong> 三支關卡畫面用的都是同一招:看 <code>custSOLVE_CFM_UID1.Value</code> 是不是空的(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:302</code>、<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB003p0.cs:331</code>)。而 <code>SOLVE_CFM_UID1</code> 正是 <code>CPMB001</code> 在處理 <code>05</code>(重新處理)案件時寫進去的。所以整條「重辦分支」是靠這一個欄位串起來的,<code>CPMB004</code> 退回時也是把它連同另外五欄一起清空(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:262-272</code>)—— 少清一欄,後面兩關就會走錯分支。</p>
+<p>還有一組 <code>SOLVE_DATE11</code> / <code>SOLVE_TIME11</code> / <code>SOLVE_CFM_UID11</code> / <code>SOLVE_CFM_DATE11</code> / <code>SOLVE_CFM_TIME11</code> / <code>COMPLAIN_COMM1</code> / <code>COMPLAIN_SOLUTION1</code> / <code>COMPLAIN_REMARK1</code> 只出現在 <code>CPMB001Model.xsd</code> 的 <code>CPM004A_SELECT</code> 結果集(<code>Dev/ATLAS.CPM/SOURCE/Entity/DataEntity.CPM/CPMB001Model.xsd</code>),<strong>實體表 <code>CPM004A</code> 沒有這些欄位,程式也沒有任何一處讀寫它們</strong>。判定為死欄位。</p>
+<h3 id="2-4-代碼值域-哪些查表-哪些寫死">2.4 代碼值域:哪些查表、哪些寫死</h3>
+<p><code>architecture.md §7.2</code> 提到 <code>TA.MappingCode</code> 有一整組 <code>CAMPAIGN_*</code> / <code>CAMP_*</code> / <code>PROMT_TYPE</code> 代碼類別。<strong>本模組一個都沒用到。</strong> 實測:</p>
+<pre class="code"><code>grep -rn "CAMPAIGN_\|CAMP_\|PROMT_TYPE" Dev/ATLAS.CPM Dev/ATLAS.CPM.Report --include=*.cs   → 0 命中</code></pre>
+<p><code>using Vendor.Product.TA.MappingCode;</code> 出現在每一支 PO 的 using 區(例 <code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:15</code>),但整個模組實際引用的 <code>TA.MappingCode</code> 成員只有兩個:<code>SQLOperator.Equal</code> / <code>SQLOperator.Like</code>(SQL 運算子字串)與 <code>SysCode.SrNo.AllotNoForNfd</code>(跳號一覽表的類別鍵)。<strong>代碼值域一律是字面值或查 DB,沒有一處走常數。</strong> 這跟 <code>cod.md §2</code> 的實測結論一致。</p>
+<div class="tw"><table><thead><tr><th>代碼欄位</th><th>值域來源</th><th>程式怎麼拿</th><th>寫死在哪</th></tr></thead><tbody><tr><td><code>COMPLAIN_STATUS</code></td><td><code>COD006A</code> 的 <code>CODE_SORT = 'Q2'</code></td><td>UI 下拉:<code>new CodeDataSrc("Q2")</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001.cs:44</code>);SQL join:<code>AND C3.CODE_SORT = 'Q2'</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:134</code>)</td><td><strong>每個值都寫死在 C# 與 SQL 裡</strong>,見 <a class="sec" href="#2-7-狀態碼-從程式反推">§2.7</a></td></tr><tr><td><code>CLAIM_STATUS</code></td><td><code>COD006A</code> 的 <code>CODE_SORT = 'P7'</code></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:108</code></td><td><code>'01'</code> / <code>'02'</code> / <code>'06'</code> 寫死,見 <a class="sec" href="#2-7-狀態碼-從程式反推">§2.7</a></td></tr><tr><td><code>COMPLAIN_CODE</code>(處理件分類)</td><td><code>COD006A</code> 的 <code>CODE_SORT = '12'</code></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:535</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:846</code></td><td>未寫死,全查表</td></tr><tr><td><code>SOLVE_CODE</code>(處理方式)</td><td><code>COD006A</code> 的 <code>CODE_SORT = '13'</code></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:451</code>、<code>:492</code></td><td>未寫死,全查表</td></tr><tr><td><code>COMPLAIN_KIND</code>(處理時效)</td><td><code>CTL014</code> 的 <code>SOURCETYPE = '486'</code></td><td><code>new GetDropDownDataSrc("486")</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:239</code>)</td><td><strong><code>'1'</code>/<code>'2'</code>/<code>'3'</code> 寫死在 <code>SetCOMPLAIN_KIND()</code></strong>,見下</td></tr><tr><td><code>CC_EMAIL_YN</code>(是否副知相關部門)</td><td><code>CTL014</code> 的 <code>SOURCETYPE = '487'</code></td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:241</code></td><td><code>"Y"</code> / <code>"N"</code> 寫死</td></tr><tr><td><code>CPM003A</code> 六個權限旗標的 Grid 下拉</td><td><code>CTL014</code> 的 <code>SOURCETYPE = '492'</code></td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM003.cs:121-126</code></td><td><code>"Y"</code> / <code>"N"</code> 寫死(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM003.cs:49-77</code>)</td></tr><tr><td><code>DATA_TYPE</code></td><td><strong>無代碼表</strong></td><td>直接 <code>DECODE(…,'1','需求處理件','2','抱怨記錄件',' ')</code></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:251</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:115</code>、<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR005_PO.cs:77-80</code></td></tr></tbody></table></div>
+<p><code>COMPLAIN_KIND</code> 的三個值與工作天數是寫死的對應:</p>
+<div class="tw"><table><thead><tr><th>值</th><th>預計完成日</th><th>錨點</th></tr></thead><tbody><tr><td><code>1</code></td><td>受理日 + <strong>1</strong> 個公司營業日</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:870-873</code></td></tr><tr><td><code>2</code></td><td>受理日 + <strong>2</strong> 個公司營業日</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:874-877</code></td></tr><tr><td><code>3</code></td><td>受理日 + <strong>7</strong> 個公司營業日</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:878-881</code></td></tr><tr><td>其他</td><td><strong>今天</strong>(不是受理日)</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:882-885</code></td></tr></tbody></table></div>
+<p><code>CTL014</code> 的 <code>486</code> 若被加上第四個值,這裡會靜默落到 <code>else</code> 分支 —— 預計完成日變成當天,不會有任何提示。〔客戶特定〕且是典型的「代碼表能加、程式不能跟」。</p>
+<p><code>DATA_TYPE</code> 的中文對照在三個地方各寫一套,而且<strong>不一致</strong>:<code>CPMM004_PO.cs:251</code> 與 <code>CPMR005_PO.cs:77-80</code> 寫「需求處理件 / 抱怨記錄件」,<code>CPMM004_PO.cs:673</code> 的報表查詢卻寫「問題件 / 客訴件」,<code>CPMR004_PO.cs:110</code> 也是「問題件 / 客訴件」。同一筆資料在不同報表上顯示不同名稱。</p>
+<h3 id="2-5-欄位中文名總表-來自-xsd-msdata-caption">2.5 欄位中文名總表(來自 xsd <code>msdata:Caption</code>)</h3>
+<p><strong><code>CPM004A</code>(69 欄,主檔)</strong> —— 四眼 13 欄與 <code>DATAID</code> / <code>DATAFLAG</code> 在 <code>CPMM004Model.xsd</code> 沒有 Caption(在 <code>CPM004A_SELECT</code> 結果集裡才有),表內以「—」表示:</p>
+<div class="tw"><table><thead><tr><th>欄位</th><th>中文名</th><th>欄位</th><th>中文名</th></tr></thead><tbody><tr><td><code>COMPLAIN_NO</code></td><td>處理件單號</td><td><code>SOLVE_CFM_UID</code></td><td>處理部門主管</td></tr><tr><td><code>DATA_TYPE</code></td><td>—(作業類型,見 <a class="sec" href="#2-4-代碼值域-哪些查表-哪些寫死">§2.4</a>)</td><td><code>SOLVE_CFM_DATE</code></td><td>處理部門完成日期</td></tr><tr><td><code>DATA_TYPE_NM</code></td><td>處理件型態(結果集欄)</td><td><code>SOLVE_CFM_TIME</code></td><td>處理部門完成時間</td></tr><tr><td><code>BF_NO</code></td><td>戶號</td><td><code>COMPLAIN_KIND</code></td><td>處理時效</td></tr><tr><td><code>ID_NO</code></td><td>受益人ID</td><td><code>COMPLAIN_DELAY_DATE</code></td><td>展延日期</td></tr><tr><td><code>BF_NAME</code></td><td>姓名</td><td><code>COMPLAIN_PRV_DATE1</code></td><td>預計完成日(退件)</td></tr><tr><td><code>EMP_NO</code></td><td>業務員</td><td><code>CC_EMAIL_YN</code></td><td>EMAIL通知相關部門</td></tr><tr><td><code>AGENT_CODE</code></td><td>業務部門</td><td><code>CC_EMAIL_LAW</code></td><td>EMAIL通知(法律顧問</td></tr><tr><td><code>COMPLAIN_SOLUTION_SOLVE</code></td><td>指定處理部門處理說明</td><td><code>CC_EMAIL_CMP</code></td><td>EMAIL通知(法令遵循組</td></tr><tr><td><code>COMPLAIN_DATE</code></td><td>受理日期</td><td><code>CC_EMAIL_RSK</code></td><td>EMAIL通知(風險管理</td></tr><tr><td><code>COMPLAIN_TIME</code></td><td>受理時間</td><td><code>CC_EMAIL_MAT</code></td><td>EMAIL通知(行銷部</td></tr><tr><td><code>COMPLAIN_PRV_DATE</code></td><td>預計完成日</td><td><code>CC_EMAIL_CHN</code></td><td>EMAIL通知(通路業務部</td></tr><tr><td><code>COMPLAIN_STATUS</code></td><td>處理狀態</td><td><code>COMPLAIN_TEL1</code></td><td>聯絡電話1</td></tr><tr><td><code>COMPLAIN_STATUS_DESCRP</code></td><td>處理狀態說明</td><td><code>COMPLAIN_TEL2</code></td><td>聯絡電話2</td></tr><tr><td><code>COMPLAIN_CFM_UID</code></td><td>受理部門主管</td><td><code>VERIFY_DATE</code></td><td>處理件退件日期</td></tr><tr><td><code>COMPLAIN_CFM_DATE</code></td><td>受理單位完成日期</td><td><code>COMPLAIN_COMM</code></td><td>受理內容說明</td></tr><tr><td><code>COMPLAIN_CFM_TIME</code></td><td>受理單位完成時間</td><td><code>COMPLAIN_SOLUTION</code></td><td>處理部門處理說明</td></tr><tr><td><code>ASN_SOLVE_DEPT_NO</code></td><td>指定處理部門</td><td><code>COMPLAIN_REMARK</code></td><td>回覆情形</td></tr><tr><td><code>ASN_EMP_NO</code></td><td>指定處理部門處理人員</td><td><code>SOLVE_UID1</code></td><td>重新處理指定處理部門主管</td></tr><tr><td><code>SOLVE_UID</code></td><td>指定處理部門主管</td><td><code>SOLVE_DATE1</code> / <code>SOLVE_TIME1</code></td><td>重新處理日期 / 時間</td></tr><tr><td><code>SOLVE_DEPT_NO</code></td><td>處理部門</td><td><code>SOLVE_CFM_UID1</code></td><td>重新處理受埋部門主管</td></tr><tr><td><code>DEPT_SOLVE_EMP_NO</code></td><td>處理人員</td><td><code>SOLVE_CFM_DATE1</code> / <code>SOLVE_CFM_TIME1</code></td><td>重新處理確認日期 / 時間</td></tr><tr><td><code>SOLVE_DATE</code></td><td>指定處理部門完成日期</td><td><code>CLOSE_DATE</code></td><td>結案日期</td></tr><tr><td><code>SOLVE_TIME</code></td><td>指定處理部門完成時間</td><td><code>COMPLAIN_CFM_UID1</code></td><td>重新處理件處理部門主管</td></tr><tr><td><code>COMPLAIN_UID</code></td><td>受理人員</td><td><code>COMPLAIN_CFM_DATE1</code> / <code>COMPLAIN_CFM_TIME1</code></td><td>重新處理件處理部門完成日期 / 時間</td></tr><tr><td><code>COMPLAIN_DEPT</code></td><td>受理部門</td><td><code>DATAID</code> / <code>STATUS</code> / 四眼 12 欄 / <code>DATAFLAG</code></td><td>—(見 <code>architecture.md §3</code>)</td></tr></tbody></table></div>
+<p>來源:<code>Dev/ATLAS.CPM/SOURCE/Entity/DataEntity.CPM/CPMM004Model.xsd</code>。注意 <code>SOLVE_CFM_UID1</code> 的 Caption 是「重新處理<strong>受埋</strong>部門主管」—— xsd 裡就是這個錯字,不是本文打錯。</p>
+<p><strong><code>CPM007A</code>(43 欄,客訴件主檔)</strong>:</p>
+<div class="tw"><table><thead><tr><th>欄位</th><th>中文名</th><th>欄位</th><th>中文名</th></tr></thead><tbody><tr><td><code>CLAIM_NO</code></td><td>客訴件單號</td><td><code>CLAIM_DOC</code></td><td>附件說明</td></tr><tr><td><code>BF_NO</code></td><td>受益人戶號</td><td><code>CLAIM_DEMAND</code></td><td>客戶訴求</td></tr><tr><td><code>ID_NO</code></td><td>統一編號</td><td><code>SALES_COMM</code></td><td>業務單位建議</td></tr><tr><td><code>BF_NAME</code></td><td>受益人姓名</td><td><code>OTHER_DEPT_COMM</code></td><td>其他單位建議</td></tr><tr><td><code>CLAIM_STATUS</code></td><td>客訴件狀態</td><td><code>COMPLIANCE_COMM</code></td><td>Compliance建議</td></tr><tr><td><code>CLAIM_DATE</code></td><td>申請日期</td><td><code>SER_WINDOW_COMM</code></td><td>客訴收件窗口建議</td></tr><tr><td><code>EMP_NO</code></td><td>業務員</td><td><code>CEO_VERIFY</code></td><td>CEO審核</td></tr><tr><td><code>CLAIM_EMP_NO</code></td><td>申請人</td><td><code>IMPROVE_COMM</code></td><td>改善建議</td></tr><tr><td><code>LEADER_EMP_NO</code></td><td>組主管</td><td><code>OTHER_REMARK</code></td><td>其他意見</td></tr><tr><td><code>BOSS_EMP_NO</code></td><td>部門主管</td><td><code>CLAIM_STATUS_DESCRP</code></td><td>客訴件狀態說明(結果集欄)</td></tr><tr><td><code>CONFIRM_DATE</code></td><td>主管確認日期</td><td><code>EMP_NAME</code></td><td>業務員姓名(結果集欄)</td></tr><tr><td><code>CLAIM_CONTENT</code></td><td>案件說明</td><td><code>CLAIM_EMP_NO_NAME</code></td><td>申請人姓名(結果集欄)</td></tr><tr><td><code>CLAIM_DOC_PATH</code></td><td>文件存檔路徑</td><td><code>LEADER_EMP_NO_NAME</code></td><td>組主管姓名(結果集欄)</td></tr><tr><td><code>CLOSE_DATE</code></td><td>結案日期</td><td><code>BOSS_EMP_NO_NAME</code></td><td>部門主管姓名(結果集欄)</td></tr><tr><td><code>STATUS</code> … <code>DATAFLAG</code></td><td>四眼 13 欄 + 資料異動碼</td><td></td><td></td></tr></tbody></table></div>
+<p>來源:<code>Dev/ATLAS.CPM/SOURCE/Entity/DataEntity.CPM/CPMB005Model.xsd</code>。</p>
+<p><strong><code>CPM003A</code> / <code>CPM0031A</code> / <code>CPM001A</code></strong>:</p>
+<div class="tw"><table><thead><tr><th>表</th><th>欄位</th><th>中文名</th></tr></thead><tbody><tr><td><code>CPM003A</code></td><td><code>USERID</code> / <code>MANGR_CODE</code></td><td>使用者代碼 / 主管辨識碼</td></tr><tr><td><code>CPM003A</code></td><td><code>MGM_CD_CPMM004</code></td><td>處理件維護權限</td></tr><tr><td><code>CPM003A</code></td><td><code>MGM_CD_CPMB001</code></td><td>處理件確認權限</td></tr><tr><td><code>CPM003A</code></td><td><code>MGM_CD_CPMB002</code></td><td>處理件指定部門處理權限</td></tr><tr><td><code>CPM003A</code></td><td><code>MGM_CD_CPMB003</code></td><td>處理件指定部門處理確認權限</td></tr><tr><td><code>CPM003A</code></td><td><code>MGM_CD_CPMB004</code></td><td>處理件結案權限</td></tr><tr><td><code>CPM003A</code></td><td><code>MGM_CD_CPMB006</code></td><td>客訴件結案權限</td></tr><tr><td><code>CPM003A</code></td><td><code>SEND_EMAIL_YN</code> / <code>CLOSE_SEND_EMAIL_YN</code></td><td>寄發EMAIL否 / 結案寄發EMAIL否</td></tr><tr><td><code>CPM003A</code></td><td><code>EMP_NO</code> / <code>EMP_CD</code> / <code>EMAIL</code> / <code>USERCNAME</code></td><td>員工代碼 / 員工類別 / 使用者Email / 使用者姓名(皆為 join 來的結果集欄)</td></tr><tr><td><code>CPM0031A</code></td><td><code>DEPT_NO</code> / <code>DEPT_CH_NAME</code></td><td>部門代碼 / 部門名稱</td></tr><tr><td><code>CPM001A</code></td><td><code>FUNCTIONID</code> / <code>USERID</code></td><td>程式功能代碼 / 使用者代碼</td></tr><tr><td><code>CPM001A</code></td><td><code>USERCNAME</code> / <code>EMAIL</code> / <code>FORMNAME</code></td><td>使用者姓名 / 使用者Emai / 程式功能名稱(結果集欄)</td></tr></tbody></table></div>
+<p>來源:<code>Dev/ATLAS.CPM/SOURCE/Entity/DataEntity.CPM/CPMM003Model.xsd:21-25</code>、<code>:46</code>、<code>Dev/ATLAS.CPM/SOURCE/Entity/DataEntity.CPM/CPMM001Model.xsd</code>。<code>CPM001A.EMAIL</code> 的 Caption 是「使用者Emai」,少一個 l,xsd 原文如此。</p>
+<p><strong>⚠ 同一張表在不同 xsd 的 Caption 不一致。</strong> <code>CPM004A_SELECT</code> 這個結果集在四支 B 畫面的 Model 裡都有,但中文名被改過:</p>
+<div class="tw"><table><thead><tr><th>欄位</th><th><code>CPMB001Model.xsd</code> / <code>CPMB002Model.xsd</code></th><th><code>CPMB003Model.xsd</code> / <code>CPMB004Model.xsd</code></th></tr></thead><tbody><tr><td><code>USERCNAME</code></td><td>受理人員</td><td>KEY單人員</td></tr><tr><td><code>COMPLAIN_DEPT_CH_NAME</code></td><td>受理部門名稱</td><td>KEY單部門名稱</td></tr><tr><td><code>ASN_SOLVE_DEPT_CH_NAME</code></td><td>指定處理部門名稱</td><td><strong>處理部門名稱</strong></td></tr><tr><td><code>SOLVE_DEPT_CH_NAME</code></td><td>處理部門名稱</td><td><strong>指定處理部門名稱</strong></td></tr><tr><td><code>EMP_NAME</code></td><td>處理人員姓名</td><td>指定處理部門的處理人員姓名</td></tr></tbody></table></div>
+<p>後兩列是<strong>對調的</strong>:<code>ASN_SOLVE_DEPT_CH_NAME</code> 在 SQL 裡一律取自 <code>CPM004A.ASN_SOLVE_DEPT_NO</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB003_PO.cs:117-122</code> 的 <code>C5</code>),語意就是「指定處理部門」,但 <code>CPMB003</code> / <code>CPMB004</code> 的 xsd 把它標成「處理部門名稱」。Grid 欄位標題會跟資料對不上。嚴重度中,見附錄 E.6。</p>
+<h3 id="2-6-與其他模組共用的表">2.6 與其他模組共用的表</h3>
+<div class="tw"><table><thead><tr><th>表</th><th>也被誰用</th><th>怎麼用</th><th>錨點</th></tr></thead><tbody><tr><td><code>CPM007A</code></td><td><strong>OFD</strong>(<code>OFDI011</code> 客戶查詢)</td><td>唯讀,<code>WHERE BF_NO = :BF_NO</code> 撈該戶號的客訴歷史,顯示在 <code>frmCLAIM</code> 彈出視窗</td><td><code>Dev/ATLAS.OFDI/Source/PO/PO.OFDI/OFDI011_PO.cs:3953-3977</code>、<code>Dev/ATLAS.OFDI/Source/UI/UI.OFDI/frmCLAIM.cs:46</code></td></tr><tr><td><code>CPM001A</code></td><td><strong>全系統</strong>(<code>TA.UtilityPO</code>)</td><td>唯讀,<code>WHERE FUNCTIONID = :ProductID</code> 取備援通知名單</td><td><code>Dev/Common/Source/Utility/TA.UtilityPO/Utility_PO.cs:2753-2759</code></td></tr><tr><td><code>CPM004A</code> / <code>CPM005A</code> / <code>CPM006A</code> / <code>CPM0061A</code> / <code>CPM003A</code> / <code>CPM0031A</code></td><td>只有 CPM 自己</td><td>—</td><td>—</td></tr></tbody></table></div>
+<p>反向:CPM 借用的外部表(全部唯讀)</p>
+<div class="tw"><table><thead><tr><th>表</th><th>用途</th><th>典型錨點</th></tr></thead><tbody><tr><td><code>COD009</code></td><td>員工姓名、部門、離職日、<code>UID_CODE</code> ↔ <code>EMP_NO</code> 對照、EMAIL</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:735-737</code></td></tr><tr><td><code>COD006A</code></td><td>四組代碼說明(<code>12</code> / <code>13</code> / <code>Q2</code> / <code>P7</code>)</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:532-536</code></td></tr><tr><td><code>CTL014</code></td><td>下拉選單(<code>486</code> / <code>487</code> / <code>492</code>)</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:131-132</code></td></tr><tr><td><code>OFD002</code></td><td>部門中文名 <code>DEPT_CH_NAME</code> / 簡稱 <code>DEPT_SH_NM</code></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM003_PO.cs:203</code></td></tr><tr><td><code>BMS001A</code></td><td>戶號 → <code>ID_NO</code> / <code>BF_NAME</code> 帶值</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:334-336</code></td></tr><tr><td><code>TA_AA_USER</code></td><td>使用者中文名與 EMAIL</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:698-700</code></td></tr><tr><td><code>TA_SWPRODUCTSDETAIL</code></td><td>功能代碼 → 功能中文名(<code>CPMM001</code> 用)</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM001_PO.cs:93-94</code></td></tr><tr><td><code>AA_USER</code></td><td><strong>只有一處</strong>用了這個沒有 <code>TA_</code> 前綴的名字</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB004_PO.cs:650</code></td></tr><tr><td><code>CPMB001_MGN_V</code></td><td>主管白名單 View,<strong>不在版控</strong></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:659-661</code></td></tr></tbody></table></div>
+<h3 id="2-7-狀態碼-從程式反推">2.7 狀態碼(從程式反推)</h3>
+<h4 id="2-7-1-complain-status-處理件-值域表-cod006a-code-sort-q2">2.7.1 <code>COMPLAIN_STATUS</code>(處理件,值域表 <code>COD006A.CODE_SORT = 'Q2'</code>)</h4>
+<p><code>COD006A</code> 的實際內容不在版控,以下<strong>全部由程式反推</strong>,每個值都附「誰寫的 / 誰讀的」:</p>
+<div class="tw"><table><thead><tr><th>值</th><th>語意(推測)</th><th>誰寫進去</th><th>誰在等這個值</th></tr></thead><tbody><tr><td><code>01</code></td><td>已受理,待受理部門確認</td><td><code>CPMM004</code> 新增(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:57-60</code>)</td><td><code>CPMB001</code> 佇列(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:135</code>)</td></tr><tr><td><code>02</code></td><td>受理部門已確認,待指定處理部門簽核</td><td><code>CPMB001</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:230</code>)</td><td><code>CPMB002</code> 佇列第一關(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB002_PO.cs:151</code>)</td></tr><tr><td><code>03H</code></td><td>指定處理部門經辦已簽,待主管</td><td><code>CPMB002</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:262</code>、<code>:286</code>)</td><td><code>CPMB002</code> 佇列第二關,需 <code>MANGR_CODE='Y'</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB002_PO.cs:153-155</code>)</td></tr><tr><td><code>03O</code></td><td>股代主管已簽,待股務(<code>M2</code>)主管 —— <strong>只有 <code>ASN_SOLVE_DEPT_NO = 'OP1'</code> 走得到</strong></td><td><code>CPMB002</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:268</code>)</td><td><code>CPMB002</code> 佇列第三關,需 <code>D.DEPT_NO = 'M2'</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB002_PO.cs:157</code>)</td></tr><tr><td><code>03</code></td><td>指定處理部門簽核完成,待處理部門</td><td><code>CPMB002</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:273</code>、<code>:286</code>)</td><td><code>CPMB003</code> 佇列第一關(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB003_PO.cs:150</code>);<strong>若 <code>SOLVE_DEPT_NO</code> 為空則直接跳到 <code>CPMB004</code></strong>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB004_PO.cs:155</code>)</td></tr><tr><td><code>04H</code></td><td>處理部門經辦已簽,待主管</td><td><code>CPMB003</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB003p0.cs:270</code>、<code>:294</code>)</td><td><code>CPMB003</code> 佇列第二關(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB003_PO.cs:152-154</code>)</td></tr><tr><td><code>04O</code></td><td>股代主管已簽,待 <code>M2</code> 主管</td><td><code>CPMB003</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB003p0.cs:276</code>)</td><td><code>CPMB003</code> 佇列第三關(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB003_PO.cs:156</code>)</td></tr><tr><td><code>04</code></td><td>處理部門簽核完成,待結案</td><td><code>CPMB003</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB003p0.cs:281</code>、<code>:294</code>)</td><td><code>CPMB004</code> 佇列(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB004_PO.cs:153</code>)</td></tr><tr><td><code>04S</code></td><td><strong>抱怨記錄件(<code>DATA_TYPE='2'</code>)專用</strong>:<code>CPMB001</code> 確認後直接跳到結案關</td><td><code>CPMB001</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:254</code>)</td><td><code>CPMB004</code> 佇列(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB004_PO.cs:146</code>)</td></tr><tr><td><code>05</code></td><td>退回重辦</td><td><code>CPMB004</code>(使用者從下拉選,<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:244</code>)</td><td><code>CPMB001</code> 佇列(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:135</code>)</td></tr><tr><td><code>06</code></td><td>結案</td><td><code>CPMB004</code>(下拉選,<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:248</code>)</td><td>終點,無人再撈</td></tr><tr><td><code>D1</code></td><td>作廢申請</td><td><code>CPMM004</code> 修改時使用者把狀態選成 <code>06</code> 會被改寫成 <code>D1</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:626-627</code>)</td><td><code>CPMB001</code> 佇列(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:135</code>)</td></tr><tr><td><code>D2</code></td><td>作廢確認</td><td><code>CPMB001</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:230</code>、<code>:254</code>)</td><td>終點;報表以 <code>COMPLAIN_STATUS NOT LIKE 'D%'</code> 排除(<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR005_PO.cs:91</code>)</td></tr><tr><td><code>07</code></td><td><strong>死值</strong></td><td>無人寫</td><td>唯一提及處整段被註解(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB003p0.cs:296-320</code>)</td></tr></tbody></table></div>
+<p><strong><code>06</code> 這個值被兩套語意共用</strong>:在 <code>CPMB004</code> 的下拉裡是「結案」,在 <code>CPMM004</code> 的修改畫面裡卻被當成「作廢」的觸發鍵然後改寫成 <code>D1</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:626</code>)。同一個代碼在兩支畫面意思不同,是讀碼時最容易誤判的一處。</p>
+<h4 id="2-7-2-claim-status-客訴件-值域表-cod006a-code-sort-p7">2.7.2 <code>CLAIM_STATUS</code>(客訴件,值域表 <code>COD006A.CODE_SORT = 'P7'</code>)</h4>
+<div class="tw"><table><thead><tr><th>值</th><th>語意(推測)</th><th>誰寫進去</th><th>誰在等</th></tr></thead><tbody><tr><td><code>01</code></td><td>已申請,待主管確認</td><td><code>CPMM005</code> 新增時 <code>AddDataLoad</code> 直接塞(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM005.cs:118-119</code>)</td><td><code>CPMB005</code> 佇列(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:119</code>)</td></tr><tr><td><code>02</code></td><td>主管已確認,待收件窗口結案</td><td><code>CPMB005</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB005p0.cs:140</code>)</td><td><code>CPMB006</code> 佇列(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:119</code>)</td></tr><tr><td><code>06</code></td><td>結案</td><td><code>CPMB006</code>,<strong>且操作者要有 <code>MGM_CD_CPMB006='Y'</code></strong>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB006p0.cs:158-161</code>)</td><td>終點</td></tr></tbody></table></div>
+<p><code>CPMM005</code> 的重複件檢查也只認 <code>01</code> 與 <code>02</code> 兩個值(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:368</code>、<code>:399</code>),所以 <code>P7</code> 若有第四個「進行中」的值,重複件就擋不到。</p>
+<h4 id="2-7-3-四眼-status">2.7.3 四眼 <code>STATUS</code></h4>
+<p>八張表都有四眼 <code>STATUS</code>,但本模組<strong>沒有一支畫面在讀它</strong>。四支 B 關卡與 <code>CPMB005</code> / <code>CPMB006</code> 一律把它硬寫成 <code>'301'</code>:</p>
+<ul><li>結果集預設值:<code>ResultVDB.DataEntity.CPM004A_SELECT.STATUSColumn.DefaultValue = "301";</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:161</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB002_PO.cs:180</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB003_PO.cs:182</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB004_PO.cs:185</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:139</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:139</code>)</li><li>實際 UPDATE:<code>dbTA.AddInParameter(cmd, "STATUS", OracleDbType.Varchar2, "301");</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:284</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:292</code>)</li></ul>
+<p><code>'301'</code> 這個值在 <code>architecture.md §3.10</code> 反推出來的 12 個 <code>EVAStatusCode</code> 值域裡找不到對應(那邊掃到的字面量是 <code>'0'</code>~<code>'6'</code>、<code>'8'</code>、<code>'9'</code> 單字元)。<strong>標假設</strong>:<code>'301'</code> 是本模組自訂的「已覆核 / 正式生效」佔位值,依據是六支畫面一致使用同一個值、且沒有任何程式讀它。要確定得查 DB。</p>
+<p><strong>真正的流程狀態是 <code>COMPLAIN_STATUS</code> / <code>CLAIM_STATUS</code>,不是四眼 <code>STATUS</code>。</strong> 這是本模組跟其他模組最大的差別:四眼欄位存在、四眼引擎被呼叫,但流程控制完全走自己的狀態欄。</p>
+</div></section><section class="sec" data-sec="3-畫面清冊"><h2 id="3-畫面清冊"><button class="tg" aria-label="收合/展開" type="button"></button>3. 畫面清冊</h2><div class="sec-body">
+<p>13 支畫面,型別分布 <code>B</code> 6 / <code>M</code> 4 / <code>R</code> 3 / <strong><code>I</code> 0</strong>。畫面中文名 ATLAS 沒放進版控(13 支 Form 沒有任何一支設 <code>this.Text</code>),下表的「用途」欄一律是<strong>推測</strong>,依據寫在各節。</p>
+<h3 id="3-1-維護-m-4-支">3.1 維護 M(4 支)</h3>
+<div class="tw"><table><thead><tr><th>代號</th><th>用途(推測)</th><th>六層</th><th>主表</th><th>明細</th><th>SP / Fn</th><th>rpt</th></tr></thead><tbody><tr><td><code>CPMM001</code></td><td>各功能的備援通知名單維護</td><td>齊</td><td><code>CPM001A</code></td><td>無(多筆主檔)</td><td>無</td><td>無</td></tr><tr><td><code>CPMM003</code></td><td>關卡權限與管轄部門維護</td><td>齊</td><td><code>CPM003A</code></td><td><code>CPM0031A</code></td><td>無</td><td>無</td></tr><tr><td><code>CPMM004</code></td><td>處理件建檔、修改、作廢申請</td><td>齊</td><td><code>CPM004A</code></td><td><code>CPM005A</code> <code>CPM006A</code> <code>CPM0061A</code></td><td>無</td><td><code>CPMM004RPS</code></td></tr><tr><td><code>CPMM005</code></td><td>客訴件建檔</td><td>齊</td><td><code>CPM007A</code></td><td>無</td><td>無</td><td><code>CPMM005RPS</code></td></tr></tbody></table></div>
+<h3 id="3-2-查詢-i">3.2 查詢 I</h3>
+<p><strong>本模組無 I 畫面。</strong> 原因見 <a class="sec" href="#5-查詢畫面-i">§5</a>。</p>
+<h3 id="3-3-批次-b-6-支">3.3 批次 B(6 支)</h3>
+<div class="tw"><table><thead><tr><th>代號</th><th>用途(推測)</th><th>六層</th><th>主表</th><th>明細</th><th>寫入方式</th><th>權限旗標</th></tr></thead><tbody><tr><td><code>CPMB001</code></td><td>處理件第一關:受理部門確認 + 指定處理部門</td><td>齊</td><td><code>CPM004A</code></td><td><code>CPM005A</code> <code>CPM006A</code> <code>CPM0061A</code></td><td>EVA <code>Update</code></td><td><code>MGM_CD_CPMB001</code></td></tr><tr><td><code>CPMB002</code></td><td>處理件第二關:指定處理部門簽核</td><td>齊</td><td>同上</td><td>同上</td><td>EVA <code>Update</code></td><td><code>MGM_CD_CPMB002</code> + <code>MANGR_CODE</code></td></tr><tr><td><code>CPMB003</code></td><td>處理件第三關:處理部門簽核</td><td>齊</td><td>同上</td><td>同上</td><td>EVA <code>Update</code></td><td><code>MGM_CD_CPMB003</code> + <code>MANGR_CODE</code></td></tr><tr><td><code>CPMB004</code></td><td>處理件第四關:結案或退回重辦</td><td>齊</td><td>同上</td><td>同上</td><td>EVA <code>Update</code></td><td><code>MGM_CD_CPMB004</code></td></tr><tr><td><code>CPMB005</code></td><td>客訴件第二關:主管確認</td><td>齊</td><td><strong>未宣告</strong></td><td>無</td><td>手寫 <code>UPDATE CPM007A</code></td><td><strong>無</strong></td></tr><tr><td><code>CPMB006</code></td><td>客訴件第三關:收件窗口結案</td><td>齊</td><td><strong>未宣告</strong></td><td>無</td><td>手寫 <code>UPDATE CPM007A</code></td><td><code>MGM_CD_CPMB006</code></td></tr></tbody></table></div>
+<h3 id="3-4-報表-r-3-支-住在-atlas-cpm-report-七層">3.4 報表 R(3 支,住在 <code>ATLAS.CPM.Report</code>,七層)</h3>
+<div class="tw"><table><thead><tr><th>代號</th><th>用途(推測)</th><th>七層</th><th>取數來源</th><th>rpt</th></tr></thead><tbody><tr><td><code>CPMR004</code></td><td>處理件明細清單(Grid,可雙擊看單筆)</td><td>齊</td><td><code>CPM004A</code> 直接組 SQL</td><td><strong>無 <code>.rpt</code></strong>,只有 Grid</td></tr><tr><td><code>CPMR005</code></td><td>處理件種類統計(依部門 × 處理件分類)</td><td>齊</td><td><code>CPM004A</code> + <code>CPM005A</code> <code>GROUP BY</code></td><td><code>CPMR005RPS</code></td></tr><tr><td><code>CPMR006</code></td><td>處理件件數與天數統計</td><td>齊</td><td><code>CPM004A</code> 直接組 SQL</td><td><code>CPMR006RPS</code></td></tr></tbody></table></div>
+<p>四支 <code>.rpt</code> 的完整清單:</p>
+<div class="tw"><table><thead><tr><th>rpt</th><th>屬於</th><th>路徑</th></tr></thead><tbody><tr><td><code>CPMM004RPS</code></td><td><code>CPMM004</code> 的「印表」鈕(<code>DoExp1</code>)</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004RPS.rpt</code></td></tr><tr><td><code>CPMM005RPS</code></td><td><code>CPMM005</code> 的「印表」鈕</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM005RPS.rpt</code></td></tr><tr><td><code>CPMR005RPS</code></td><td><code>CPMR005</code></td><td><code>Dev/ATLAS.CPM.Report/Source/CrystalReports/Report.CPM/CPMR005RPS.rpt</code></td></tr><tr><td><code>CPMR006RPS</code></td><td><code>CPMR006</code></td><td><code>Dev/ATLAS.CPM.Report/Source/CrystalReports/Report.CPM/CPMR006RPS.rpt</code></td></tr></tbody></table></div>
+<p><strong>兩支 <code>.rpt</code> 住在 <code>UI.CPM</code>,不住在 <code>Report.CPM</code>。</strong> 這違反 <code>architecture.md §6.5</code> 的「<code>.rpt</code> 在第七層」慣例 —— 但不是例外,而是因為 <code>CPMM004</code> / <code>CPMM005</code> 是 M 畫面,M 畫面沒有第七層,只能把 <code>.rpt</code> 直接放在 <code>UI.CPM</code> 資料夾。這也代表<strong>本模組有兩張報表不受 <code>.Report</code> 專案的重編流程管</strong>。</p>
+<h3 id="3-5-命名與層級的四個例外">3.5 命名與層級的四個例外</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>例外</th><th>具體</th><th>影響</th></tr></thead><tbody><tr><td>1</td><td><strong>專案資料夾是大寫 <code>SOURCE</code></strong></td><td><code>Dev/ATLAS.CPM/SOURCE/…</code>,但 <code>Dev/ATLAS.CPM.Report/Source/…</code> 是小寫</td><td>同一個模組的兩個專案大小寫不一致;大小寫敏感的工具(Linux CI、Python glob)會漏掉主專案。<code>architecture.md §2.6</code> 已記錄 CPM 與 CLS 是全庫僅有的兩個</td></tr><tr><td>2</td><td><strong><code>CPMM001</code> 的 PO 類別不叫 <code>CPMM001_PO</code></strong></td><td><code>public class CPMM001OracleDao : BaseMultiRowEVADaoPO, ICPMM001_PO</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM001_PO.cs:24</code>)</td><td>檔名對、類別名不對;以類別名做 grep 的工具會漏。介面 <code>ICPMM001_PO</code> 又是舊命名,三套混用</td></tr><tr><td>3</td><td><strong><code>CPMM003</code> 的 Designer 檔是小寫 <code>d</code></strong></td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM003.designer.cs</code>,其餘 12 支都是 <code>.Designer.cs</code></td><td>同 #1,大小寫敏感工具會判定「缺 Designer」</td></tr><tr><td>4</td><td><strong><code>CPMR004</code> 沒有 <code>.rpt</code></strong></td><td>它是 Grid-only 的清單畫面,<code>CPMR004p0</code> / <code>p1</code> / <code>p2</code> 三個彈出視窗只看單筆</td><td>看到 <code>R</code> 就以為有 Crystal 報表會找錯</td></tr></tbody></table></div>
+<h3 id="3-6-一眼看出差別的五件事">3.6 一眼看出差別的五件事</h3>
+<div class="tw"><table><thead><tr><th>觀察</th><th>說明</th></tr></thead><tbody><tr><td>六支 B 沒有一支覆寫 <code>InitializeVDBTypes()</code></td><td>只有 <code>CPMM004_Ctl:43-48</code> 與 <code>CPMM005_Ctl:43-48</code> 有。符合 <code>architecture.md §6.1</code> 的「B 常常沒有」</td></tr><tr><td>四支 B 關卡的 Pxy 都覆寫 <code>Modify()</code> 指向 <code>ctl.UpdateData</code> → <code>m_PO.Update</code></td><td>例 <code>Dev/ATLAS.CPM/SOURCE/FormProxy/FormProxy.CPM/CPMB001_Pxy.cs:131-146</code> + <code>Dev/ATLAS.CPM/SOURCE/Control/Control.CPM/CPMB001_Ctl.cs:59-65</code>。<code>Update</code> 是框架 DLL 的方法(無原始碼,從呼叫端反推)</td></tr><tr><td>每支 PO 的介面註解都寫「覆核層級管理 PO 共用介面」</td><td>12 支 PO 一字不差(例 <code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:20-22</code>),是樣板複製沒改的殘留,<strong>不要拿它推測用途</strong></td></tr><tr><td>四支 B 關卡的 <code>SelectGrid</code> 結構逐行對應</td><td>同樣的 <code>try</code> / 13 行 <code>DefaultValue</code> / <code>LoadDataSet</code> / <code>intCount == 0 → "查無資料"</code> / <code>catch → "執行失敗，請檢查"</code>。差別只有 SQL 的 WHERE。是複製貼上出來的四份</td></tr><tr><td><code>CPMB005</code> 與 <code>CPMB006</code> 的 <code>Select</code> SQL <strong>只差一個字元</strong></td><td><code>AND CPM007A.CLAIM_STATUS = '01'</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:119</code>)對 <code>= '02'</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:119</code>),其餘 43 行完全相同</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="4-維護畫面-m-一支一節"><h2 id="4-維護畫面-m-一支一節"><button class="tg" aria-label="收合/展開" type="button"></button>4. 維護畫面(M)— 一支一節</h2><div class="sec-body"><figure><svg viewBox="0 0 1130 550" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="M 畫面從按鈕到四眼引擎的卡控順序,以及 After* 掛點實際做了什麼"><defs><marker id="ah_cpm_eva" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 用戶端:卡控全在 UI 層,伺服器不重驗</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="150" y="62" text-anchor="middle">Before*ButtonClicked</text>
+<text class="t2" x="150" y="82" text-anchor="middle">Add Modify Delete Search</text>
+</g><g class="bx ext">
+<rect x="300" y="40" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="420" y="62" text-anchor="middle">validatorManager1</text>
+<text class="t2" x="420" y="82" text-anchor="middle">框架必填 無原始碼</text>
+</g><g class="bx accent">
+<rect x="560" y="40" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="665" y="62" text-anchor="middle">DoValidate()</text>
+<text class="t2" x="665" y="82" text-anchor="middle">本畫面自訂檢核</text>
+</g><g class="bx vend">
+<rect x="790" y="40" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="920" y="62" text-anchor="middle">Pxy 直呼 DB 檢核</text>
+<text class="t2" x="920" y="82" text-anchor="middle">GetEmpNo GetCPM007A</text>
+</g><path class="ar" d="M 280 68 L 300 68" marker-end="url(#ah_cpm_eva)"/><path class="ar" d="M 540 68 L 560 68" marker-end="url(#ah_cpm_eva)"/><path class="ar" d="M 770 68 L 790 68" marker-end="url(#ah_cpm_eva)"/><text class="lane" x="20" y="136">② SetMasterToDetail:把主檔 PK 回填明細</text><g class="bx accent">
+<rect x="20" y="150" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="172" text-anchor="middle">CPMM004</text>
+<text class="t2" x="135" y="192" text-anchor="middle">三張明細各回填一次</text>
+</g><g class="bx">
+<rect x="270" y="150" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="395" y="172" text-anchor="middle">CPMM001 CPMM003</text>
+<text class="t2" x="395" y="192" text-anchor="middle">Grid 每列回填</text>
+</g><g class="bx dash">
+<rect x="540" y="150" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="655" y="172" text-anchor="middle">CPMM005</text>
+<text class="t2" x="655" y="192" text-anchor="middle">無明細 不需回填</text>
+</g><path class="ar" d="M 135 96 L 135 150" marker-end="url(#ah_cpm_eva)"/><text class="lane" x="20" y="246">③ 伺服端 PO 掛點</text><g class="bx accent">
+<rect x="20" y="260" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="125" y="282" text-anchor="middle">BeforeAdd</text>
+<text class="t2" x="125" y="302" text-anchor="middle">取號 撞號重取</text>
+</g><g class="bx accent">
+<rect x="250" y="260" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="355" y="282" text-anchor="middle">BeforeSelect</text>
+<text class="t2" x="355" y="302" text-anchor="middle">換掉整條 SQL</text>
+</g><g class="bx">
+<rect x="480" y="260" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="600" y="282" text-anchor="middle">BeforeGetToDoData</text>
+<text class="t2" x="600" y="302" text-anchor="middle">待辦清單語法</text>
+</g><g class="bx ext">
+<rect x="740" y="260" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="850" y="282" text-anchor="middle">EVA 引擎</text>
+<text class="t2" x="850" y="302" text-anchor="middle">無原始碼 DLL 內</text>
+</g><path class="ar" d="M 135 206 L 135 260" marker-end="url(#ah_cpm_eva)"/><path class="ar" d="M 230 288 L 250 288" marker-end="url(#ah_cpm_eva)"/><path class="ar" d="M 720 288 L 740 288" marker-end="url(#ah_cpm_eva)"/><text class="lane" x="20" y="356">④ After* 八個掛點:只寫跳號一覽表,零業務 SQL</text><g class="bx accent">
+<rect x="20" y="370" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="392" text-anchor="middle">CPMM004 CPMM005</text>
+<text class="t2" x="145" y="412" text-anchor="middle">各掛 8 個 After</text>
+</g><g class="bx vend">
+<rect x="290" y="370" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="415" y="392" text-anchor="middle">AddCommentHistory</text>
+<text class="t2" x="415" y="412" text-anchor="middle">SrNo.AllotNoForNfd</text>
+</g><g class="bx">
+<rect x="560" y="370" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="685" y="392" text-anchor="middle">CPMM001 CPMM003</text>
+<text class="t2" x="685" y="412" text-anchor="middle">完全沒有 After</text>
+</g><g class="bx vend">
+<rect x="830" y="370" rx="10" ry="10" width="270" height="56"/>
+<text class="t1" x="965" y="392" text-anchor="middle">覆核通過資料不變</text>
+<text class="t2" x="965" y="412" text-anchor="middle">狀態靠 COMPLAIN_STATUS</text>
+</g><path class="ar" d="M 135 316 L 135 370" marker-end="url(#ah_cpm_eva)"/><path class="ar" d="M 270 398 L 290 398" marker-end="url(#ah_cpm_eva)"/><path class="ar lnk" d="M 810 398 L 830 398"/><text class="lane" x="20" y="466">⑤ 卡控結果類型分布(本模組實測)</text><g class="bx">
+<rect x="20" y="480" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="125" y="502" text-anchor="middle">阻擋</text>
+<text class="t2" x="125" y="522" text-anchor="middle">必填 狀態 起迄 已確認</text>
+</g><g class="bx">
+<rect x="250" y="480" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="365" y="502" text-anchor="middle">詢問</text>
+<text class="t2" x="365" y="522" text-anchor="middle">B002 結案 B001 刪除</text>
+</g><g class="bx vend">
+<rect x="500" y="480" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="620" y="502" text-anchor="middle">過濾無提示</text>
+<text class="t2" x="620" y="522" text-anchor="middle">部門 ROWNUM 權限</text>
+</g><g class="bx">
+<rect x="760" y="480" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="875" y="502" text-anchor="middle">記錄不擋</text>
+<text class="t2" x="875" y="522" text-anchor="middle">回填 預設值 寄信</text>
+</g></svg><figcaption>圖 3 卡控與四眼順序。橘框=本模組程式碼;黑框=框架 DLL(無原始碼,從呼叫端反推);橘虛框=要留意的行為。八個 After* 只寫跳號一覽表,所以「覆核完資料才生效」在本模組不成立。</figcaption></figure>
+<p>四支 M 的共同結構(<code>architecture.md §6.2</code> 的滿血版):<code>xMaintainForm</code> + <code>TabPages = 2</code>(查詢頁 + 維護頁)、<code>FormInitial</code> 綁 <code>ProcessVDB</code> 與 <code>FormProxy</code>、<code>Before*ButtonClicked</code> 做卡控、<code>SetMasterToDetail()</code> 回填主鍵。</p>
+<p>四眼的實際效果請先記住一件事:<strong><code>CPMM004</code> 與 <code>CPMM005</code> 的八個 <code>After*</code> handler 只做跳號一覽表,零業務 SQL</strong> —— 也就是 <code>architecture.md §3.8.1</code> 講的「四眼只留軌跡、不把關資料」那一型。八個 handler 的本體都是同一行:</p>
+<pre class="code lang-csharp"><code>if (!SrNoCommentProcessor.AddCommentHistory(EVAType.Verify, SrNo.AllotNoForNfd, …)) throw new ApplicationException("");</code></pre>
+<p>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:1093-1097</code>,另七支在 <code>:1081-1123</code>;<code>CPMM005_PO</code> 同構)</p>
+<p><code>SrNo.AllotNoForNfd</code> 的值是 <code>"OFD220A"</code>(<code>Dev/Common/Source/MappingCode/TA.MappingCode/SysCode.cs:103</code>)—— CPM 的跳號紀錄被記在 <strong>NFD/OFD 的跳號類別底下</strong>,不是 CPM 自己的。見附錄 E.7。</p>
+<h3 id="4-1-cpmm001-功能通知名單維護">4.1 <code>CPMM001</code> — 功能通知名單維護</h3>
+<p><strong>用途(推測)</strong>:維護「某支功能程式找不到收件者時,信要寄給誰」。<code>CPM001A</code> 的 PK 是 <code>FUNCTIONID</code> + <code>USERID</code>,畫面上方選一個功能代碼、下方 Grid 掛多個使用者。<code>FORMNAME</code> 由 <code>TA_SWPRODUCTSDETAIL</code> join 出中文名(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM001_PO.cs:93-94</code>)。</p>
+<p>依據:<code>MailUtility.GetNotifyMail(productID, getCPM001A: true)</code> 的註解「應協理需求,更改為取自 CPMM001 的設定值」出現在本模組七支畫面的 EMAIL 失敗分支(例 <code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:386-388</code>)。</p>
+<p><strong>PO 是多筆主檔型</strong>:<code>CPMM001OracleDao : BaseMultiRowEVADaoPO</code>,<code>MasterPKey</code> 宣告 <code>FUNCTIONID</code> + <code>USERID</code>,<code>MasterTable</code> 用 <code>.Add()</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM001_PO.cs:33-35</code>)。這代表整個 Grid 的每一列都是主檔 row,不是明細 —— <code>architecture.md §3.9</code> 的多筆版。</p>
+<p><strong>查詢頁的取數很特別</strong>:<code>BuildMasterSQLString</code> 用 <code>ROW_NUMBER() OVER (PARTITION BY FUNCTIONID ORDER BY CreateDate, UpdateDate, EntryDate) NUM</code> 再 <code>WHERE NUM = 1</code>,只回每個 <code>FUNCTIONID</code> 的第一筆,並把 <code>USERID</code> / <code>USERCNAME</code> / <code>EMAIL</code> 三欄硬填空白(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM001_PO.cs:76-101</code>)。維護頁才用 <code>BuildDetailSQLString</code> 撈完整名單(<code>:107-126</code>)。</p>
+<p><strong>卡控總表</strong></p>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>新增 / 修改前</td><td><code>validatorManager1.DataValidate()</code>(框架必填檢查,清單在 Designer)</td><td>有缺</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM001.cs:135</code></td></tr><tr><td>新增 / 修改前</td><td>Grid 一列都沒有</td><td>「明細資料 必須輸入」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM001.cs:152-155</code></td></tr><tr><td>新增 / 修改前</td><td>把畫面上的 <code>FUNCTIONID</code> 回填到 Grid 每一列</td><td>一律執行</td><td>記錄不擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM001.cs:162-168</code></td></tr><tr><td>修改頁載入</td><td><code>ucFUNCTIONID.Enabled = false</code>(PK 不可改)</td><td>一律</td><td>阻擋(UI 層)</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM001.cs:86</code></td></tr></tbody></table></div>
+<p><strong>沒有任何 <code>After*</code> 事件</strong>,PO 只掛三個 <code>Before*</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM001_PO.cs:30-32</code>)。也就是四眼覆核通過後除了狀態欄以外什麼都不會發生。</p>
+<h3 id="4-2-cpmm003-關卡權限與管轄部門維護">4.2 <code>CPMM003</code> — 關卡權限與管轄部門維護</h3>
+<p><strong>用途(推測)</strong>:一列 = 一個使用者,勾六個關卡權限 + 主管辨識碼 + 兩個寄信旗標;明細 Grid 掛該使用者管轄的部門。依據是六個 <code>MGM_CD_*</code> 欄位的 <code>msdata:Caption</code>(<code>Dev/ATLAS.CPM/SOURCE/Entity/DataEntity.CPM/CPMM003Model.xsd:21-25</code>、<code>:46</code>)。</p>
+<p><strong>這是整個 CPM 的權限總開關。</strong> 四支 B 關卡畫面的 Grid SQL 全都要 join <code>CPM003A</code> + <code>CPM0031A</code>(見 <a class="sec" href="#6-批次-b-與-windowsservice">§6</a>),沒有這張表的資料,誰都看不到任何案件。</p>
+<p><strong>主檔 SQL 的 <code>COD009</code> 去重很值得看</strong>:一個 <code>UID_CODE</code> 在 <code>COD009</code> 可能有多筆(離職再任職),所以先用 <code>ROW_NUMBER() OVER (PARTITION BY UID_CODE ORDER BY NVL(TRIM(LEAVE_DATE),'99991231') DESC)</code> 取離職日最晚的那筆,再 <code>AND 1 = COD009.RNO(+)</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM003_PO.cs:136-143</code>)。<strong>同模組其他畫面都沒做這道去重</strong>,直接 join <code>COD009</code> —— 同一個 <code>UID_CODE</code> 有兩筆時會出現重複列。見附錄 E.5。</p>
+<p><strong>勾選框 → <code>Y</code>/<code>N</code> 的轉換寫死在 UI</strong>(六組 if/else,<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM003.cs:49-77</code>),Grid 欄位的顯示下拉則查 <code>CTL014</code> 的 <code>492</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM003.cs:121-126</code>)。程式端寫死 <code>"Y"</code>/<code>"N"</code>,顯示端查表 —— 表裡若不是 <code>Y</code>/<code>N</code> 就對不起來。</p>
+<p><strong>卡控總表</strong></p>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>新增 / 修改前</td><td><code>ucUSERID.Value == ""</code></td><td>「使用者ID為必填」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM003.cs:270-273</code></td></tr><tr><td>新增 / 修改前</td><td><code>AutoCheckPKeyRequireByEssDataReturnMsg</code> 檢查 Grid PK 欄位</td><td>有缺</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM003.cs:275-277</code></td></tr><tr><td>新增 / 修改前</td><td>Grid 一列都沒有</td><td>「明細資料 必須輸入!」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM003.cs:280-283</code></td></tr><tr><td>新增前</td><td><code>ugrdCPMM003.ActiveRow.Update()</code>(快速鍵時強制把編輯中的格子寫回 DataSet)</td><td>一律</td><td>記錄不擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM003.cs:303-304</code></td></tr></tbody></table></div>
+<p><strong>注意 <code>this.validatorManager1.DataValidate()</code> 在這支被註解掉了</strong>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM003.cs:269</code>)—— 框架的必填檢查整組不跑,只剩上表那三條手寫檢查。其他三支 M 都有跑。見附錄 E.4。</p>
+<p><strong>沒有 <code>After*</code> 事件</strong>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM003_PO.cs:37-39</code> 只掛三個 <code>Before*</code>)。</p>
+<h3 id="4-3-cpmm004-處理件建檔-本模組的入口">4.3 <code>CPMM004</code> — 處理件建檔(本模組的入口)</h3>
+<p><strong>用途(推測)</strong>:受理人員把客戶或業務員提出的需求 / 抱怨建檔,選處理件分類(可複選,存 <code>CPM005A</code>)、處理時效、指定處理部門、是否副知五個相關部門。存檔後狀態 <code>01</code>,案件進入 <code>CPMB001</code> 的佇列。</p>
+<h4 id="4-3-1-取號與明細回填-beforeadd">4.3.1 取號與明細回填(<code>BeforeAdd</code>)</h4>
+<pre class="code lang-csharp"><code>SerialNo genSrNo = new SerialNo(args.DbTranPTPF, dbPTPF);
+do { row.COMPLAIN_NO = genSrNo.GetCOMPLAIN_NO(); }
+while (IsExistByData(args.DbTran, row, args.TableName));</code></pre>
+<p>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:96-101</code>)</p>
+<p>取到號之後把 <code>COMPLAIN_NO</code> 回填到三張明細的每一列(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:106-119</code>)。<strong>這段跟 UI 的 <code>SetMasterToDetail()</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:185-208</code>)做同一件事,做了兩次</strong> —— UI 那次在新增時 <code>COMPLAIN_NO</code> 還是空的(取號在伺服器端),所以真正有效的是 PO 這次;修改時則反過來,PO 的 <code>BeforeAdd</code> 不會觸發,靠 UI 那次。兩邊都不能拿掉。</p>
+<h4 id="4-3-2-查詢頁的四眼與卡控">4.3.2 查詢頁的四眼與卡控</h4>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>查詢前</td><td>六個條件全空 → 「請至少輸入任一筆 查詢條件」</td><td><strong>永遠不成立</strong>(見附錄 E.2)</td><td>過濾(無提示)</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:538-546</code></td></tr><tr><td>查詢前</td><td>處理件日期起迄只填一邊(<code>^</code> XOR)</td><td>「處理件日期(起)(迄) 必須皆(不)填寫」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:548-549</code></td></tr><tr><td>查詢前</td><td>起 &gt; 迄</td><td>「處理件日期(起)必須小於等於處理件日期(迄)」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:551-552</code></td></tr><tr><td>查詢前</td><td>戶號起迄只填一邊 / 起 &gt; 迄</td><td>對應訊息</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:559-563</code></td></tr><tr><td>查詢 SQL</td><td><code>COMPLAIN_DEPT IN (該使用者 </code>MGM_CD_CPMM004='Y'<code> 的管轄部門)</code></td><td>一律</td><td><strong>過濾(無提示)</strong></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:268-275</code></td></tr></tbody></table></div>
+<p>最後一條是本畫面最重要的隱形過濾:<strong>沒有 <code>CPM003A</code> 資料、或 <code>MGM_CD_CPMM004</code> 不是 <code>'Y'</code>、或 <code>CPM0031A</code> 沒掛部門的人,查詢永遠零筆,而且畫面只說「查無資料」。</strong></p>
+<h4 id="4-3-3-新增-修改-刪除前卡控">4.3.3 新增 / 修改 / 刪除前卡控</h4>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>新增 / 修改前</td><td><code>pxy.GetEmpNo(user) == ""</code></td><td>「使用者帳號尚未設定連接員工代碼，請通知資訊組!!」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:707-712</code></td></tr><tr><td>新增 / 修改前</td><td>受理內容說明空白</td><td>「處理件內容不得為空白!!」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:713-714</code></td></tr><tr><td>新增 / 修改前</td><td><code>DATA_TYPE = '1'</code>(需求處理件)且指定處理部門空白</td><td>「指定處理部門內容不得為空白!!」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:716-718</code></td></tr><tr><td>新增 / 修改前</td><td><code>CC_EMAIL_YN = 'Y'</code> 但五個副知勾選框全沒勾</td><td>「請勾選EMAIL通知單位!!」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:721-729</code></td></tr><tr><td>新增前</td><td><code>CPM005A</code>(處理件分類)零列</td><td>「處理件分類，必須選取至少一項!!」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:603-604</code></td></tr><tr><td>修改前</td><td>狀態選 <code>06</code> → 改寫成 <code>D1</code>(作廢申請)</td><td>一律</td><td>記錄不擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:626-627</code></td></tr><tr><td>修改前</td><td><code>COMPLAIN_CFM_UID</code> 非空 且 狀態 ≠ <code>05</code></td><td>「此需求處理/抱怨記錄件序號已申請確認,不能修改!」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:630-637</code></td></tr><tr><td>修改前</td><td><code>SOLVE_CFM_UID1</code> 非空 且 狀態 = <code>05</code></td><td>「此需求處理/抱怨記錄件序號已重新處理申請確認,不能修改!」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:638-645</code></td></tr><tr><td>刪除前</td><td><code>COMPLAIN_CFM_UID</code> 非空</td><td>「此需求處理/抱怨記錄件序號已申請確認,不能修改!」(訊息寫「修改」但這是刪除)</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:903-912</code></td></tr><tr><td>分類值變更</td><td>依 <code>COMPLAIN_KIND</code> 算 <code>COMPLAIN_PRV_DATE</code></td><td>一律</td><td>記錄不擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:868-886</code></td></tr></tbody></table></div>
+<p><strong>「已申請確認就不能改」這條的實作是看 <code>COMPLAIN_CFM_UID</code> 而不是看 <code>COMPLAIN_STATUS</code>。</strong> 兩者理論上同步(都由 <code>CPMB001</code> 寫),但 <code>CPMB004</code> 退回重辦時<strong>沒有清掉 <code>COMPLAIN_CFM_UID</code></strong>(它只清 <code>SOLVE_CFM_*1</code> / <code>SOLVE_*1</code> / <code>COMPLAIN_CFM_*1</code> 六欄,<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:262-272</code>)。所以退回成 <code>05</code> 之後,<code>CPMM004</code> 是靠第二條規則(<code>SOLVE_CFM_UID1</code> 非空 + 狀態 <code>05</code>)放行的 —— 這是刻意設計,但兩條規則耦合得很緊,改任何一邊都會壞。</p>
+<h4 id="4-3-4-存檔後動作">4.3.4 存檔後動作</h4>
+<div class="tw"><table><thead><tr><th>事件</th><th>做什麼</th><th>錨點</th></tr></thead><tbody><tr><td><code>AfterAddButtonClicked</code></td><td><code>Email("新增")</code></td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:657-660</code></td></tr><tr><td><code>AfterModifyButtonClicked</code></td><td>狀態 <code>D1</code> → <code>Email("作廢")</code>,否則 <code>Email("修改")</code></td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:667-674</code></td></tr><tr><td>刪除</td><td><strong>不寄信</strong></td><td>—</td></tr><tr><td>PO <code>After*</code> ×8</td><td>只寫跳號一覽表</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:1076-1123</code></td></tr></tbody></table></div>
+<p><code>Email()</code> 的收件者來自 <code>pxy.GetEmail(COMPLAIN_DEPT, ccEMAIL)</code>,而 <code>ccEMAIL</code> 被寫死成 <code>"NNNNN"</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:924</code>,原本的計算整段註解在 <code>:927-947</code>,註記「20200612 改由 CPMB001 覆核完才通知相關部門」)。後果見附錄 E.1 —— <code>GetEmail</code> 的第三段 UNION 因此永久失效。</p>
+<h4 id="4-3-5-列印-doexp1-cpmm004p2">4.3.5 列印(<code>DoExp1</code> → <code>CPMM004p2</code>)</h4>
+<p><code>CPMM004p2</code> 走的是 <code>architecture.md §6.5</code> 那套「資料一條、<code>.rpt</code> 檔一條」的雙往返:<code>pxy.GetReport_Data(ProcessVDB)</code> 取資料(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004p2.cs:104</code>),<code>pxy.GetReportObject(m_ResultVDB)</code> 取 <code>.rpt</code> 位元組(<code>:112</code>、<code>:149-154</code>),再 <code>CreateCRReportDocument</code> 落地成暫存檔(<code>:114</code>)。報表標題硬寫「處理件處理單」(<code>:126</code>)。</p>
+<p><code>GetReport_Data</code> 有兩處值得記住(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:663-814</code>):</p>
+<ol><li><strong><code>ID_NO</code> 被遮罩</strong>:<code>SUBSTR(ID_NO,1,1) || '**** ' || SUBSTR(ID_NO,6,5)</code>(<code>:674</code>)。這是模組內唯一一處個資遮罩,<code>CPMR004</code> 的 Grid 沒有做。</li><li><strong>兩張明細用 <code>SYS_CONNECT_BY_PATH</code> 逐筆再查一次</strong>:<code>CPM005privot</code> / <code>CPM006privot</code> 對報表每一列各下一次 SQL(<code>:786-794</code>、<code>:821-917</code>)。100 列就是 200 次來回。而且 SQL 用字串串接 <code>COMPLAIN_NO</code>(<code>:847</code>、<code>:893</code>)。</li></ol>
+<h3 id="4-4-cpmm005-客訴件建檔">4.4 <code>CPMM005</code> — 客訴件建檔</h3>
+<p><strong>用途(推測)</strong>:業務員或收件窗口把客訴案件建檔,填申請人、組主管、部門主管、案件說明、文件存檔路徑;存檔後 <code>CLAIM_STATUS = '01'</code>,進 <code>CPMB005</code> 佇列。</p>
+<p><strong>取號</strong>:<code>genSrNo.GetCLAIM_NO()</code>,同樣是 do-while 撞號重取(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:91-97</code>)。</p>
+<p><strong>卡控總表</strong></p>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>新增頁載入</td><td><code>CLAIM_STATUS</code> 固定 <code>"01"</code>,狀態 / 主管確認日 / 結案日 / 五個建議欄唯讀</td><td>一律</td><td>記錄不擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM005.cs:107-119</code></td></tr><tr><td>戶號選取後</td><td><code>GetCPM007A(BF_NO)</code> 有 <code>CLAIM_STATUS</code> 在 <code>01</code>/<code>02</code> 的案件 → 「此客戶已有進行中的客訴件，是否確定新增？」</td><td><strong>訊息是問句,行為是阻擋</strong>(見附錄 E.8)</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM005.cs:440-444</code>、<code>:453-457</code></td></tr><tr><td>戶號選取後</td><td><code>GetBMS001(BF_NO)</code> 帶出 <code>ID_NO</code> / <code>BF_NAME</code></td><td>有資料時</td><td>記錄不擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM005.cs:446-451</code></td></tr><tr><td><code>ID_NO</code> 離開欄位</td><td><code>GetCPM007B(ID_NO)</code> 同上檢查</td><td>同上</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM005.cs:488-504</code></td></tr><tr><td>新增 / 修改前</td><td><code>validatorManager1.DataValidate()</code></td><td>有缺</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM005.cs:383-390</code></td></tr><tr><td>查詢前</td><td>戶號起迄 / 申請日期起迄 只填一邊或起 &gt; 迄</td><td>對應訊息</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM005.cs:221-232</code></td></tr><tr><td>查詢前</td><td>受益人姓名少於 2 碼</td><td>「此欄位需輸入2碼以上才可以查詢」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM005.cs:235-238</code></td></tr><tr><td>查詢 SQL</td><td>有填 <code>BF_NAME</code> 時自動加 <code>AND ROWNUM &lt;= 100</code></td><td>一律</td><td><strong>過濾(無提示)</strong></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:317-318</code></td></tr></tbody></table></div>
+<p><strong>這支沒有任何權限過濾。</strong> <code>BuildMasterSQLString</code> 完全不 join <code>CPM003A</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:162-322</code>),誰能開這支畫面就能查到全部客訴件。跟處理件線(<code>CPMM004</code> 有部門過濾)不一致。</p>
+<p><strong>存檔後不寄信。</strong> 整支 <code>CPMM005.cs</code> 沒有 <code>Email()</code>,也沒有 <code>After*ButtonClicked</code>。所以客訴件建檔完成後<strong>沒有任何人會被通知</strong> —— 主管要自己去開 <code>CPMB005</code> 看。這是兩條業務線最明顯的成熟度落差。</p>
+<p><strong>顯示欄位的 join 全部錯</strong>:<code>BuildMasterSQLString</code> 的四個 <code>COD009</code> 別名 <code>A</code>(取 <code>LEADER_EMP_NO_NAME</code>)、<code>B</code>(<code>BOSS_EMP_NO_NAME</code>)、<code>D</code>(<code>CLAIM_EMP_NO_NAME</code>)<strong>都 join 在 <code>CPM007A.EMP_NO</code> 上</strong>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:198-206</code>),所以組主管、部門主管、申請人三個姓名欄顯示的都是「業務員」那個人的名字。同一支 PO 的報表查詢 <code>GetReport_Data</code> 卻 join 對了(<code>:451-453</code>),證明這是 bug 不是設計。見附錄 E.5。</p>
+<p><strong>文件存檔路徑用 <code>FolderBrowserDialog</code> 選本機資料夾</strong>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM005.cs:421-433</code>)—— 存進 DB 的是操作者那台機器看到的路徑,換一台機器不一定打得開。〔客戶特定〕</p>
+</div></section><section class="sec" data-sec="5-查詢畫面-i"><h2 id="5-查詢畫面-i"><button class="tg" aria-label="收合/展開" type="button"></button>5. 查詢畫面(I)</h2><div class="sec-body">
+<p><strong>本模組無 I 畫面。</strong></p>
+<p>原因不是漏做,而是<strong>查詢功能被 B 與 R 吸收了</strong>:</p>
+<div class="tw"><table><thead><tr><th>需求</th><th>誰在做</th></tr></thead><tbody><tr><td>「我的待辦案件有哪些」</td><td>四支 B 關卡畫面本身就是查詢頁 + Grid,而且只撈「輪到我」的案件(<a class="sec" href="#6-批次-b-與-windowsservice">§6</a>)</td></tr><tr><td>「某個案件現在到哪一關」</td><td><code>CPMR004</code>,它是 Grid-only 沒有 <code>.rpt</code>,實質就是一支 I 畫面(<a class="sec" href="#7-1-cpmr004-處理件明細清單-實質是-i-畫面">§7.1</a>)</td></tr><tr><td>「歷史案件明細」</td><td><code>CPMM004</code> / <code>CPMM005</code> 的查詢頁</td></tr><tr><td>「某個客戶有沒有客訴」</td><td>不在本模組,在 OFD 的 <code>OFDI011</code> → <code>frmCLAIM</code>(<a class="sec" href="#8-1-cpm007a-cpm-寫-ofd-讀">§8.1</a>)</td></tr></tbody></table></div>
+<p><code>CPMR004</code> 掛在 <code>R</code> 底下而不是 <code>I</code>,結果是它跑到 <code>ATLAS.CPM.Report</code> 專案、多背了一整套 <code>Report*</code> 七層,卻沒有 <code>.rpt</code> 可用。<strong>如果要找「處理件查詢」畫面,不要在 <code>ATLAS.CPM</code> 找,它在 <code>.Report</code> 專案裡。</strong></p>
+</div></section><section class="sec" data-sec="6-批次-b-與-windowsservice"><h2 id="6-批次-b-與-windowsservice"><button class="tg" aria-label="收合/展開" type="button"></button>6. 批次(B)與 WindowsService</h2><div class="sec-body"><figure><svg viewBox="0 0 1220 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="四支關卡在同一組主明細上的處理順序、各自的撈取條件與寫入欄位群,以及兩條跳關路徑"><defs><marker id="ah_cpm_flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 五支畫面掛同一組表:主 CPM004A + 明細 CPM005A CPM006A CPM0061A</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="62" text-anchor="middle">CPMM004</text>
+<text class="t2" x="120" y="82" text-anchor="middle">建檔 EVA Add</text>
+</g><g class="bx accent">
+<rect x="240" y="40" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="330" y="62" text-anchor="middle">CPMB001</text>
+<text class="t2" x="330" y="82" text-anchor="middle">Modify</text>
+</g><g class="bx accent">
+<rect x="440" y="40" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="530" y="62" text-anchor="middle">CPMB002</text>
+<text class="t2" x="530" y="82" text-anchor="middle">Modify</text>
+</g><g class="bx accent">
+<rect x="640" y="40" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="730" y="62" text-anchor="middle">CPMB003</text>
+<text class="t2" x="730" y="82" text-anchor="middle">Modify</text>
+</g><g class="bx accent">
+<rect x="840" y="40" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="930" y="62" text-anchor="middle">CPMB004</text>
+<text class="t2" x="930" y="82" text-anchor="middle">Modify</text>
+</g><g class="bx dash">
+<rect x="1040" y="40" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="1115" y="62" text-anchor="middle">CPMR004</text>
+<text class="t2" x="1115" y="82" text-anchor="middle">唯讀 少 CPM0061A</text>
+</g><path class="ar" d="M 220 68 L 240 68" marker-end="url(#ah_cpm_flow)"/><path class="ar" d="M 420 68 L 440 68" marker-end="url(#ah_cpm_flow)"/><path class="ar" d="M 620 68 L 640 68" marker-end="url(#ah_cpm_flow)"/><path class="ar" d="M 820 68 L 840 68" marker-end="url(#ah_cpm_flow)"/><path class="ar lnk" d="M 1020 68 L 1040 68"/><text class="lane" x="20" y="156">② 每一關撈什麼:狀態 + 權限旗標 + 管轄部門三者同時成立才看得到</text><g class="bx accent">
+<rect x="20" y="170" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="192" text-anchor="middle">01 05 D1</text>
+<text class="t2" x="145" y="212" text-anchor="middle">MGM_CD_CPMB001 受理部門</text>
+</g><g class="bx accent">
+<rect x="290" y="170" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="415" y="192" text-anchor="middle">02 03H 03O</text>
+<text class="t2" x="415" y="212" text-anchor="middle">MGM_CD_CPMB002 指定部門</text>
+</g><g class="bx accent">
+<rect x="560" y="170" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="685" y="192" text-anchor="middle">03 04H 04O</text>
+<text class="t2" x="685" y="212" text-anchor="middle">MGM_CD_CPMB003 處理部門</text>
+</g><g class="bx accent">
+<rect x="830" y="170" rx="10" ry="10" width="270" height="56"/>
+<text class="t1" x="965" y="192" text-anchor="middle">04 04S 03無部門</text>
+<text class="t2" x="965" y="212" text-anchor="middle">MGM_CD_CPMB004 受理部門</text>
+</g><path class="ar" d="M 270 198 L 290 198" marker-end="url(#ah_cpm_flow)"/><path class="ar" d="M 540 198 L 560 198" marker-end="url(#ah_cpm_flow)"/><path class="ar" d="M 810 198 L 830 198" marker-end="url(#ah_cpm_flow)"/><path class="ar" d="M 330 96 L 330 170" marker-end="url(#ah_cpm_flow)"/><text class="lane" x="20" y="286">③ 每一關寫什麼:同一張 CPM004A,不同欄位群,互不重疊</text><g class="bx">
+<rect x="20" y="300" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="170" y="322" text-anchor="middle">B001 寫</text>
+<text class="t2" x="170" y="342" text-anchor="middle">COMPLAIN_CFM_ ASN_SOLVE_DEPT_NO</text>
+</g><g class="bx">
+<rect x="340" y="300" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="490" y="322" text-anchor="middle">B002 寫</text>
+<text class="t2" x="490" y="342" text-anchor="middle">SOLVE_ SOLVE_DEPT_NO ASN_EMP_NO</text>
+</g><g class="bx">
+<rect x="660" y="300" rx="10" ry="10" width="290" height="56"/>
+<text class="t1" x="805" y="322" text-anchor="middle">B003 寫</text>
+<text class="t2" x="805" y="342" text-anchor="middle">SOLVE_CFM_ DEPT_SOLVE_EMP_NO</text>
+</g><g class="bx">
+<rect x="970" y="300" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="1080" y="322" text-anchor="middle">B004 寫</text>
+<text class="t2" x="1080" y="342" text-anchor="middle">CLOSE_DATE 或清空六欄</text>
+</g><path class="ar" d="M 150 226 L 150 300" marker-end="url(#ah_cpm_flow)"/><path class="ar" d="M 420 226 L 420 300" marker-end="url(#ah_cpm_flow)"/><path class="ar" d="M 690 226 L 690 300" marker-end="url(#ah_cpm_flow)"/><path class="ar" d="M 960 226 L 960 300" marker-end="url(#ah_cpm_flow)"/><text class="lane" x="20" y="416">④ 兩條會咬人的跳關路徑</text><g class="bx vend">
+<rect x="20" y="430" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="160" y="452" text-anchor="middle">抱怨記錄件 DATA_TYPE=2</text>
+<text class="t2" x="160" y="472" text-anchor="middle">B001 直接推 04S 進 B004</text>
+</g><g class="bx vend">
+<rect x="320" y="430" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="450" y="452" text-anchor="middle">B002 未填處理部門</text>
+<text class="t2" x="450" y="472" text-anchor="middle">狀態 03 但 B003 撈不到</text>
+</g><g class="bx vend">
+<rect x="600" y="430" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="750" y="452" text-anchor="middle">落到 B004 特例</text>
+<text class="t2" x="750" y="472" text-anchor="middle">03 AND SOLVE_DEPT_NO NULL</text>
+</g><g class="bx vend">
+<rect x="920" y="430" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="1035" y="452" text-anchor="middle">B004 退回 05</text>
+<text class="t2" x="1035" y="472" text-anchor="middle">回到 B001 重走</text>
+</g><path class="ar" d="M 580 458 L 600 458" marker-end="url(#ah_cpm_flow)"/><path class="ar" d="M 900 458 L 920 458" marker-end="url(#ah_cpm_flow)"/><text class="lane" x="20" y="546">⑤ 客訴件線:不走 EVA,手寫 UPDATE,沒有樂觀鎖</text><g class="bx vend">
+<rect x="20" y="560" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="582" text-anchor="middle">CPMB005</text>
+<text class="t2" x="135" y="602" text-anchor="middle">CLAIM_STATUS 01 到 02</text>
+</g><g class="bx vend">
+<rect x="270" y="560" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="390" y="582" text-anchor="middle">CPMB006</text>
+<text class="t2" x="390" y="602" text-anchor="middle">02 到 06 無權限不推</text>
+</g><g class="bx">
+<rect x="530" y="560" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="655" y="582" text-anchor="middle">CPM007A</text>
+<text class="t2" x="655" y="602" text-anchor="middle">手寫 UPDATE 無樂觀鎖</text>
+</g><g class="bx vend">
+<rect x="800" y="560" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="915" y="582" text-anchor="middle">一律回報成功</text>
+<text class="t2" x="915" y="602" text-anchor="middle">回傳值全部丟掉</text>
+</g><path class="ar" d="M 250 588 L 270 588" marker-end="url(#ah_cpm_flow)"/><path class="ar" d="M 510 588 L 530 588" marker-end="url(#ah_cpm_flow)"/><path class="ar lnk" d="M 780 588 L 800 588"/></svg><figcaption>圖 4 四支關卡的資料流(本篇最重要的一張)。橘框=本模組入口;橘虛框=要留意的行為;灰虛框=唯讀。四支不能亂跑,但擋住亂跑的是第②列的撈取條件,不是任何一道檢核 ——同一筆案件被兩人同時雙擊時,後按確定的人會整張蓋掉前一個人寫的欄位,而且畫面不會提示。</figcaption></figure>
+<p><strong>本模組沒有 WindowsService。</strong> repo 內無 <code>WindowsService.CPM*</code> 專案,<code>architecture.md §6.4</code> 列的四支服務也沒有一支對到 CPM。六支 B 畫面全部是人工操作的畫面。</p>
+<h3 id="6-1-六支的共同外殼">6.1 六支的共同外殼</h3>
+<div class="tw"><table><thead><tr><th>層</th><th>六支共同</th><th>例外</th></tr></thead><tbody><tr><td>UI</td><td><code>xOneStepProcessForm</code>,<code>TabPages = 1</code>,一個唯讀 Grid(<code>GridLayoutReadOnly</code>),<code>DoubleClickRow</code> 開彈出視窗</td><td>—</td></tr><tr><td>UI</td><td><code>BeforeSearchButtonClicked</code> → <code>ProcessQueryCondition</code>,只塞一個參數 <code>USERID</code></td><td><code>CPMB005</code> / <code>CPMB006</code> 也塞 <code>USERID</code>,但 PO 根本不讀</td></tr><tr><td>Pxy</td><td>覆寫 <code>Query</code> / <code>Execute</code> / <code>Modify</code>;<code>Modify</code> → <code>ctl.UpdateData</code></td><td><code>CPMB001_Pxy</code> 多覆寫 <code>Delete</code> 與 <code>GetMaintainData</code></td></tr><tr><td>Ctl</td><td>只覆寫 <code>InitializeDataAccessPool()</code>,<strong>沒有 <code>InitializeVDBTypes()</code></strong></td><td>—</td></tr><tr><td>PO</td><td><code>SelectGrid</code>(或 <code>Select</code>)撈佇列;<code>ExecuteNonQuery</code></td><td>四支關卡的 <code>ExecuteNonQuery</code> 是空的,<code>CPMB005</code>/<code>CPMB006</code> 的是真的</td></tr><tr><td>寫入</td><td>彈出視窗 <code>ubtnOK_Click</code> → <code>pxy.Modify(ProcessVDB)</code></td><td>—</td></tr></tbody></table></div>
+<p><strong>流程長這樣</strong>(以 <code>CPMB001</code> 為例,四支結構相同):</p>
+<ol><li>進畫面 → 按查詢 → <code>QueryVDB</code> 只帶 <code>USERID</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001.cs:90-91</code>)</li><li><code>Pxy.Query</code> → <code>Ctl.GetData</code> → <code>PO.SelectGrid</code>,SQL 裡把 <code>USERID</code> <strong>字串串接</strong>進去(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:138-139</code>),回傳結果集 <code>CPM004A_SELECT</code></li><li>Grid 綁 <code>CPM004A_SELECT</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001.cs:96-100</code>)</li><li>雙擊一列 → 用 <code>COMPLAIN_NO</code> 呼叫 <code>Pxy.GetMaintainData</code> 撈完整主明細 → 開 <code>CPMB001p0</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001.cs:139-154</code>)</li><li>彈出視窗按「確定」→ 改 <code>COMPLAIN_STATUS</code> 與該關的欄位 → <code>pxy.Modify(ProcessVDB)</code> → 寄信 → <code>DialogResult.OK</code></li><li>回到 Grid,該列 <code>row.Delete()</code> 從畫面上消失、底色變紅(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001.cs:155-166</code>)</li></ol>
+<h3 id="6-2-執行-按鈕是空操作-這是本節最需要先講清楚的事">6.2 「執行」按鈕是空操作 —— 這是本節最需要先講清楚的事</h3>
+<p>四支關卡畫面的畫面上都有「執行」鈕(<code>xOneStepProcessForm</code> 的標準鈕),也都掛了 <code>BeforeExecuteButtonClicked</code> / <code>AfterExecuteButtonClicked</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001.cs:122-131</code>、<code>:189-192</code>),但兩個 handler 一個只有 <code>ValidateErrList.Show()</code>、一個整個空的。往下走:</p>
+<pre class="code"><code>按「執行」→ Pxy.Execute → Ctl.DoExecute → PO.ExecuteNonQuery → 「//UpdateDataList(model); return mModel;」</code></pre>
+<p>錨點:<code>Dev/ATLAS.CPM/SOURCE/FormProxy/FormProxy.CPM/CPMB001_Pxy.cs:86-101</code> → <code>Dev/ATLAS.CPM/SOURCE/Control/Control.CPM/CPMB001_Ctl.cs:76-82</code> → <code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:210-215</code>。</p>
+<p><strong>四支都一樣</strong>(<code>CPMB002_PO.cs:229-234</code>、<code>CPMB003_PO.cs:231-236</code>、<code>CPMB004_PO.cs:234-239</code>),被註解掉的 <code>UpdateDataList</code> 也都還躺在檔案裡(<code>CPMB001_PO.cs:221-310</code>、<code>CPMB002_PO.cs:240-331</code>、<code>CPMB003_PO.cs:242-333</code>、<code>CPMB004_PO.cs:245-337</code>)。</p>
+<p>含意:</p>
+<ul><li><strong>「執行」鈕按下去不會有任何錯誤訊息,也不會有任何效果。</strong> 使用者以為送出了,其實沒有。</li><li>那段註解掉的 SQL 是舊實作(<code>UPDATE CPM004A SET COMPLAIN_COMM, ASN_SOLVE_DEPT_NO, STATUS='301' …</code>),它只更新<strong>兩個業務欄位加四眼欄位</strong>,現行 <code>Modify</code> 路線更新的是整張主檔 + 三張明細。兩者行為差很多,<strong>不要照著註解的內容去理解現況</strong>。</li><li>如果有人要把「批次處理多筆」做回來,不能只解除註解 —— 註解版沒有 <code>COMPLAIN_STATUS</code>、沒有各關的 <code>*_UID</code> / <code>*_DATE</code>,補回去等於重寫。</li></ul>
+<p>嚴重度:高。詳見附錄 E.3。</p>
+<h3 id="6-3-cpmb001-第一關-受理部門確認-指定處理部門">6.3 <code>CPMB001</code> — 第一關:受理部門確認 + 指定處理部門</h3>
+<p><strong>佇列 SQL</strong>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:114-142</code>)</p>
+<div class="tw"><table><thead><tr><th>條件</th><th>值</th></tr></thead><tbody><tr><td>狀態</td><td><code>COMPLAIN_STATUS IN ('01','05','D1')</code> —— 新案、退回重辦、作廢申請三種一起撈(<code>:135</code>)</td></tr><tr><td>權限</td><td><code>COMPLAIN_DEPT IN (該 USERID 在 CPM003A 有 MGM_CD_CPMB001='Y' 的 CPM0031A 管轄部門)</code>(<code>:136-141</code>)</td></tr><tr><td>型態</td><td><strong>不限</strong>(<code>DATA_TYPE</code> 沒有條件)</td></tr><tr><td>排序</td><td><code>COMPLAIN_KIND, COMPLAIN_NO</code>(<code>:142</code>)</td></tr><tr><td>員工姓名來源</td><td><code>COD009</code> <strong>UNION ALL</strong> <code>TA_AA_USER WHERE USERID LIKE 'op%'</code>(<code>:122-125</code>)—— 股代人員沒有 <code>COD009</code> 資料,靠這個 UNION 補〔客戶特定〕</td></tr></tbody></table></div>
+<p><strong>彈出視窗寫什麼</strong>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:224-280</code>)</p>
+<div class="tw"><table><thead><tr><th><code>DATA_TYPE</code></th><th>原狀態</th><th>新狀態</th><th>另外寫的欄位</th></tr></thead><tbody><tr><td><code>1</code> 需求處理件</td><td><code>D1</code></td><td><code>D2</code>(作廢確認)</td><td><code>COMPLAIN_COMM</code>、<code>ASN_SOLVE_DEPT_NO</code></td></tr><tr><td><code>1</code></td><td><code>01</code></td><td><code>02</code></td><td>同上 + <code>COMPLAIN_CFM_UID</code> / <code>_DATE</code> / <code>_TIME</code>(<code>:236-241</code>)</td></tr><tr><td><code>1</code></td><td><code>05</code></td><td><code>02</code></td><td>同上 + <code>SOLVE_CFM_UID1</code> / <code>_DATE1</code> / <code>_TIME1</code>(<code>:242-247</code>)</td></tr><tr><td><code>2</code> 抱怨記錄件</td><td><code>D1</code></td><td><code>D2</code></td><td><code>COMPLAIN_COMM</code>、<code>ASN_SOLVE_DEPT_NO</code>、<code>COMPLAIN_CFM_*</code>、<code>CLOSE_DATE = 今天</code></td></tr><tr><td><code>2</code></td><td>其他</td><td><strong><code>04S</code></strong></td><td>同上 —— <strong>直接跳過 <code>CPMB002</code> / <code>CPMB003</code> 兩關,進 <code>CPMB004</code></strong>(<code>:254</code>)</td></tr></tbody></table></div>
+<p><code>04S</code> 這條分支是 2022 年的異動(<code>//20220607 modify by jye 9000011084 【程式調整】需求處理/抱怨記錄件之流程調整 調整至CPMB004結案填寫結案說明</code>,<code>:251</code>),舊版是直接寫 <code>06</code> 結案(<code>:253</code> 註解)。所以<strong>抱怨記錄件走的是兩關流程(<code>CPMM004</code> → <code>CPMB001</code> → <code>CPMB004</code>),不是五關</strong>。</p>
+<p><strong>卡控總表</strong></p>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>彈出視窗載入</td><td><code>DATA_TYPE = '2'</code> → 指定處理部門欄位鎖住</td><td>一律</td><td>阻擋(UI 層)</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:161-165</code></td></tr><tr><td>彈出視窗載入</td><td><code>pxy.GetDeleteGrant(UserID) != 1</code> → 隱藏「刪除」鈕</td><td>一律</td><td>過濾(無提示)</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:207-210</code></td></tr><tr><td>按確定</td><td><strong>完全沒有 <code>DoValidate()</code></strong></td><td>—</td><td>—</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:224-280</code></td></tr><tr><td>按刪除</td><td>「你確定要刪除資料嗎？」</td><td>按否時中止</td><td>詢問</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:500-501</code></td></tr></tbody></table></div>
+<p><strong><code>CPMB001p0</code> 是四支關卡裡唯一沒有任何存檔前檢核的一支</strong>(其他三支都有 <code>this.DoValidate(); if (!this.ValidateErrList.Show())</code> 包住)。指定處理部門可以留空就按確定。</p>
+<p><strong>寄信</strong>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:310-451</code>):需求處理件走 <code>Email()</code>(通知下一關 <code>CPMB002</code> 的人 + 原受理部門),抱怨記錄件走 <code>Email2()</code>(只通知 <code>COMPLAIN_UID</code> 本人)。兩者都在「查不到收件者」時 fallback 到 <code>mailUT.GetNotifyMail("CPMB001", getCPM001A: true)</code>,也就是 <code>CPM001A</code>。</p>
+<p><code>GetEmail</code> 的第三段 UNION 用五個 <code>CC_EMAIL_*</code> 旗標決定要不要副知法律顧問(<code>C5</code>)/ 法令遵循(<code>C3</code>)/ 風險管理(<code>C4</code>)/ 行銷(<code>E</code>,<code>E1</code>,<code>G2</code>)/ 通路(<code>G3</code>,<code>G12</code>,<code>G13</code>,<code>GA</code>,<code>G17</code>)—— 部門代碼全部寫死在 SQL(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:610-614</code>)〔客戶特定〕。</p>
+<h3 id="6-4-cpmb002-第二關-指定處理部門簽核-一般兩關-股代三關">6.4 <code>CPMB002</code> — 第二關:指定處理部門簽核(一般兩關、股代三關)</h3>
+<p><strong>佇列 SQL</strong>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB002_PO.cs:114-161</code>)</p>
+<div class="tw"><table><thead><tr><th>條件</th><th>值</th></tr></thead><tbody><tr><td>型態</td><td><code>DATA_TYPE = '1'</code> —— <strong>只收需求處理件</strong>(<code>:141</code>)</td></tr><tr><td>前置</td><td><code>RTRIM(ASN_SOLVE_DEPT_NO) IS NOT NULL</code>(<code>:140</code>)</td></tr><tr><td>管轄</td><td><code>CPM0031A.DEPT_NO = CPM004A.ASN_SOLVE_DEPT_NO</code>(<code>:148</code>)+ <code>MGM_CD_CPMB002 = 'Y'</code>(<code>:160</code>)</td></tr><tr><td>狀態 × 角色</td><td>四選一(<code>:149-158</code>),見下表</td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>子條件</th><th>狀態</th><th>額外要求</th><th>錨點</th></tr></thead><tbody><tr><td>第一關(經辦)</td><td><code>02</code></td><td>無</td><td><code>:151</code></td></tr><tr><td>第二關(一般單位主管)</td><td><code>03H</code></td><td><code>MANGR_CODE='Y'</code> 且 <code>ASN_SOLVE_DEPT_NO &lt;&gt; 'OP1'</code></td><td><code>:153</code></td></tr><tr><td>第二關(股代主管)</td><td><code>03H</code></td><td><code>MANGR_CODE='Y'</code>、<code>ASN_SOLVE_DEPT_NO = 'OP1'</code>、<code>USERID LIKE 'op%'</code></td><td><code>:155</code></td></tr><tr><td>第三關(股務主管)</td><td><code>03O</code></td><td><code>MANGR_CODE='Y'</code>、<code>ASN_SOLVE_DEPT_NO = 'OP1'</code>、操作者 <code>COD009.DEPT_NO = 'M2'</code></td><td><code>:157</code></td></tr></tbody></table></div>
+<p><strong>狀態推進</strong>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:256-287</code>)</p>
+<pre class="code"><code>ASN_SOLVE_DEPT_NO == 'OP1'(股代):  02 → 03H → 03O → 03      (三關)
+其他部門:                          02 → 03H,  03H → 03      (兩關,用三元運算子)</code></pre>
+<p>一般部門那行寫成 <code>row.COMPLAIN_STATUS = row.COMPLAIN_STATUS == "03H" ? "03" : "03H";</code>(<code>:286</code>)—— <strong>任何不是 <code>03H</code> 的狀態都會被推成 <code>03H</code></strong>。佇列 SQL 已經把狀態限制在 <code>02</code>/<code>03H</code>/<code>03O</code> 三種,所以現況安全;但若日後有人繞過佇列(例如從 <code>CPMR004</code> 雙擊、或佇列 SQL 放寬),<code>03O</code> 會被誤推成 <code>03H</code> 倒退一關。股代分支則相反,寫了 <code>else { MessageBox "股代簽核流程有誤!"; return; }</code> 明確擋住(<code>:275-279</code>)。</p>
+<p><strong>其他寫入</strong>:<code>SOLVE_DEPT_NO</code>(處理部門,可留空)、<code>ASN_EMP_NO</code>、<code>COMPLAIN_SOLUTION_SOLVE</code>、<code>COMPLAIN_DELAY_DATE</code>(<code>:289-296</code>);達到 <code>03O</code> 或 <code>03</code> 時才寫 <code>SOLVE_UID</code>/<code>SOLVE_DATE</code>/<code>SOLVE_TIME</code>(首辦)或 <code>SOLVE_UID1</code>/<code>SOLVE_DATE1</code>/<code>SOLVE_TIME1</code>(重辦)(<code>:300-316</code>)。</p>
+<p><strong>卡控總表</strong></p>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>按確定</td><td><code>DoValidate()</code> + <code>ValidateErrList.Show()</code></td><td>有錯</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:243-244</code></td></tr><tr><td>按確定</td><td>處理部門空白 → 「無指定處理部門將進行結案程序?」Yes/No</td><td>按 No 中止</td><td><strong>詢問</strong></td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:246-252</code></td></tr><tr><td>按確定</td><td>股代流程狀態不在 <code>02</code>/<code>03H</code>/<code>03O</code></td><td>「股代簽核流程有誤!」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:277-278</code></td></tr><tr><td>寄信</td><td>只有推到 <code>03</code> 才寄</td><td>否則不寄</td><td>記錄不擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:324-325</code></td></tr></tbody></table></div>
+<p>「無指定處理部門將進行結案程序?」這個詢問的真正效果是:<code>SOLVE_DEPT_NO</code> 留空 → 狀態仍推成 <code>03</code> → <code>CPMB003</code> 撈不到(它要求 <code>RTRIM(SOLVE_DEPT_NO) IS NOT NULL</code>,<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB003_PO.cs:139</code>)→ 由 <code>CPMB004</code> 的特例條件 <code>(COMPLAIN_STATUS = '03' AND TRIM(SOLVE_DEPT_NO) IS NULL)</code> 接手(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB004_PO.cs:155</code>)。<strong>第三關被跳過是靠一個欄位留空,不是靠狀態值</strong> —— 這是全流程最隱晦的一條路徑。</p>
+<p><strong>展延流程是死的</strong>:<code>CPMB002p0.Email()</code> 把 <code>nDelay</code> 硬寫 <code>0</code>,計算整段註解(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:372-377</code>,註解寫「無展延流程」)。所以 <code>GetEmail_YN</code> 的 <code>nDelay == 1</code> 分支永遠走不到 —— 而那個分支裡有一行 SQL 少了等號(<code>AND CPM0031A.DEPT_NO '…'</code>,<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB002_PO.cs:693</code>),一旦有人把展延流程打開就會 ORA 錯。見附錄 E.9。</p>
+<h3 id="6-5-cpmb003-第三關-處理部門簽核">6.5 <code>CPMB003</code> — 第三關:處理部門簽核</h3>
+<p><strong>佇列 SQL</strong>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB003_PO.cs:112-161</code>)—— 結構與 <code>CPMB002</code> 逐行對應,差別只有三處:</p>
+<div class="tw"><table><thead><tr><th>面向</th><th><code>CPMB002</code></th><th><code>CPMB003</code></th></tr></thead><tbody><tr><td>前置</td><td><code>RTRIM(ASN_SOLVE_DEPT_NO) IS NOT NULL</code></td><td>多一條 <code>RTRIM(SOLVE_DEPT_NO) IS NOT NULL</code>(<code>:138-139</code>)</td></tr><tr><td>管轄部門比對</td><td><code>CPM0031A.DEPT_NO = ASN_SOLVE_DEPT_NO</code></td><td><code>CPM0031A.DEPT_NO = SOLVE_DEPT_NO</code>(<code>:147</code>)</td></tr><tr><td>狀態組</td><td><code>02</code> / <code>03H</code> / <code>03O</code></td><td><code>03</code> / <code>04H</code> / <code>04O</code>(<code>:150-156</code>)</td></tr><tr><td>權限旗標</td><td><code>MGM_CD_CPMB002</code></td><td><code>MGM_CD_CPMB003</code>(<code>:159</code>)</td></tr><tr><td>排序</td><td><code>COMPLAIN_KIND, COMPLAIN_NO</code></td><td><strong><code>COMPLAIN_NO, COMPLAIN_KIND</code></strong>(<code>:160</code>,兩欄對調)</td></tr></tbody></table></div>
+<p><strong>狀態推進</strong>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB003p0.cs:264-295</code>):與 <code>CPMB002</code> 同形,<code>SOLVE_DEPT_NO == 'OP1'</code> 走 <code>03 → 04H → 04O → 04</code>,其他走 <code>03 → 04H → 04</code>。</p>
+<p><strong>其他寫入</strong>:<code>DEPT_SOLVE_EMP_NO</code>(處理人員)、<code>COMPLAIN_SOLUTION</code>(處理說明)(<code>:323-325</code>);達到 <code>04O</code>/<code>04</code> 才寫 <code>SOLVE_CFM_*</code>(首辦)或 <code>COMPLAIN_CFM_*1</code>(重辦)(<code>:328-343</code>)。</p>
+<p><strong>整段「資訊簽核 / 副主管審核」邏輯被註解掉</strong>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB003p0.cs:296-320</code>):原本會依 <code>UserID == "op16"</code> 與 <code>SOLVE_DEPT_NO</code> 推出 <code>07</code> 狀態並在條件不符時擋下(「副主管尚未審核!」「無此權限!」)。現在整段不執行,<code>07</code> 變成死值。外殼(<code>//20180214 modify by jye 加入資訊簽核</code> 註記)還在。見附錄 E.4。</p>
+<h3 id="6-6-cpmb004-第四關-結案或退回重辦">6.6 <code>CPMB004</code> — 第四關:結案或退回重辦</h3>
+<p><strong>佇列 SQL</strong>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB004_PO.cs:114-165</code>)—— 這支的 WHERE 是四支裡最複雜的,兩條路並聯:</p>
+<pre class="code"><code>(  DATA_TYPE = '2' AND COMPLAIN_STATUS = '04S' )            ← 抱怨記錄件,無權限檢查
+OR
+(  DATA_TYPE = '1'
+   AND RTRIM(ASN_SOLVE_DEPT_NO) IS NOT NULL
+   AND RTRIM(COMPLAIN_CFM_UID) IS NOT NULL
+   AND ( COMPLAIN_STATUS = '04'
+         OR (COMPLAIN_STATUS = '03' AND TRIM(SOLVE_DEPT_NO) IS NULL) )   ← 第三關被跳過的案子
+   AND COMPLAIN_DEPT IN (該 USERID MGM_CD_CPMB004='Y' 的管轄部門) )</code></pre>
+<p>(<code>:145-163</code>)</p>
+<p><strong>第一條路完全沒有權限過濾。</strong> 抱怨記錄件(<code>DATA_TYPE='2'</code>、狀態 <code>04S</code>)只要有人打得開 <code>CPMB004</code> 就全部看得到,不論他的 <code>MGM_CD_CPMB004</code> 是什麼、管轄哪個部門。需求處理件那條路才有 <code>COMPLAIN_DEPT IN (...)</code>。這是四支關卡裡唯一的權限缺口。嚴重度中,見附錄 E.2。</p>
+<p><strong>狀態推進</strong>:使用者從下拉自己選(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:244</code>),下拉被 <code>Filter</code> 限定:</p>
+<div class="tw"><table><thead><tr><th>原狀態</th><th>可選</th><th>錨點</th></tr></thead><tbody><tr><td><code>04S</code>(抱怨記錄件)</td><td>只有 <code>06</code> 結案</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:87-91</code></td></tr><tr><td>其他</td><td><code>05</code> 退回重辦 / <code>06</code> 結案</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:92-95</code></td></tr></tbody></table></div>
+<p>下拉的資料來源另外加了一條 <code>Dis &gt; '04'</code> 參數(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:609-612</code>),跟上面的 <code>Filter</code> 是兩層各自獨立的過濾 —— 兩邊都要對,少一邊就會冒出不該出現的選項。</p>
+<p><strong>選 <code>06</code> 結案</strong>:寫 <code>CLOSE_DATE</code>(取畫面上的日期,不是今天,<code>:250-251</code>)、<code>COMPLAIN_REMARK</code>。 <strong>選 <code>05</code> 退回重辦</strong>:寫 <code>VERIFY_DATE</code>(退件日)、<code>COMPLAIN_DELAY_DATE</code>、<code>COMPLAIN_PRV_DATE1</code>,並<strong>清空六個重辦欄位</strong> <code>SOLVE_CFM_UID1</code>/<code>_DATE1</code>/<code>_TIME1</code>、<code>SOLVE_UID1</code>/<code>SOLVE_DATE1</code>/<code>SOLVE_TIME1</code>、<code>COMPLAIN_CFM_UID1</code>/<code>_DATE1</code>/<code>_TIME1</code>(<code>:256-272</code>)。這一清是為了讓下一輪的 <code>CPMB002</code>/<code>CPMB003</code> 重新走「首辦」分支(判斷式是 <code>string.IsNullOrWhiteSpace(custSOLVE_CFM_UID1.Value)</code>)。</p>
+<p><strong>卡控總表</strong></p>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>按確定</td><td>處理狀態空白</td><td>「處理狀態為必填」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:634-638</code></td></tr><tr><td>按確定</td><td>狀態 <code>05</code> 但展延日期空白</td><td>「展延日期為必填」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:639-643</code></td></tr><tr><td>按確定</td><td>狀態 <code>06</code> 但結案日期空白</td><td>「結案日期為必填」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:644-648</code></td></tr><tr><td>按確定</td><td>回覆情形空白</td><td>「結案說明為必填」—— <strong>退回重辦也要填</strong></td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:649-652</code></td></tr></tbody></table></div>
+<p>前兩條錯誤訊息掛錯控件:<code>AddError(this.ucDEPT_SOLVE_EMP_NO, "展延日期為必填")</code> / <code>AddError(this.ucDEPT_SOLVE_EMP_NO, "結案日期為必填")</code>(<code>:641</code>、<code>:646</code>)—— 游標會跳到「處理人員」欄而不是日期欄。見附錄 E.6。</p>
+<p><strong>寄信一律寄</strong>(<code>:280</code>,沒有狀態條件),但內容依狀態分兩套:<code>05</code> 通知操作者部門 + KEY 單部門(<code>:342-346</code>),<code>06</code> 走 <code>GetCloseEmail(AGENT_CODE)</code> 通知 <code>CLOSE_SEND_EMAIL_YN='Y'</code> 的人(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB004_PO.cs:640-673</code>)。<code>GetCloseEmail</code> 是全模組唯一一支<strong>全程參數化</strong>的 EMAIL 查詢,但它 join 的是 <code>AA_USER</code> 而不是其他地方用的 <code>TA_AA_USER</code>(<code>:650</code>)。</p>
+<h3 id="6-7-四支關卡的執行順序與相依-能不能亂跑">6.7 四支關卡的執行順序與相依 —— 「能不能亂跑?」</h3>
+<p><strong>結論:四支不能亂跑,但擋住亂跑的不是程式,而是每支佇列 SQL 的狀態條件。</strong></p>
+<p>沒有任何一處檢查「前一關做完了沒」。四支各自獨立地用 <code>COMPLAIN_STATUS</code>(加上部門與權限)決定 Grid 裡看得到什麼。案件只會出現在「輪到它的那一支」的清單裡,所以正常操作下順序是被資料逼出來的,不是被驗證出來的:</p>
+<div class="tw"><table><thead><tr><th>狀態</th><th><code>CPMB001</code> 看得到</th><th><code>CPMB002</code></th><th><code>CPMB003</code></th><th><code>CPMB004</code></th></tr></thead><tbody><tr><td><code>01</code> 新案</td><td>✔</td><td>✘</td><td>✘</td><td>✘</td></tr><tr><td><code>02</code></td><td>✘</td><td>✔(第一關)</td><td>✘</td><td>✘</td></tr><tr><td><code>03H</code></td><td>✘</td><td>✔(需 <code>MANGR_CODE</code>)</td><td>✘</td><td>✘</td></tr><tr><td><code>03O</code></td><td>✘</td><td>✔(需 <code>M2</code> 主管)</td><td>✘</td><td>✘</td></tr><tr><td><code>03</code> + 有處理部門</td><td>✘</td><td>✘</td><td>✔(第一關)</td><td>✘</td></tr><tr><td><code>03</code> + <strong>無</strong>處理部門</td><td>✘</td><td>✘</td><td>✘(被 <code>SOLVE_DEPT_NO IS NOT NULL</code> 擋)</td><td>✔(特例)</td></tr><tr><td><code>04H</code> / <code>04O</code></td><td>✘</td><td>✘</td><td>✔(需 <code>MANGR_CODE</code>)</td><td>✘</td></tr><tr><td><code>04</code></td><td>✘</td><td>✘</td><td>✘</td><td>✔</td></tr><tr><td><code>04S</code>(抱怨記錄件)</td><td>✘</td><td>✘</td><td>✘</td><td>✔(<strong>無權限檢查</strong>)</td></tr><tr><td><code>05</code> 退回重辦</td><td>✔</td><td>✘</td><td>✘</td><td>✘</td></tr><tr><td><code>06</code> 結案</td><td>✘</td><td>✘</td><td>✘</td><td>✘(終點)</td></tr><tr><td><code>D1</code> 作廢申請</td><td>✔</td><td>✘</td><td>✘</td><td>✘</td></tr><tr><td><code>D2</code> 作廢確認</td><td>✘</td><td>✘</td><td>✘</td><td>✘(終點)</td></tr></tbody></table></div>
+<p><strong>四種真的會咬人的情況:</strong></p>
+<ol><li><strong>同一筆案件被兩個人同時雙擊。</strong> 兩人都拿到同一份 VDB,先按確定的推 <code>02</code>,後按確定的<strong>還是從舊狀態推</strong>,寫進去的 <code>COMPLAIN_STATUS</code> 可能倒退,而且第二次的 <code>Modify</code> 會把第一個人寫的欄位整個蓋掉。框架的樂觀鎖(<code>DATAFLAG</code>)理論上會擋,但 <code>architecture.md §3.6</code> 的實測結論是<strong>四種 <code>IsDataChanged</code> 實作沒有一種會比到新增的業務欄位</strong>,也就是靠不住。畫面上沒有任何提示。</li><li><strong><code>CPMB002</code> 把 <code>SOLVE_DEPT_NO</code> 留空。</strong> 案件從第三關消失、直接落到 <code>CPMB004</code>,而使用者只看到一句「無指定處理部門將進行結案程序?」。想補救只能改 DB,因為 <code>CPMM004</code> 這時已經因為 <code>COMPLAIN_CFM_UID</code> 非空而不准修改。</li><li><strong><code>CPMB004</code> 退回重辦後六個欄位沒清乾淨。</strong> 現行程式清了九個欄位(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:262-272</code>),但<strong>沒有清 <code>SOLVE_DEPT_NO</code></strong>。下一輪 <code>CPMB002</code> 若沿用舊的處理部門,<code>CPMB003</code> 會落到原班人馬手上 —— 這可能是刻意的,但沒有註解說明,標<strong>假設</strong>。</li><li><strong>股代(<code>OP1</code>)路徑靠三個條件同時成立</strong>:<code>ASN_SOLVE_DEPT_NO='OP1'</code>(或第三關的 <code>SOLVE_DEPT_NO='OP1'</code>)、<code>CPM003A.USERID LIKE 'op%'</code>、操作者 <code>COD009.DEPT_NO='M2'</code>。三者任一不符,案件就卡在 <code>03H</code>/<code>03O</code>/<code>04H</code>/<code>04O</code> 沒人看得到,而且<strong>沒有任何畫面會列出「卡住的案件」</strong> —— 只能靠 <code>CPMR004</code> 人工撈。</li></ol>
+<p><strong>沒有回頭路。</strong> 除了 <code>CPMB004</code> 的 <code>05</code> 退回,任何一關做完都不能撤銷:<code>CPMM004</code> 的修改被 <code>COMPLAIN_CFM_UID</code> 非空擋住、四支關卡的佇列 SQL 也不會再撈到舊狀態。要救只能改 DB,或用 <code>CPMB001p0</code> 的隱藏「刪除」鈕(需列在 <code>CPMB001_MGN_V</code>)。</p>
+<h3 id="6-8-cpmb005-客訴件第二關-主管確認">6.8 <code>CPMB005</code> — 客訴件第二關:主管確認</h3>
+<p><strong>佇列 SQL</strong>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:77-128</code>):<code>SELECT … FROM CPM007A LEFT JOIN … WHERE 1=1 AND CPM007A.CLAIM_STATUS = '01'</code>,再加上可選的 <code>CLAIM_NO</code>(<code>SQLHelper.AddParam</code>,<code>:127</code>)。</p>
+<p><strong>沒有任何權限或部門過濾。</strong> UI 明明塞了 <code>USERID</code> 參數(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB005.cs:87-88</code>),PO 從頭到尾不讀它。任何能開這支畫面的人,都能看到並簽核<strong>全公司所有</strong>待確認的客訴件。嚴重度高,見附錄 E.2。</p>
+<p><strong>寫什麼</strong>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB005p0.cs:126-159</code>):<code>CLAIM_CONTENT</code>、<code>CONFIRM_DATE</code>、<code>CLAIM_DOC</code>、<code>CLAIM_DEMAND</code>、<code>SALES_COMM</code>,狀態硬推 <code>"02"</code>(<code>:140</code>)。</p>
+<p><strong>怎麼寫</strong>:不走四眼。<code>pxy.Modify</code> → <code>Ctl.UpdateData</code> → <code>PO.Update</code> → <code>UpdateDataList</code>,手寫的 <code>UPDATE CPM007A SET … WHERE CLAIM_NO = :CLAIM_NO</code>,自己 <code>BeginTransaction</code> / <code>Commit</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:216-329</code>)。</p>
+<p><strong>卡控總表</strong></p>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>彈出視窗載入</td><td>狀態 <code>01</code> 且主管確認日空 → 預設今天(取 AP Server 系統日)</td><td>一律</td><td>記錄不擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB005p0.cs:113-118</code></td></tr><tr><td>按確定</td><td>主管確認日期空白</td><td>「主管確認日期為必填」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB005p0.cs:236-240</code></td></tr><tr><td>按確定</td><td>客戶訴求空白</td><td>「客戶訴求為必填」</td><td>阻擋</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB005p0.cs:241-245</code></td></tr></tbody></table></div>
+<p><strong>寄信</strong>:<code>pxy.GetEMAIL(user, GetUidCode(BOSS_EMP_NO), GetUidCode(LEADER_EMP_NO))</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB005p0.cs:182</code>),而 PO 端的簽名是 <code>GetEmail(strUserID, strLEADER_EMP_NO, strBOSS_EMP_NO)</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:402</code>)—— <strong>第二、三個參數對調了</strong>。收件者實際上是 SP <code>GET_CPMB005</code> 決定的,而那支 SP 不在版控(<code>DB/SP/</code> 底下沒有),所以無法從 repo 判斷影響。見附錄 E.6。</p>
+<p><code>GET_CPMB005</code> 是本模組唯一一支被呼叫的 Stored Procedure,<code>CommandTimeout = 0</code>(永不逾時,<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:415</code>),參數 <code>strUSERID</code> / <code>strLEADER_EMP_NO</code> / <code>strBOSS_EMP_NO</code> / <code>strFUNCTIONID='CPMB005'</code>,回傳 <code>RefCursor</code>。</p>
+<h3 id="6-9-cpmb006-客訴件第三關-收件窗口結案">6.9 <code>CPMB006</code> — 客訴件第三關:收件窗口結案</h3>
+<p><strong>佇列 SQL</strong>:與 <code>CPMB005</code> 逐字相同,只差 <code>CLAIM_STATUS = '02'</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:119</code>)。同樣沒有權限過濾。</p>
+<p><strong>權限檢查在彈出視窗,而且不擋</strong>:</p>
+<pre class="code lang-csharp"><code>strYN = pxy.GetPermission(UserID);            // CPMB006p0.cs:55
+…
+if (strYN == "Y" &amp;&amp; DateTimeHelper.DateToString(this.udatCLOSE_DATE.Value) != "")
+{
+    row.CLAIM_STATUS = "06";                  // CPMB006p0.cs:158-161
+}
+…
+BasicViewVDB view = pxy.Modify(this.ProcessVDB);   // :171 —— 不論 strYN 是什麼都會執行
+Email();                                            // :174 —— 不論 strYN 是什麼都會寄</code></pre>
+<p><strong>沒有 <code>MGM_CD_CPMB006</code> 權限的人按下確定,九個意見欄位照樣寫進 DB、通知信照樣寄出,只是狀態沒推進,而且畫面不會有任何訊息。</strong> 使用者會以為結案了。嚴重度高,見附錄 E.2。</p>
+<p><code>GetPermission</code> 本身也脆:<code>ds.Tables["CPM003A"].Rows[0]["MGM_CD_CPMB006"]</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:358</code>),使用者沒有 <code>CPM003A</code> 資料時 <code>Rows[0]</code> 丟 <code>IndexOutOfRangeException</code>,被 <code>catch</code> 吞掉回傳空字串 —— 結果等同「沒權限」,方向正確但靠例外流程達成。</p>
+<p><strong><code>DoValidate()</code> 是空殼</strong>:整段檢查被註解(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB006p0.cs:253-264</code>),方法留著、呼叫留著、永遠回傳無錯。所以結案日期可以空白就按確定 —— 空白時狀態不會推進(上面那個 <code>&amp;&amp;</code>),同樣沒有提示。</p>
+<p><strong>寫什麼</strong>:<code>CLOSE_DATE</code> + 八個意見欄(<code>CLAIM_DOC</code>、<code>CLAIM_DEMAND</code>、<code>SALES_COMM</code>、<code>OTHER_DEPT_COMM</code>、<code>COMPLIANCE_COMM</code>、<code>SER_WINDOW_COMM</code>、<code>CEO_VERIFY</code>、<code>IMPROVE_COMM</code>、<code>OTHER_REMARK</code>)(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB006p0.cs:147-156</code>)。</p>
+<h3 id="6-10-cpmb005-cpmb006-為什麼沒宣告主明細">6.10 <code>CPMB005</code> / <code>CPMB006</code> 為什麼沒宣告主明細</h3>
+<p>三個原因疊在一起:</p>
+<ol><li><strong>PO 不繼承任何 EVA 基底。</strong> <code>public class CPMB005_PO : ICPMB005_PO</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:37</code>)、<code>public class CPMB006_PO : ICPMB006_PO</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:38</code>),介面也<strong>沒有</strong> <code>: IEvaDataAccess</code>(對照 <code>ICPMB001_PO : IEvaDataAccess</code>,<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:25</code>)。<code>MasterTable</code> / <code>DetailTable</code> 這兩個屬性根本不存在,寫了編不過。</li><li><strong>建構子裡的宣告是從 OFD 複製來的殘骸。</strong> 兩支的建構子都只剩一行註解 <code>//this.MasterTable = new TableMapping("OFD701", "SEAL");</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:46</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:46</code>)。<code>OFD701</code> / <code>SEAL</code> 跟 CPM 毫無關係,是樣板來源沒刪乾淨。</li><li><strong>寫入路徑自己重做一遍。</strong> <code>UpdateDataList</code> 用手寫的 <code>UPDATE CPM007A SET 六(九)個業務欄 + 13 個四眼欄 WHERE CLAIM_NO = :CLAIM_NO</code>,自己開 <code>DbTransaction</code>、自己 <code>Commit</code>(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:219</code>、<code>:298-304</code>)。因為不走 EVA,框架不需要知道主明細對應。</li></ol>
+<p><strong>所以「沒宣告主明細」不是漏掉,是這兩支根本不在四眼軌道上。</strong> <code>atlas_scan</code> 判斷「主檔於 / 明細於」是靠 <code>xTableMapping</code> 宣告,所以母體才會把它們列成空白 —— 它們實際操作的是 <code>CPM007A</code>。</p>
+<p><strong>代價</strong>(三項都寫進附錄 E):</p>
+<div class="tw"><table><thead><tr><th>代價</th><th>說明</th><th>錨點</th></tr></thead><tbody><tr><td><code>CREATEID</code> / <code>CREATEDATE</code> 每次更新都被覆蓋</td><td>手寫 SQL 把 13 個四眼欄全部重寫,包含「資料建立者 / 建立日期」</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:285-286</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:293-294</code></td></tr><tr><td><code>ExecuteNonQuery</code> 的回傳值丟掉</td><td><code>dbTA.ExecuteNonQuery(cmd, tran); i += 1;</code> —— <code>i</code> 數的是迴圈跑幾次,不是實際更新幾列。<code>WHERE CLAIM_NO</code> 沒對到任何列也會 <code>Commit</code> 並回報成功</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:298-304</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:306-312</code></td></tr><tr><td>零列時交易既不 commit 也不 rollback</td><td><code>if (i &gt; 0) { tran.Commit(); }</code> 沒有 else;<code>finally</code> 只 <code>Dispose</code></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:301-304</code>、<code>:323-328</code></td></tr><tr><td>樂觀鎖完全沒有</td><td>不經過 EVA 就沒有 <code>DATAFLAG</code> 比對,兩人同時開同一筆後改必定互蓋</td><td>同上</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="7-報表-r"><h2 id="7-報表-r"><button class="tg" aria-label="收合/展開" type="button"></button>7. 報表(R)</h2><div class="sec-body">
+<p>三支 R 住在 <code>ATLAS.CPM.Report</code>,七層俱全(<code>architecture.md §6.5</code>)。第七層 <code>Report.CPM</code> 只裝兩支 <code>.rpt</code>,因為 <code>CPMR004</code> 沒有報表本體。</p>
+<div class="tw"><table><thead><tr><th>rpt</th><th>對應畫面</th><th>取數來源</th><th>參數</th></tr></thead><tbody><tr><td>—(Grid only)</td><td><code>CPMR004</code></td><td><code>CPM004A</code> 直接組 SQL,<code>SelectGrid</code></td><td>處理件日期起迄、預計完成日起迄、展延日期起迄、結案日期起迄、處理狀態、處理部門、KEY 單人員、KEY 單部門、受益人戶號、作業類型</td></tr><tr><td><code>CPMR005RPS</code></td><td><code>CPMR005</code></td><td><code>CPM004A</code> + <code>CPM005A</code> + <code>COD006A</code> + <code>OFD002</code>,<code>GROUP BY</code></td><td>處理件日期起迄、展延日期起迄、受益人戶號起迄、處理件分類、作業類型</td></tr><tr><td><code>CPMR006RPS</code></td><td><code>CPMR006</code></td><td><code>CPM004A</code> + <code>BMS001A</code> + <code>TA_AA_USER</code></td><td>處理件日期起迄、處理件單號起迄、作業類型</td></tr><tr><td><code>CPMM004RPS</code></td><td><code>CPMM004</code> 的「印表」鈕</td><td><code>CPMM004_PO.GetReport_Data</code> + 兩支 <code>SYS_CONNECT_BY_PATH</code> 子查詢</td><td>目前畫面上那一筆</td></tr><tr><td><code>CPMM005RPS</code></td><td><code>CPMM005</code> 的「印表」鈕</td><td><code>CPMM005_PO.GetReport_Data</code></td><td><code>CLAIM_NO</code>(唯一一支全參數化的報表查詢,<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR006_PO.cs</code> 以外)</td></tr></tbody></table></div>
+<h3 id="7-1-cpmr004-處理件明細清單-實質是-i-畫面">7.1 <code>CPMR004</code> — 處理件明細清單(實質是 I 畫面)</h3>
+<ul><li>沒有 <code>.rpt</code>,<code>BeforePreviewOrPrintButtonClicked</code> 也沒有 <code>SetQueryParameters</code>;只有 Grid + 三個彈出視窗(<code>CPMR004p0</code> / <code>p1</code> / <code>p2</code>)。</li><li><strong>權限模型跟其他所有畫面都不同</strong>:<code>AND '&lt;登入者部門&gt;' IN ('OP1', 'M2', CPM004A.COMPLAIN_DEPT, CPM004A.SOLVE_DEPT_NO)</code>(<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR004_PO.cs:133</code>)。含意是:<ul><li>部門是 <code>OP1</code> 或 <code>M2</code> 的人 → 條件恆真 → <strong>看得到全部案件</strong>〔客戶特定〕</li><li>其他人 → 只看得到自己部門是受理部門或處理部門的案件</li><li><strong>完全不看 <code>CPM003A</code> 的任何權限旗標</strong>,也不看 <code>CPM0031A</code> 管轄部門</li></ul></li><li>部門代碼還做了一次替換:<code>Row.Value.Replace("GC", "G2")</code>,註記「20171206 Mia GC視為G2」(<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR004_PO.cs:104</code>)〔客戶特定〕。</li><li>只撈已經過第一關的案件:<code>RTRIM(ASN_SOLVE_DEPT_NO) IS NOT NULL AND RTRIM(COMPLAIN_CFM_UID) IS NOT NULL</code>(<code>:131-132</code>)。<strong>所以狀態 <code>01</code> 的新案在這支報表上看不到</strong>,想查「剛建檔還沒確認的案子」只能回 <code>CPMM004</code>。</li><li>起迄日期檢核有一個與其他畫面不同的習慣:只填「起」時<strong>自動把「迄」補成同一天</strong>(<code>Dev/ATLAS.CPM.Report/Source/UI/ReportUI.CPM/CPMR004.cs:83-84</code>、<code>:93-94</code>、<code>:103-104</code>、<code>:113-114</code>),四組日期都這樣。<code>CPMM004</code> 則是直接報錯要求兩邊都填。</li><li><code>DoValidate()</code> 是空的,而且呼叫它之後那段 <code>if (this.ValidateErrList.Show())</code> 被註解掉(<code>Dev/ATLAS.CPM.Report/Source/UI/ReportUI.CPM/CPMR004.cs:72-76</code>)—— 真正生效的檢查是後面 <code>:122-126</code> 那一段。</li></ul>
+<h3 id="7-2-cpmr005-處理件種類統計">7.2 <code>CPMR005</code> — 處理件種類統計</h3>
+<ul><li><code>GROUP BY</code> 部門 × 作業類型 × 處理件分類,<code>COUNT(*)</code>(<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR005_PO.cs:76-96</code>、<code>:205-221</code>)。</li><li><strong>部門歸屬取「先業務部門、後受理部門」</strong>:<code>NVL(TRIM(CPM004A.AGENT_CODE), CPM004A.COMPLAIN_DEPT)</code>(<code>:83</code>、<code>:87</code>),註記「20200529 mofidy by jye 受理部門:先取業務部門再取受理部門」。</li><li>權限:<code>COMPLAIN_DEPT IN (SELECT CPM0031A.DEPT_NO FROM CPM003A, CPM0031A WHERE CPM003A.USERID = '&lt;登入者&gt;' AND CPM003A.USERID = CPM0031A.USERID)</code>(<code>:92-96</code>)—— <strong>只看有沒有掛管轄部門,不看任何 <code>MGM_CD_*</code> 旗標</strong>。</li><li><code>ORDER BY</code> 用 <code>CASE</code> 把七個部門代碼硬排在前面(<code>G</code>/<code>GB</code>→0、<code>G16</code>→1、<code>G1</code>→2、<code>G8</code>→3、<code>G7</code>→4、<code>G5</code>→5、<code>G4</code>→6),其餘照代碼排(<code>:212-221</code>)〔客戶特定〕。</li><li>報表名稱依作業類型三選一,在 UI 決定(<code>Dev/ATLAS.CPM.Report/Source/UI/ReportUI.CPM/CPMR005.cs:119-128</code>)。</li><li><strong><code>QUERY_DEPT_NO</code> 參數收了但沒用</strong>:<code>dept_NO</code> 在 <code>:69</code> 被賦值後,整支 SQL 沒有任何一處引用它(<code>CPMR006_PO.cs:68</code> 同樣情形)。UI 每次都多做一次 <code>GetEMP_INFO</code> 遠端呼叫,結果丟掉。</li></ul>
+<h3 id="7-3-cpmr006-處理件件數與天數統計">7.3 <code>CPMR006</code> — 處理件件數與天數統計</h3>
+<ul><li>每筆案件一列,<code>1 AS ALL_COUNT</code>,由 Crystal 端加總(<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR006_PO.cs:89</code>)。</li><li>三個日期用 <code>TO_DATE(NVL(TRIM(…),'19000101'),'YYYYMMDD')</code> 轉,空值變 1900/01/01(<code>:86-88</code>)。完成日取 <code>NVL(NVL(TRIM(SOLVE_CFM_DATE), TRIM(SOLVE_DATE)),'19000101')</code> —— 先取處理部門完成日,沒有才取指定處理部門完成日。</li><li>權限:<code>COMPLAIN_DEPT IN (SELECT CPM0031A.DEPT_NO FROM CPM0031A WHERE CPM0031A.USERID = '&lt;登入者&gt;')</code>(<code>:98-99</code>)—— <strong>連 <code>CPM003A</code> 都不 join</strong>,只看 <code>CPM0031A</code>。三支報表三種權限模型,見下表。</li></ul>
+<h3 id="7-4-三支報表的權限模型不一致">7.4 三支報表的權限模型不一致</h3>
+<div class="tw"><table><thead><tr><th>畫面</th><th>檢查 <code>MGM_CD_*</code></th><th>檢查 <code>CPM0031A</code> 管轄</th><th>特權後門</th><th>錨點</th></tr></thead><tbody><tr><td><code>CPMR004</code></td><td>✘</td><td>✘</td><td>部門 <code>OP1</code> / <code>M2</code> 看全部</td><td><code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR004_PO.cs:133</code></td></tr><tr><td><code>CPMR005</code></td><td>✘</td><td>✔(join <code>CPM003A</code> 但不看旗標)</td><td>無</td><td><code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR005_PO.cs:92-96</code></td></tr><tr><td><code>CPMR006</code></td><td>✘</td><td>✔(<strong>不 join <code>CPM003A</code></strong>)</td><td>無</td><td><code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR006_PO.cs:98-99</code></td></tr><tr><td>(對照)<code>CPMM004</code></td><td>✔ <code>MGM_CD_CPMM004</code></td><td>✔</td><td>無</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:268-275</code></td></tr></tbody></table></div>
+<p><strong>同一批資料,四支畫面四套可見範圍。</strong> 要回答「某人看得到哪些案件」必須逐畫面判斷,不能用一句話概括。</p>
+<h3 id="7-5-兩支-m-畫面的列印">7.5 兩支 M 畫面的列印</h3>
+<p><code>CPMM004</code> 的「印表」鈕(<code>DoExp1</code> → <code>CPMM004p2</code>)與 <code>CPMM005</code> 的(<code>DoExp1</code> → <code>CPMM005</code> 自己的流程)走的是 <code>architecture.md §6.5</code> 第 3 步那條路:<code>GetReportObject</code> 由<strong>用戶端指定報表類別名</strong>,伺服器照單全收:</p>
+<pre class="code lang-csharp"><code>string rpt = Convert.ToString(ClassData.Util.ReportParameters[0].ReportClass);
+return CRReportTransfer.TransferFileByte(rpt);</code></pre>
+<p>(<code>Dev/ATLAS.CPM.Report/Source/Control/ReportControl.CPM/CPMR005_Ctl.cs:59-63</code>;<code>CPMM004p2</code> 走的是 <code>CPMM004_Pxy.GetReportObject</code>,同構)</p>
+<p><code>CRReportTransfer</code>(無原始碼,從呼叫端反推)。兩支 <code>.rpt</code> 放在 <code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/</code>,不在 <code>Report.CPM</code> 專案裡 —— 交付路徑與 <code>.Report</code> 那兩支不同,版本要分開追。</p>
+</div></section><section class="sec" data-sec="8-跨模組共用"><h2 id="8-跨模組共用"><button class="tg" aria-label="收合/展開" type="button"></button>8. 跨模組共用</h2><div class="sec-body"><figure><svg viewBox="0 0 1050 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="改 CPM007A 與 CPM001A 會波及哪些模組,以及 CPM 借用的外部表"><defs><marker id="ah_cpm_xmod" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">CPM007A:CPM 寫、OFD 讀</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="130" y="62" text-anchor="middle">CPM007A</text>
+<text class="t2" x="130" y="82" text-anchor="middle">43 欄 四眼齊</text>
+</g><g class="bx">
+<rect x="260" y="40" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="370" y="62" text-anchor="middle">CPMM005 建檔</text>
+<text class="t2" x="370" y="82" text-anchor="middle">EVA 四眼</text>
+</g><g class="bx">
+<rect x="500" y="40" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="620" y="62" text-anchor="middle">CPMB005 CPMB006</text>
+<text class="t2" x="620" y="82" text-anchor="middle">手寫 UPDATE</text>
+</g><g class="bx dash">
+<rect x="760" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="885" y="62" text-anchor="middle">OFDI011 frmCLAIM</text>
+<text class="t2" x="885" y="82" text-anchor="middle">唯讀 WHERE BF_NO</text>
+</g><path class="ar" d="M 240 68 L 260 68" marker-end="url(#ah_cpm_xmod)"/><path class="ar" d="M 130 96 L 130 112 L 620 112 L 620 96" marker-end="url(#ah_cpm_xmod)"/><path class="ar" d="M 130 96 L 130 130 L 885 130 L 885 96" marker-end="url(#ah_cpm_xmod)"/><text class="lane" x="20" y="176">CPM001A:CPM 維護、全系統讀</text><g class="bx accent">
+<rect x="20" y="190" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="130" y="212" text-anchor="middle">CPM001A</text>
+<text class="t2" x="130" y="232" text-anchor="middle">FUNCTIONID x USERID</text>
+</g><g class="bx">
+<rect x="260" y="190" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="370" y="212" text-anchor="middle">CPMM001 維護</text>
+<text class="t2" x="370" y="232" text-anchor="middle">唯一入口</text>
+</g><g class="bx ext">
+<rect x="500" y="190" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="625" y="212" text-anchor="middle">Utility_PO MailUtility</text>
+<text class="t2" x="625" y="232" text-anchor="middle">共用層 無原始碼</text>
+</g><g class="bx dash">
+<rect x="770" y="190" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="895" y="212" text-anchor="middle">CPM 七支 + DSMR007</text>
+<text class="t2" x="895" y="232" text-anchor="middle">fallback 收件者</text>
+</g><path class="ar" d="M 240 218 L 260 218" marker-end="url(#ah_cpm_xmod)"/><path class="ar" d="M 480 218 L 500 218" marker-end="url(#ah_cpm_xmod)"/><path class="ar" d="M 750 218 L 770 218" marker-end="url(#ah_cpm_xmod)"/><text class="lane" x="20" y="326">CPM 借用的外部表(全部唯讀)</text><g class="bx ext">
+<rect x="20" y="340" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="362" text-anchor="middle">COD009</text>
+<text class="t2" x="135" y="382" text-anchor="middle">員工 部門 離職日 EMAIL</text>
+</g><g class="bx ext">
+<rect x="270" y="340" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="385" y="362" text-anchor="middle">COD006A</text>
+<text class="t2" x="385" y="382" text-anchor="middle">四組代碼 12 13 Q2 P7</text>
+</g><g class="bx ext">
+<rect x="520" y="340" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="620" y="362" text-anchor="middle">CTL014</text>
+<text class="t2" x="620" y="382" text-anchor="middle">486 487 492</text>
+</g><g class="bx ext">
+<rect x="740" y="340" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="865" y="362" text-anchor="middle">OFD002 BMS001A</text>
+<text class="t2" x="865" y="382" text-anchor="middle">部門名 受益人</text>
+</g><text class="lane" x="20" y="456">改動影響面速查</text><g class="bx vend">
+<rect x="20" y="470" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="140" y="492" text-anchor="middle">改 CPM007A</text>
+<text class="t2" x="140" y="512" text-anchor="middle">六份 xsd + OFDI011</text>
+</g><g class="bx vend">
+<rect x="280" y="470" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="385" y="492" text-anchor="middle">改 CPM001A</text>
+<text class="t2" x="385" y="512" text-anchor="middle">要先問 DSM</text>
+</g><g class="bx vend">
+<rect x="510" y="470" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="640" y="492" text-anchor="middle">改 COMPLAIN_STATUS</text>
+<text class="t2" x="640" y="512" text-anchor="middle">20 處字面值</text>
+</g><g class="bx vend">
+<rect x="790" y="470" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="905" y="492" text-anchor="middle">改 CPM0031A</text>
+<text class="t2" x="905" y="512" text-anchor="middle">七處權限子查詢</text>
+</g></svg><figcaption>圖 5 跨模組影響面。橘框=被共用的表;灰虛框=本模組以外的讀取端;黑框=外部唯讀表或無原始碼的共用層;橘虛框=改動時要一起看的範圍。CPM001A 表面上是 CPM 的小設定檔,實際上 DSM 的報表也會讀它。</figcaption></figure>
+<h3 id="8-1-cpm007a-cpm-寫-ofd-讀">8.1 <code>CPM007A</code>:CPM 寫、OFD 讀</h3>
+<p><code>CPM007A</code> 是本模組唯一被別的模組碰到的業務表。</p>
+<div class="tw"><table><thead><tr><th>誰</th><th>動作</th><th>怎麼做</th><th>錨點</th></tr></thead><tbody><tr><td><code>CPMM005</code></td><td>新增 / 修改 / 刪除(四眼)</td><td><code>BaseEVADaoPO</code>,<code>MasterTable = CPM007A</code></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:49</code></td></tr><tr><td><code>CPMB005</code></td><td><code>UPDATE</code> 六個欄位 + 狀態 <code>02</code></td><td>手寫 SQL</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:229-251</code></td></tr><tr><td><code>CPMB006</code></td><td><code>UPDATE</code> 十個欄位 + 狀態 <code>06</code></td><td>手寫 SQL</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:229-255</code></td></tr><tr><td><strong>OFD 的 <code>OFDI011</code></strong></td><td><strong>唯讀</strong></td><td>客戶查詢畫面的一個 case:<code>SELECT 17 欄 FROM CPM007A WHERE BF_NO = :BF_NO</code>,參數化</td><td><code>Dev/ATLAS.OFDI/Source/PO/PO.OFDI/OFDI011_PO.cs:3953-3977</code></td></tr></tbody></table></div>
+<p><code>OFDI011</code> 的呼叫端是 <code>frmCLAIM</code> 彈出視窗,把結果綁到 <code>ugrdCLAIM</code>(<code>Dev/ATLAS.OFDI/Source/UI/UI.OFDI/frmCLAIM.cs:41-49</code>),查詢情境常數是 <code>QueryScenario.CLAIM_LOG</code>(<code>:42</code>)。零筆時跳「無符合查詢條件的資料!」(<code>:56-59</code>)。</p>
+<p><strong>改動影響面</strong>:</p>
+<div class="tw"><table><thead><tr><th>改動</th><th>要一起看</th></tr></thead><tbody><tr><td><code>CPM007A</code> 加欄位</td><td><code>CPMB005Model.xsd</code> / <code>CPMB005View.xsd</code> / <code>CPMB006Model.xsd</code> / <code>CPMB006View.xsd</code> / <code>CPMM005Model.xsd</code> / <code>CPMM005View.xsd</code> 六份 xsd + 對應 Designer;<code>CPMB005_PO</code> / <code>CPMB006_PO</code> 的 <code>UPDATE</code> 欄位清單是<strong>手寫的</strong>,不會自動跟</td></tr><tr><td><code>CPM007A</code> 改欄位型別</td><td>再加 <code>OFDI011Model.xsd</code> / <code>OFDI011View.xsd</code>(<code>Dev/ATLAS.OFDI/Source/Entity/DataEntity.OFDI/OFDI011Model.xsd</code>)</td></tr><tr><td><code>CPM007A</code> 刪欄位</td><td><code>OFDI011_PO.cs:3956-3972</code> 那 17 欄的 <code>SELECT</code> 會直接 ORA 錯,而且那支 PO 有 4000 多行、這個 case 藏在中間</td></tr><tr><td>改 <code>CLAIM_STATUS</code> 值域</td><td><code>CPMB005_PO.cs:119</code>(<code>'01'</code>)、<code>CPMB006_PO.cs:119</code>(<code>'02'</code>)、<code>CPMB005p0.cs:140</code>(推 <code>'02'</code>)、<code>CPMB006p0.cs:160</code>(推 <code>'06'</code>)、<code>CPMM005_PO.cs:368</code>、<code>:399</code>(重複件檢查認 <code>'01'</code>/<code>'02'</code>)、<code>CPMM005.cs:119</code>(新增預設 <code>'01'</code>)—— 七處字面值</td></tr></tbody></table></div>
+<h3 id="8-2-cpm001a-cpm-維護-全系統讀">8.2 <code>CPM001A</code>:CPM 維護、全系統讀</h3>
+<p><code>CPM001A</code> 表面上是 CPM 的小設定檔,實際上是<strong>跨模組的備援通知名單</strong>:</p>
+<pre class="code"><code>CPMM001 維護 → CPM001A(FUNCTIONID + USERID)
+                    ↑
+      Utility_PO.GetSendMailToList(productID)          ← Dev/Common/Source/Utility/TA.UtilityPO/Utility_PO.cs:2745-2780
+                    ↑
+      MailUtility.GetNotifyMail(productID, getCPM001A: true)   ← Dev/Common/Source/Utility/TA.ClientUtility/MailUtility.cs:248-277
+      MailUtility.SendMailEX(…, getCPM001A: true)              ← Dev/Common/Source/Utility/TA.ClientUtility/MailUtility.cs:137-192
+                    ↑
+      CPM 七支畫面 + DSM 的 DSMR007</code></pre>
+<p>呼叫端(實測 <code>grep -rn "getCPM001A" Dev --include=*.cs</code>,排除 <code>MailUtility.cs</code> 本身,共 8 個檔):</p>
+<div class="tw"><table><thead><tr><th>模組</th><th>檔</th><th>用途</th></tr></thead><tbody><tr><td>CPM</td><td><code>CPMM004.cs:974</code>、<code>CPMB001p0.cs:388</code>、<code>:441</code>、<code>CPMB002p0.cs</code>、<code>CPMB003p0.cs</code>、<code>CPMB004p0.cs</code>、<code>CPMB005p0.cs:213</code>、<code>CPMB006p0.cs</code></td><td>「查不到收件者」的 fallback</td></tr><tr><td><strong>DSM</strong></td><td><code>Dev/ATLAS.DSM.Report/Source/UI/ReportUI.DSM/DSMR007.cs:898-900</code></td><td><code>SendMailEX(this.FunctionID, …, getCPM001A: true)</code></td></tr></tbody></table></div>
+<p><strong>含意</strong>:<code>CPMM001</code> 裡若有人為 <code>FUNCTIONID = 'DSMR007'</code> 建了一列,DSM 的匯率通知信就會多寄給那個人 —— 而 DSM 的維護者不會知道那筆設定在 CPM 的畫面裡。改 <code>CPM001A</code> 的結構或清資料,要先問 DSM。</p>
+<p><code>GetSendMailToList</code> 是全參數化的(<code>:2763</code>),join <code>TA_AA_USER</code> 取 EMAIL,<code>NOT TRIM(EMAIL) IS NULL</code>。</p>
+<h3 id="8-3-cpm-借用的共用元件">8.3 CPM 借用的共用元件</h3>
+<div class="tw"><table><thead><tr><th>元件</th><th>用途</th><th>錨點</th></tr></thead><tbody><tr><td><code>SerialNo.GetCOMPLAIN_NO()</code> / <code>GetCLAIM_NO()</code></td><td>取單號,連的是 PTPF 庫</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:96-100</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:91-95</code></td></tr><tr><td><code>SrNoCommentProcessor</code> + <code>JumpSrNoUtility</code></td><td>跳號一覽表</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:1076-1123</code>、<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:733-751</code></td></tr><tr><td><code>ClientBizUtility.GetEMP_INFO(user)</code></td><td>取登入者部門(回傳逗號分隔字串,取 <code>words[0]</code>)</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:64-66</code>、<code>Dev/ATLAS.CPM.Report/Source/UI/ReportUI.CPM/CPMR004.cs:133-136</code></td></tr><tr><td><code>ClientBizUtility.GetBusinessDay(COMP_CALENDER_TYPE.Company, …)</code></td><td>算營業日</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:872</code></td></tr><tr><td><code>SystemDateTime.GetSystemDate(APServer)</code></td><td>取伺服器日期</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB005p0.cs:116</code>、<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB006p0.cs:128</code></td></tr><tr><td><code>MailUtility.SendMailTo</code> / <code>SendMailEX</code> / <code>GetNotifyMail</code></td><td>寄信</td><td>全模組</td></tr><tr><td><code>UltraGridComboHelper</code> / <code>UltraGridInitialHelper</code> / <code>GridLayoutManager</code> / <code>UltraComboUtility</code></td><td>DevExpress(Infragistics)Grid 與下拉設定</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001.cs:42-50</code></td></tr><tr><td><code>CommonExceptionBlocker.HandleBusinessException</code> / <code>HandleFormProxyException</code></td><td>例外政策</td><td>全模組</td></tr></tbody></table></div>
+<h3 id="8-4-改動影響面速查">8.4 改動影響面速查</h3>
+<div class="tw"><table><thead><tr><th>你要改</th><th>連帶要看</th></tr></thead><tbody><tr><td><code>CPM004A</code> 任一欄位</td><td>5 份 Model xsd(<code>CPMB001</code>~<code>CPMB004</code>、<code>CPMM004</code>)+ 1 份 <code>CPMR004Model.xsd</code> + 6 份對應 View xsd + 全部 Designer;<code>CPMB001_PO.BuildMasterSQLString</code> 等 5 支手寫欄位清單的 <code>SELECT</code></td></tr><tr><td><code>COMPLAIN_STATUS</code> 值域</td><td><a class="sec" href="#2-7-狀態碼-從程式反推">§2.7</a>.1 那張表的每一個錨點,共 <strong>20 處字面值</strong>,分佈在 4 支 PO + 5 支 UI</td></tr><tr><td><code>CPM003A</code> 加一個關卡旗標</td><td><code>CPMM003Model.xsd</code> / <code>CPMM003View.xsd</code> / <code>CPMM003.cs</code>(勾選框轉換)/ <code>CPMM003.designer.cs</code> / <code>CPMM003_PO.BuildMasterSQLString</code> 的欄位清單 / 新關卡的佇列 SQL</td></tr><tr><td><code>CPM0031A</code>(管轄部門)</td><td>四支 B 關卡 + <code>CPMM004</code> + <code>CPMR005</code> + <code>CPMR006</code> 的權限子查詢,共 7 處</td></tr><tr><td><code>CPM007A</code></td><td>見 <a class="sec" href="#8-1-cpm007a-cpm-寫-ofd-讀">§8.1</a>,<strong>含 OFD</strong></td></tr><tr><td><code>CPM001A</code></td><td>見 <a class="sec" href="#8-2-cpm001a-cpm-維護-全系統讀">§8.2</a>,<strong>含 DSM</strong></td></tr><tr><td>五個 <code>CC_EMAIL_*</code> 對應的部門代碼</td><td><code>CPMB001_PO.cs:610-614</code> 與 <code>CPMM004_PO.cs:1031-1035</code> <strong>兩份一模一樣的 SQL</strong>,改一邊會漏</td></tr><tr><td>新增一支 B 關卡</td><td><code>CPM003A</code> 加旗標欄、<code>CPMM003</code> 加勾選框、六層新檔、上一關的寄信 SQL 要加 UNION、<code>CPM001A</code> 加 <code>FUNCTIONID</code></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-a-資料表總表"><h2 id="附錄-a-資料表總表"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 A. 資料表總表</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>表</th><th>欄位</th><th>四眼</th><th>主檔於</th><th>明細於</th><th>跨模組</th><th>一句話</th></tr></thead><tbody><tr><td><code>CPM001A</code></td><td>20</td><td>有</td><td><code>CPMM001</code></td><td>—</td><td><strong>全系統讀</strong>(<a class="sec" href="#8-2-cpm001a-cpm-維護-全系統讀">§8.2</a>)</td><td>功能代碼 × 使用者 = 備援通知名單</td></tr><tr><td><code>CPM003A</code></td><td>29</td><td>有</td><td><code>CPMM003</code></td><td>—</td><td>—</td><td>使用者的六個關卡權限旗標 + 主管辨識碼 + 兩個寄信旗標</td></tr><tr><td><code>CPM0031A</code></td><td>18</td><td>有</td><td>—</td><td><code>CPMM003</code></td><td>—</td><td>使用者的管轄部門(一對多)</td></tr><tr><td><code>CPM004A</code></td><td>69</td><td>有</td><td><code>CPMM004</code> <code>CPMB001</code> <code>CPMB002</code> <code>CPMB003</code> <code>CPMB004</code> <code>CPMR004</code></td><td>—</td><td>—</td><td>處理件主檔,33 欄是五道關卡的人 / 日 / 時</td></tr><tr><td><code>CPM005A</code></td><td>18</td><td>有</td><td>—</td><td><code>CPMM004</code> <code>CPMB001</code>~<code>CPMB004</code> <code>CPMR004</code></td><td>—</td><td>處理件分類(<code>COD006A</code> <code>CODE_SORT='12'</code>),可複選</td></tr><tr><td><code>CPM006A</code></td><td>18</td><td>有</td><td>—</td><td>同上</td><td>—</td><td>處理部門的處理方式(<code>CODE_SORT='13'</code>)</td></tr><tr><td><code>CPM0061A</code></td><td>18</td><td>有</td><td>—</td><td><code>CPMM004</code> <code>CPMB001</code>~<code>CPMB004</code>(<strong><code>CPMR004</code> 沒有</strong>)</td><td>—</td><td>指定處理部門的處理方式(同一組代碼)</td></tr><tr><td><code>CPM007A</code></td><td>43</td><td>有</td><td><code>CPMM005</code></td><td>—</td><td><strong>OFD 讀</strong>(<a class="sec" href="#8-1-cpm007a-cpm-寫-ofd-讀">§8.1</a>)</td><td>客訴件主檔,無明細</td></tr></tbody></table></div>
+<p>外部唯讀表見 <a class="sec" href="#2-6-與其他模組共用的表">§2.6</a> 下半。</p>
+</div></section><section class="sec" data-sec="附錄-b-sp-function-trigger-view"><h2 id="附錄-b-sp-function-trigger-view"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 B. SP / Function / Trigger / View</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>類</th><th>名稱</th><th>在版控?</th><th>被誰用</th><th>備註</th></tr></thead><tbody><tr><td>SP</td><td><code>GET_CPMB005</code></td><td><strong>否</strong>(<code>DB/SP/</code> 找不到)</td><td><code>CPMB005_PO.GetEmail</code>、<code>CPMB006_PO.GetEmail</code></td><td>參數 <code>strUSERID</code> / <code>strLEADER_EMP_NO</code> / <code>strBOSS_EMP_NO</code> / <code>strFUNCTIONID</code>,出參 <code>OutTB</code> RefCursor;<code>CommandTimeout = 0</code></td></tr><tr><td>View</td><td><code>CPMB001_MGN_V</code></td><td><strong>否</strong>(<code>DB/View/</code> 找不到)</td><td><code>CPMB001_PO.GetDeleteGrant</code></td><td>欄位至少有 <code>EMP_NO</code> / <code>UID_CODE</code> / <code>EMP_NAME</code>;推測是主管白名單</td></tr><tr><td>Function</td><td>—</td><td>—</td><td>—</td><td>本模組不呼叫任何 Function</td></tr><tr><td>Trigger</td><td>—</td><td>—</td><td>—</td><td>本模組不涉及 Trigger</td></tr></tbody></table></div>
+<p><code>DB/</code> 底下對 <code>CPM</code> 的搜尋零命中(<code>find DB -iname "*CPM*"</code>)—— <strong>本模組的資料表 DDL、代碼表內容、上述兩個物件全部不在版控</strong>。</p>
+</div></section><section class="sec" data-sec="附錄-c-代碼對照"><h2 id="附錄-c-代碼對照"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 C. 代碼對照</h2><div class="sec-body">
+<h3 id="c-1-complain-status-cod006a-code-sort-q2">C.1 <code>COMPLAIN_STATUS</code>(<code>COD006A.CODE_SORT = 'Q2'</code>)</h3>
+<p>值域表內容不在版控,以下是程式反推。完整的「誰寫誰讀」在 <a class="sec" href="#2-7-狀態碼-從程式反推">§2.7</a>.1。</p>
+<div class="tw"><table><thead><tr><th>值</th><th>語意(推測)</th><th>終點?</th></tr></thead><tbody><tr><td><code>01</code></td><td>已受理待確認</td><td></td></tr><tr><td><code>02</code></td><td>已確認待指定部門簽核</td><td></td></tr><tr><td><code>03H</code> / <code>03O</code> / <code>03</code></td><td>指定部門簽核中 / 股代第二關 / 簽核完成</td><td></td></tr><tr><td><code>04H</code> / <code>04O</code> / <code>04</code></td><td>處理部門簽核中 / 股代第二關 / 簽核完成</td><td></td></tr><tr><td><code>04S</code></td><td>抱怨記錄件待結案</td><td></td></tr><tr><td><code>05</code></td><td>退回重辦</td><td></td></tr><tr><td><code>06</code></td><td>結案</td><td>✔</td></tr><tr><td><code>D1</code> / <code>D2</code></td><td>作廢申請 / 作廢確認</td><td><code>D2</code> ✔</td></tr><tr><td><code>07</code></td><td><strong>死值</strong>,唯一寫入處已被註解</td><td></td></tr></tbody></table></div>
+<h3 id="c-2-claim-status-cod006a-code-sort-p7">C.2 <code>CLAIM_STATUS</code>(<code>COD006A.CODE_SORT = 'P7'</code>)</h3>
+<div class="tw"><table><thead><tr><th>值</th><th>語意(推測)</th><th>寫入者</th></tr></thead><tbody><tr><td><code>01</code></td><td>已申請待主管確認</td><td><code>CPMM005</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM005.cs:119</code>)</td></tr><tr><td><code>02</code></td><td>主管已確認待結案</td><td><code>CPMB005</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB005p0.cs:140</code>)</td></tr><tr><td><code>06</code></td><td>結案</td><td><code>CPMB006</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB006p0.cs:160</code>)</td></tr></tbody></table></div>
+<p><code>03</code>/<code>04</code>/<code>05</code> 在 <code>P7</code> 底下有沒有值、代表什麼,程式看不出來。</p>
+<h3 id="c-3-complain-kind-ctl014-sourcetype-486">C.3 <code>COMPLAIN_KIND</code>(<code>CTL014.SOURCETYPE = '486'</code>)</h3>
+<div class="tw"><table><thead><tr><th>值</th><th>效果</th><th>錨點</th></tr></thead><tbody><tr><td><code>1</code></td><td>預計完成日 = 受理日 + 1 營業日</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:870-873</code></td></tr><tr><td><code>2</code></td><td>+ 2 營業日</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:874-877</code></td></tr><tr><td><code>3</code></td><td>+ 7 營業日</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:878-881</code></td></tr><tr><td>其他</td><td><strong>今天</strong>(靜默落底)</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:882-885</code></td></tr></tbody></table></div>
+<h3 id="c-4-其他代碼類別">C.4 其他代碼類別</h3>
+<div class="tw"><table><thead><tr><th>類別</th><th>來源</th><th>用在哪</th></tr></thead><tbody><tr><td><code>COMPLAIN_CODE</code> 處理件分類</td><td><code>COD006A</code> <code>CODE_SORT='12'</code></td><td><code>CPM005A</code>、<code>CPMM004p0</code> 複選視窗、<code>CPMR005</code> 統計軸</td></tr><tr><td><code>SOLVE_CODE</code> 處理方式</td><td><code>COD006A</code> <code>CODE_SORT='13'</code></td><td><code>CPM006A</code> / <code>CPM0061A</code></td></tr><tr><td><code>CC_EMAIL_YN</code></td><td><code>CTL014</code> <code>SOURCETYPE='487'</code></td><td><code>CPMM004</code> 與四支關卡彈出視窗的下拉</td></tr><tr><td>權限旗標 Grid 下拉</td><td><code>CTL014</code> <code>SOURCETYPE='492'</code></td><td><code>CPMM003</code> 的六個權限欄</td></tr><tr><td><code>DATA_TYPE</code></td><td><strong>無代碼表</strong>,<code>1</code>/<code>2</code> 寫死</td><td>全模組</td></tr></tbody></table></div>
+<h3 id="c-5-本模組寫死的值-客戶特定">C.5 本模組寫死的值〔客戶特定〕</h3>
+<div class="tw"><table><thead><tr><th>值</th><th>意思</th><th>出現處</th></tr></thead><tbody><tr><td><code>OP1</code></td><td>股務代理單位</td><td><code>CPMB002_PO.cs:153</code> <code>:155</code> <code>:157</code>、<code>CPMB003_PO.cs:152</code> <code>:154</code> <code>:156</code>、<code>CPMB002p0.cs:256</code>、<code>CPMB003p0.cs:264</code>、<code>CPMR004_PO.cs:133</code></td></tr><tr><td><code>M2</code></td><td>股務單位(股代案件的最後一關)</td><td><code>CPMB002_PO.cs:157</code>、<code>CPMB003_PO.cs:156</code>、<code>CPMR004_PO.cs:133</code></td></tr><tr><td><code>op%</code></td><td>股代人員的帳號前綴</td><td><code>CPMB001_PO.cs:125</code>、<code>CPMB002_PO.cs:155</code>、<code>CPMB003_PO.cs:154</code>、<code>CPMM004_PO.cs:935</code> <code>:941</code></td></tr><tr><td><code>C5</code> / <code>C3</code> / <code>C4</code></td><td>法律顧問 / 法令遵循組 / 風險管理</td><td><code>CPMB001_PO.cs:610-612</code>、<code>CPMM004_PO.cs:1031-1033</code></td></tr><tr><td><code>E</code> <code>E1</code> <code>G2</code></td><td>行銷部</td><td><code>CPMB001_PO.cs:613</code>、<code>CPMM004_PO.cs:1034</code></td></tr><tr><td><code>G3</code> <code>G12</code> <code>G13</code> <code>GA</code> <code>G17</code></td><td>通路業務部</td><td><code>CPMB001_PO.cs:614</code>、<code>CPMM004_PO.cs:1035</code></td></tr><tr><td><code>920406</code> / <code>102744</code></td><td>兩個固定收信員工代號</td><td><code>CPMB004_PO.cs:688</code></td></tr><tr><td><code>C3</code> <code>G2</code> <code>G3</code> <code>G12</code> <code>G13</code> <code>GA</code> <code>Z2</code> <code>G17</code> <code>GC</code> <code>G15</code></td><td><code>CPMB004_PO.GetEmail()</code> 的固定收信部門</td><td><code>CPMB004_PO.cs:689</code></td></tr><tr><td><code>GC</code> → <code>G2</code></td><td>部門代碼替換</td><td><code>CPMR004_PO.cs:104</code></td></tr><tr><td><code>G</code> <code>GB</code> <code>G16</code> <code>G1</code> <code>G8</code> <code>G7</code> <code>G5</code> <code>G4</code></td><td><code>CPMR005</code> 報表的排序優先序</td><td><code>CPMR005_PO.cs:213-220</code></td></tr><tr><td><code>ta-it@example.com</code></td><td>所有通知信的寄件人</td><td>七支彈出視窗,例 <code>CPMB001p0.cs:380</code></td></tr><tr><td><code>301</code></td><td>四眼 <code>STATUS</code> 的佔位值</td><td>見 <a class="sec" href="#2-7-狀態碼-從程式反推">§2.7</a>.3,六處</td></tr></tbody></table></div>
+<h3 id="c-6-四眼-status">C.6 四眼 <code>STATUS</code></h3>
+<p>見 <a class="sec" href="#2-7-狀態碼-從程式反推">§2.7</a>.3:本模組六支 B 畫面一律寫 <code>'301'</code>,沒有任何程式讀它。四支 M 畫面走框架,值由 <code>EVAStatusCode</code> 決定(<code>architecture.md §3.10</code>)。</p>
+</div></section><section class="sec" data-sec="附錄-d-掃描母體與覆蓋率"><h2 id="附錄-d-掃描母體與覆蓋率"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 D. 掃描母體與覆蓋率</h2><div class="sec-body">
+<p><code>atlas_scan.py --module CPM --doc docs/modules/cpm.md</code> 的結果:</p>
+<div class="tw"><table><thead><tr><th>類別</th><th>母體</th><th>已提及</th><th>未提及</th></tr></thead><tbody><tr><td>畫面</td><td>13</td><td>13</td><td>0</td></tr><tr><td>資料表</td><td>8</td><td>8</td><td>0</td></tr><tr><td>SP / Fn</td><td>0</td><td>0</td><td>0</td></tr></tbody></table></div>
+<p>母體外但本文有寫的物件,來源如下(<strong>不是編造</strong>):</p>
+<div class="tw"><table><thead><tr><th>物件</th><th>為什麼母體沒有</th><th>從哪讀到</th></tr></thead><tbody><tr><td><code>GET_CPMB005</code></td><td><code>DB/</code> 沒有這支 SP 的腳本,掃描器掃不到</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:411</code></td></tr><tr><td><code>CPMB001_MGN_V</code></td><td>同上,<code>DB/View/</code> 沒有</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:660</code></td></tr><tr><td><code>CPM007B</code></td><td>不是表,是 <code>LoadDataSet</code> 的 DataTable 命名</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:404</code></td></tr><tr><td><code>CPMB001p0</code>~<code>CPMR004p2</code> 等彈出視窗</td><td>掃描器只收 7 碼代號,<code>yPopUpForm</code> 子視窗不算獨立畫面</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/</code> 下各檔</td></tr><tr><td><code>OFDI011</code> / <code>DSMR007</code></td><td>屬 OFD / DSM 模組母體</td><td><a class="sec" href="#8-1-cpm007a-cpm-寫-ofd-讀">§8.1</a> / <a class="sec" href="#8-2-cpm001a-cpm-維護-全系統讀">§8.2</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-e-讀本文時要注意的地方"><h2 id="附錄-e-讀本文時要注意的地方"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 E. 讀本文時要注意的地方</h2><div class="sec-body">
+<p>依嚴重度排。每條:缺陷 / 影響 / 錨點 / 嚴重度。</p>
+<h3 id="e-1-因參數格式改變而永久失效的通知分支">E.1 因參數格式改變而永久失效的通知分支</h3>
+<p><strong>缺陷。</strong> <code>CPMM004_PO.GetEmail(strDeptNo, RelationDept_YN)</code> 的第三段 UNION 用 <code>AND '" + RelationDept_YN + "'='Y'</code> 當開關(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:1051</code>)。但 2020-05-25 的異動把 <code>RelationDept_YN</code> 從單字元 <code>Y</code>/<code>N</code> 改成<strong>五字元旗標串</strong>(<code>YNNNY</code> 這種,<code>:1008-1012</code> 就是在拆這五個字元)。</p>
+<p><strong>影響。</strong> <code>'NNNNN' = 'Y'</code> 永遠是 false,所以「<code>CPM001A</code> 裡 <code>FUNCTIONID='CPMM004'</code> 的人」這段通知名單<strong>自 2020-05-25 起完全失效</strong>,建檔通知信只會寄給第一段 UNION(該部門有 <code>MGM_CD_CPMB001</code> 的人)。呼叫端 <code>CPMM004.cs:924</code> 又把 <code>ccEMAIL</code> 寫死 <code>"NNNNN"</code>,所以連第二段 UNION(五個相關部門)也一起死了 —— 註解說「20200612 改由 CPMB001 覆核完才通知相關部門」,那是刻意的;但第三段 UNION 是被順手弄死的,沒有任何註解提到。</p>
+<p><strong>錨點。</strong> <code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:1043-1051</code>(死掉的 UNION)、<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:924</code>(硬寫 <code>"NNNNN"</code>)。<strong>嚴重度:高</strong>(通知漏寄,沒有人會發現)。</p>
+<h3 id="e-2-權限檢查缺口-三處">E.2 權限檢查缺口(三處)</h3>
+<p><strong>一、<code>CPMB005</code> 完全沒有權限過濾。</strong> <code>Select</code> 的 WHERE 只有 <code>CLAIM_STATUS = '01'</code>,UI 傳來的 <code>USERID</code> 參數被忽略。任何能開此畫面的人都能簽核全公司的客訴件。錨點:<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:118-128</code> 對照 <code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB005.cs:87-88</code>。<strong>嚴重度:高</strong>。</p>
+<p><strong>二、<code>CPMB006</code> 沒權限時「寫入照做、狀態不推、無提示」。</strong> <code>if (strYN == "Y" &amp;&amp; 結案日非空) { row.CLAIM_STATUS = "06"; }</code> 之後無條件 <code>pxy.Modify()</code> + <code>Email()</code>。沒權限的人按確定,九個意見欄照樣寫進 DB、信照樣寄,只是狀態沒變,畫面完全沒說。錨點:<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB006p0.cs:158-174</code>。<strong>嚴重度:高</strong>(結果類型是「過濾(無提示)」,但使用者以為是「成功」)。</p>
+<p><strong>三、<code>CPMB004</code> 的抱怨記錄件那條路沒有部門過濾。</strong> <code>(DATA_TYPE = '2' AND COMPLAIN_STATUS = '04S')</code> 是獨立的 OR 分支,不受後面 <code>COMPLAIN_DEPT IN (...)</code> 約束。錨點:<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB004_PO.cs:145-163</code>。<strong>嚴重度:中</strong>。</p>
+<p>另外 <code>CPMM005</code>(客訴件建檔)也沒有任何權限過濾(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:162-322</code> 不 join <code>CPM003A</code>),但那是「建檔誰都能建」,語意上說得通,列在 <a class="sec" href="#4-4-cpmm005-客訴件建檔">§4.4</a> 不重複。</p>
+<h3 id="e-3-整段寫入被註解-按鈕變空操作">E.3 整段寫入被註解,按鈕變空操作</h3>
+<p><strong>缺陷。</strong> 四支關卡畫面的「執行」鈕 → <code>PO.ExecuteNonQuery</code> → <code>//UpdateDataList(model); return mModel;</code>。</p>
+<p><strong>影響。</strong> 按下去沒反應、沒錯誤。真正的寫入在雙擊後的彈出視窗。維護者若照著被註解的 <code>UpdateDataList</code> 去理解「批次在寫什麼」會得到完全錯誤的結論(註解版只寫 <code>COMPLAIN_COMM</code> + <code>ASN_SOLVE_DEPT_NO</code> + 四眼欄,沒有 <code>COMPLAIN_STATUS</code>)。</p>
+<p><strong>錨點。</strong> <code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:210-215</code> 與被註解的 <code>:221-310</code>;<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB002_PO.cs:229-234</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB003_PO.cs:231-236</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB004_PO.cs:234-239</code>。<strong>嚴重度:高</strong>(與 CRM <code>CRMB001_PO.cs:195-214</code> 同型)。</p>
+<h3 id="e-4-被註解掉但外殼還在的檢核-四處">E.4 被註解掉但外殼還在的檢核(四處)</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>位置</th><th>被註解的是什麼</th><th>外殼留下什麼</th></tr></thead><tbody><tr><td>1</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB006p0.cs:253-264</code></td><td>「尚未結案,不能輸入結案日期」整條</td><td><code>DoValidate()</code> 方法還在、呼叫還在,永遠無錯</td></tr><tr><td>2</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB003p0.cs:296-320</code></td><td>資訊簽核 / 副主管審核:<code>07</code> 狀態 + 「副主管尚未審核!」+「無此權限!」</td><td>註記 <code>//20180214 modify by jye 加入資訊簽核</code> 還在,<code>07</code> 變死值</td></tr><tr><td>3</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM003.cs:269</code></td><td><code>this.validatorManager1.DataValidate();</code></td><td>框架必填檢查整組不跑,只剩三條手寫檢查;其他三支 M 都有跑</td></tr><tr><td>4</td><td><code>Dev/ATLAS.CPM.Report/Source/UI/ReportUI.CPM/CPMR004.cs:72-76</code></td><td><code>if (this.ValidateErrList.Show()) { e.Cancel = true; return; }</code></td><td><code>DoValidate()</code> 還是被呼叫(而且它本身是空的),真正生效的檢查在 <code>:122-126</code></td></tr></tbody></table></div>
+<p><strong>嚴重度:#1 #2 高,#3 #4 中。</strong></p>
+<h3 id="e-5-顯示欄位-join-錯人-兩支畫面-三個欄位">E.5 顯示欄位 join 錯人(兩支畫面、三個欄位)</h3>
+<p><strong>缺陷。</strong> <code>CPMM005_PO.BuildMasterSQLString</code> 的四個 <code>COD009</code> 別名全部 join 在 <code>CPM007A.EMP_NO</code>:</p>
+<pre class="code lang-sql"><code>LEFT JOIN COD009 A ON CPM007A.EMP_NO = A.EMP_NO     -- A 被拿來當 LEADER_EMP_NO_NAME
+LEFT JOIN COD009 B ON CPM007A.EMP_NO = B.EMP_NO     -- B 被拿來當 BOSS_EMP_NO_NAME
+LEFT JOIN COD009 D ON CPM007A.EMP_NO = D.EMP_NO     -- D 被拿來當 CLAIM_EMP_NO_NAME</code></pre>
+<p><code>CPMB005_PO</code> / <code>CPMB006_PO</code> 是另一種錯法:三個別名 <code>B</code> / <code>C</code> / <code>D</code> 全部 join 在 <code>CPM007A.CLAIM_EMP_NO</code>。</p>
+<p><strong>影響。</strong> 客訴件維護與兩支關卡畫面上的「申請人姓名」「組主管姓名」「部門主管姓名」顯示的是同一個人。同一支 PO 的 <code>GetReport_Data</code> join 對了(<code>A</code>=<code>CLAIM_EMP_NO</code>、<code>B</code>=<code>LEADER_EMP_NO</code>、<code>C</code>=<code>BOSS_EMP_NO</code>),證明是 bug 不是設計 —— <strong>報表印出來的人跟畫面上看到的人不一樣</strong>。</p>
+<p><strong>錨點。</strong> <code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:198-206</code> 對照 <code>:451-453</code>;<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:111-116</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:111-116</code>。<strong>嚴重度:中</strong>(顯示錯誤,不影響流程)。</p>
+<p>另外 <code>CPMM003_PO</code> 有做 <code>COD009</code> 的 <code>ROW_NUMBER()</code> 去重(<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM003_PO.cs:136-143</code>),但同模組其他畫面都沒做 —— 一個 <code>UID_CODE</code> 在 <code>COD009</code> 有兩筆(離職再任職)時,那些畫面會出現重複列。</p>
+<h3 id="e-6-位置取參數-掛錯控件-caption-對調">E.6 位置取參數 / 掛錯控件 / Caption 對調</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>缺陷</th><th>影響</th><th>錨點</th><th>嚴重度</th></tr></thead><tbody><tr><td>1</td><td><code>pxy.GetEMAIL(user, GetUidCode(BOSS_EMP_NO), GetUidCode(LEADER_EMP_NO))</code> 但簽名是 <code>(strUserID, strLEADER_EMP_NO, strBOSS_EMP_NO)</code> —— <strong>第二三個參數對調</strong></td><td>客訴件主管確認的通知信寄錯人(實際收件者由版控外的 SP <code>GET_CPMB005</code> 決定,無法從 repo 判斷後果)</td><td>呼叫 <code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB005p0.cs:182</code> 對照簽名 <code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:402</code></td><td>中</td></tr><tr><td>2</td><td><code>AddError(this.ucDEPT_SOLVE_EMP_NO, "展延日期為必填")</code> / <code>AddError(this.ucDEPT_SOLVE_EMP_NO, "結案日期為必填")</code></td><td>訊息正確但游標跳到「處理人員」欄,使用者找不到要填哪裡</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB004p0.cs:641</code>、<code>:646</code></td><td>低</td></tr><tr><td>3</td><td><code>CPM004A_SELECT</code> 的 <code>ASN_SOLVE_DEPT_CH_NAME</code> 與 <code>SOLVE_DEPT_CH_NAME</code> 兩個 Caption 在 <code>CPMB003</code>/<code>CPMB004</code> 的 xsd 裡<strong>對調</strong></td><td>Grid 欄位標題與資料對不上</td><td><code>Dev/ATLAS.CPM/SOURCE/Entity/DataEntity.CPM/CPMB003Model.xsd</code> 對照 <code>Dev/ATLAS.CPM/SOURCE/Entity/DataEntity.CPM/CPMB001Model.xsd</code>(明細見 <a class="sec" href="#2-5-欄位中文名總表-來自-xsd-msdata-caption">§2.5</a> 末)</td><td>中</td></tr><tr><td>4</td><td><code>CPMB004</code> 刪除前訊息寫「不能修改」,實際是不能刪除</td><td>訊息誤導</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:907</code></td><td>低</td></tr></tbody></table></div>
+<h3 id="e-7-寫死常數與跨模組借用">E.7 寫死常數與跨模組借用</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>缺陷</th><th>影響</th><th>錨點</th><th>嚴重度</th></tr></thead><tbody><tr><td>1</td><td>跳號一覽表用 <code>SrNo.AllotNoForNfd</code>(值 <code>"OFD220A"</code>)</td><td>CPM 的跳號紀錄被記在 NFD/OFD 的類別底下,跨模組查詢跳號時會混在一起;<code>CPMM004</code> 與 <code>CPMM005</code> 兩支共 16 個 handler 都用同一個</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:1085</code>(另七處在 <code>:1081-1123</code>)、<code>Dev/Common/Source/MappingCode/TA.MappingCode/SysCode.cs:103</code></td><td>中</td></tr><tr><td>2</td><td><code>CPMB004_PO.GetCloseEmail</code> join <code>AA_USER</code>,其他 20 多處都是 <code>TA_AA_USER</code></td><td>若兩者不是同義詞(synonym),結案通知信會查不到人</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB004_PO.cs:650</code></td><td>中</td></tr><tr><td>3</td><td>五個 <code>CC_EMAIL_*</code> 的部門清單在 <code>CPMB001_PO</code> 與 <code>CPMM004_PO</code> 各寫一份,一字不差</td><td>組織調整時要改兩處</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:609-615</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:1030-1036</code></td><td>中</td></tr><tr><td>4</td><td><code>DATA_TYPE</code> 的中文對照三套並存:「需求處理件/抱怨記錄件」vs「問題件/客訴件」</td><td>同一筆資料在不同報表顯示不同名稱</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:251</code> vs <code>:673</code>;<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR004_PO.cs:110</code> vs <code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR005_PO.cs:77-80</code></td><td>低</td></tr></tbody></table></div>
+<h3 id="e-8-有訊息但行為不符-檢核永遠不成立">E.8 有訊息但行為不符 / 檢核永遠不成立</h3>
+<p><strong>一、<code>CPMM004</code> 的「請至少輸入任一筆 查詢條件」永遠不會跳。</strong></p>
+<pre class="code lang-csharp"><code>if (string.IsNullOrWhiteSpace(this.utxtCOMPLAIN_NO_0.Text) &amp;&amp; … &amp;&amp;
+    (udatCOMPLAIN_Date_ST.Value == null &amp;&amp; udatCOMPLAIN_Date_END == null))</code></pre>
+<p>最後一項比的是<strong>控件物件本身</strong>(<code>udatCOMPLAIN_Date_END</code>)而不是 <code>.Value</code>。控件永遠不是 <code>null</code>,整個 <code>&amp;&amp;</code> 鏈永遠 false,這條檢核形同不存在。使用者不填任何條件按查詢,會直接送出一條只有部門過濾的全表掃描。錨點:<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:538-546</code>(問題在 <code>:543</code>)。<strong>嚴重度:中</strong>。</p>
+<p><strong>二、同一支的日期參數複製貼上錯。</strong> <code>if (this.udatCOMPLAIN_Date_ST.Value != null)</code> 出現兩次,第二次應該是 <code>_END</code>:</p>
+<pre class="code lang-csharp"><code>if (this.udatCOMPLAIN_Date_ST.Value != null)
+    …AddParametersRow("COMPLAIN_SDATE", …, udatCOMPLAIN_Date_ST…);
+if (this.udatCOMPLAIN_Date_ST.Value != null)          // ← 應為 _END
+    …AddParametersRow("COMPLAIN_EDATE", …, udatCOMPLAIN_Date_END.DateTime…);</code></pre>
+<p>現況被 <code>:548-549</code> 的「起迄必須皆(不)填寫」擋住而不會出事,但那條檢核一旦放寬就會拿 <code>DateTime.MinValue</code> 去組 <code>COMPLAIN_DATE &lt;= '00010101'</code>,查出零筆。錨點:<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM004.cs:587-590</code>。<strong>嚴重度:中</strong>。</p>
+<p><strong>三、<code>CPMM005</code> 的「是否確定新增？」是阻擋不是詢問。</strong> 訊息用問句寫,但走的是 <code>ValidateErrList.AddError</code> + <code>e.Cancel = true</code>,使用者沒有「是」可以按,只能改戶號。兩處都這樣。錨點:<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMM005.cs:440-444</code>、<code>:494-503</code>。<strong>嚴重度:低</strong>(行為比訊息嚴格,不會放行錯的資料)。</p>
+<p><strong>四、<code>CPMB001p0</code> 完全沒有存檔前檢核。</strong> 其他三支關卡都有 <code>DoValidate()</code>,這支沒有,指定處理部門可留空直接送出。錨點:<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:224-280</code>。<strong>嚴重度:中</strong>。</p>
+<h3 id="e-9-oracle-三值邏輯與-sql-寫法">E.9 Oracle 三值邏輯與 SQL 寫法</h3>
+<p><strong>一、<code>欄 &lt;&gt; ' '</code> 遇 NULL 靜默過濾(九處)。</strong> 四支報表 PO 的日期區間查詢都會多加一條 <code>AND CPM004A.&lt;日期欄&gt; &lt;&gt; ' '</code>:</p>
+<div class="tw"><table><thead><tr><th>檔</th><th>行</th><th>欄位</th></tr></thead><tbody><tr><td><code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR004_PO.cs</code></td><td><code>:159</code> <code>:188</code> <code>:241</code> <code>:325</code></td><td><code>COMPLAIN_DATE</code> / <code>COMPLAIN_PRV_DATE</code> / <code>COMPLAIN_DELAY_DATE</code> / <code>CLOSE_DATE</code></td></tr><tr><td><code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR005_PO.cs</code></td><td><code>:121</code> <code>:151</code></td><td><code>COMPLAIN_DATE</code> / <code>COMPLAIN_DELAY_DATE</code></td></tr><tr><td><code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR006_PO.cs</code></td><td><code>:124</code></td><td><code>COMPLAIN_DATE</code></td></tr></tbody></table></div>
+<p>日期欄是 <code>VARCHAR2</code>,存空白字串時 <code>' ' &lt;&gt; ' '</code> 為 false(擋掉,符合意圖);但<strong>存 NULL 時 <code>NULL &lt;&gt; ' '</code> 是 UNKNOWN,那一列一樣被擋掉,而且沒有任何提示</strong>。這跟 CAS <code>CASB001_PO.cs:214</code>、CLS <code>CLSM001_PO.cs:179</code>、DSM <code>DSMB001_PO.cs:136</code> 是同一型 —— <strong>這是第五個中同一招的模組</strong>。 <strong>嚴重度:中</strong>(報表少列,查不出原因)。</p>
+<p>同型還有 <code>AND CPM004A.COMPLAIN_STATUS NOT LIKE 'D%'</code>(<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR005_PO.cs:91</code>、<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR006_PO.cs:96</code>)—— <code>COMPLAIN_STATUS</code> 為 NULL 的案件被靜默排除。</p>
+<p><strong>二、外接條件把 <code>(+)</code> 外部聯結變成內部聯結。</strong> <code>CPMR005_PO</code> 寫:</p>
+<pre class="code lang-sql"><code>AND CPM004A.COMPLAIN_NO = CPM005A.COMPLAIN_NO(+)
+AND CPM005A.COMPLAIN_CODE = COD006A.CODE(+)
+AND COD006A.CODE_SORT = '12'          -- ← 沒有 (+)</code></pre>
+<p>最後一行對外接表下了沒有 <code>(+)</code> 的條件,Oracle 會把整個外接退化成內接:<strong>沒有處理件分類明細、或分類代碼不在 <code>CODE_SORT='12'</code> 的案件,直接從統計報表消失</strong>。同一支的 <code>COMPLAIN_CODE</code> 篩選(<code>:201</code>)也是同樣情形。錨點:<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR005_PO.cs:87-90</code>、<code>:195-203</code>。<strong>嚴重度:中</strong>。</p>
+<p><strong>三、<code>AND CPM0031A.DEPT_NO '…'</code> 少了等號。</strong> <code>CPMB002_PO.GetEmail_YN</code> 的 <code>nDelay == 1</code> 分支有語法錯誤(少 <code>=</code>),會丟 ORA-00920,被 <code>catch</code> 吞掉回傳 <code>null</code>,呼叫端 <code>dt.Select()</code> 再丟 NullReferenceException。目前 <code>nDelay</code> 被硬寫 <code>0</code>(<code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB002p0.cs:373</code>,註解「無展延流程」)所以走不到 —— <strong>一旦有人把展延流程打開就會炸</strong>。錨點:<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB002_PO.cs:693</code>。<strong>嚴重度:中(休眠中)</strong>。</p>
+<p><strong>四、字串串接進 SQL(全模組,約 60 處)。</strong> 使用者 ID、部門代碼、單號、姓名、身分證號一律 <code>"… '" + value + "'"</code>。舉例: <code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:138-139</code>(<code>userID</code>)、 <code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:294</code>(<code>COMPLAIN_NO</code>)、<code>:305</code>(<code>ID_NO</code> 用 <code>LIKE</code>)、<code>:847</code>(子查詢內的 <code>COMPLAIN_NO</code>)、 <code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM005_PO.cs:336</code>(<code>BF_NO</code>)、 <code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR005_PO.cs:95</code>(<code>USER_ID</code>)。全模組只有三處是參數化的:<code>CPMB001_PO.GetDeleteGrant</code>(<code>:666</code>)、<code>CPMB004_PO.GetCloseEmail</code>(<code>:660</code>)、<code>CPMM004_PO.GetReport_Data</code>(<code>:758-777</code>)與 <code>CPMM005_PO.GetReport_Data</code>(<code>:460</code>)。 <strong>嚴重度:中</strong>(值多半來自系統而非自由輸入,但 <code>BF_NAME</code> / <code>ID_NO</code> 是使用者打的)。</p>
+<h3 id="e-10-一律回報成功-回傳值丟掉">E.10 一律回報成功 / 回傳值丟掉</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>缺陷</th><th>錨點</th><th>嚴重度</th></tr></thead><tbody><tr><td>1</td><td>七支彈出視窗 <code>BasicViewVDB view = pxy.Modify(...)</code> 之後<strong>完全不看 <code>view.Util.Result</code></strong>,直接寄信 + <code>DialogResult.OK</code> + 從 Grid 移除該列。伺服器端失敗(<code>AddResultRow(false, …)</code>)時使用者看到的仍是「成功」</td><td><code>CPMB001p0.cs:267-279</code>、<code>CPMB002p0.cs:319-328</code>、<code>CPMB003p0.cs:347-356</code>、<code>CPMB004p0.cs:276-283</code>、<code>CPMB005p0.cs:149-157</code>、<code>CPMB006p0.cs:170-178</code>(皆在 <code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/</code>)</td><td><strong>高</strong></td></tr><tr><td>2</td><td><code>CPMB005</code> / <code>CPMB006</code> 的 <code>UpdateDataList</code> 丟掉 <code>ExecuteNonQuery</code> 回傳值,用 <code>i += 1</code> 數迴圈次數。<code>WHERE CLAIM_NO</code> 沒對到列也算成功</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:298-304</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:306-312</code></td><td>高</td></tr><tr><td>3</td><td>零列時 <code>if (i &gt; 0)</code> 不成立 → 既不 <code>Commit</code> 也不 <code>Rollback</code>,<code>finally</code> 只 <code>Dispose</code>;<code>model.Utility.Result</code> 一列都沒加,呼叫端拿到空結果也當成功</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:301-304</code>、<code>:323-328</code></td><td>中</td></tr><tr><td>4</td><td><code>CPMB001p0</code> 的刪除鈕同樣不看 <code>pxy.Delete</code> 的結果</td><td><code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:506-513</code></td><td>中</td></tr><tr><td>5</td><td>所有 <code>GetEmail*</code> 失敗時 <code>return null</code>,呼叫端直接 <code>dt.Select()</code> / <code>dt.Rows.Count</code></td><td>例 <code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:643-647</code> 對照 <code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB001p0.cs:348-355</code></td><td>中</td></tr></tbody></table></div>
+<p><strong>本模組沒有「批次呼叫 SP 後硬寫成功」那一型</strong>(只有一支 SP,而且只用來查 EMAIL),但第 1、2 條的效果是一樣的。</p>
+<h3 id="e-11-其他讀碼陷阱">E.11 其他讀碼陷阱</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>事情</th><th>說明</th><th>錨點</th></tr></thead><tbody><tr><td>1</td><td><code>dept_no</code> / <code>dept_NO</code> 算了不用</td><td><code>CPMM004_PO.BuildMasterSQLString</code> 每次查詢都多打一次 DB 取登入者部門,結果完全沒用到;<code>CPMR005_PO</code> / <code>CPMR006_PO</code> 也一樣</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:185</code> <code>:191</code>、<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR005_PO.cs:58</code> <code>:69</code>、<code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR006_PO.cs:57</code> <code>:68</code></td></tr><tr><td>2</td><td><code>SOLVE_DATE11</code> / <code>SOLVE_CFM_UID11</code> 等八個死欄位</td><td>只在 <code>CPMB001Model.xsd</code> 的結果集裡,實體表沒有,程式不讀不寫</td><td><code>Dev/ATLAS.CPM/SOURCE/Entity/DataEntity.CPM/CPMB001Model.xsd</code></td></tr><tr><td>3</td><td>每支 PO 的介面註解都是「覆核層級管理 PO 共用介面」</td><td>12 支一字不差的樣板殘留,不能拿來推測用途</td><td>例 <code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:20-22</code></td></tr><tr><td>4</td><td><code>//this.MasterTable = new TableMapping("OFD701", "SEAL");</code></td><td>從 OFD 複製來的殘骸,兩支都有</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:46</code>、<code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB006_PO.cs:46</code></td></tr><tr><td>5</td><td><code>CPMB001_Ctl.GetDeleteGrant</code> 直接 <code>new CPMB001_PO()</code></td><td>繞過 <code>DataAccessPool</code>,與同檔其他方法的 <code>GetDaoInstance&lt;ICPMB001_PO&gt;()</code> 不一致</td><td><code>Dev/ATLAS.CPM/SOURCE/Control/Control.CPM/CPMB001_Ctl.cs:38-42</code></td></tr><tr><td>6</td><td><code>CPMB005_PO.GetDeleteGrant</code> 之後有一行不可及的 <code>return 0;</code></td><td><code>try</code> 的兩條路都 return 了,編譯器只會警告</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB001_PO.cs:680</code></td></tr><tr><td>7</td><td><code>UpdateDataList</code> 參數名大小寫不一致</td><td>PO 找 <code>"UserID"</code>、UI 塞 <code>"USERID"</code>;靠 <code>DataTable.CaseSensitive</code> 預設 false 才對得上</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:262</code> 對照 <code>Dev/ATLAS.CPM/SOURCE/UI/UI.CPM/CPMB005p0.cs:144-145</code></td></tr><tr><td>8</td><td><code>STATUS = : STATUS</code> 綁定符號後有空白</td><td>13 個四眼欄位的綁定都寫成 <code>: XXX</code>;Oracle 可解析,但與同檔前幾行的 <code>:CLAIM_CONTENT</code> 風格不一致,容易誤判</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB005_PO.cs:237-251</code></td></tr><tr><td>9</td><td><code>CPMM004</code> 報表對每一列各下兩次子查詢</td><td><code>CPM005privot</code> / <code>CPM006privot</code> 用 <code>SYS_CONNECT_BY_PATH</code>,N 列 = 2N 次來回</td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMM004_PO.cs:786-794</code></td></tr><tr><td>10</td><td>所有 <code>.cs</code> / <code>.xsd</code> 皆為 UTF-8</td><td>實測 142 支 <code>.cs</code> 與全部 <code>.xsd</code> 都是合法 UTF-8,<strong>本模組沒有混編碼問題</strong></td><td>—</td></tr><tr><td>11</td><td><code>CPMB003</code> 佇列的 <code>ORDER BY</code> 與其他三支相反</td><td><code>COMPLAIN_NO, COMPLAIN_KIND</code> vs 其他的 <code>COMPLAIN_KIND, COMPLAIN_NO</code></td><td><code>Dev/ATLAS.CPM/SOURCE/PO/PO.CPM/CPMB003_PO.cs:160</code></td></tr><tr><td>12</td><td><code>CPMR004</code> 的明細少一張 <code>CPM0061A</code></td><td>與 <code>CPMM004</code> / 四支 B 不一致</td><td><code>Dev/ATLAS.CPM.Report/Source/PO/ReportPO.CPM/CPMR004_PO.cs:46-48</code></td></tr></tbody></table></div>
+<h3 id="e-12-標-假設-的地方一覽">E.12 標「假設」的地方一覽</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>假設</th><th>依據</th><th>怎麼驗證</th></tr></thead><tbody><tr><td>1</td><td><code>CPMB001_MGN_V</code> 是主管白名單</td><td><code>SELECT EMP_NO, UID_CODE, EMP_NAME … WHERE UID_CODE = :UID_CODE</code>,回傳有列就顯示刪除鈕</td><td>查 DB 的 View 定義</td></tr><tr><td>2</td><td>四眼 <code>STATUS = '301'</code> 代表「已生效」</td><td>六支畫面一致寫入、無人讀取;不在 <code>architecture.md §3.10</code> 反推出的值域內</td><td>查 <code>EVAStatusCode</code> 或 DB</td></tr><tr><td>3</td><td><code>COD006A</code> <code>CODE_SORT</code> = <code>Q2</code> / <code>P7</code> / <code>12</code> / <code>13</code> 的中文說明</td><td>只從欄位語意與畫面標題推,值域表內容不在版控</td><td>查 <code>COD006A</code></td></tr><tr><td>4</td><td><code>CPMB004</code> 退回重辦故意不清 <code>SOLVE_DEPT_NO</code></td><td>程式清了九個欄位獨獨留下它,沒有註解說明</td><td>問業務</td></tr><tr><td>5</td><td>抱怨記錄件走兩關(<code>CPMM004</code> → <code>CPMB001</code> → <code>CPMB004</code>)</td><td><code>CPMB001p0.cs:254</code> 推 <code>04S</code>、<code>CPMB004_PO.cs:146</code> 撈 <code>04S</code>、<code>CPMB002</code>/<code>CPMB003</code> 都限 <code>DATA_TYPE='1'</code></td><td>對照業務流程圖</td></tr><tr><td>6</td><td>「CPM」的展開</td><td>repo 內查無定義</td><td>問客戶</td></tr><tr><td>7</td><td><code>AA_USER</code> 與 <code>TA_AA_USER</code> 是同義詞</td><td>只有一處用 <code>AA_USER</code>,其餘全用 <code>TA_AA_USER</code>,且該處程式在線上</td><td>查 DB synonym</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-f-版本紀錄"><h2 id="附錄-f-版本紀錄"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 F. 版本紀錄</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>版本</th><th>日期</th><th>變更</th></tr></thead><tbody><tr><td>v1</td><td>2026-09-15</td><td>初版。純程式碼閱讀彙整,未修改 ATLAS 任何原始碼</td></tr></tbody></table></div></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-15 10:47 產生 · 標題 89 · 圖 5 · 表格 70 · 程式錨點 379 · § 連結 40 · 引用檢查：畫面 15（缺 0） · Table 12（缺 0） · Report 4（缺 0） · 結果集 5（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

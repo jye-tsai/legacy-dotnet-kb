@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-21">
+<title>ATLAS 速查卡</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#1-畫面代號">1. 畫面代號</a>
+<a class="l2" href="#2-六層-哪一層放哪">2. 六層:哪一層放哪</a>
+<a class="l2" href="#3-主明細-三處同名">3. 主明細:三處同名</a>
+<a class="l2" href="#4-四眼-eva-三階段-13-欄">4. 四眼(EVA):三階段 13 欄</a>
+<a class="l2" href="#5-po-基底-白名單-黑名單">5. PO 基底:白名單 / 黑名單</a>
+<a class="l2" href="#6-部署矩陣-縮版">6. 部署矩陣(縮版)</a>
+<a class="l2" href="#7-三條軌">7. 三條軌</a>
+<a class="l2" href="#8-常用指令">8. 常用指令</a>
+<a class="l2" href="#9-已知坑前十型-1-682-條缺陷的型別分佈">9. 已知坑前十型(1,682 條缺陷的型別分佈)</a>
+<a class="l2" href="#10-三個離線查詢頁-雙擊即開-不用起-server">10. 三個離線查詢頁(雙擊即開,不用起 server)</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-21</span></div>
+<h1 id="atlas-速查卡">ATLAS 速查卡</h1>
+<blockquote><p><strong>一頁 A4 雙面,印出來貼旁邊。</strong>只收「不知道就會做錯」的骨幹,每條附出處;細節去出處讀,本卡不展開。讀序 <code>OVERVIEW.md</code> → 本卡 → <code>architecture.md</code> → 自己的模組篇 → <code>runbooks/</code>;症狀查修走 <code>TROUBLESHOOT.md</code>。規模:<strong>畫面 911 · 實體表 437 · 報表範本 608 · 缺陷 1,682(高 435)</strong>。</p></blockquote>
+<section class="sec" data-sec="1-畫面代號"><h2 id="1-畫面代號"><button class="tg" aria-label="收合/展開" type="button"></button>1. 畫面代號</h2><div class="sec-body">
+<p><strong>前 3 碼模組(<code>OFD</code> / <code>CAS</code> / <code>BMS</code> …)+ 第 4 碼型別 + 後 3 碼流水號 + 可選後綴</strong>;型別 <code>M</code> 維護 285 · <code>I</code> 查詢 87 · <code>B</code> 批次 215 · <code>R</code> 報表 324(<code>architecture.md §2</code>)。代號一定案,六層的<strong>檔名 / 類別名 / namespace / xsd 根節點全部由它推導</strong>,不必查任何 registry。 ⚠ <strong><code>A</code>、<code>B</code> 後綴至少七種成因</strong>(境內外 · MSSQL 轉 Oracle 改名 · 第二張表 · 代號的一部分 · 族名 · 兩子系統各一份 · 同資料第二出口),<strong>看到必須逐張查,不能套規則</strong>(<code>OVERVIEW.md 附錄 A</code>)。</p>
+</div></section><section class="sec" data-sec="2-六層-哪一層放哪"><h2 id="2-六層-哪一層放哪"><button class="tg" aria-label="收合/展開" type="button"></button>2. 六層:哪一層放哪</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>#</th><th>層</th><th>檔名</th><th>職責</th><th>不該做</th></tr></thead><tbody><tr><td>1</td><td>UI</td><td><code>&lt;代號&gt;.cs</code></td><td>擺控件、綁事件、填 <code>ProcessVDB</code></td><td>不碰 DB</td></tr><tr><td>2</td><td>FormProxy</td><td><code>&lt;代號&gt;_Pxy.cs</code></td><td>遠端門面,<code>try / catch</code> 包 Control</td><td>不放邏輯</td></tr><tr><td>3</td><td>Control</td><td><code>&lt;代號&gt;_Ctl.cs</code></td><td>組 PO、宣告 VDB 型別、Model 與 View 互搬</td><td>不寫 SQL</td></tr><tr><td>4</td><td>PO</td><td><code>&lt;代號&gt;_PO.cs</code></td><td><strong>唯一碰 DB 的層</strong>:宣告主明細、組 SQL / 叫 SP</td><td>不認識 ViewVDB</td></tr><tr><td>5</td><td>DataEntity</td><td><code>&lt;代號&gt;Model.xsd</code></td><td>伺服器側 typed DataSet(貼近實體表)</td><td>不放邏輯</td></tr><tr><td>6</td><td>UIEntity</td><td><code>&lt;代號&gt;View.xsd</code></td><td>用戶端側 typed DataSet,跨 Remoting 序列化</td><td>不放邏輯</td></tr></tbody></table></div>
+<ul><li>出處 <code>architecture.md §2</code>。<strong>Remoting 邊界在 UI 與 FormProxy 之間</strong>(<code>architecture.md §8</code>)——整張部署表都是這一條推出來的。</li><li><strong>R 報表是七層</strong>,多一層 Crystal(<code>Source/CrystalReports/Report.&lt;MOD&gt;/</code> 的 <code>&lt;代號&gt;RPS.rpt</code>),報表方案各層資料夾一律加 <code>Report</code> 前綴(<code>ofdr1.md §0.1</code>)。</li><li><strong>I 查詢方案</strong>各層資料夾加 <code>Query</code> 前綴,PO 檔名仍是 <code>&lt;代號&gt;_PO.cs</code>;<code>&lt;代號&gt;OracleDao.cs</code> 這個命名<strong>只在 EC 那條線</strong>(<code>ofdi1.md §0.1</code>)。</li></ul>
+</div></section><section class="sec" data-sec="3-主明細-三處同名"><h2 id="3-主明細-三處同名"><button class="tg" aria-label="收合/展開" type="button"></button>3. 主明細:三處同名</h2><div class="sec-body">
+<pre class="code lang-csharp"><code>this.MasterTable = new xTableMapping("DSM001A", "DSM001A");    // 1 實體表名, 2 VDB 裡 DataTable 名
+this.DetailTable.Add(new xTableMapping("DSM002A", "DSM002A"));</code></pre>
+<p>宣告位置是 <strong>PO 建構子</strong>。要一致的三處:<code>xTableMapping</code> 第 1 參數(實體表名)、第 2 參數(VDB 裡 DataTable 名)、<code>Model.xsd</code> / <code>View.xsd</code> 的表名。<strong>對不上的症狀是「存得進去、查不回來」</strong>(<code>runbooks/add-screen.md §5.2</code>)。 ⚠ <strong>兩段式寫法 grep 不到</strong>:<code>xTableMapping tp = new xTableMapping(...); this.MasterTable = tp;</code>,全庫 6 支。用 <code>xTableMapping</code>,不要寫成舊世代的 <code>TableMapping</code>。</p>
+</div></section><section class="sec" data-sec="4-四眼-eva-三階段-13-欄"><h2 id="4-四眼-eva-三階段-13-欄"><button class="tg" aria-label="收合/展開" type="button"></button>4. 四眼(EVA):三階段 13 欄</h2><div class="sec-body">
+<p>Entry(經辦鍵入)→ Verify(覆核)→ Approve(核准);<strong>核准前資料躺在待辦裡,不算正式資料</strong>(<code>architecture.md §3</code>)。</p>
+<p>13 欄 = <code>STATUS</code> + 六組 <code>*ID</code> / <code>*DATE</code>:<code>CREATE</code>(只在第一次 <code>Add</code>)· <code>UPDATE</code>(<strong>每個</strong> EVA 動作都改寫)· <code>ENTRY</code>(<code>Add</code> / <code>Modify</code> / <code>Delete</code> / <code>UnDelete</code> / <code>Resend</code>)· <code>VERIFY</code>(<code>Verify</code>)· <code>APPROVE</code>(<code>Approve</code> / <code>ApproveDelete</code>)· <code>REJECT</code>(<code>Reject</code>)。固定 13 欄與動作無關(每次全送,值由 DLL 決定);第 14 欄 <code>dataid</code> 只在 INSERT 寫。 ⚠ 兩個例外:<strong>受益人資料變更走變更申請單,覆核完不生效,要等批次 <code>OFDB003</code> 跑</strong>(<code>bms.md §2.1</code>);<strong>全庫 36 支繞過四眼直接改正式表</strong>(<code>OVERVIEW.md §5</code>)。</p>
+</div></section><section class="sec" data-sec="5-po-基底-白名單-黑名單"><h2 id="5-po-基底-白名單-黑名單"><button class="tg" aria-label="收合/展開" type="button"></button>5. PO 基底:白名單 / 黑名單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>基底</th><th>子類</th><th>新畫面</th><th>說明</th></tr></thead><tbody><tr><td><code>BaseEVADaoPO</code> / <code>BaseMultiRowEVADaoPO</code></td><td>271 / 61</td><td>✔ 單筆 / 多筆主檔</td><td>現行主線</td></tr><tr><td><code>BasicEVAPO</code> / <code>MultiRowEVAPO</code></td><td>66 / 11</td><td>✘</td><td><code>dbTA</code> 恆 null,<strong>連查詢都 NRE</strong></td></tr><tr><td>報表派 <code>Basic_PO</code></td><td>76</td><td>✘</td><td><code>m_db</code> 恆 null,<strong>按預覽即 NRE</strong></td></tr><tr><td><code>TA_PO</code> / <code>Basic4EyesPO</code> / <code>MultiRow4EyesPO</code></td><td>0</td><td>✘</td><td>純死碼,改了沒反應也不報錯</td></tr></tbody></table></div>
+<p><strong>兩條死碼線聯集 151 支畫面(17%)一按就 NRE</strong>(<code>BasicEVAPO</code> 派 76 支 + 報表 <code>m_db</code> 派 76 支,<code>OFDM242</code> 兩條都中只算一次;<code>architecture.md §3.1.1</code>、<code>architecture.md 附錄 D.3</code>、<code>runbooks/add-screen.md §5.7</code>)。所以<strong>接到「某支畫面壞掉」的單,第一件事是查它的 PO 繼承誰</strong>——開 <code>query.html</code> 打代號最快。</p>
+</div></section><section class="sec" data-sec="6-部署矩陣-縮版"><h2 id="6-部署矩陣-縮版"><button class="tg" aria-label="收合/展開" type="button"></button>6. 部署矩陣(縮版)</h2><div class="sec-body">
+<p>一句話:<strong>改 UI 佈客戶端,改其餘五層佈伺服端,<code>View.xsd</code> 兩端都要。</strong>完整表在 <code>runbooks/deploy.md §2</code>。</p>
+<div class="tw"><table><thead><tr><th>改了</th><th>客戶端</th><th>伺服端 IIS</th><th>WindowsService</th><th>DB</th></tr></thead><tbody><tr><td><code>UI.&lt;MOD&gt;</code></td><td>✔</td><td></td><td></td><td></td></tr><tr><td><code>UIEntity.&lt;MOD&gt;</code>(<code>View.xsd</code>)</td><td>✔</td><td>✔</td><td>✔</td><td></td></tr><tr><td><code>FormProxy</code> / <code>Control</code> / <code>PO</code> / <code>DataEntity</code>(<code>Model.xsd</code>)</td><td></td><td>✔</td><td></td><td></td></tr><tr><td><code>TA.DataAccess</code>(四眼引擎)</td><td></td><td>✔</td><td></td><td></td></tr><tr><td>共用層(<code>TA.MappingCode</code> / <code>TA.Utility*</code> / <code>Exceptions</code>)</td><td>✔</td><td>✔</td><td>✔</td><td></td></tr><tr><td>報表範本</td><td>✔ 檢視</td><td>✔ 產出</td><td></td><td></td></tr><tr><td>SP / Function / Trigger / View / 表結構</td><td></td><td></td><td></td><td>✔</td></tr></tbody></table></div>
+<p>⚠ 先查你改的組件在不在 <strong>DLL 覆寫名單(25 個組件、143 筆 <code>HintPath</code>)</strong>:在名單裡的話,只重編不更新預編 DLL 落點等於沒改,而且開發機上看不出來(<code>runbooks/deploy.md §2.1</code>、<code>architecture.md 附錄 C.5</code>)。</p>
+</div></section><section class="sec" data-sec="7-三條軌"><h2 id="7-三條軌"><button class="tg" aria-label="收合/展開" type="button"></button>7. 三條軌</h2><div class="sec-body">
+<p><strong><code>ATLAS.OFD*</code> 境內分戶軌 · <code>OTA*</code> / <code>OTAB</code> 境外綜合帳戶軌 · <code>EC*</code> 電子交易(網路 / 語音)軌。</strong> <code>NFD</code> <strong>不是第四條軌</strong>,是境內軌的<strong>純輸出層</strong>:沒有自己的表、也沒有主專案(<code>OVERVIEW.md §1</code>、<code>nfdr1.md §0</code>)。</p>
+</div></section><section class="sec" data-sec="8-常用指令"><h2 id="8-常用指令"><button class="tg" aria-label="收合/展開" type="button"></button>8. 常用指令</h2><div class="sec-body">
+<pre class="code lang-bash"><code>py -V:3.12 <repo>/docs/tools/atlas_scan.py --screen &lt;代號&gt;     # 六層 / 主明細 / PO 基底
+py -V:3.12 <repo>/docs/tools/atlas_scan.py --table &lt;表名&gt;      # 誰宣告它、誰讀寫它
+py -V:3.12 <repo>/docs/tools/atlas_build_doc.py &lt;x&gt;.md --repo-root <repo> --report &lt;x&gt;.md.refcheck.md
+py -V:3.12 <repo>/docs/tools/check_xrefs.py                  # 跨文件 § 引用指不指得到
+py -V:3.12 <repo>/docs/tools/test_scan.py                    # 掃描器回歸</code></pre>
+<p>改過 <code>Dev/</code> 後照序重生:<code>atlas_scan.py --index --refresh</code> → <code>--export-screens-ext</code> → <code>--export-readers</code> → <code>--export-messages</code> → <code>build_query.py</code> / <code>build_defects.py</code> / <code>build_messages.py</code> → <code>build_site_index.py</code>。 ⚠ 做任何靜態統計<strong>第一件事是剝註解,<code>//</code> 和 <code>/* */</code> 都要</strong>(repo 保留大量註解掉的程式碼,不剝數字一律偏高);<code>Dev/</code> 有 <strong>241 個 cp950 檔</strong>,讀檔走 <code>atlas_scan.read_text</code>,不要直接 <code>open(encoding='utf-8')</code>(<code>architecture.md 附錄 D.3</code>)。<strong>不要 Read <code>*.Designer.cs</code></strong>(一支 5,375 行,全庫 2,190 支)。</p>
+</div></section><section class="sec" data-sec="9-已知坑前十型-1-682-條缺陷的型別分佈"><h2 id="9-已知坑前十型-1-682-條缺陷的型別分佈"><button class="tg" aria-label="收合/展開" type="button"></button>9. 已知坑前十型(1,682 條缺陷的型別分佈)</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>#</th><th>型</th><th>條</th><th>一句話</th><th>代表出處</th></tr></thead><tbody><tr><td>1</td><td>寫死常數 / 位置取參數</td><td>230</td><td>代碼值寫死在 SQL 或程式裡;批次靠參數位置取值</td><td><code>cod.md 附錄 E</code></td></tr><tr><td>2</td><td>被註解的檢核</td><td>218</td><td>檢核整段躺在註解裡,看起來有、其實沒有</td><td><code>ofd6.md 附錄 E</code></td></tr><tr><td>3</td><td>例外被吞 / 空訊息</td><td>168</td><td><code>catch</code> 是空的或只塞訊息字串,<strong>fail-open</strong>:錯了照樣往下跑</td><td><code>ofdr1.md 附錄 E</code></td></tr><tr><td>4</td><td>死碼 / 死條件 / 無呼叫端</td><td>157</td><td>方法還在但沒人呼叫;或條件永遠成立 / 永遠不成立</td><td><code>ofd7.md 附錄 E</code></td></tr><tr><td>5</td><td>成對 / 平行複本只改一邊</td><td>141</td><td>同一概念兩份實作(境內外、MSSQL 與 Oracle),改一邊忘另一邊</td><td><code>crm.md 附錄 E</code></td></tr><tr><td>6</td><td>字串串接進 SQL</td><td>132</td><td>條件用字串串接進 SQL,不是繫結參數</td><td><code>ofd9.md 附錄 E</code></td></tr><tr><td>7</td><td>交易 / rollback 破口</td><td>128</td><td>多語句沒包同一交易,或例外後沒 rollback</td><td><code>ofdb3.md 附錄 E</code></td></tr><tr><td>8</td><td><code>ExecuteNonQuery</code> 回傳值被蓋</td><td>111</td><td><code>i = 1;</code> 或 <code>if (i == -1)</code>,影響列數檢核形同虛設</td><td><code>cpm.md 附錄 E</code></td></tr><tr><td>9</td><td>Oracle 三值邏輯</td><td>110</td><td><code>欄 &lt;&gt; '值'</code> / <code>= ''</code> / <code>NOT IN</code> / <code>NVL(TRIM(:p),欄)</code> 遇 NULL 是 UNKNOWN,<strong>無聲過濾</strong>;十個模組中過</td><td><code>ofd8.md 附錄 E</code></td></tr><tr><td>10</td><td>中文名 / 中繼資料錯誤</td><td>78</td><td>畫面或欄位中文名與實際不符,照名字找會找錯地方</td><td><code>ofdb.md 附錄 E</code></td></tr></tbody></table></div>
+<p>次高兩型也常咬人:<strong><code>INNER JOIN</code> 無聲吃資料</strong> 66 條(報表少印且不提示,<code>nfdr1.md 附錄 E</code>)、<strong>全域暫存表併發</strong> 37 條(兩人同時按同一張報表互相蓋掉,<code>ofdr2.md 附錄 E</code>)。全部可篩可排序:開 <code>defects.html</code>。</p>
+</div></section><section class="sec" data-sec="10-三個離線查詢頁-雙擊即開-不用起-server"><h2 id="10-三個離線查詢頁-雙擊即開-不用起-server"><button class="tg" aria-label="收合/展開" type="button"></button>10. 三個離線查詢頁(雙擊即開,不用起 server)</h2><div class="sec-body">
+<ul><li><code>query.html</code> —— 手上有代號或表名:六層路徑、主明細、<strong>PO 基底(死畫面標紅)</strong>、誰讀寫這張表。</li><li><code>messages.html</code> —— 線上噴了一句中文訊息:反查是哪支程式哪一行丟的(9,440 筆)。</li><li><code>defects.html</code> —— 要動某模組之前:先看它已知有什麼坑(1,682 條,可依模組 / 嚴重度 / 型別篩)。</li></ul>
+<p>⚠ 模組篇附錄 E 引用的錯誤訊息<strong>有意譯的</strong>(實測 4 句在原始碼裡根本不存在),要原文一律以 <code>messages.html</code> 為準。</p></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-21 13:52 產生 · 標題 11 · 圖 0 · 表格 4 · 程式錨點 0 · § 連結 0 · 引用檢查：畫面 2（缺 0） · 結果集 2（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

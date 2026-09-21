@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-14">
+<title>ATLAS 維護手冊 — 從零加一支 M 維護畫面</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-適用範圍與前提">0. 適用範圍與前提</a>
+<a class="l3" href="#0-1-九個步驟-以及哪幾步要動腦">0.1 九個步驟,以及哪幾步要動腦</a>
+<a class="l2" href="#1-建立點總覽-圖">1. 建立點總覽(圖)</a>
+<a class="l2" href="#2-步驟一-決定代號與確認資料表">2. 步驟一:決定代號與確認資料表</a>
+<a class="l3" href="#2-1-現況-代號怎麼編">2.1 現況:代號怎麼編</a>
+<a class="l3" href="#2-2-改法-取號規則">2.2 改法:取號規則</a>
+<a class="l3" href="#2-3-資料表-要先存在-而且不必跟模組同名">2.3 資料表:要先存在,而且不必跟模組同名</a>
+<a class="l2" href="#3-步驟二-dataentity-建-model-xsd-與加進-csproj">3. 步驟二:DataEntity —— 建 Model.xsd 與加進 csproj</a>
+<a class="l3" href="#3-1-現況-xsd-的三層結構">3.1 現況:xsd 的三層結構</a>
+<a class="l3" href="#3-2-改法-表節點的-10-個-msprop">3.2 改法:表節點的 10 個 msprop</a>
+<a class="l3" href="#3-3-改法-欄位節點的兩種寫法">3.3 改法:欄位節點的兩種寫法</a>
+<a class="l3" href="#3-4-改法-主鍵-新畫面才會踩到">3.4 改法:主鍵 —— 新畫面才會踩到</a>
+<a class="l3" href="#3-5-改法-csproj-要加的三段">3.5 改法:csproj 要加的三段</a>
+<a class="l3" href="#3-6-new-modelvdb-cs-40-行照抄-但有兩處絕對不能抄錯">3.6 &lt;NEW&gt;ModelVDB.cs:40 行照抄,但有兩處絕對不能抄錯</a>
+<a class="l3" href="#3-7-驗證">3.7 驗證</a>
+<a class="l2" href="#4-步驟三-uientity-建-view-xsd">4. 步驟三:UIEntity —— 建 View.xsd</a>
+<a class="l3" href="#4-1-現況-view-是-model-的副本-而且可以驗">4.1 現況:View 是 Model 的副本,而且可以驗</a>
+<a class="l3" href="#4-2-改法">4.2 改法</a>
+<a class="l3" href="#4-3-什麼時候-view-才該跟-model-不一樣">4.3 什麼時候 View 才該跟 Model 不一樣</a>
+<a class="l3" href="#4-4-驗證">4.4 驗證</a>
+<a class="l2" href="#5-步驟四-po-建構子-主明細宣告-事件訂閱-查詢-sql">5. 步驟四:PO —— 建構子、主明細宣告、事件訂閱、查詢 SQL</a>
+<a class="l3" href="#5-1-現況-骨架四件">5.1 現況:骨架四件</a>
+<a class="l3" href="#5-2-主明細宣告">5.2 主明細宣告</a>
+<a class="l3" href="#5-3-事件-三個必要-其餘可選">5.3 事件:三個必要,其餘可選</a>
+<a class="l3" href="#5-4-查詢-sql-全篇唯一要自己寫的東西">5.4 查詢 SQL:全篇唯一要自己寫的東西</a>
+<a class="l3" href="#5-5-兩處現存缺陷-不要照抄">5.5 兩處現存缺陷,不要照抄</a>
+<a class="l3" href="#5-6-驗證">5.6 驗證</a>
+<a class="l3" href="#5-7-po-基底白名單-一律-baseevadaopo-basemultirowevadaopo">5.7 PO 基底白名單:一律 BaseEVADaoPO / BaseMultiRowEVADaoPO</a>
+<a class="l3" href="#5-8-主明細三處同名-一行指令查">5.8 主明細三處同名:一行指令查</a>
+<a class="l2" href="#6-步驟五-control-initializedataaccesspool-initializevdbtypes">6. 步驟五:Control —— InitializeDataAccessPool / InitializeVDBTypes</a>
+<a class="l3" href="#6-1-現況-逐字樣板">6.1 現況:逐字樣板</a>
+<a class="l3" href="#6-2-兩個必覆寫">6.2 兩個必覆寫</a>
+<a class="l3" href="#6-3-customtransfer-四個覆寫-都要寫-都是樣板">6.3 CustomTransfer* 四個覆寫:都要寫,都是樣板</a>
+<a class="l3" href="#6-4-加值方法-先不要寫">6.4 加值方法:先不要寫</a>
+<a class="l2" href="#7-步驟六-formproxy">7. 步驟六:FormProxy</a>
+<a class="l3" href="#7-1-現況-最小的一層-21-行">7.1 現況:最小的一層,21 行</a>
+<a class="l3" href="#7-2-什麼時候要多寫">7.2 什麼時候要多寫</a>
+<a class="l2" href="#8-步驟七-ui">8. 步驟七:UI</a>
+<a class="l3" href="#8-1-繼承誰-csproj-怎麼掛">8.1 繼承誰、csproj 怎麼掛</a>
+<a class="l3" href="#8-2-生命週期-六個事件掛點">8.2 生命週期:六個事件掛點</a>
+<a class="l3" href="#8-3-控件命名-前綴決定型別">8.3 控件命名:前綴決定型別</a>
+<a class="l3" href="#8-4-主檔-具名控件手動雙向搬">8.4 主檔:具名控件手動雙向搬</a>
+<a class="l3" href="#8-5-明細-網格-白名單">8.5 明細:網格 + 白名單</a>
+<a class="l3" href="#8-6-驗證欄位集中在-dovalidate">8.6 驗證欄位集中在 DoValidate</a>
+<a class="l2" href="#9-步驟八-註冊到選單與權限">9. 步驟八:註冊到選單與權限</a>
+<a class="l3" href="#9-1-為什麼查不到">9.1 為什麼查不到</a>
+<a class="l3" href="#9-2-推論-鍵大概長什麼樣">9.2 推論:鍵大概長什麼樣</a>
+<a class="l3" href="#9-3-拿到輸入後怎麼驗">9.3 拿到輸入後怎麼驗</a>
+<a class="l3" href="#9-4-在拿到輸入前怎麼測">9.4 在拿到輸入前怎麼測</a>
+<a class="l2" href="#10-步驟九-編譯與部署">10. 步驟九:編譯與部署</a>
+<a class="l3" href="#10-1-六個-csproj-都要改-但不會多出組件">10.1 六個 csproj 都要改,但不會多出組件</a>
+<a class="l3" href="#10-2-模組有多個-entity-專案時放哪一個">10.2 模組有多個 Entity 專案時放哪一個</a>
+<a class="l3" href="#10-3-重編順序與部署">10.3 重編順序與部署</a>
+<a class="l2" href="#11-驗證清單">11. 驗證清單</a>
+<a class="l2" href="#12-常見錯誤與症狀">12. 常見錯誤與症狀</a>
+<a class="l2" href="#13-可以少建哪一層">13. 可以少建哪一層</a>
+<a class="l3" href="#13-1-先看現況-並且知道掃描器會誤報">13.1 先看現況,並且知道掃描器會誤報</a>
+<a class="l3" href="#13-2-m-型幾乎不能少">13.2 M 型幾乎不能少</a>
+<a class="l3" href="#13-3-唯一常見的-少建-沒有明細">13.3 唯一常見的「少建」:沒有明細</a>
+<a class="l2" href="#附錄-a-本手冊引用的檔案清單">附錄 A 本手冊引用的檔案清單</a>
+<a class="l2" href="#附錄-b-待輸入回填">附錄 B 待輸入回填</a>
+<a class="l2" href="#附錄-c-版本紀錄">附錄 C 版本紀錄</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-14</span></div>
+<h1 id="atlas-維護手冊-從零加一支-m-維護畫面">ATLAS 維護手冊 — 從零加一支 M 維護畫面</h1>
+<blockquote><p>產出日期:2026-09-14(v1)。本手冊為<strong>純程式碼閱讀彙整 + 操作步驟</strong>,未修改任何 ATLAS 原始碼。每一步附程式錨點(<code>Dev/…/X.cs:行號</code>),行號為分析當下版本,動手前以最新程式為準。 ⚠ 標「<strong>〔假設〕缺:輸入</strong>」的是拿不到輸入(DB 連線 / PTPFBlock DLL / 選單表)只能推論的部分,附錄 B 彙整;標「<strong>〔客戶特定〕</strong>」的是本站台的值。</p>
+<p>前提知識在 <code>architecture.md</code>:六層與重編順序 <code>architecture.md §2</code>、typed DataSet <code>architecture.md §5</code>、畫面型別 <code>architecture.md §6</code>、部署邊界 <code>architecture.md §8</code>、DLL 覆寫陷阱 <code>architecture.md 附錄 C.5</code>。<strong>不要整份讀</strong>。加欄位的細節不重複,一律引用 <code>add-column.md</code>。</p></blockquote>
+<section class="sec" data-sec="0-適用範圍與前提"><h2 id="0-適用範圍與前提"><button class="tg" aria-label="收合/展開" type="button"></button>0. 適用範圍與前提</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>項目</th><th>內容</th></tr></thead><tbody><tr><td>適用情境</td><td>在既有模組裡<strong>從零建一支新的 M(維護)畫面</strong>:主檔 + 明細、走四眼、六層全建</td></tr><tr><td>主要範本</td><td><code>CASM006</code>(CAS 模組最後一支 M,「上一支是怎麼建的」最新樣本)</td></tr><tr><td>對照範本</td><td><code>CASM001</code>(<code>add-column.md</code> 的範例)。兩支對照才分得出「樣板」與「畫面特有」</td></tr><tr><td>不適用</td><td>建新模組(要另開六個專案)· 建 <code>I</code>/<code>B</code>/<code>R</code> 畫面(<code>architecture.md §6</code>)· 既有畫面加欄位(<code>add-column.md</code>)</td></tr><tr><td>前提工具</td><td>Visual Studio(xsd 與 WinForms 兩個設計工具都要用)· <strong>Devart dotConnect for Oracle</strong> · Oracle 客戶端 · PTPFBlock DLL · TFS workspace</td></tr><tr><td>變數</td><td><code>%ATLAS_ROOT%</code> = <code><repo></code>〔客戶特定〕 · <code>%PTPF%</code> = <code>C:\Program Files\Vendor\PTPFBlock</code>〔客戶特定〕</td></tr><tr><td>佈位符</td><td><code>&lt;NEW&gt;</code> = 新代號(CAS 模組的下一支會是 <code>CASM007</code>);<code>&lt;T_MASTER&gt;</code> / <code>&lt;T_DETAIL&gt;</code> = 主檔 / 明細表名</td></tr></tbody></table></div>
+<h3 id="0-1-九個步驟-以及哪幾步要動腦">0.1 九個步驟,以及哪幾步要動腦</h3>
+<p><strong>六層裡兩層是逐字樣板、兩層是半樣板,只有 UI 真的要自己做。</strong>這是本手冊最重要的一句話。</p>
+<div class="tw"><table><thead><tr><th>#</th><th>步驟</th><th>動什麼</th><th>樣板程度</th><th>憑什麼這樣說</th><th>節</th></tr></thead><tbody><tr><td>1</td><td>決定代號與表</td><td>不寫程式</td><td>自己想</td><td>—</td><td><a class="sec" href="#2-步驟一-決定代號與確認資料表">§2</a></td></tr><tr><td>2</td><td>DataEntity <code>&lt;NEW&gt;Model.xsd</code> + VDB</td><td>新增 2 檔 + 3 附檔</td><td>半樣板</td><td>骨架與四眼 15 欄照抄,業務欄自己列</td><td><a class="sec" href="#3-步驟二-dataentity-建-model-xsd-與加進-csproj">§3</a></td></tr><tr><td>3</td><td>UIEntity <code>&lt;NEW&gt;View.xsd</code> + VDB</td><td>新增 2 檔 + 3 附檔</td><td><strong>抄 Model</strong></td><td>兩份 xsd 222 行只有 2 行不同(<a class="sec" href="#4-1-現況-view-是-model-的副本-而且可以驗">§4.1</a>)</td><td><a class="sec" href="#4-步驟三-uientity-建-view-xsd">§4</a></td></tr><tr><td>4</td><td>PO <code>&lt;NEW&gt;_PO.cs</code></td><td>新增 1 檔</td><td>半樣板</td><td>建構子與三事件照抄,兩支 SELECT 自己寫</td><td><a class="sec" href="#5-步驟四-po-建構子-主明細宣告-事件訂閱-查詢-sql">§5</a></td></tr><tr><td>5</td><td>Control <code>&lt;NEW&gt;_Ctl.cs</code></td><td>新增 1 檔</td><td><strong>逐字樣板</strong></td><td><code>CASM003_Ctl</code> 與 <code>CASM006_Ctl</code> 換名後逐字相同(<a class="sec" href="#6-1-現況-逐字樣板">§6.1</a>)</td><td><a class="sec" href="#6-步驟五-control-initializedataaccesspool-initializevdbtypes">§6</a></td></tr><tr><td>6</td><td>FormProxy <code>&lt;NEW&gt;_Pxy.cs</code></td><td>新增 1 檔</td><td><strong>逐字樣板</strong></td><td>全檔 21 行,只有一個 <code>InitializeControl()</code></td><td><a class="sec" href="#7-步驟六-formproxy">§7</a></td></tr><tr><td>7</td><td>UI <code>&lt;NEW&gt;.cs</code> + Designer + resx</td><td>新增 3 檔</td><td><strong>自己做</strong></td><td>版面、控件、驗證全是這支特有</td><td><a class="sec" href="#8-步驟七-ui">§8</a></td></tr><tr><td>8</td><td>註冊選單與權限</td><td>DB(不在 repo)</td><td>拿不到輸入</td><td>見 <a class="sec" href="#9-步驟八-註冊到選單與權限">§9</a></td><td><a class="sec" href="#9-步驟八-註冊到選單與權限">§9</a></td></tr><tr><td>9</td><td>六個 csproj + 編譯部署</td><td>改 6 檔</td><td>樣板</td><td>—</td><td><a class="sec" href="#10-步驟九-編譯與部署">§10</a></td></tr></tbody></table></div>
+<p>工序上先把樣板五分鐘刷完(<a class="sec" href="#3-步驟二-dataentity-建-model-xsd-與加進-csproj">§3</a> <a class="sec" href="#4-步驟三-uientity-建-view-xsd">§4</a> <a class="sec" href="#6-步驟五-control-initializedataaccesspool-initializevdbtypes">§6</a> <a class="sec" href="#7-步驟六-formproxy">§7</a>),時間留給 <a class="sec" href="#5-步驟四-po-建構子-主明細宣告-事件訂閱-查詢-sql">§5</a> 的 SQL 與 <a class="sec" href="#8-步驟七-ui">§8</a> 的版面。</p>
+</div></section><section class="sec" data-sec="1-建立點總覽-圖"><h2 id="1-建立點總覽-圖"><button class="tg" aria-label="收合/展開" type="button"></button>1. 建立點總覽(圖)</h2><div class="sec-body">
+<figure><svg viewBox="0 0 1010 530" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="從零建一支 M 畫面的九個步驟:代號與表、兩份 xsd、PO、Control、FormProxy、UI、選單、六個 csproj 與重編順序"><defs><marker id="ah_addscreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 決定代號與表(還不寫程式)</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="62" text-anchor="middle">步驟一 代號 &lt;NEW&gt;</text>
+<text class="t2" x="145" y="82" text-anchor="middle">同模組同型別 max+1,避開 9xx</text>
+</g><g class="bx">
+<rect x="300" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="62" text-anchor="middle">主檔 / 明細表</text>
+<text class="t2" x="425" y="82" text-anchor="middle">表要先存在;借別模組的表合法</text>
+</g><g class="bx">
+<rect x="580" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="62" text-anchor="middle">型別碼選 M</text>
+<text class="t2" x="695" y="82" text-anchor="middle">四眼 + 主明細才叫 M</text>
+</g><g class="bx vend">
+<rect x="840" y="40" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="62" text-anchor="middle">⚠ 選單表不在 repo</text>
+<text class="t2" x="915" y="82" text-anchor="middle">§9 只能給驗法</text>
+</g><path class="ar" d="M 270 68 L 300 68" marker-end="url(#ah_addscreen)"/><path class="ar" d="M 550 68 L 580 68" marker-end="url(#ah_addscreen)"/><text class="lane" x="20" y="130">② ③ Entity —— 整支照抄,只換名字</text><g class="bx accent">
+<rect x="20" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="166" text-anchor="middle">步驟二 Model.xsd</text>
+<text class="t2" x="145" y="186" text-anchor="middle">DataEntity · 三層 + 主鍵</text>
+</g><g class="bx accent">
+<rect x="300" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="166" text-anchor="middle">步驟三 View.xsd</text>
+<text class="t2" x="425" y="186" text-anchor="middle">UIEntity · Model 的副本</text>
+</g><g class="bx accent">
+<rect x="580" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="166" text-anchor="middle">Designer.cs 重生</text>
+<text class="t2" x="695" y="186" text-anchor="middle">MSDataSetGenerator</text>
+</g><g class="bx dash">
+<rect x="840" y="144" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="166" text-anchor="middle">*VDB.cs 薄殼</text>
+<text class="t2" x="915" y="186" text-anchor="middle">40 行照抄</text>
+</g><path class="ar" d="M 270 172 L 300 172" marker-end="url(#ah_addscreen)"/><path class="ar" d="M 550 172 L 580 172" marker-end="url(#ah_addscreen)"/><path class="ar lnk" d="M 810 172 L 840 172"/><path class="ar" d="M 145 96 L 145 144" marker-end="url(#ah_addscreen)"/><text class="lane" x="20" y="234">④ PO —— 全篇唯一要自己想的一層</text><g class="bx accent">
+<rect x="20" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="270" text-anchor="middle">步驟四 &lt;NEW&gt;_PO.cs</text>
+<text class="t2" x="145" y="290" text-anchor="middle">三事件樣板 + 手寫 SELECT</text>
+</g><g class="bx dash">
+<rect x="300" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="270" text-anchor="middle">I&lt;NEW&gt;_PO 空介面</text>
+<text class="t2" x="425" y="290" text-anchor="middle">照抄兩行</text>
+</g><g class="bx dash">
+<rect x="580" y="248" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="270" text-anchor="middle">xTableMapping</text>
+<text class="t2" x="695" y="290" text-anchor="middle">照抄,換表名</text>
+</g><g class="bx dash">
+<rect x="840" y="248" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="270" text-anchor="middle">INSERT / UPDATE</text>
+<text class="t2" x="915" y="290" text-anchor="middle">框架自動,不寫</text>
+</g><path class="ar" d="M 145 200 L 145 248" marker-end="url(#ah_addscreen)"/><path class="ar lnk" d="M 270 276 L 300 276"/><text class="lane" x="20" y="338">⑤ ⑥ Control 與 FormProxy —— 100% 樣板</text><g class="bx dash">
+<rect x="20" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="374" text-anchor="middle">步驟五 &lt;NEW&gt;_Ctl.cs</text>
+<text class="t2" x="145" y="394" text-anchor="middle">與 CASM003_Ctl 逐字相同</text>
+</g><g class="bx dash">
+<rect x="300" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="374" text-anchor="middle">步驟六 &lt;NEW&gt;_Pxy.cs</text>
+<text class="t2" x="425" y="394" text-anchor="middle">21 行,只覆寫 InitializeControl</text>
+</g><g class="bx">
+<rect x="580" y="352" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="374" text-anchor="middle">加值方法才另外寫</text>
+<text class="t2" x="695" y="394" text-anchor="middle">每支 try / catch 包起來</text>
+</g><g class="bx vend">
+<rect x="840" y="352" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="374" text-anchor="middle">⚠ 名字打錯</text>
+<text class="t2" x="915" y="394" text-anchor="middle">跨層靠字串綁,靜默失敗</text>
+</g><path class="ar" d="M 145 304 L 145 352" marker-end="url(#ah_addscreen)"/><path class="ar" d="M 270 380 L 300 380" marker-end="url(#ah_addscreen)"/><text class="lane" x="20" y="442">⑦ ⑧ ⑨ UI、選單、編譯部署</text><g class="bx accent">
+<rect x="20" y="456" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="478" text-anchor="middle">步驟七 &lt;NEW&gt;.cs</text>
+<text class="t2" x="145" y="498" text-anchor="middle">唯一要拉版面的一層</text>
+</g><g class="bx vend">
+<rect x="300" y="456" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="478" text-anchor="middle">步驟八 選單 / 權限</text>
+<text class="t2" x="425" y="498" text-anchor="middle">〔假設〕缺:選單表</text>
+</g><g class="bx accent">
+<rect x="580" y="456" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="478" text-anchor="middle">步驟九 六個 csproj</text>
+<text class="t2" x="695" y="498" text-anchor="middle">xsd 要掛三段</text>
+</g><g class="bx accent">
+<rect x="840" y="456" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="478" text-anchor="middle">重編 下 → 上</text>
+<text class="t2" x="915" y="498" text-anchor="middle">Entity→PO→Ctl→Pxy→UI</text>
+</g><path class="ar" d="M 145 408 L 145 456" marker-end="url(#ah_addscreen)"/><path class="ar" d="M 270 484 L 300 484" marker-end="url(#ah_addscreen)"/><path class="ar" d="M 550 484 L 580 484" marker-end="url(#ah_addscreen)"/><path class="ar" d="M 810 484 L 840 484" marker-end="url(#ah_addscreen)"/></svg><figcaption>圖 1 建立點總覽。橘色實框=這一步要自己想或自己拉;灰虛框=照抄樣板換名字;橘色虛框=拿不到輸入或會靜默失敗的地方。由上往下做,反過來每一步都編不過。</figcaption></figure>
+<p>三件事先記住:</p>
+<ol><li><strong>順序由下往上。</strong>Entity → PO → Control → FormProxy → UI。不是慣例,是 <code>ProjectReference</code> 強制的(<code>architecture.md §2.4</code>)。</li><li><strong>跨層全靠字串與命名對上,編譯器幫不了你。</strong>PO 的表名字串、Ctl 的欄名比對、UI 的網格白名單都是字串。打錯不紅字,靜默失敗。</li><li><strong>檔案建好不等於加進專案。</strong>xsd 在 csproj 裡要掛<strong>三段</strong>(<a class="sec" href="#3-5-改法-csproj-要加的三段">§3.5</a>),漏一段就是「編得過、執行期沒有那個型別」。</li></ol>
+</div></section><section class="sec" data-sec="2-步驟一-決定代號與確認資料表"><h2 id="2-步驟一-決定代號與確認資料表"><button class="tg" aria-label="收合/展開" type="button"></button>2. 步驟一:決定代號與確認資料表</h2><div class="sec-body">
+<h3 id="2-1-現況-代號怎麼編">2.1 現況:代號怎麼編</h3>
+<p>代號 7 碼三段:模組 2–4 碼 + 型別碼(<code>B</code>/<code>I</code>/<code>M</code>/<code>R</code>)+ 三位流水號 + 可選後綴(<code>architecture.md §2.1</code>)。 CAS 現有六支 M:<code>CASM001</code>–<code>CASM006</code>,<strong>沒有跳號</strong>。但不能推論全庫都不跳號——用索引實測 15 個有 M 畫面的模組:</p>
+<p><strong>只有 3 個不跳號</strong>(<code>CAS</code> 1–6、<code>CLS</code> 1–2、<code>CRM</code> 1–4),<strong>12 個有跳號</strong>(<code>OFD</code> 最大 913 卻只有 185 支、<code>COD</code> 最大 36 只有 8 支)。</p>
+<p>另有一個 <strong>9xx 高位保留段</strong>:全庫 <strong>44</strong> 支落在該段、分佈於 <strong>9</strong> 個模組;其中 <strong>M 型 16 支</strong>(<code>BMSM924</code>–<code>BMSM927</code>、<code>DSMM901</code> <code>DSMM902</code> <code>DSMM903</code> <code>DSMM906</code>、<code>OFDM907</code> <code>OFDM913</code> <code>OFDM913A</code> <code>OFDM931A</code> <code>OFDM931B</code>、<code>OTAM901</code>、<code>TMKM901</code>、<code>TRPM901</code>),跨 6 個模組。<strong>取號時不能撞進去。</strong></p>
+<h3 id="2-2-改法-取號規則">2.2 改法:取號規則</h3>
+<pre class="code"><code>&lt;NEW&gt; = &lt;模組碼&gt; + M + zfill(3, 排除 9xx 後的同模組同型別最大流水號 + 1)</code></pre>
+<p>CAS 排除 9xx 後最大是 <code>006</code>,所以下一支是 <code>CASM007</code>。查法 <code>py -V:3.12 %ATLAS_ROOT%\docs\tools\atlas_scan.py --module CAS</code>,看「畫面清冊」的 M 列。三條規則:</p>
+<ul><li><strong>不要補空號。</strong>跳號的 12 個模組沒有任何補號跡象;補進去等於重用一個可能還躺在選單 / 權限 / 報表對照裡的代號。</li><li><strong>不要用 9xx。</strong>保留段,見 <a class="sec" href="#2-1-現況-代號怎麼編">§2.1</a>。</li><li><strong>模組碼由業務歸屬決定,不是由你把檔案放哪決定。</strong><code>ATLAS.EC</code> 裝的是 <code>OFD</code> 與 <code>IPJ</code>、<code>ATLAS.COD</code> 還藏了 <code>CTL</code>(<code>architecture.md §2.6</code>)。</li></ul>
+<h3 id="2-3-資料表-要先存在-而且不必跟模組同名">2.3 資料表:要先存在,而且不必跟模組同名</h3>
+<p>建表原則(可空、編碼、腳本放哪)走 <code>add-column.md §2</code>,這裡只講新畫面特有的三件:</p>
+<div class="tw"><table><thead><tr><th>#</th><th>規則</th><th>依據</th></tr></thead><tbody><tr><td>1</td><td><strong>主檔一定要有,明細可以沒有</strong></td><td><code>CASM004</code> / <code>CASM005</code> 只宣告 <code>MasterTable</code>(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM004_PO.cs:39-42</code>、<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM005_PO.cs:36-39</code>)</td></tr><tr><td>2</td><td><strong>表名不必跟畫面同模組</strong></td><td><code>CASM006</code> 用 <code>DSM001A</code> / <code>DSM002A</code>,兩張表同時被 <code>DSMM001</code> 用(<code>atlas_scan.py --module CAS</code> 的實體表段)。合法,但改表會同時影響兩支畫面</td></tr><tr><td>3</td><td><strong>主檔與明細都要有四眼 15 欄</strong></td><td>少一個,<code>BaseEVADaoPO</code> 組出的 SQL 就 <code>ORA-00904</code>;清單見 <code>add-column.md §2.2</code></td></tr></tbody></table></div>
+<p>驗法:</p>
+<pre class="code lang-sql"><code>SELECT table_name, column_name FROM all_tab_columns WHERE table_name IN ('&lt;T_MASTER&gt;', '&lt;T_DETAIL&gt;')
+   AND column_name IN ('STATUS','CREATEID','CREATEDATE','UPDATEID','UPDATEDATE','ENTRYID','ENTRYDATE',
+       'VERIFYID','VERIFYDATE','APPROVEID','APPROVEDATE','REJECTID','REJECTDATE','DATAID','DATAFLAG');</code></pre>
+<p>兩張表各回 15 列才算過。</p>
+<blockquote><p><strong>〔假設〕缺:DB 連線。</strong>上面的 SQL 未實測。15 欄的清單來自 <code>Dev/Common/Source/Utility/TA.ServerUtility/OracleHelper.cs:115-132</code> 的 <code>AllEVAColumnsForSelect</code>,它逐欄串出來的就是這 15 個。</p></blockquote>
+</div></section><section class="sec" data-sec="3-步驟二-dataentity-建-model-xsd-與加進-csproj"><h2 id="3-步驟二-dataentity-建-model-xsd-與加進-csproj"><button class="tg" aria-label="收合/展開" type="button"></button>3. 步驟二:DataEntity —— 建 <code>Model.xsd</code> 與加進 csproj</h2><div class="sec-body">
+<h3 id="3-1-現況-xsd-的三層結構">3.1 現況:xsd 的三層結構</h3>
+<p><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM006Model.xsd</code> 共 222 行(<code>architecture.md §5.1</code>):</p>
+<pre class="code"><code>CASM006Model  ← DataSet 根 = 代號 + Model :12 │ DSM001A ← 主檔表名 :15-112
+xs:unique × 2 ← 每張表一組主鍵 :211-221    │ DSM002A ← 明細表名 :113-208</code></pre>
+<p>要照抄的骨架四處:<code>:2</code>(<code>id</code> + <code>targetNamespace</code> + 兩個 xmlns,三處代號全換)、<code>:3-11</code>(<code>xs:annotation</code> 內的 <code>DataSource</code> 區塊,<strong>一字不改</strong>)、<code>:12</code>(根 element + <code>Generator_DataSetName</code> / <code>Generator_UserDSName</code>)、<code>:15</code> 與 <code>:113</code>(表 element)。</p>
+<h3 id="3-2-改法-表節點的-10-個-msprop">3.2 改法:表節點的 10 個 <code>msprop</code></h3>
+<p>表 element(<code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM006Model.xsd:15</code>)的 10 個屬性全是 <code>&lt;表名&gt;</code> 套字:</p>
+<pre class="code lang-xml"><code>&lt;xs:element name="DSM001A" msprop:Generator_TableClassName="DSM001ADataTable" msprop:Generator_TableVarName="tableDSM001A"
+  msprop:Generator_TablePropName="DSM001A" msprop:Generator_RowClassName="DSM001ARow" msprop:Generator_UserTableName="DSM001A"
+  msprop:Generator_RowChangedName="DSM001ARowChanged" msprop:Generator_RowChangingName="DSM001ARowChanging"
+  msprop:Generator_RowDeletedName="DSM001ARowDeleted" msprop:Generator_RowDeletingName="DSM001ARowDeleting"
+  msprop:Generator_RowEvHandlerName="DSM001ARowChangeEventHandler" msprop:Generator_RowEvArgName="DSM001ARowChangeEvent"&gt;</code></pre>
+<p><strong>照抄換表名,不要自己發明命名</strong>——這些屬性決定 <code>Designer.cs</code> 產出的成員名,PO 與 UI 都直接吃這些名字。</p>
+<h3 id="3-3-改法-欄位節點的兩種寫法">3.3 改法:欄位節點的兩種寫法</h3>
+<div class="tw"><table><thead><tr><th>寫法</th><th>什麼時候用</th><th>原文錨點</th></tr></thead><tbody><tr><td>內含 <code>xs:simpleType</code> + <code>maxLength</code></td><td>字串欄,而且知道長度</td><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM006Model.xsd:25-31</code>(<code>QUO_YEAR</code>,長度 4)</td></tr><tr><td>單行 <code>type="…"</code></td><td>非字串欄,或字串不限長</td><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM006Model.xsd:46</code>(<code>QUO_MGR_TOT</code>,decimal)</td></tr></tbody></table></div>
+<p><code>CASM001Model.xsd</code> 全部用單行(<code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM001Model.xsd:21</code>)。<strong>混用是既有現實不是錯</strong>;新畫面跟 <code>CASM006</code> 一致(字串帶 <code>maxLength</code>),因為那是 repo 內唯一看得到欄位長度的地方。</p>
+<p>四個 <code>msprop:Generator_Column*</code> 的填法同 <code>add-column.md §3.2</code>。三條新畫面特有的規則:</p>
+<ul><li><strong><code>msdata:Caption</code> 只給業務欄。</strong><code>:52</code> 的 <code>STATUS</code> 沒有 Caption、<code>:25</code> 的 <code>QUO_YEAR</code> 有。</li><li><strong>金額 / 數量一律 <code>type="xs:decimal" default="0"</code></strong>(<code>:46-51</code> 六個 <code>*_TOT</code>),不要用 <code>xs:double</code>。</li><li><strong>四眼 15 欄整段複製</strong>,從 <code>:52</code> 的 <code>STATUS</code> 到 <code>:205</code> 的 <code>DATAFLAG</code>(含 <code>msdata:ReadOnly="true"</code>),一個字都不要改。</li></ul>
+<h3 id="3-4-改法-主鍵-新畫面才會踩到">3.4 改法:主鍵 —— 新畫面才會踩到</h3>
+<p><code>add-column.md</code> 沒這段,因為加欄不動主鍵。<code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM006Model.xsd:211-221</code> 每張表各一組:</p>
+<pre class="code lang-xml"><code>&lt;xs:unique name="Constraint1" msdata:PrimaryKey="true"&gt;
+  &lt;xs:selector xpath=".//mstns:DSM001A" /&gt; &lt;xs:field xpath="mstns:QUO_YEAR" /&gt; &lt;xs:field xpath="mstns:EMP_NO" /&gt;
+&lt;/xs:unique&gt;
+&lt;xs:unique name="DSM002A_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true"&gt;
+  &lt;xs:selector xpath=".//mstns:DSM002A" /&gt; &lt;xs:field xpath="mstns:QUO_YEAR" /&gt; &lt;xs:field xpath="mstns:QUO_YYMM" /&gt; &lt;xs:field xpath="mstns:EMP_NO" /&gt;
+&lt;/xs:unique&gt;</code></pre>
+<p>命名規則兩支範本一致:第一組 <code>name="Constraint1"</code>,第二組 <code>name="&lt;表名&gt;_Constraint1"</code> 且多一個 <code>msdata:ConstraintName="Constraint1"</code>。 <code>CASM001Model.xsd:133-141</code> 同一套,但<strong>第一組給的是明細</strong>——所以<strong>順序不是規則,<code>xpath</code> 指到哪張表才是</strong>。主鍵欄位填實體表的真實主鍵;明細通常是「主檔主鍵 + 自己的鍵」(<code>DSM002A</code> = <code>QUO_YEAR</code> + <code>EMP_NO</code> + <code>QUO_YYMM</code>)。</p>
+<h3 id="3-5-改法-csproj-要加的三段">3.5 改法:csproj 要加的三段</h3>
+<p><strong>最容易漏、漏了最難查。</strong><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/DataEntity.CAS.csproj</code> 裡跟一支 xsd 有關的有三段(<code>:116-121</code> 與 <code>:203-213</code>):</p>
+<pre class="code lang-xml"><code>&lt;Compile Include="CASM006Model.Designer.cs"&gt;                       
+  &lt;AutoGen&gt;True&lt;/AutoGen&gt;&lt;DesignTime&gt;True&lt;/DesignTime&gt;&lt;DependentUpon&gt;CASM006Model.xsd&lt;/DependentUpon&gt;
+&lt;/Compile&gt;
+&lt;Compile Include="CASM006ModelVDB.cs" /&gt;
+&lt;None Include="CASM006Model.xsd"&gt;                                  
+  &lt;SubType&gt;Designer&lt;/SubType&gt;&lt;Generator&gt;MSDataSetGenerator&lt;/Generator&gt;&lt;LastGenOutput&gt;CASM006Model.Designer.cs&lt;/LastGenOutput&gt;
+&lt;/None&gt;
+&lt;None Include="CASM006Model.xsc"&gt;&lt;DependentUpon&gt;CASM006Model.xsd&lt;/DependentUpon&gt;&lt;/None&gt;   
+&lt;None Include="CASM006Model.xss"&gt;&lt;DependentUpon&gt;CASM006Model.xsd&lt;/DependentUpon&gt;&lt;/None&gt;</code></pre>
+<p><code>.xsc</code> / <code>.xss</code> 是 VS 的 DataSet 設計工具附檔(<code>.xsc</code> 內容只有一個空的 <code>&lt;TableUISettings /&gt;</code>),<strong>由 VS 自己產,不用手寫</strong>,但要確認有進 csproj。</p>
+<h3 id="3-6-new-modelvdb-cs-40-行照抄-但有兩處絕對不能抄錯">3.6 <code>&lt;NEW&gt;ModelVDB.cs</code>:40 行照抄,但有兩處絕對不能抄錯</h3>
+<p><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM006ModelVDB.cs</code> 全檔 40 行:繼承 <code>BasicModelVDB</code>(無原始碼,從呼叫端反推)、一個私有 typed DataSet 欄位、一個屬性、一個 <code>Dispose()</code>(<code>:9-19</code>)。與 ViewVDB 的差別只有三處:</p>
+<div class="tw"><table><thead><tr><th></th><th><code>ModelVDB</code></th><th><code>ViewVDB</code></th></tr></thead><tbody><tr><td><code>[Serializable()]</code></td><td><strong>沒有</strong></td><td><strong>有</strong>(<code>Dev/ATLAS.CAS/Source/Entity/UIEntity.CAS/CASM006ViewVDB.cs:9</code>)</td></tr><tr><td><code>RemotingFormat</code></td><td>不設</td><td><code>SerializationFormat.Binary</code>(<code>Dev/ATLAS.CAS/Source/Entity/UIEntity.CAS/CASM006ViewVDB.cs:19</code>)</td></tr><tr><td>屬性名</td><td><code>DataEntity</code></td><td><code>UIView</code></td></tr></tbody></table></div>
+<p>理由是 Remoting 邊界:只有 ViewVDB 會過線(<code>architecture.md §8.1</code>)。<strong>不要把 <code>[Serializable()]</code> 加到 ModelVDB,也不要從 ViewVDB 拿掉。</strong></p>
+<h3 id="3-7-驗證">3.7 驗證</h3>
+<p>重生 Designer.cs(做法同 <code>add-column.md §3.3</code>:方案總管對 xsd 右鍵「執行自訂工具」),然後:</p>
+<pre class="code lang-bash"><code>grep -c "class DSM001ARow" "%ATLAS_ROOT%\Dev\ATLAS.CAS\Source\Entity\DataEntity.CAS\CASM006Model.Designer.cs"</code></pre>
+<p>回 0 = 沒重生。<code>CASM006Model.Designer.cs</code> 實測 166 KB;新畫面產出若小於 10 KB,是 <a class="sec" href="#3-2-改法-表節點的-10-個-msprop">§3.2</a> 的 <code>msprop</code> 漏了。</p>
+</div></section><section class="sec" data-sec="4-步驟三-uientity-建-view-xsd"><h2 id="4-步驟三-uientity-建-view-xsd"><button class="tg" aria-label="收合/展開" type="button"></button>4. 步驟三:UIEntity —— 建 <code>View.xsd</code></h2><div class="sec-body">
+<h3 id="4-1-現況-view-是-model-的副本-而且可以驗">4.1 現況:View 是 Model 的副本,而且可以驗</h3>
+<p>把 <code>CASM006Model.xsd</code> 與 <code>CASM006View.xsd</code> 各自的代號代換成同一字串後逐行比對,<strong>222 行只有 2 行不同</strong>:<code>:15</code> 與 <code>:113</code> 兩個表 element 的 <code>msprop</code> <strong>屬性順序</strong>不同,值一字不差。欄位、型別、<code>maxLength</code>、<code>xs:unique</code> 全同。這比 <code>architecture.md §5.4</code> 的「89.7% 同構」更強:<strong>這一組是純副本</strong>。</p>
+<h3 id="4-2-改法">4.2 改法</h3>
+<p>複製 <code>&lt;NEW&gt;Model.xsd</code> 成 <code>&lt;NEW&gt;View.xsd</code>,把 <code>&lt;NEW&gt;Model</code> 換成 <code>&lt;NEW&gt;View</code>,一共三處:<code>:2</code> 的 <code>id</code> 與兩個 namespace、<code>:12</code> 的根 element <code>name</code>、<code>:12</code> 的 <code>Generator_DataSetName</code> 與 <code>Generator_UserDSName</code>。</p>
+<p><strong>表名、欄名、型別一律不動</strong>——理由在 <code>add-column.md §6.2</code>:<code>TransferVDBHelper</code> 按欄名逐欄比對,對不上就靜默丟掉。</p>
+<p>csproj 三段照 <a class="sec" href="#3-5-改法-csproj-要加的三段">§3.5</a>,把檔換成 <code>Dev/ATLAS.CAS/Source/Entity/UIEntity.CAS/UIEntity.CAS.csproj</code>,<strong>行號一模一樣</strong>(<code>:116-121</code> 與 <code>:203-213</code>)——兩個 csproj 是對稱維護的。<code>&lt;NEW&gt;ViewVDB.cs</code> 照抄 <code>Dev/ATLAS.CAS/Source/Entity/UIEntity.CAS/CASM006ViewVDB.cs</code> 全 41 行,注意 <a class="sec" href="#3-6-new-modelvdb-cs-40-行照抄-但有兩處絕對不能抄錯">§3.6</a> 那三處。</p>
+<h3 id="4-3-什麼時候-view-才該跟-model-不一樣">4.3 什麼時候 View 才該跟 Model 不一樣</h3>
+<p>只有一種:<strong>畫面要顯示但不落地的欄</strong>。但 <code>CASM006</code> 示範了更常用的另一條路:<code>DEPT_NO</code> 與 <code>EMP_NAME</code> 是從 <code>COD009</code> join 進來的衍生欄(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:113-115</code>),它<strong>兩邊都加</strong>。</p>
+<p><strong>規則</strong>:衍生欄 Model 與 View <strong>都加</strong>(代價只是 Model 多幾個不落地的欄),<code>CASM006</code> 與 <code>CASM001</code> 都是這樣;只有真的進不了 SELECT 的畫面計算欄才「只加 View」,而那樣 Control 得手寫搬運(<code>add-column.md §6.4</code>)。</p>
+<h3 id="4-4-驗證">4.4 驗證</h3>
+<p><code>py -V:3.12 %ATLAS_ROOT%\docs\tools\atlas_scan.py --screen CASM006</code> —— 新畫面跑同一支:「六層」六行都要有路徑、沒有「—(缺)」,「表」要列出主檔與明細。掃描器讀的就是 xsd 與 PO,這一步同時驗了 <a class="sec" href="#3-步驟二-dataentity-建-model-xsd-與加進-csproj">§3</a> <a class="sec" href="#4-步驟三-uientity-建-view-xsd">§4</a> <a class="sec" href="#5-步驟四-po-建構子-主明細宣告-事件訂閱-查詢-sql">§5</a>。</p>
+</div></section><section class="sec" data-sec="5-步驟四-po-建構子-主明細宣告-事件訂閱-查詢-sql"><h2 id="5-步驟四-po-建構子-主明細宣告-事件訂閱-查詢-sql"><button class="tg" aria-label="收合/展開" type="button"></button>5. 步驟四:PO —— 建構子、主明細宣告、事件訂閱、查詢 SQL</h2><div class="sec-body">
+<h3 id="5-1-現況-骨架四件">5.1 現況:骨架四件</h3>
+<p><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs</code> 全檔 277 行:</p>
+<div class="tw"><table><thead><tr><th>件</th><th>錨點</th><th>內容</th></tr></thead><tbody><tr><td>空介面</td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:18-20</code></td><td><code>public interface ICASM006_PO : IEvaDataAccess { }</code> —— 真的是空的</td></tr><tr><td>類別宣告</td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:23-24</code></td><td><code>[PODbType(DbServerType.Oracle)]</code> + <code>: BaseEVADaoPO, ICASM006_PO</code></td></tr><tr><td>建構子</td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:27-34</code></td><td>三個事件 + 主明細宣告</td></tr><tr><td>兩支 SQL</td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:105-215</code> 與 <code>:224-273</code></td><td><code>BuildMasterSQLString</code> / <code>BuildDetailSQLString</code></td></tr></tbody></table></div>
+<p><code>BaseEVADaoPO</code> 有原始碼:<code>Dev/Common/Source/Base/TA.DataAccess/BaseEVADaoPO.cs:17</code>。</p>
+<h3 id="5-2-主明細宣告">5.2 主明細宣告</h3>
+<pre class="code lang-csharp"><code>this.MasterTable = new xTableMapping("DSM001A", "DSM001A");//主檔資料
+this.DetailTable.Add(new xTableMapping("DSM002A", "DSM002A"));//明細資料</code></pre>
+<p><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:32-33</code>。三條規則:</p>
+<ul><li><strong>兩個參數給同一字串。</strong>第一個是實體表名、第二個是 VDB 裡 DataTable 的名字(<code>architecture.md §4.1</code>);與 <a class="sec" href="#3-2-改法-表節點的-10-個-msprop">§3.2</a> 的 xsd 表名共三處要一致,對不上就查不到資料。</li><li><strong>用 <code>xTableMapping</code>(無原始碼,從呼叫端反推),不要寫成 <code>TableMapping</code>。</strong>後者是舊世代、搭配 <code>PrepareSQLEventArgs</code>(<code>architecture.md §4.1</code>)。</li><li><strong>沒有明細就不宣告 <code>DetailTable</code></strong>(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM004_PO.cs:42</code>)。</li></ul>
+<p><strong>還有第四條:全庫有 6 支用「兩段式」寫法,<code>grep "MasterTable = new"</code> 找不到它們。</strong></p>
+<pre class="code lang-csharp"><code>xTableMapping tp = new xTableMapping("OFD087A", "OFDM087");
+this.MasterTable = tp;</code></pre>
+<p><code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM087_PO.cs:48-49</code>。語意與上面那種<strong>完全等價</strong>,只是先 <code>new</code> 到區域變數再指派。剝掉 <code>//</code> 註解後掃全庫 1,022 個 <code>*_PO.cs</code> / <code>*OracleDao.cs</code>,兩段式共 <strong>6 處</strong>,分兩型:</p>
+<div class="tw"><table><thead><tr><th>型</th><th>支數</th><th>代號與錨點</th></tr></thead><tbody><tr><td>單主檔 <code>this.MasterTable = tp;</code></td><td><strong>1</strong></td><td><code>OFDM087</code>(<code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM087_PO.cs:48-49</code>)</td></tr><tr><td>多筆主檔 <code>this.MasterTable.Add(tp);</code></td><td><strong>5</strong></td><td><code>OFDM381</code>(<code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM381_PO.cs:16-17</code>)· <code>OFDB041</code>(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB041_PO.cs:32-33</code>)· <code>OFDB562</code>(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB562_PO.cs:18-19</code>)· <code>OFDB563</code>(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB563_PO.cs:18-19</code>)· <code>OFDB564</code>(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB564_PO.cs:17-18</code>)</td></tr></tbody></table></div>
+<p>對照組:直接式 <code>MasterTable = new x?TableMapping</code> 有 253 個檔、<code>MasterTable.Add(new x?TableMapping</code> 有 67 個檔。</p>
+<p>(<code>OFDM381</code> 在本文用雙反引號寫,因為它確實存在於 repo、但目前的 <code>atlas_index.json</code> 還沒收錄它 —— 那是掃描器待 refresh 的已知缺口,不是這支畫面不存在。)</p>
+<p><strong>對維護的意義有兩條:</strong></p>
+<ol><li><strong>查「這支畫面的主檔是哪張表」不能只 grep <code>MasterTable = new</code>。</strong>六支會漏,<code>OFDM381</code> 與 <code>OFDB041</code> 都是實際在跑的畫面。正確查法用 <a class="sec" href="#5-8-主明細三處同名-一行指令查">§5.8</a> 的一行指令。</li><li><strong>新畫面寫直接式</strong>(上面那兩行)。兩段式沒有任何好處,只是讓後面每一個 grep 的人多踩一次。</li></ol>
+<h3 id="5-3-事件-三個必要-其餘可選">5.3 事件:三個必要,其餘可選</h3>
+<p>把 CAS 六支 M 的建構子並排,結論很乾淨:</p>
+<div class="tw"><table><thead><tr><th>事件</th><th><code>CASM001</code></th><th><code>CASM002</code></th><th><code>CASM003</code></th><th><code>CASM004</code></th><th><code>CASM005</code></th><th><code>CASM006</code></th><th>判定</th></tr></thead><tbody><tr><td><code>BeforeSelect</code></td><td>✔</td><td>✔</td><td>✔</td><td>✔</td><td>✔</td><td>✔</td><td><strong>必要</strong></td></tr><tr><td><code>BeforeGetMaintainData</code></td><td>✔</td><td>✔</td><td>✔</td><td>✔</td><td>✔</td><td>✔</td><td><strong>必要</strong></td></tr><tr><td><code>BeforeGetToDoData</code></td><td>✔</td><td>✔</td><td>✔</td><td>✔</td><td>✔</td><td>✔</td><td><strong>必要</strong></td></tr><tr><td><code>BeforeAdd</code></td><td>✔</td><td>✔</td><td>✘</td><td>✘</td><td>✘</td><td>✘</td><td>可選:新增要自動帶值時(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:77</code>)</td></tr><tr><td><code>After*</code> 八個</td><td>✔</td><td>✔</td><td>✘</td><td>✘</td><td>✘</td><td>✘</td><td>可選:四眼狀態轉換後要連動別張表(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:49-58</code>)</td></tr></tbody></table></div>
+<p>錨點:<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:29-31</code>、<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM003_PO.cs:30-32</code>、<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM005_PO.cs:36-38</code>,對照 <code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:42-45</code>。<strong>新畫面一律先只掛三個。</strong></p>
+<p>三支實作也是樣板(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:46-94</code>,合計 49 行),分流固定:</p>
+<div class="tw"><table><thead><tr><th>事件</th><th>主檔</th><th>明細</th></tr></thead><tbody><tr><td><code>BeforeSelect</code>(<code>:46-58</code>)</td><td><code>BuildMasterSQLString(model, false)</code></td><td>不處理</td></tr><tr><td><code>BeforeGetMaintainData</code>(<code>:60-80</code>)</td><td><code>BuildMasterSQLString(model, false)</code></td><td><code>BuildDetailSQLString(model, args.TableName)</code></td></tr><tr><td><code>BeforeGetToDoData</code>(<code>:82-94</code>)</td><td><code>BuildMasterSQLString(model, true)</code></td><td>不處理</td></tr></tbody></table></div>
+<p>分流一律拿 <code>args.TableName</code> 比 <code>this.MasterTable.dbTableName</code>(<code>architecture.md §4.1</code>)。</p>
+<h3 id="5-4-查詢-sql-全篇唯一要自己寫的東西">5.4 查詢 SQL:全篇唯一要自己寫的東西</h3>
+<p><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:111-127</code> 的骨架:</p>
+<pre class="code lang-csharp"><code>strSQL += @"SELECT DSM001A.DATAID ,DSM001A.QUO_YEAR ,NVL(COD009.DEPT_NO,' ') AS DEPT_NO ,DSM001A.QUO_MIL_A_TOT"
+         + xEVAStringHelper.AllEVAColumnsForSelect("DSM001A")
+         + @"FROM DSM001A JOIN COD009 ON COD009.EMP_NO = DSM001A.EMP_NO WHERE 1=1 ";</code></pre>
+<p>五條規則:</p>
+<ol><li><strong>第一欄一律 <code>DATAID</code></strong>(兩支範本都是:<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:170</code> 與 <code>:298</code>)。</li><li><strong>四眼 15 欄不要手打</strong>,呼叫 <code>AllEVAColumnsForSelect("&lt;表名&gt;")</code>(<code>Dev/Common/Source/Utility/TA.ServerUtility/OracleHelper.cs:115-132</code>;類別實名是 <code>EVAStringHelper</code>,<code>Dev/Common/Source/Utility/TA.ServerUtility/OracleHelper.cs:20</code>。PO 端看到的 <code>xEVAStringHelper</code> 是 DLL 裡的同名替身,<strong>無原始碼,從呼叫端反推</strong>)。</li><li><strong><code>WHERE 1=1</code> 必要</strong>,後面的條件一律 <code>AND</code> 串上去。</li><li><strong><code>isToDoString</code> 分支不要動。</strong><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:203-206</code> 的 <code>xTableHelper.AppendToDoString(...)</code> 上面就寫著「ToDo 此段不可修改」。</li><li><strong>查詢條件從 <code>model.Utility.Parameters</code> 取</strong>,格式固定 <code>Rows.Contains</code> → <code>Rows.Find</code> → 比 <code>Row.Opeartor</code> → 串字串(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:132-140</code>)。參數名要跟 UI 端 <code>AddParametersRow</code> 的字串一致(<a class="sec" href="#8-4-主檔-具名控件手動雙向搬">§8.4</a>),<strong>又一個靠字串對上的跨層綁定</strong>。</li></ol>
+<p><code>BuildDetailSQLString</code> 同一套,外面多一層 <code>if (strTableName == this.DetailTable[0].dbTableName)</code>(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:229</code>);多張明細就多幾個 <code>if</code>。</p>
+<h3 id="5-5-兩處現存缺陷-不要照抄">5.5 兩處現存缺陷,不要照抄</h3>
+<div class="tw"><table><thead><tr><th>缺陷</th><th>錨點</th><th>為什麼</th></tr></thead><tbody><tr><td><strong>查詢值字串串接</strong></td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:138</code></td><td>值沒參數化。異動類走參數化、查詢類沒有(<code>architecture.md §4.3</code>);照抄等於複製一個注入面</td></tr><tr><td><strong>部門白名單寫死在 SQL</strong></td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:210</code></td><td><code>AND COD009.DEPT_NO IN('G3','GA',…)</code> 是〔客戶特定〕授權規則寫進查詢字串,換站要改程式。新畫面的權限走 <a class="sec" href="#9-步驟八-註冊到選單與權限">§9</a></td></tr></tbody></table></div>
+<h3 id="5-6-驗證">5.6 驗證</h3>
+<p><code>grep -c "AllEVAColumnsForSelect"</code> 該 PO:主檔一次、每張明細一次。回 0 = 四眼欄位沒進 SELECT,四眼流程整組拿不到狀態。</p>
+<h3 id="5-7-po-基底白名單-一律-baseevadaopo-basemultirowevadaopo">5.7 PO 基底白名單:一律 <code>BaseEVADaoPO</code> / <code>BaseMultiRowEVADaoPO</code></h3>
+<p><strong>新畫面只准繼承這兩支。繼承 <code>BasicEVAPO</code> 或 <code>MultiRowEVAPO</code> 的畫面,連查詢都會 <code>NullReferenceException</code>。</strong></p>
+<p>證據鏈在 <code>architecture.md §3.1.1</code>,四個條件同時成立且彼此獨立:</p>
+<div class="tw"><table><thead><tr><th>#</th><th>事實</th><th>錨點</th></tr></thead><tbody><tr><td>1</td><td><code>dbTA</code> / <code>dbPTPF</code> <strong>宣告就是 <code>= null</code></strong></td><td><code>Dev/Common/Source/Base/TA.DataAccess/BasicEVAPO.cs:26</code> 與 <code>:27</code></td></tr><tr><td>2</td><td>建構子裡建立連線的那四行<strong>整段被註解</strong>,只剩一個沒人用的區域變數</td><td><code>Dev/Common/Source/Base/TA.DataAccess/BasicEVAPO.cs:165-173</code>,被註解的是 <code>:169-172</code>(<code>architecture.md §3.1.1</code> 記為 <code>:164-172</code>,含註解標頭)</td></tr><tr><td>3</td><td>基底 <code>Add()</code> 第一件事就是 <code>cn = dbTA.CreateConnection();</code></td><td><code>Dev/Common/Source/Base/TA.DataAccess/BasicEVAPO.cs:187</code></td></tr><tr><td>4</td><td>全庫活子類沒有一支自己賦值 <code>dbTA</code>,其中 73 支連 <code>Add</code> / <code>Update</code> / <code>Delete</code> 都不覆寫</td><td>實掃 <code>Dev/</code> 全部 <code>*_PO.cs</code> 剝註解後比對(<code>architecture.md §3.1.1</code>)</td></tr></tbody></table></div>
+<p><strong>而且不只存檔會爆。</strong><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI719_PO.cs:11</code> 繼承 <code>BasicEVAPO</code>, 它的查詢方法第一行就是 <code>DbConnection cn = dbTA.CreateConnection();</code>(<code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI719_PO.cs:30</code>) —— <strong>按查詢就 NRE</strong>。21 篇模組篇累計已經數到 20 支以上這種死畫面。</p>
+<blockquote><p>這是讀碼結論,<strong>沒有實跑過</strong>(本機缺 PTPFBlock,<code>architecture.md 附錄 C.1</code>)。要推翻它得證明 <code>dbTA</code> 在別處被賦值 —— 全庫剝註解後掃過,沒有。</p></blockquote>
+<div class="tw"><table><thead><tr><th>基底</th><th>全庫子類數</th><th>新畫面</th><th>接手既有畫面</th></tr></thead><tbody><tr><td><code>BaseEVADaoPO</code></td><td>271</td><td><strong>✔ 主明細單筆用這個</strong></td><td>正常</td></tr><tr><td><code>BaseMultiRowEVADaoPO</code></td><td>61</td><td><strong>✔ 多筆主檔用這個</strong></td><td>正常</td></tr><tr><td><code>BasicEVAPO</code></td><td>66(另 46 處已被註解)</td><td><strong>✘</strong></td><td><strong>先確認它到底有沒有在跑,再談修</strong></td></tr><tr><td><code>MultiRowEVAPO</code></td><td>11(另 5 處已被註解)</td><td><strong>✘</strong></td><td>同上</td></tr><tr><td><code>TA_PO</code> / <code>Basic4EyesPO</code> / <code>MultiRow4EyesPO</code></td><td>0</td><td><strong>✘</strong></td><td>整支是死碼(<code>architecture.md §3.1</code>)</td></tr></tbody></table></div>
+<h4 id="判斷基底一定先剝-註解">⚠ 判斷基底一定先剝 <code>//</code> 註解</h4>
+<p><code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM125A_PO.cs:28</code> 留著一行</p>
+<pre class="code lang-csharp"><code>//public class OFDM125A_PO : BasicEVAPO
+[PODbType(DbServerType.Oracle)]
+public class OFDM125A_PO : BaseEVADaoPO, IOFDM125A_PO</code></pre>
+<p>—— 第 <code>:28</code> 行是註解掉的舊宣告,第 <code>:30</code> 行才是現行的。<strong>直接 <code>grep "class .*_PO *:"</code> 會把它誤判成死畫面。</strong> 掃描器也踩過同一顆(<code>architecture.md §6.3</code> 的 <code>CASI001</code> 誤標主檔 <code>OFD701</code>,原因就是正規式不剝註解)。</p>
+<p>一行可跑的正確查法(把 <code>OFDM125A</code> 換成要查的代號):</p>
+<pre class="code lang-bash"><code>py -V:3.12 -c "import sys,glob;sys.path.insert(0,'<repo>/docs/tools');from atlas_scan import read_text;S='OFDM125A';[print(f.split(chr(92))[-1],'-&gt;',[l.strip() for l in read_text(f)[0].split(chr(10)) if ' class ' in l and ':' in l and not l.strip().startswith('//')][0]) for f in glob.glob('<repo>/Dev/**/'+S+'_PO.cs',recursive=True) if 'obj' not in f]"</code></pre>
+<p>輸出:<code>OFDM125A_PO.cs -&gt; public class OFDM125A_PO : BaseEVADaoPO, IOFDM125A_PO</code>。用 <code>atlas_scan.read_text</code> 而不是 <code>open()</code>,因為 <code>Dev/</code> 有 cp950 檔(<code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM087_PO.cs</code> 就是)。</p>
+<h3 id="5-8-主明細三處同名-一行指令查">5.8 主明細三處同名:一行指令查</h3>
+<p><a class="sec" href="#3-2-改法-表節點的-10-個-msprop">§3.2</a> 的 xsd 表名、<a class="sec" href="#5-2-主明細宣告">§5.2</a> 的 <code>xTableMapping</code> 兩個參數,<strong>三處要一致</strong>。人工比對會漏,而且 <a class="sec" href="#5-2-主明細宣告">§5.2</a> 說過 grep 抓不到兩段式寫法。下面這一行兩種寫法都吃(把 <code>CASM006</code> 換成要查的代號):</p>
+<pre class="code lang-bash"><code>py -V:3.12 -c "import sys,re,glob;sys.path.insert(0,'<repo>/docs/tools');from atlas_scan import read_text;S='CASM006';g=lambda p:[f for f in glob.glob('<repo>/Dev/**/'+p,recursive=True) if 'obj' not in f];po=''.join(l for f in g(S+'_PO.cs') for l in read_text(f)[0].split(chr(10)) if not l.strip().startswith('//'));m=re.findall(r'x?TableMapping[(] *\"([^\"]+)\" *, *\"([^\"]+)\"',po);x=set(re.findall(r'name=\"(\w+)\"[^&gt;]*Generator_TableClassName',''.join(read_text(f)[0] for f in g(S+'Model.xsd'))));v={b for a,b in m};print('PO  :',m);print('xsd :',sorted(x));print('缺 xsd 表:',sorted(v-x) or 'OK');print('實體表(自己比 SQL):',sorted({a for a,b in m}))"</code></pre>
+<p>四支實測輸出:</p>
+<div class="tw"><table><thead><tr><th>代號</th><th><code>PO</code> 的 <code>(實體表, vdb 表)</code></th><th><code>xsd</code> 的表 element</th><th>判定</th></tr></thead><tbody><tr><td><code>CASM006</code></td><td><code>('DSM001A','DSM001A')</code> <code>('DSM002A','DSM002A')</code></td><td><code>DSM001A</code> <code>DSM002A</code></td><td>缺 xsd 表:OK</td></tr><tr><td><code>OFDM125A</code></td><td><code>('OFD125A_M','OFDM125A_M_Master')</code> <code>('OFD125A','OFDM125A_Detail')</code></td><td><code>OFDM125A_Detail</code> <code>OFDM125A_M_Master</code></td><td>缺 xsd 表:OK</td></tr><tr><td><code>OFDM087</code>(兩段式)</td><td><code>('OFD087A','OFDM087')</code></td><td><code>OFD081Validate</code> <code>OFDM087</code></td><td>缺 xsd 表:OK(xsd 多一張 <code>OFD081Validate</code> 是刻意的,不在對映裡)</td></tr><tr><td><code>OFDM381</code>(兩段式)</td><td><code>('OFD381','OFDM381')</code></td><td><code>OFDM381</code></td><td>缺 xsd 表:OK</td></tr></tbody></table></div>
+<p>怎麼讀:</p>
+<ul><li><strong><code>缺 xsd 表</code> 必須是 <code>OK</code>。</strong>它比對的是「<code>xTableMapping</code> 第二個參數(vdb 表名)有沒有對應的 xsd 表 element」——這一對不上,<a class="sec" href="#12-常見錯誤與症狀">§12</a> 的「查詢永遠零筆,DB 卻有資料」就會發生。</li><li><strong><code>xsd</code> 那行可以比 PO 多</strong>(像 <code>OFDM087</code> 的 <code>OFD081Validate</code>),那是只在 UI 端用、不走 EVA 對映的輔助表,正常。</li><li><strong>第三處(SQL 裡的實體表名)這支指令查不到</strong>,它印出 <code>實體表</code> 清單讓你自己跟 <a class="sec" href="#5-4-查詢-sql-全篇唯一要自己寫的東西">§5.4</a> 手寫的 <code>FROM</code> / <code>JOIN</code> 比一次。</li></ul>
+<p><code>atlas_scan --screen &lt;代號&gt;</code> 的「主檔 / 明細」欄位也讀同一組資訊,但它<strong>不剝註解</strong>(<code>architecture.md §6.3</code>),所以註解掉的宣告會被當真。<strong>要精確就用上面這一行。</strong></p>
+</div></section><section class="sec" data-sec="6-步驟五-control-initializedataaccesspool-initializevdbtypes"><h2 id="6-步驟五-control-initializedataaccesspool-initializevdbtypes"><button class="tg" aria-label="收合/展開" type="button"></button>6. 步驟五:Control —— <code>InitializeDataAccessPool</code> / <code>InitializeVDBTypes</code></h2><div class="sec-body">
+<h3 id="6-1-現況-逐字樣板">6.1 現況:逐字樣板</h3>
+<p>把 <code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM003_Ctl.cs</code>(136 行)與 <code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM006_Ctl.cs</code>(137 行)代換代號與兩張表名後 diff,<strong>差別只有 <code>using</code> 的排列順序</strong>,程式碼一行不差。</p>
+<p>所以做法就是:<strong>複製 <code>CASM006_Ctl.cs</code>,換代號與表名。</strong>下面只解釋你會換到的三塊。</p>
+<h3 id="6-2-兩個必覆寫">6.2 兩個必覆寫</h3>
+<pre class="code lang-csharp"><code>public override void InitializeDataAccessPool() { base.DataAccessPool.Add(new CASM006_PO()); }
+
+public override void InitializeVDBTypes()
+{
+    base.DaoContractType = typeof(ICASM006_PO);  base.ModelVDBType = typeof(CASM006ModelVDB);
+    base.ViewVDBType = typeof(CASM006ViewVDB);
+}</code></pre>
+<p><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM006_Ctl.cs:34-37</code> 與 <code>:41-46</code>,與 <code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM001_Ctl.cs:36-39</code> 與 <code>:43-48</code> 同構。漏了的後果:<code>DataAccessPool.Add</code> 或 <code>DaoContractType</code> 錯 → <code>GetDaoInstance</code> 找不到 PO(這也是 <a class="sec" href="#5-1-現況-骨架四件">§5.1</a> 那個空介面存在的唯一理由);<code>ModelVDBType</code> 錯 → 伺服端建不出 ModelVDB;<code>ViewVDBType</code> 錯 → 回不了用戶端。<code>BaseController</code>(無原始碼,從呼叫端反推)在 <code>Vendor.Product.Utility</code>(<code>architecture.md §2.3</code>)。</p>
+<h3 id="6-3-customtransfer-四個覆寫-都要寫-都是樣板">6.3 <code>CustomTransfer*</code> 四個覆寫:都要寫,都是樣板</h3>
+<div class="tw"><table><thead><tr><th>覆寫</th><th>錨點</th><th>內容</th></tr></thead><tbody><tr><td>泛型 Model → View</td><td><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM006_Ctl.cs:58-71</code></td><td>兩次 <code>TransferVDBHelper.Transfer*Table</code> + <code>view.UIView.AcceptChanges()</code></td></tr><tr><td>泛型 View → Model</td><td><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM006_Ctl.cs:80-92</code></td><td>同上反向,<strong>沒有</strong> <code>AcceptChanges()</code></td></tr><tr><td>非泛型兩支</td><td><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM006_Ctl.cs:98-101</code> 與 <code>:107-110</code></td><td>轉型後呼叫泛型版</td></tr><tr><td>SQL Server 版兩支</td><td><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM006_Ctl.cs:111-119</code></td><td>一律 <code>throw new NotImplementedException();</code>(ATLAS 只跑 Oracle,<code>architecture.md §4.6</code>)</td></tr></tbody></table></div>
+<p>要換的只有表名與「主檔 / 明細用哪一支 helper」:</p>
+<pre class="code lang-csharp"><code>TransferVDBHelper.TransferTable(view.UIView.DSM001A, model.DataEntity.DSM001A, base.TransferEVAColumn);        // 主檔
+TransferVDBHelper.TransferDetailTable(view.UIView.DSM002A, model.DataEntity.DSM002A, base.TransferEVAColumn);  // 明細</code></pre>
+<p><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM006_Ctl.cs:64</code> 與 <code>:67</code>。後者多處理三種 <code>RowState</code>(<code>add-column.md §12.2</code>);<strong>只有主檔就只寫第一行</strong>。逐欄複製由 <code>TransferVDBHelper</code> 按欄名做,Control 根本不知道有哪些欄(<code>add-column.md §6.1</code>)——所以 Model 與 View 的名字一致,這四個覆寫就永遠不用再改。</p>
+<h3 id="6-4-加值方法-先不要寫">6.4 加值方法:先不要寫</h3>
+<p><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM006_Ctl.cs:130-134</code> 的私有 <code>ExecPOActionToViewVDB</code> 包裝也是樣板,換泛型參數就好。<code>CASM006</code> <strong>沒有</strong>任何加值方法;<code>CASM001</code> 有(<code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM001_Ctl.cs:55-65</code> 的 <code>AddData</code>)。四眼的新增 / 修改 / 覆核 / 核准全部走基底,不需要在 Ctl 開洞;要開的時機在 <a class="sec" href="#7-2-什麼時候要多寫">§7.2</a>。</p>
+<p>編不過的話 90% 是三件:<code>typeof</code> 打錯、四個 <code>CustomTransfer*</code> 少一個、<code>using</code> 漏了(<code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM006_Ctl.cs:1-11</code> 共 11 行,照抄)。</p>
+</div></section><section class="sec" data-sec="7-步驟六-formproxy"><h2 id="7-步驟六-formproxy"><button class="tg" aria-label="收合/展開" type="button"></button>7. 步驟六:FormProxy</h2><div class="sec-body">
+<h3 id="7-1-現況-最小的一層-21-行">7.1 現況:最小的一層,21 行</h3>
+<p><code>Dev/ATLAS.CAS/Source/FormProxy/FormProxy.CAS/CASM006_Pxy.cs</code> <strong>全檔 21 行</strong>:</p>
+<pre class="code lang-csharp"><code>public class CASM006_Pxy : Basic_Pxy
+{ protected override void InitializeControl() { this.Control = new CASM006_Ctl(); } }</code></pre>
+<p><code>:10</code> 是類別宣告、<code>:15-18</code> 是唯一的方法。<code>Basic_Pxy</code>(無原始碼,從呼叫端反推)在 <code>Vendor.Product.FormProxy.dll</code>(<code>architecture.md §2.3</code>)。<strong>新畫面直接抄這 21 行,這就是全部。</strong></p>
+<h3 id="7-2-什麼時候要多寫">7.2 什麼時候要多寫</h3>
+<p>CAS 六支 Pxy 的行數:<code>CASM006</code> 21、<code>CASM003</code> 22、<code>CASM005</code> 87、<code>CASM004</code> 97、<code>CASM002</code> 141、<code>CASM001</code> 164。多出來的都是同一種東西:<strong>UI 需要、但不屬於四眼標準流程的伺服端呼叫</strong>。</p>
+<div class="tw"><table><thead><tr><th>多寫什麼</th><th>例</th><th>何時需要</th></tr></thead><tbody><tr><td><code>override Add</code></td><td><code>Dev/ATLAS.CAS/Source/FormProxy/FormProxy.CAS/CASM001_Pxy.cs:30-46</code></td><td>新增要走自己的 Ctl 方法(配合 <a class="sec" href="#6-4-加值方法-先不要寫">§6.4</a>)</td></tr><tr><td>存在性檢查</td><td><code>Dev/ATLAS.CAS/Source/FormProxy/FormProxy.CAS/CASM001_Pxy.cs:54</code></td><td>UI 要即時檢查鍵值重複</td></tr><tr><td>取值 / DataTable</td><td><code>Dev/ATLAS.CAS/Source/FormProxy/FormProxy.CAS/CASM001_Pxy.cs:149</code></td><td>UI 要匯出或帶出關聯資料</td></tr></tbody></table></div>
+<p><strong>每一支都必須是同一個 try / catch 樣板</strong>(<code>Dev/ATLAS.CAS/Source/FormProxy/FormProxy.CAS/CASM001_Pxy.cs:32-45</code>):<code>catch</code> 裡呼叫 <code>CommonExceptionBlocker.HandleFormProxyException(ex)</code> 再回一個降級值。理由是這一層是 Remoting 邊界(<code>architecture.md §8.1</code>),例外不吞在這裡會以序列化例外炸到用戶端。</p>
+<p><strong>代價寫在這裡以免誤判</strong>:<code>CASM001_Ctl.AddData()</code> 沒檢查 <code>Result</code> 長度就取 <code>[0]</code>,炸出來的 index out of range 就是被這個 catch 吞成 <code>ServerSideError</code>(<code>architecture.md §6.7</code>)。你多寫的每一支都繼承這個特性——<strong>catch 裡至少要能從回傳值分辨「失敗」與「查無資料」</strong>。</p>
+<p>驗證:<code>grep -n "InitializeControl"</code> 該檔必須命中 1 次。漏寫的症狀是「畫面開得起來,一按鈕就 <code>ServerSideError</code>」,因為 <code>this.Control</code> 是 null。</p>
+</div></section><section class="sec" data-sec="8-步驟七-ui"><h2 id="8-步驟七-ui"><button class="tg" aria-label="收合/展開" type="button"></button>8. 步驟七:UI</h2><div class="sec-body">
+<h3 id="8-1-繼承誰-csproj-怎麼掛">8.1 繼承誰、csproj 怎麼掛</h3>
+<p><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:21</code>:<code>public partial class CASM006 : xMaintainForm</code>。<code>xMaintainForm</code>(無原始碼,從呼叫端反推)在 <code>Vendor.Product.UI.dll</code>,<code>using Vendor.Product.UI.MiddleForm;</code>(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:10</code>)。<strong>M 型一律 <code>xMaintainForm</code>。</strong></p>
+<p>csproj 三段(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/UI.CAS.csproj:266-271</code> 與 <code>:364-366</code>):<code>&lt;Compile Include="&lt;NEW&gt;.cs"&gt;</code> 內含 <strong><code>&lt;SubType&gt;UserControl&lt;/SubType&gt;</code></strong>(漏了 VS 不給開設計檢視)、<code>&lt;Compile Include="&lt;NEW&gt;.Designer.cs"&gt;</code> 內含 <code>DependentUpon</code>、<code>&lt;EmbeddedResource Include="&lt;NEW&gt;.resx"&gt;</code> 內含 <code>DependentUpon</code>。</p>
+<h3 id="8-2-生命週期-六個事件掛點">8.2 生命週期:六個事件掛點</h3>
+<p>Designer 把事件接到方法上(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.Designer.cs:980-985</code>),這是 M 的標準骨架:</p>
+<div class="tw"><table><thead><tr><th>事件</th><th>錨點</th><th>幹什麼</th></tr></thead><tbody><tr><td><code>FormInitial</code></td><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:278-293</code></td><td><strong>必要</strong>:綁 <code>ProcessVDB</code> 與 <code>FormProxy</code></td></tr><tr><td><code>AddDataLoad</code></td><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:295-303</code></td><td>新增模式進場:清明細、綁網格</td></tr><tr><td><code>ModifyDataLoad</code></td><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:305-323</code></td><td>修改模式進場:主檔填回控件、綁網格</td></tr><tr><td><code>BeforeAddButtonClicked</code></td><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:325-336</code></td><td>送出前驗證 + 主檔鍵灌進明細</td></tr><tr><td><code>BeforeModifyButtonClicked</code></td><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:338-347</code></td><td>同上</td></tr><tr><td><code>BeforeSearchButtonClicked</code></td><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:349-385</code></td><td>組查詢參數</td></tr></tbody></table></div>
+<p><code>FormInitial</code> 的三行是唯一「不寫就一定不會動」的(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:280-282</code>):<code>this.TabPages = 2;</code>、<code>this.ProcessVDB = new &lt;NEW&gt;ViewVDB();</code>、<code>this.FormProxy = new &lt;NEW&gt;_Pxy();</code>。<code>CASM001</code> 一模一樣(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM001.cs:109-111</code>),連 <code>TabPages = 2</code>(查詢頁 + 維護頁)都相同。</p>
+<h3 id="8-3-控件命名-前綴決定型別">8.3 控件命名:前綴決定型別</h3>
+<p>從 <code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.Designer.cs:1033-1065</code> 的宣告區反推:</p>
+<div class="tw"><table><thead><tr><th>前綴</th><th>控件型別</th><th>例</th></tr></thead><tbody><tr><td><code>ugrd</code></td><td><code>Infragistics.Win.UltraWinGrid.UltraGrid</code></td><td><code>ugrdCASM006</code>(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.Designer.cs:1038</code>)</td></tr><tr><td><code>umsk</code></td><td><code>UltraWinEditors.UltraNumericEditor</code></td><td><code>umskQUO_MGR_TOT</code>(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.Designer.cs:1044</code>)</td></tr><tr><td><code>udat</code></td><td><code>UltraWinEditors.UltraDateTimeEditor</code></td><td><code>udatBOUNS_ST_YYMM</code>(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.Designer.cs:1055</code>)</td></tr><tr><td><code>ubtn</code></td><td><code>Infragistics.Win.Misc.UltraButton</code></td><td><code>ubtnASSIGN_Month</code>(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.Designer.cs:1045</code>)</td></tr><tr><td><code>cust</code> / <code>uc</code></td><td><code>CustomControl.*</code>(自家共用控件)</td><td><code>custEMP_NO</code>(<code>:1039</code>)、<code>ucDEPT_NO_0</code>(<code>:1062</code>)</td></tr></tbody></table></div>
+<p>兩條命名規則兩支範本都遵守:<strong>網格叫 <code>ugrd&lt;畫面代號&gt;</code></strong>;<strong>查詢條件控件加 <code>_0</code> 後綴</strong>(<code>custEMP_NO_ST_0</code> / <code>umskQUO_YEAR_0</code>),維護頁同名欄位不加——這是查詢頁與維護頁共用一個 Designer 時區分兩組控件的辦法。控件用 VS 設計檢視拉,<strong>不要手打 Designer.cs</strong>(理由同 <code>add-column.md §8.3</code>)。</p>
+<h3 id="8-4-主檔-具名控件手動雙向搬">8.4 主檔:具名控件手動雙向搬</h3>
+<p>主檔不走資料繫結,是兩段對稱的手寫搬運:Row → 控件在 <code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:310-319</code>;控件 → Row 在 <code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:37-49</code>。</p>
+<p>後者還多做一件<strong>主明細型必做</strong>的事:把主檔鍵值灌進每一列明細(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:55-62</code>),而且<strong>一定要擋 <code>RowState</code></strong>:</p>
+<pre class="code lang-csharp"><code>foreach (CASM006View.DSM002ARow row in ((CASM006ViewVDB)this.ProcessVDB).UIView.DSM002A.Rows)
+    if (row.RowState != DataRowState.Deleted) { row.QUO_YEAR = MasterRow.QUO_YEAR; row.EMP_NO = MasterRow.EMP_NO; }</code></pre>
+<p>碰已刪除列會丟例外;原始碼上面那句註解「一定要這樣寫」(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:53</code>)講的就是這件事。</p>
+<p>查詢參數在 <code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:376-383</code> 塞:<code>this.QueryVDB.Util.Parameters.AddParametersRow("QUO_YEAR", SQLOperator.Equal, …)</code>。<strong>第一個字串必須跟 <a class="sec" href="#5-4-查詢-sql-全篇唯一要自己寫的東西">§5.4</a> 的 <code>Rows.Contains("QUO_YEAR")</code> 一字不差。</strong></p>
+<h3 id="8-5-明細-網格-白名單">8.5 明細:網格 + 白名單</h3>
+<p>綁定一行,新增與修改兩個進場點各一次(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:300</code> 與 <code>:320</code>):<code>this.ugrdCASM006.DataSource = ((CASM006ViewVDB)this.ProcessVDB).UIView.DSM002A;</code>。顯示哪些欄由白名單陣列決定,機制已在 <code>add-column.md §8.1</code> 講完。新畫面要建的是:</p>
+<div class="tw"><table><thead><tr><th>要建的</th><th>錨點</th><th>說明</th></tr></thead><tbody><tr><td><code>InitializeLayout</code> 處理常式</td><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:392-412</code></td><td>開頭一定要 <code>if (this.ugrdCASM006.DataSource == null) return;</code></td></tr><tr><td><code>SetupUltraGridShowColumns</code> 白名單</td><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:395</code></td><td>陣列順序 = 欄位左右順序</td></tr><tr><td>數字格式</td><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:396-407</code></td><td><code>Format</code> 與 <code>MaskInput</code> 要<strong>成對</strong>設,只設一個會「顯示有逗號、進編輯沒有」</td></tr><tr><td>對齊 / 唯讀欄</td><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:409-410</code> 與 <code>:411</code></td><td><code>SetTextHAlignColumns</code> / <code>SetupUltraGridNoEditColumns</code></td></tr><tr><td>錯誤事件</td><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:387-390</code></td><td><code>e.Cancel = true</code>,吃掉網格自己的錯誤對話框</td></tr><tr><td>版面管理</td><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:285-286</code></td><td><code>GridLayoutManager</code> + <code>GridLayoutUpdateOnly</code>,寫在 <code>FormInitial</code> 裡</td></tr></tbody></table></div>
+<h3 id="8-6-驗證欄位集中在-dovalidate">8.6 驗證欄位集中在 <code>DoValidate</code></h3>
+<p><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:68-146</code> 是一支集中的 <code>DoValidate()</code>,兩個 <code>Before*ButtonClicked</code> 都呼叫它。四種驗證都在裡面:宣告式必填 <code>validatorManager1.DataValidate()</code>(<code>:71</code>)、跨欄邏輯 <code>ValidateErrList.AddError(控件, "中文訊息")</code>(<code>:74-78</code>)、明細必填 <code>CommonGridHelper.AutoCheckPKeyRequireByEssDataReturnMsg</code>(<code>:90-99</code>)、主明細合計對帳 <code>DataTable.Compute("SUM(欄)", null)</code>(<code>:122-144</code>)。訊息用繁體中文;<code>AddError</code> 第一個參數給控件才會標紅並跳焦點。</p>
+<p>驗證:<code>grep -n "ProcessVDB = new\|FormProxy = new\|SetupUltraGridShowColumns"</code> 三行都要在。少 <code>ProcessVDB</code> → 開畫面就 null;少白名單 → 網格會把四眼 15 欄一起顯示出來。</p>
+</div></section><section class="sec" data-sec="9-步驟八-註冊到選單與權限"><h2 id="9-步驟八-註冊到選單與權限"><button class="tg" aria-label="收合/展開" type="button"></button>9. 步驟八:註冊到選單與權限</h2><div class="sec-body">
+<blockquote><p><strong>〔假設〕缺:選單表。</strong>這一節寫不出「改哪張表、下哪句 SQL」,因為選單與權限的定義<strong>不在 repo 裡</strong>。以下是推論與驗法,<strong>沒有一個表名是編造的</strong>。</p></blockquote>
+<h3 id="9-1-為什麼查不到">9.1 為什麼查不到</h3>
+<ol><li><strong>主 EXE(外殼)專案不在 repo。</strong><code>architecture.md §2.5</code> 已記錄:用戶端 remoting 設定整段被註解、找不到主 EXE 專案。選單是外殼在畫的。</li><li><strong>repo 內沒有依字串載入畫面的程式。</strong>全庫 <code>Activator.CreateInstance</code> 的命中全在 PO 的泛型 VDB 建立(例 <code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM071_PO.cs:113</code>),沒有一處是拿代號字串 new Form。</li><li><strong><code>DB/</code> 只涵蓋 16% 的 SP、<code>DB/Table/</code> 只有變更腳本沒有 DDL</strong>(<code>architecture.md 附錄 B.0</code>、<code>architecture.md 附錄 B.5</code>),選單表就算存在也不會出現在 repo。</li></ol>
+<h3 id="9-2-推論-鍵大概長什麼樣">9.2 推論:鍵大概長什麼樣</h3>
+<div class="tw"><table><thead><tr><th>推論</th><th>依據</th></tr></thead><tbody><tr><td><strong>以畫面代號當鍵</strong></td><td>代號是全庫唯一識別,六層檔名 / 類別名 / namespace / xsd 根節點全由它推導(<code>architecture.md §2.1</code>);沒有任何 registry 檔,代號本身就是 registry</td></tr><tr><td><strong>DB 端欄名很可能叫 <code>PROG_NO</code></strong></td><td>repo 內確實有表把程式代號存成 <code>PROG_NO</code>:<code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM046_PO.cs:146</code>。這是唯一看得到的「畫面代號當資料欄」實例</td></tr><tr><td><strong>權限至少有一部分綁部門</strong></td><td><code>CASM006</code> 的 SQL 直接寫死 <code>AND COD009.DEPT_NO IN(…)</code>(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs:210</code>)</td></tr></tbody></table></div>
+<p><strong><code>OFD046</code> 不是選單表</strong>——它是 <code>OFDM046</code> 自己的主檔(<code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM046_PO.cs:23</code>),只是剛好有 <code>PROG_NO</code> 欄。寫在這裡只是給欄名線索。</p>
+<h3 id="9-3-拿到輸入後怎麼驗">9.3 拿到輸入後怎麼驗</h3>
+<pre class="code lang-sql"><code>SELECT table_name, column_name FROM all_tab_columns          -- 1. 找出把畫面代號當欄位的表
+ WHERE column_name IN ('PROG_NO','PROGRAM_ID','FORM_NO','MENU_NO');
+SELECT COUNT(*) FROM &lt;候選表&gt;;                                -- 2. 筆數接近 908 的那張就是全畫面清冊
+SELECT * FROM &lt;候選表&gt; WHERE PROG_NO = 'CASM006';             -- 3. 拿已知畫面反查</code></pre>
+<p>908 來自 <code>architecture.md §2.1</code> 的全庫實測。第 2 步對不上就換候選表,不要硬套。權限表用同一招:在第 1 步結果裡找同時有代號欄與 <code>ROLE</code> / <code>GROUP</code> / <code>DEPT</code> 類欄位的那張。</p>
+<h3 id="9-4-在拿到輸入前怎麼測">9.4 在拿到輸入前怎麼測</h3>
+<p>不必等選單。M 畫面在 <code>FormInitial</code> 裡自己 new 出 <code>ProcessVDB</code> 與 <code>FormProxy</code>(<a class="sec" href="#8-2-生命週期-六個事件掛點">§8.2</a>),<strong>不依賴選單就能跑</strong>。找一個現成宿主(例如 <code>Dev/Common/Source/CustomControl/TestWindowControls/</code>)把 <code>&lt;NEW&gt;</code> 掛上去手動開,先把 <a class="sec" href="#11-驗證清單">§11</a> 驗完,選單留到最後補。</p>
+<blockquote><p><strong>〔假設〕缺:選單表。</strong>上述 SQL 未實測;<code>PROG_NO</code> 之外的三個欄名是常見命名的猜測,<strong>repo 內沒有證據</strong>,放進 <code>IN</code> 只為一次撈完。<a class="sec" href="#9-4-在拿到輸入前怎麼測">§9.4</a> 的宿主方案也未實測(缺 PTPFBlock DLL)。</p></blockquote>
+</div></section><section class="sec" data-sec="10-步驟九-編譯與部署"><h2 id="10-步驟九-編譯與部署"><button class="tg" aria-label="收合/展開" type="button"></button>10. 步驟九:編譯與部署</h2><div class="sec-body">
+<h3 id="10-1-六個-csproj-都要改-但不會多出組件">10.1 六個 csproj 都要改,但不會多出組件</h3>
+<p>新畫面的檔案是<strong>加進既有六個組件</strong>,不是新建六個:</p>
+<div class="tw"><table><thead><tr><th>專案</th><th>加什麼</th><th>錨點(<code>CASM006</code> 範本)</th></tr></thead><tbody><tr><td><code>DataEntity.CAS</code></td><td><code>Compile</code> × 2 + <code>None</code> × 3</td><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/DataEntity.CAS.csproj:116-121</code> 與 <code>:203-213</code></td></tr><tr><td><code>UIEntity.CAS</code></td><td>同上</td><td><code>Dev/ATLAS.CAS/Source/Entity/UIEntity.CAS/UIEntity.CAS.csproj:116-121</code> 與 <code>:203-213</code></td></tr><tr><td><code>PO.CAS</code></td><td><code>Compile</code> × 1</td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/PO.CAS.csproj:107</code></td></tr><tr><td><code>Control.CAS</code></td><td><code>Compile</code> × 1</td><td><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/Control.CAS.csproj:88</code></td></tr><tr><td><code>FormProxy.CAS</code></td><td><code>Compile</code> × 1</td><td><code>Dev/ATLAS.CAS/Source/FormProxy/FormProxy.CAS/FormProxy.CAS.csproj:84</code></td></tr><tr><td><code>UI.CAS</code></td><td><code>Compile</code> × 2 + <code>EmbeddedResource</code> × 1</td><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/UI.CAS.csproj:266-271</code> 與 <code>:364-366</code></td></tr></tbody></table></div>
+<p>檔名在 csproj 裡是<strong>排序插入</strong>的(<code>CASM005…</code> 之後、<code>Properties\AssemblyInfo.cs</code> 之前)。順序不影響編譯,照著插 diff 才乾淨。</p>
+<h3 id="10-2-模組有多個-entity-專案時放哪一個">10.2 模組有多個 Entity 專案時放哪一個</h3>
+<p>CAS 只有一個,但大模組會拆:<code>Dev/ATLAS.OFD/Source/Entity/</code> 底下是 <code>DataEntity.OFD1</code>–<code>DataEntity.OFD9</code>(配 <code>UIEntity.OFD1</code>–<code>UIEntity.OFD9</code>),xsd 支數 8 / 9 / 9 / 18 / 18 / 21 / 15 / 25 / 58。 規則:<strong>放進編號最大的那個</strong>(OFD 是 <code>9</code>),它已是最大宗;<strong>Model 與 View 編號必須配對</strong>(<code>Dev/ATLAS.OFD/Source/Entity/DataEntity.OFD9/OFDM913AModelVDB.cs:11</code>)。</p>
+<h3 id="10-3-重編順序與部署">10.3 重編順序與部署</h3>
+<p>重編順序、部署到哪一端、<code>UIEntity</code> 兩端都要,與加欄位完全相同:見 <code>add-column.md §9.1</code> 與 <code>add-column.md §9.2</code>,依據在 <code>architecture.md §2.4</code> 與 <code>architecture.md §8.1</code>。 <strong>新畫面多一條檢查</strong>:<code>architecture.md 附錄 C.5</code> 的 25 個「有原始碼卻被 <code>HintPath</code> 綁成預編 DLL」的組件。CAS 六層都不在名單裡(<code>add-column.md §9.3</code> 已查證),<strong>但 <code>EC</code> 或 <code>OTA</code> 模組要先查</strong>——在該層 csproj 搜 <code>PTPFBlock</code>,搜得到就是綁 DLL,重編不會傳到下游。</p>
+<blockquote><p><strong>〔假設〕缺:PTPFBlock DLL。</strong>整個 <a class="sec" href="#10-步驟九-編譯與部署">§10</a> 未實測(<code>architecture.md 附錄 C.1</code>)。csproj 三段來自 <code>CASM006</code> 原文,重編順序來自 <code>ProjectReference</code> 相依。</p></blockquote>
+</div></section><section class="sec" data-sec="11-驗證清單"><h2 id="11-驗證清單"><button class="tg" aria-label="收合/展開" type="button"></button>11. 驗證清單</h2><div class="sec-body">
+<p>第一輪不碰四眼,先確認六層接上:</p>
+<div class="tw"><table><thead><tr><th>#</th><th>動作</th><th>過的條件</th><th>沒過回去做</th></tr></thead><tbody><tr><td>1</td><td><code>atlas_scan.py --screen &lt;NEW&gt;</code></td><td>六層都有路徑、表列得出來</td><td><a class="sec" href="#3-步驟二-dataentity-建-model-xsd-與加進-csproj">§3</a> <a class="sec" href="#4-步驟三-uientity-建-view-xsd">§4</a> <a class="sec" href="#5-步驟四-po-建構子-主明細宣告-事件訂閱-查詢-sql">§5</a></td></tr><tr><td>2</td><td>依 <code>add-column.md §9.1</code> 順序重編六個專案</td><td>六個都成功</td><td><a class="sec" href="#10-1-六個-csproj-都要改-但不會多出組件">§10.1</a></td></tr><tr><td>3</td><td>開畫面</td><td>版面出得來、不 null</td><td><a class="sec" href="#8-2-生命週期-六個事件掛點">§8.2</a></td></tr><tr><td>4</td><td>空條件查詢</td><td>不報錯(沒資料也算過)</td><td><a class="sec" href="#5-4-查詢-sql-全篇唯一要自己寫的東西">§5.4</a> <a class="sec" href="#7-2-什麼時候要多寫">§7.2</a></td></tr></tbody></table></div>
+<p>第二輪跑完整四眼,每一步查 DB(狀態語意見 <code>architecture.md §3</code>):</p>
+<div class="tw"><table><thead><tr><th>#</th><th>動作</th><th>查什麼</th></tr></thead><tbody><tr><td>5</td><td>新增主檔 + 兩列明細,送出</td><td>主明細都進 DB;<code>STATUS</code> 進 <code>Entry*</code>;明細的主檔鍵有被灌進去(<a class="sec" href="#8-4-主檔-具名控件手動雙向搬">§8.4</a>)</td></tr><tr><td>6</td><td>重開畫面查同一筆</td><td>主檔回填控件、明細回填網格(驗 <a class="sec" href="#5-4-查詢-sql-全篇唯一要自己寫的東西">§5.4</a> 的 SELECT)</td></tr><tr><td>7</td><td>待辦清單看得到</td><td>驗 <code>BeforeGetToDoData</code> 與 <code>isToDoString</code> 分支(<a class="sec" href="#5-4-查詢-sql-全篇唯一要自己寫的東西">§5.4</a>)</td></tr><tr><td>8</td><td>換帳號覆核 → 主管核准 → 退回後重送</td><td><code>STATUS</code> 依序進 <code>Verify*</code> / <code>Approve*</code>,<code>REJECTID</code> 有值,資料不變</td></tr><tr><td>9</td><td>修改:改主檔一欄、刪一列明細、加一列明細</td><td>三種 <code>RowState</code> 都對(驗 <code>TransferDetailTable</code>,<a class="sec" href="#6-3-customtransfer-四個覆寫-都要寫-都是樣板">§6.3</a>)</td></tr><tr><td>10</td><td>刪除整筆;再故意觸發每一條 <a class="sec" href="#8-6-驗證欄位集中在-dovalidate">§8.6</a> 的驗證</td><td>主明細一起走;每條驗證都跳中文訊息且擋住送出</td></tr></tbody></table></div>
+<p><strong>第 6 與第 9 最容易失敗</strong>:前者驗手寫 SELECT,後者驗明細的狀態處理。</p>
+</div></section><section class="sec" data-sec="12-常見錯誤與症狀"><h2 id="12-常見錯誤與症狀"><button class="tg" aria-label="收合/展開" type="button"></button>12. 常見錯誤與症狀</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>病因</th><th>回去做</th></tr></thead><tbody><tr><td><strong>編譯過,執行期找不到型別 <code>&lt;NEW&gt;Model</code></strong></td><td>xsd 進了資料夾但 csproj 沒掛 <code>Generator</code></td><td><a class="sec" href="#3-5-改法-csproj-要加的三段">§3.5</a></td></tr><tr><td><strong>Designer.cs 只有外殼、沒有 Row 類別</strong></td><td>表 element 的 10 個 <code>msprop</code> 漏了</td><td><a class="sec" href="#3-2-改法-表節點的-10-個-msprop">§3.2</a></td></tr><tr><td><strong>開畫面就 <code>NullReferenceException</code></strong></td><td><code>FormInitial</code> 沒設 <code>ProcessVDB</code> / <code>FormProxy</code></td><td><a class="sec" href="#8-2-生命週期-六個事件掛點">§8.2</a></td></tr><tr><td><strong>畫面開得起來,按任何鈕都 <code>ServerSideError</code></strong></td><td><code>_Pxy</code> 漏寫 <code>InitializeControl()</code>,<code>Control</code> 是 null</td><td><a class="sec" href="#7-1-現況-最小的一層-21-行">§7.1</a></td></tr><tr><td><strong>查詢永遠零筆,DB 卻有資料</strong></td><td><code>xTableMapping</code> 表名、xsd 表 element 名、SQL 表名三者不一致</td><td><a class="sec" href="#5-2-主明細宣告">§5.2</a></td></tr><tr><td><strong>查得到主檔,明細永遠空的</strong></td><td><code>BuildDetailSQLString</code> 外層 <code>if</code> 的表名對不上</td><td><a class="sec" href="#5-4-查詢-sql-全篇唯一要自己寫的東西">§5.4</a></td></tr><tr><td><strong>主檔有值畫面全空,或反過來</strong></td><td>Model 與 View 欄名不一致,<code>TransferVDBHelper</code> 靜默丟掉</td><td><a class="sec" href="#4-2-改法">§4.2</a>、<code>add-column.md §6.2</code></td></tr><tr><td><strong>網格把四眼 15 欄全顯示出來</strong></td><td>沒呼叫 <code>SetupUltraGridShowColumns</code></td><td><a class="sec" href="#8-5-明細-網格-白名單">§8.5</a></td></tr><tr><td><strong>明細存進去,主檔鍵值是空的</strong></td><td><code>SetMasterToDetail</code> 沒灌鍵</td><td><a class="sec" href="#8-4-主檔-具名控件手動雙向搬">§8.4</a></td></tr><tr><td><strong>查詢條件填了沒作用</strong></td><td>UI 的 <code>AddParametersRow</code> 與 PO 的 <code>Rows.Contains</code> 字串不同</td><td><a class="sec" href="#5-4-查詢-sql-全篇唯一要自己寫的東西">§5.4</a> <a class="sec" href="#8-4-主檔-具名控件手動雙向搬">§8.4</a></td></tr><tr><td><strong><code>ORA-00904</code>,欄名是 <code>STATUS</code> 或 <code>DATAFLAG</code></strong></td><td>新建的表沒有四眼 15 欄</td><td><a class="sec" href="#2-3-資料表-要先存在-而且不必跟模組同名">§2.3</a></td></tr><tr><td><strong>四眼走不動,狀態一直不變</strong></td><td>SELECT 漏了 <code>AllEVAColumnsForSelect</code></td><td><a class="sec" href="#5-4-查詢-sql-全篇唯一要自己寫的東西">§5.4</a></td></tr><tr><td><strong><code>GetDaoInstance</code> 找不到 PO</strong></td><td><code>DaoContractType</code> 打錯或沒 <code>DataAccessPool.Add</code></td><td><a class="sec" href="#6-2-兩個必覆寫">§6.2</a></td></tr><tr><td><strong>自己這台好了,別人還是舊的</strong></td><td><code>UIEntity</code> 只佈了一端</td><td><code>add-column.md §9.2</code></td></tr></tbody></table></div>
+<p><strong>其中五條是靜默失敗</strong>(查詢零筆、明細空、Model/View 不一致、網格白名單、參數字串對不上),不報錯不寫 log,所以 <a class="sec" href="#11-驗證清單">§11</a> 不能跳。</p>
+</div></section><section class="sec" data-sec="13-可以少建哪一層"><h2 id="13-可以少建哪一層"><button class="tg" aria-label="收合/展開" type="button"></button>13. 可以少建哪一層</h2><div class="sec-body">
+<h3 id="13-1-先看現況-並且知道掃描器會誤報">13.1 先看現況,並且知道掃描器會誤報</h3>
+<p><code>architecture.md §2.7</code> 拆過:全庫 65 支「不齊」裡一大半是 <code>_9i</code> 後綴或 <code>.Query</code> 專案改命名造成的字面不符。查自己模組:<code>py -V:3.12 %ATLAS_ROOT%\docs\tools\atlas_scan.py --module &lt;MOD&gt;</code>,「六層」寫「齊」就是齊(CAS 16 支全齊)。</p>
+<p><strong>還有一種假警報是 <code>architecture.md §2.7</code> 沒收錄的:大小寫。</strong><code>OFDM742</code> 被判缺 FormProxy,但檔案就在 <code>Dev/ATLAS.OFD/Source/FormProxy/FormProxy.OFD/OFDM742_pxy.cs:1</code> —— 小寫的 <code>_pxy</code>;UI 那邊 <code>Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM742.cs:98</code> 明明白白 <code>new OFDM742_Pxy()</code>。Windows 編得過,大小寫敏感的工具判缺。<strong>新畫面一律用大寫 <code>_Pxy</code>。</strong></p>
+<h3 id="13-2-m-型幾乎不能少">13.2 M 型幾乎不能少</h3>
+<p><code>architecture.md §6.6</code> 實測:M 型 284 支只有 12 支有缺,10 支集中在 OFD。理由很硬——M 一定要 <code>BaseEVADaoPO</code> + <code>xTableMapping</code> + 四眼,缺哪層都跑不起來。真能少的只有兩種:</p>
+<div class="tw"><table><thead><tr><th>少什麼</th><th>什麼情況</th><th>實例</th></tr></thead><tbody><tr><td><strong>少 UI + FormProxy</strong></td><td>純伺服器功能,沒有畫面入口,由別支畫面或服務代呼叫</td><td><code>OFDM913</code> 只有 Pxy / Ctl / PO(<code>atlas_scan.py --screen OFDM913</code>),Pxy 提供的是 <code>BatchAdd</code> / <code>CheckExists</code> 這類批次方法(<code>Dev/ATLAS.OFD/Source/FormProxy/FormProxy.OFD/OFDM913_Pxy.cs:32</code>)</td></tr><tr><td><strong>少 DataEntity + UIEntity</strong></td><td>不回傳資料集(跑完只改 DB 狀態),或借用別支畫面的 entity</td><td><code>architecture.md §6.6</code> 的 28 支,全是 <code>B</code> 型</td></tr></tbody></table></div>
+<p><strong>兩種都不是 M。</strong>在建 M 卻想少一層,先確認型別碼選對了:</p>
+<p>想少 UI(沒有畫面)→ 你要的是 <code>B</code>;想少四眼(不用送核)→ <code>I</code>;只印不寫 → <code>R</code>(七層,多一個 <code>Report.&lt;模組&gt;</code>)。 <strong>改型別碼比硬拆 M 的六層便宜得多。</strong></p>
+<h3 id="13-3-唯一常見的-少建-沒有明細">13.3 唯一常見的「少建」:沒有明細</h3>
+<p>這不是少一層,是少一張表,四處連動:</p>
+<div class="tw"><table><thead><tr><th>處</th><th>沒有明細時</th><th>錨點</th></tr></thead><tbody><tr><td>xsd</td><td>只有一個表 element、一組 <code>xs:unique</code></td><td>對照 <code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM006Model.xsd:113</code></td></tr><tr><td>PO</td><td>不宣告 <code>DetailTable</code>、不寫 <code>BuildDetailSQLString</code>、<code>BeforeGetMaintainData</code> 的 <code>else</code> 分支拿掉</td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM005_PO.cs:36-39</code></td></tr><tr><td>Ctl</td><td>四個 <code>CustomTransfer*</code> 只留 <code>TransferTable</code></td><td>對照 <code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM006_Ctl.cs:67</code></td></tr><tr><td>UI</td><td>不要網格、不要主檔鍵灌明細的迴圈</td><td>對照 <code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs:55-62</code></td></tr></tbody></table></div>
+<p>範本:<code>CASM004</code> 與 <code>CASM005</code>,兩支都是純主檔的 M。</p>
+</div></section><section class="sec" data-sec="附錄-a-本手冊引用的檔案清單"><h2 id="附錄-a-本手冊引用的檔案清單"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 A 本手冊引用的檔案清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>檔</th><th>錨點</th><th>用在</th></tr></thead><tbody><tr><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM006Model.xsd</code></td><td><code>:12</code> <code>:15</code> <code>:25-31</code> <code>:46</code> <code>:52</code> <code>:113</code> <code>:205</code> <code>:211-221</code></td><td><a class="sec" href="#3-步驟二-dataentity-建-model-xsd-與加進-csproj">§3</a> <a class="sec" href="#13-3-唯一常見的-少建-沒有明細">§13.3</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM006ModelVDB.cs</code></td><td><code>:9-19</code></td><td><a class="sec" href="#3-6-new-modelvdb-cs-40-行照抄-但有兩處絕對不能抄錯">§3.6</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/UIEntity.CAS/CASM006ViewVDB.cs</code></td><td><code>:9</code> <code>:19</code></td><td><a class="sec" href="#3-6-new-modelvdb-cs-40-行照抄-但有兩處絕對不能抄錯">§3.6</a> <a class="sec" href="#4-2-改法">§4.2</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/DataEntity.CAS.csproj</code></td><td><code>:116-121</code> <code>:203-213</code></td><td><a class="sec" href="#3-5-改法-csproj-要加的三段">§3.5</a> <a class="sec" href="#10-1-六個-csproj-都要改-但不會多出組件">§10.1</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/UIEntity.CAS/UIEntity.CAS.csproj</code></td><td><code>:116-121</code> <code>:203-213</code></td><td><a class="sec" href="#4-2-改法">§4.2</a> <a class="sec" href="#10-1-六個-csproj-都要改-但不會多出組件">§10.1</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM006_PO.cs</code></td><td><code>:18-20</code> <code>:23-24</code> <code>:27-34</code> <code>:29-31</code> <code>:32-33</code> <code>:46-94</code> <code>:105-215</code> <code>:111-127</code> <code>:113-115</code> <code>:132-140</code> <code>:138</code> <code>:203-206</code> <code>:210</code> <code>:224-273</code> <code>:229</code></td><td><a class="sec" href="#5-步驟四-po-建構子-主明細宣告-事件訂閱-查詢-sql">§5</a> <a class="sec" href="#9-2-推論-鍵大概長什麼樣">§9.2</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM006_Ctl.cs</code></td><td><code>:1-11</code> <code>:34-37</code> <code>:41-46</code> <code>:58-71</code> <code>:64</code> <code>:67</code> <code>:80-92</code> <code>:98-101</code> <code>:107-110</code> <code>:111-119</code> <code>:130-134</code></td><td><a class="sec" href="#6-步驟五-control-initializedataaccesspool-initializevdbtypes">§6</a> <a class="sec" href="#13-3-唯一常見的-少建-沒有明細">§13.3</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/FormProxy/FormProxy.CAS/CASM006_Pxy.cs</code></td><td><code>:10</code> <code>:15-18</code></td><td><a class="sec" href="#7-1-現況-最小的一層-21-行">§7.1</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.cs</code></td><td><code>:10</code> <code>:21</code> <code>:37-49</code> <code>:53</code> <code>:55-62</code> <code>:68-146</code> <code>:278-293</code> <code>:280-282</code> <code>:285-286</code> <code>:295-303</code> <code>:300</code> <code>:305-323</code> <code>:310-319</code> <code>:320</code> <code>:325-336</code> <code>:338-347</code> <code>:349-385</code> <code>:376-383</code> <code>:387-390</code> <code>:392-412</code> <code>:395</code> <code>:396-407</code> <code>:409-410</code> <code>:411</code></td><td><a class="sec" href="#8-步驟七-ui">§8</a> <a class="sec" href="#13-3-唯一常見的-少建-沒有明細">§13.3</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM006.Designer.cs</code></td><td><code>:980-985</code> <code>:1033-1065</code> <code>:1038</code> <code>:1039</code> <code>:1044</code> <code>:1045</code> <code>:1055</code> <code>:1062</code></td><td><a class="sec" href="#8-2-生命週期-六個事件掛點">§8.2</a> <a class="sec" href="#8-3-控件命名-前綴決定型別">§8.3</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/UI.CAS.csproj</code></td><td><code>:266-271</code> <code>:364-366</code></td><td><a class="sec" href="#8-1-繼承誰-csproj-怎麼掛">§8.1</a> <a class="sec" href="#10-1-六個-csproj-都要改-但不會多出組件">§10.1</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/PO.CAS.csproj</code></td><td><code>:107</code></td><td><a class="sec" href="#10-1-六個-csproj-都要改-但不會多出組件">§10.1</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/Control.CAS.csproj</code></td><td><code>:88</code></td><td><a class="sec" href="#10-1-六個-csproj-都要改-但不會多出組件">§10.1</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/FormProxy/FormProxy.CAS/FormProxy.CAS.csproj</code></td><td><code>:84</code></td><td><a class="sec" href="#10-1-六個-csproj-都要改-但不會多出組件">§10.1</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs</code></td><td><code>:42-45</code> <code>:49-58</code> <code>:77</code> <code>:170</code> <code>:298</code></td><td><a class="sec" href="#5-3-事件-三個必要-其餘可選">§5.3</a> <a class="sec" href="#5-4-查詢-sql-全篇唯一要自己寫的東西">§5.4</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM001_Ctl.cs</code></td><td><code>:36-39</code> <code>:43-48</code> <code>:55-65</code></td><td><a class="sec" href="#6-2-兩個必覆寫">§6.2</a> <a class="sec" href="#6-4-加值方法-先不要寫">§6.4</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/FormProxy/FormProxy.CAS/CASM001_Pxy.cs</code></td><td><code>:30-46</code> <code>:32-45</code> <code>:54</code> <code>:149</code></td><td><a class="sec" href="#7-2-什麼時候要多寫">§7.2</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM001.cs</code></td><td><code>:109-111</code></td><td><a class="sec" href="#8-2-生命週期-六個事件掛點">§8.2</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM001Model.xsd</code></td><td><code>:21</code> <code>:133-141</code></td><td><a class="sec" href="#3-3-改法-欄位節點的兩種寫法">§3.3</a> <a class="sec" href="#3-4-改法-主鍵-新畫面才會踩到">§3.4</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM003_PO.cs</code></td><td><code>:30-32</code></td><td><a class="sec" href="#5-3-事件-三個必要-其餘可選">§5.3</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM003_Ctl.cs</code></td><td><code>:1-136</code></td><td><a class="sec" href="#6-1-現況-逐字樣板">§6.1</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM004_PO.cs</code></td><td><code>:39-42</code> <code>:42</code></td><td><a class="sec" href="#2-3-資料表-要先存在-而且不必跟模組同名">§2.3</a> <a class="sec" href="#5-2-主明細宣告">§5.2</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM005_PO.cs</code></td><td><code>:36-39</code></td><td><a class="sec" href="#2-3-資料表-要先存在-而且不必跟模組同名">§2.3</a> <a class="sec" href="#5-3-事件-三個必要-其餘可選">§5.3</a> <a class="sec" href="#13-3-唯一常見的-少建-沒有明細">§13.3</a></td></tr><tr><td><code>Dev/Common/Source/Base/TA.DataAccess/BaseEVADaoPO.cs</code></td><td><code>:17</code></td><td><a class="sec" href="#5-1-現況-骨架四件">§5.1</a></td></tr><tr><td><code>Dev/Common/Source/Utility/TA.ServerUtility/OracleHelper.cs</code></td><td><code>:20</code> <code>:115-132</code></td><td><a class="sec" href="#2-3-資料表-要先存在-而且不必跟模組同名">§2.3</a> <a class="sec" href="#5-4-查詢-sql-全篇唯一要自己寫的東西">§5.4</a></td></tr><tr><td><code>Dev/ATLAS.OFD/Source/FormProxy/FormProxy.OFD/OFDM742_pxy.cs</code></td><td><code>:1</code></td><td><a class="sec" href="#13-1-先看現況-並且知道掃描器會誤報">§13.1</a></td></tr><tr><td><code>Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM742.cs</code></td><td><code>:98</code></td><td><a class="sec" href="#13-1-先看現況-並且知道掃描器會誤報">§13.1</a></td></tr><tr><td><code>Dev/ATLAS.OFD/Source/FormProxy/FormProxy.OFD/OFDM913_Pxy.cs</code></td><td><code>:32</code></td><td><a class="sec" href="#13-2-m-型幾乎不能少">§13.2</a></td></tr><tr><td><code>Dev/ATLAS.OFD/Source/Entity/DataEntity.OFD9/OFDM913AModelVDB.cs</code></td><td><code>:11</code></td><td><a class="sec" href="#10-2-模組有多個-entity-專案時放哪一個">§10.2</a></td></tr><tr><td><code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM046_PO.cs</code></td><td><code>:23</code> <code>:146</code></td><td><a class="sec" href="#9-2-推論-鍵大概長什麼樣">§9.2</a></td></tr><tr><td><code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM071_PO.cs</code></td><td><code>:113</code></td><td><a class="sec" href="#9-1-為什麼查不到">§9.1</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-b-待輸入回填"><h2 id="附錄-b-待輸入回填"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 B 待輸入回填</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>缺什麼</th><th>影響哪幾段</th><th>補進來後要改什麼</th></tr></thead><tbody><tr><td><strong>選單 / 權限表</strong></td><td><a class="sec" href="#9-步驟八-註冊到選單與權限">§9</a> 整節</td><td>目前只有推論(代號當鍵、欄名可能是 <code>PROG_NO</code>)與三步驗法;補進來後寫成可貼的 INSERT 與授權步驟</td></tr><tr><td><strong>Oracle 唯讀帳號</strong></td><td><a class="sec" href="#2-3-資料表-要先存在-而且不必跟模組同名">§2.3</a> <a class="sec" href="#3-3-改法-欄位節點的兩種寫法">§3.3</a></td><td>四眼 15 欄的檢查 SQL 未實測;xsd 的 <code>maxLength</code> 目前只能抄相鄰欄位,補進來後可對 <code>DATA_LENGTH</code> 直接填</td></tr><tr><td><strong>PTPFBlock DLL</strong></td><td><a class="sec" href="#3-7-驗證">§3.7</a> <a class="sec" href="#6-4-加值方法-先不要寫">§6.4</a> <a class="sec" href="#10-步驟九-編譯與部署">§10</a> <a class="sec" href="#11-驗證清單">§11</a></td><td>編譯與部署段全未實測;Designer.cs 重生、六層 build、四眼實跑都要補實際指令與輸出</td></tr><tr><td><strong>主 EXE / 外殼專案</strong></td><td><a class="sec" href="#9-1-為什麼查不到">§9.1</a> <a class="sec" href="#9-4-在拿到輸入前怎麼測">§9.4</a></td><td>目前只能說「不在 repo」;補進來後可寫畫面怎麼被外殼載入,以及 <a class="sec" href="#9-4-在拿到輸入前怎麼測">§9.4</a> 的替代宿主</td></tr><tr><td><strong>部署機的 <code>main.exe.config</code></strong></td><td><a class="sec" href="#10-3-重編順序與部署">§10.3</a></td><td>客戶端 Remoting 設定不在版控(<code>architecture.md §8.1</code>),無法寫出佈到哪個目錄</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-c-版本紀錄"><h2 id="附錄-c-版本紀錄"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 C 版本紀錄</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>版本</th><th>日期</th><th>變更</th></tr></thead><tbody><tr><td>v1</td><td>2026-09-14</td><td>初版。以 <code>CASM006</code> 為主範本、<code>CASM001</code> 為對照,拆出「樣板 / 畫面特有」</td></tr></tbody></table></div></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-15 17:56 產生 · 標題 64 · 圖 1 · 表格 28 · 程式錨點 150 · § 連結 128 · 引用檢查：畫面 30（缺 0） · Table 4（缺 0） · 結果集 5（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

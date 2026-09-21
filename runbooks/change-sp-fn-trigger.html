@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-14">
+<title>ATLAS 維護手冊 — 加 / 改 PL/SQL 物件(SP · Function · Trigger · View)</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-適用範圍與前提">0. 適用範圍與前提</a>
+<a class="l3" href="#0-1-四類物件在-repo-的規模">0.1 四類物件在 repo 的規模</a>
+<a class="l3" href="#0-2-三件事先記住">0.2 三件事先記住</a>
+<a class="l2" href="#1-改動點總覽">1. 改動點總覽</a>
+<a class="l2" href="#2-先確認-你要改的物件在不在-repo-裡">2. 先確認:你要改的物件在不在 repo 裡</a>
+<a class="l3" href="#2-1-判斷流程">2.1 判斷流程</a>
+<a class="l3" href="#2-2-只在資料庫裡的物件-先撈出來再改">2.2 只在資料庫裡的物件:先撈出來再改</a>
+<a class="l3" href="#2-3-絕對不要做的事">2.3 絕對不要做的事</a>
+<a class="l2" href="#3-檔案慣例-命名-檔頭-編碼">3. 檔案慣例:命名、檔頭、編碼</a>
+<a class="l3" href="#3-1-全庫共通的五條-121-支實測">3.1 全庫共通的五條(121 支實測)</a>
+<a class="l3" href="#3-2-檔名-vs-真名">3.2 檔名 vs 真名</a>
+<a class="l3" href="#3-3-編碼-新檔用哪一個">3.3 編碼:新檔用哪一個</a>
+<a class="l3" href="#3-4-參數命名-有慣例但不統一">3.4 參數命名:有慣例但不統一</a>
+<a class="l3" href="#3-5-例外處理慣例">3.5 例外處理慣例</a>
+<a class="l2" href="#4-步驟一-改-stored-procedure">4. 步驟一:改 Stored Procedure</a>
+<a class="l3" href="#4-1-現況">4.1 現況</a>
+<a class="l3" href="#4-2-改法">4.2 改法</a>
+<a class="l3" href="#4-3-驗證">4.3 驗證</a>
+<a class="l2" href="#5-步驟二-改-function">5. 步驟二:改 Function</a>
+<a class="l3" href="#5-1-現況">5.1 現況</a>
+<a class="l3" href="#5-2-三個-function-專屬的坑">5.2 三個 Function 專屬的坑</a>
+<a class="l3" href="#5-3-改法與驗證">5.3 改法與驗證</a>
+<a class="l2" href="#6-步驟三-改-trigger">6. 步驟三:改 Trigger</a>
+<a class="l3" href="#6-1-現況-13-支全部同一種形狀">6.1 現況:13 支全部同一種形狀</a>
+<a class="l3" href="#6-2-改法">6.2 改法</a>
+<a class="l3" href="#6-3-驗證">6.3 驗證</a>
+<a class="l2" href="#7-步驟四-改-view">7. 步驟四:改 View</a>
+<a class="l3" href="#7-1-現況-只有兩支-而且兩支長得完全不一樣">7.1 現況:只有兩支,而且兩支長得完全不一樣</a>
+<a class="l3" href="#7-2-改法">7.2 改法</a>
+<a class="l3" href="#7-3-view-有-typed-dataset-的話一起改">7.3 View 有 typed DataSet 的話一起改</a>
+<a class="l3" href="#7-4-驗證">7.4 驗證</a>
+<a class="l2" href="#8-步驟五-呼叫端-po-要不要跟著改">8. 步驟五:呼叫端(PO)要不要跟著改</a>
+<a class="l3" href="#8-1-判斷表">8.1 判斷表</a>
+<a class="l3" href="#8-2-加-in-參數-標準寫法">8.2 加 IN 參數:標準寫法</a>
+<a class="l3" href="#8-3-加游標-兩處都要改-而且是位置對應">8.3 加游標:兩處都要改,而且是位置對應</a>
+<a class="l3" href="#8-4-改游標欄位-typed-dataset-要不要跟">8.4 改游標欄位:typed DataSet 要不要跟</a>
+<a class="l3" href="#8-5-三個用位置取-out-值的呼叫點">8.5 三個用位置取 OUT 值的呼叫點</a>
+<a class="l3" href="#8-6-驗證">8.6 驗證</a>
+<a class="l2" href="#9-步驟六-部署與-rollback">9. 步驟六:部署與 rollback</a>
+<a class="l3" href="#9-1-部署順序">9.1 部署順序</a>
+<a class="l3" href="#9-2-rollback-物件腳本沒有-rollback-慣例">9.2 rollback:物件腳本沒有 _rollback 慣例</a>
+<a class="l3" href="#9-3-db-table-的票號腳本配對慣例-對照用">9.3 DB/Table/ 的票號腳本配對慣例(對照用)</a>
+<a class="l3" href="#9-4-sp-沒有版本號-怎麼知道線上是哪一版">9.4 SP 沒有版本號,怎麼知道線上是哪一版</a>
+<a class="l2" href="#10-驗證清單">10. 驗證清單</a>
+<a class="l2" href="#11-常見錯誤與症狀">11. 常見錯誤與症狀</a>
+<a class="l2" href="#12-附錄-a-本手冊引用的檔案清單">12. 附錄 A 本手冊引用的檔案清單</a>
+<a class="l2" href="#13-附錄-b-待輸入回填">13. 附錄 B 待輸入回填</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-14</span></div>
+<h1 id="atlas-維護手冊-加-改-pl-sql-物件-sp-function-trigger-view">ATLAS 維護手冊 — 加 / 改 PL/SQL 物件(SP · Function · Trigger · View)</h1>
+<blockquote><p>產出日期:2026-09-14(v1)。本手冊為<strong>純程式碼閱讀彙整 + 操作步驟</strong>,未修改任何 ATLAS 原始碼。每一步附程式錨點(<code>DB/SP/X.sql:行號</code>),行號為分析當下版本,動手前以最新檔案為準。</p>
+<p>⚠ 標「<strong>〔假設〕缺:輸入</strong>」的段落是拿不到該輸入(DB 連線 / 版本歷史)只能從結構推論,<a class="sec" href="#13-附錄-b-待輸入回填">§13</a> 彙整。前提知識:SQL 怎麼組看 <code>architecture.md §4</code>、DB 物件總表與「repo 只涵蓋 16% SP」看 <code>architecture.md 附錄 B</code>(<strong>先讀 B.0</strong>),<strong>不要整份讀</strong>;加欄位走 <code>runbooks/add-column.md</code>。</p></blockquote>
+<section class="sec" data-sec="0-適用範圍與前提"><h2 id="0-適用範圍與前提"><button class="tg" aria-label="收合/展開" type="button"></button>0. 適用範圍與前提</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>項目</th><th>內容</th></tr></thead><tbody><tr><td>適用情境</td><td>改一支既有的 Oracle Stored Procedure / Function / Trigger / View,或新增一支</td></tr><tr><td>不適用</td><td>加表 / 加欄位(走 <code>runbooks/add-column.md</code>)· 改 PO 內嵌的 SELECT 字串(那不是 DB 物件,走 <code>architecture.md §4.2</code>)</td></tr><tr><td>前提工具 / 變數</td><td>Oracle 客戶端 · 有 <code>SW</code> schema 的部署帳號 · 查 <code>ALL_SOURCE</code> 的唯讀帳號 · TFS workspace;<code>%ATLAS_ROOT%</code> = <code><repo></code>,帳號密碼一律 <code>***</code> 不寫進腳本</td></tr><tr><td>執行期資料庫</td><td><strong>Oracle only</strong>。設定檔裡的 SqlClient 連線字串是另一個客戶的設計期殘留(<code>architecture.md §4.6</code> 有六項證據)</td></tr><tr><td>新參數佈位符</td><td>本文一律用 <code>&lt;NEW_PARAM&gt;</code> 代表你要加的參數名</td></tr></tbody></table></div>
+<h3 id="0-1-四類物件在-repo-的規模">0.1 四類物件在 repo 的規模</h3>
+<div class="tw"><table><thead><tr><th>類別</th><th>支數</th><th>資料夾</th><th>總行數</th><th>有 <code>CREATE OR REPLACE</code></th><th>有 <code>EXCEPTION</code></th></tr></thead><tbody><tr><td>Stored Procedure</td><td>83</td><td><code>DB/SP/</code></td><td>24,075</td><td>83 / 83</td><td>32</td></tr><tr><td>Function</td><td>23</td><td><code>DB/Function/</code></td><td>3,679</td><td>23 / 23</td><td>8</td></tr><tr><td>Trigger</td><td>13</td><td><code>DB/Trigger/</code></td><td>2,528</td><td>13 / 13</td><td>10</td></tr><tr><td>View</td><td>2</td><td><code>DB/View/</code></td><td>118</td><td>2 / 2</td><td>—</td></tr></tbody></table></div>
+<p>以 <code>atlas_scan.read_text()</code> 逐檔實測,與 <code>architecture.md 附錄 B</code> 的清單一致。</p>
+<h3 id="0-2-三件事先記住">0.2 三件事先記住</h3>
+<ol><li><strong>PL/SQL 沒有「改一行」這回事。</strong>四類物件全部靠 <code>CREATE OR REPLACE</code> <strong>整支取代</strong>,你的檔案內容就是上線後的物件全文。</li><li><strong>84% 的 SP 不在 repo 裡。</strong>動手前第一步永遠是 <a class="sec" href="#2-先確認-你要改的物件在不在-repo-裡">§2</a> 的判斷流程,不是打開編輯器。</li><li><strong>檔名不是物件名。</strong>部署時 Oracle 認的是 <code>CREATE OR REPLACE</code> 後面那個名字。全庫已經有一支對不上(<a class="sec" href="#3-2-檔名-vs-真名">§3.2</a>)。</li></ol>
+</div></section><section class="sec" data-sec="1-改動點總覽"><h2 id="1-改動點總覽"><button class="tg" aria-label="收合/展開" type="button"></button>1. 改動點總覽</h2><div class="sec-body">
+<figure><svg viewBox="0 0 1010 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="改 PL/SQL 物件的判斷流程:先確認在不在 repo、再依 SP / Function / Trigger / View 分四條路、再判斷呼叫端要不要改、最後部署與 rollback"><defs><marker id="ah_chgdb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 第一個岔路:這支物件在不在 repo 裡</text><g class="bx">
+<rect x="20" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="62" text-anchor="middle">ls DB/&lt;類&gt;/ + grep</text>
+<text class="t2" x="145" y="82" text-anchor="middle">先查檔名，再查真名</text>
+</g><g class="bx accent">
+<rect x="300" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="62" text-anchor="middle">找得到</text>
+<text class="t2" x="425" y="82" text-anchor="middle">改檔，原編碼寫回</text>
+</g><g class="bx vend">
+<rect x="580" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="62" text-anchor="middle">找不到(SP 佔 84%)</text>
+<text class="t2" x="695" y="82" text-anchor="middle">先撆 ALL_SOURCE 進版控</text>
+</g><g class="bx vend">
+<rect x="840" y="40" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="62" text-anchor="middle">⚠ 不可重寫同名</text>
+<text class="t2" x="915" y="82" text-anchor="middle">會蓋掉線上邏輯</text>
+</g><path class="ar" d="M 270 68 L 300 68" marker-end="url(#ah_chgdb)"/><path class="ar" d="M 550 68 L 580 68" marker-end="url(#ah_chgdb)"/><path class="ar" d="M 810 68 L 840 68" marker-end="url(#ah_chgdb)"/><text class="lane" x="20" y="130">② 依物件別分四條路(全部走 CREATE OR REPLACE 整支取代)</text><g class="bx accent">
+<rect x="20" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="166" text-anchor="middle">Stored Procedure</text>
+<text class="t2" x="145" y="186" text-anchor="middle">83 支 · §4</text>
+</g><g class="bx accent">
+<rect x="300" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="166" text-anchor="middle">Function</text>
+<text class="t2" x="425" y="186" text-anchor="middle">23 支 · §5</text>
+</g><g class="bx accent">
+<rect x="580" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="166" text-anchor="middle">Trigger</text>
+<text class="t2" x="695" y="186" text-anchor="middle">13 支 · 全 BEFORE ROW</text>
+</g><g class="bx accent">
+<rect x="840" y="144" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="166" text-anchor="middle">View</text>
+<text class="t2" x="915" y="186" text-anchor="middle">2 支 · §7</text>
+</g><path class="ar" d="M 425 96 L 425 130 L 425 144" marker-end="url(#ah_chgdb)"/><path class="ar lnk" d="M 270 172 L 300 172"/><path class="ar lnk" d="M 550 172 L 580 172"/><path class="ar lnk" d="M 810 172 L 840 172"/><text class="lane" x="20" y="234">③ 呼叫端(PO)要不要跟著改</text><g class="bx accent">
+<rect x="20" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="270" text-anchor="middle">參數增減 / 換順序</text>
+<text class="t2" x="145" y="290" text-anchor="middle">AddInParameter 逐行</text>
+</g><g class="bx accent">
+<rect x="300" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="270" text-anchor="middle">游標增減</text>
+<text class="t2" x="425" y="290" text-anchor="middle">LoadDataSet 表名順序</text>
+</g><g class="bx dash">
+<rect x="580" y="248" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="270" text-anchor="middle">只改內部邏輯</text>
+<text class="t2" x="695" y="290" text-anchor="middle">PO 不用改</text>
+</g><g class="bx vend">
+<rect x="840" y="248" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="270" text-anchor="middle">⚠ Parameters[i]</text>
+<text class="t2" x="915" y="290" text-anchor="middle">位置取值 3 處</text>
+</g><path class="ar" d="M 145 200 L 145 248" marker-end="url(#ah_chgdb)"/><path class="ar" d="M 425 200 L 425 248" marker-end="url(#ah_chgdb)"/><path class="ar lnk" d="M 695 200 L 695 248"/><path class="ar lnk" d="M 810 276 L 840 276"/><text class="lane" x="20" y="338">④ 部署與 rollback</text><g class="bx accent">
+<rect x="20" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="374" text-anchor="middle">跑整支 CREATE OR REPLACE</text>
+<text class="t2" x="145" y="394" text-anchor="middle">沒有 ALTER 這種東西</text>
+</g><g class="bx">
+<rect x="300" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="374" text-anchor="middle">DB 先 / 程式後</text>
+<text class="t2" x="425" y="394" text-anchor="middle">簽名變才重編 PO</text>
+</g><g class="bx vend">
+<rect x="580" y="352" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="374" text-anchor="middle">rollback = 舊版全文</text>
+<text class="t2" x="695" y="394" text-anchor="middle">沒有 _rollback 慣例</text>
+</g><g class="bx vend">
+<rect x="840" y="352" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="374" text-anchor="middle">版本不可考</text>
+<text class="t2" x="915" y="394" text-anchor="middle">ALL_SOURCE 為準</text>
+</g><path class="ar" d="M 145 304 L 145 352" marker-end="url(#ah_chgdb)"/><path class="ar" d="M 270 380 L 300 380" marker-end="url(#ah_chgdb)"/><path class="ar" d="M 550 380 L 580 380" marker-end="url(#ah_chgdb)"/><path class="ar lnk" d="M 810 380 L 840 380"/></svg><figcaption>圖 1 改動點總覽。橘色實框=這一步要做;灰虛框=不用改;橘色虛框=陷阱。第一列沒走完就往下做，會把線上物件整支蓋掉。</figcaption></figure>
+<div class="tw"><table><thead><tr><th>順序</th><th>動作</th><th>檔 / 位置</th><th>一定要 / 視條件</th><th>節</th></tr></thead><tbody><tr><td>1</td><td>確認物件在不在 repo,對齊檔名 / 真名 / 編碼</td><td><code>DB/SP/</code> <code>DB/Function/</code> <code>DB/Trigger/</code> <code>DB/View/</code></td><td>一定要</td><td><a class="sec" href="#2-先確認-你要改的物件在不在-repo-裡">§2</a> <a class="sec" href="#3-檔案慣例-命名-檔頭-編碼">§3</a></td></tr><tr><td>2</td><td>改物件本體</td><td>依類別分四條路</td><td>一定要</td><td><a class="sec" href="#4-步驟一-改-stored-procedure">§4</a>–<a class="sec" href="#7-步驟四-改-view">§7</a></td></tr><tr><td>3</td><td>改呼叫端 PO</td><td><code>Dev/**/*_PO.cs</code></td><td><strong>只有簽名或游標變了才要</strong></td><td><a class="sec" href="#8-步驟五-呼叫端-po-要不要跟著改">§8</a></td></tr><tr><td>4</td><td>部署 + rollback + 驗證</td><td>Oracle + <code>DB/</code></td><td>一定要</td><td><a class="sec" href="#9-步驟六-部署與-rollback">§9</a> <a class="sec" href="#10-驗證清單">§10</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="2-先確認-你要改的物件在不在-repo-裡"><h2 id="2-先確認-你要改的物件在不在-repo-裡"><button class="tg" aria-label="收合/展開" type="button"></button>2. 先確認:你要改的物件在不在 repo 裡</h2><div class="sec-body">
+<p><strong>這是全手冊第一個岔路,走錯會把線上邏輯整支蓋掉。</strong><code>architecture.md 附錄 B.0</code>:程式以 <code>GetStoredProcCommand("…")</code> 呼叫的相異 SP 有 <strong>380</strong> 支,<code>DB/SP</code> + <code>DB/Function</code> 只有 106 支腳本,<strong>319 支(84%)在 repo 內完全沒有定義</strong>。全庫呼叫點 657 個、散在 497 個檔。</p>
+<h3 id="2-1-判斷流程">2.1 判斷流程</h3>
+<pre class="code lang-bash"><code>dir /b %ATLAS_ROOT%\DB\SP | findstr /i "&lt;物件名&gt;"                       :: 1. 先用檔名找
+findstr /s /i /m "&lt;物件名&gt;" %ATLAS_ROOT%\DB\SP\*.* %ATLAS_ROOT%\DB\Function\*.*  :: 2. 再用真名找</code></pre>
+<div class="tw"><table><thead><tr><th>結果</th><th>下一步</th></tr></thead><tbody><tr><td>找得到檔</td><td>有進版控,直接改檔,走 <a class="sec" href="#3-檔案慣例-命名-檔頭-編碼">§3</a> → <a class="sec" href="#4-步驟一-改-stored-procedure">§4</a>–<a class="sec" href="#7-步驟四-改-view">§7</a></td></tr><tr><td>檔名找不到但真名 grep 到</td><td>檔名與真名不符,<strong>以真名為準</strong>改那支檔,並在 <a class="sec" href="#13-附錄-b-待輸入回填">§13</a> 記一筆</td></tr><tr><td>兩種都找不到</td><td><strong>只活在資料庫裡</strong>,先做 <a class="sec" href="#2-2-只在資料庫裡的物件-先撈出來再改">§2.2</a> 撈出來進版控再改</td></tr></tbody></table></div>
+<h3 id="2-2-只在資料庫裡的物件-先撈出來再改">2.2 只在資料庫裡的物件:先撈出來再改</h3>
+<pre class="code lang-sql"><code>SELECT text FROM all_source WHERE owner='SW' AND name=UPPER('&lt;物件名&gt;')   -- View 不在這裡,改查 all_views
+   AND type IN ('PROCEDURE','FUNCTION','TRIGGER') ORDER BY line;</code></pre>
+<p>撈回來以後:</p>
+<ol><li>前面補 <code>CREATE OR REPLACE </code>(<code>ALL_SOURCE</code> 存的第一行是 <code>PROCEDURE SW.XXX</code>);最後補一行 <code>/</code>(SP / Function / Trigger 共 119 支都這樣收尾,View 兩支是 <code>;</code>)。</li><li>存成 <code>DB/&lt;類別&gt;/&lt;真名&gt;.SQL</code>,編碼照 <a class="sec" href="#3-3-編碼-新檔用哪一個">§3.3</a>。</li><li><strong>先把這一版原封不動 commit 一次再開始改。</strong>這樣 diff 才看得出你動了什麼,rollback 也才有東西可回。</li></ol>
+<h3 id="2-3-絕對不要做的事">2.3 絕對不要做的事</h3>
+<div class="tw"><table><thead><tr><th>不要</th><th>為什麼</th></tr></thead><tbody><tr><td>憑空重寫一支同名 SP</td><td><code>CREATE OR REPLACE</code> 是整支取代。線上那支可能有十幾年的補丁(例 <code>DB/SP/S_OTA_OFDB553_EXE.sql:6-10</code> 有 2007 / 2008 / 2011 / 2020 / 2023 五筆修改註解),重寫等於全砍</td></tr><tr><td>拿同名但不同用途的檔當底稿</td><td><code>DB/SP/S_OTA_OFDR601_GET.SQL:1</code> 的真名是 <code>S_OTA_OFDR051_GET</code>,內容是它的<strong>舊版</strong>。照檔名以為在改 601,實際會把 051 退版</td></tr><tr><td>只看 <code>_PO.cs</code> 就推論 SP 做什麼</td><td>PO 只看得到「呼叫哪支、傳什麼參數」;批次與報表的邏輯大量住在沒進版控的 SP 裡</td></tr></tbody></table></div>
+<blockquote><p>例:<code>Dev/ATLAS.CAS.Report/Source/PO/ReportPO.CAS/CASR001_PO.cs:58</code> 呼叫的 <code>S_TA_CASR001_GET</code>,<code>DB/SP/</code> 裡<strong>沒有</strong>。要改它只能先走 <a class="sec" href="#2-2-只在資料庫裡的物件-先撈出來再改">§2.2</a>。</p></blockquote>
+</div></section><section class="sec" data-sec="3-檔案慣例-命名-檔頭-編碼"><h2 id="3-檔案慣例-命名-檔頭-編碼"><button class="tg" aria-label="收合/展開" type="button"></button>3. 檔案慣例:命名、檔頭、編碼</h2><div class="sec-body">
+<h3 id="3-1-全庫共通的五條-121-支實測">3.1 全庫共通的五條(121 支實測)</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>慣例</th><th>實測</th><th>例外</th></tr></thead><tbody><tr><td>1</td><td>第一行就是 <code>CREATE OR REPLACE</code>,<strong>沒有檔頭註解區塊</strong></td><td>SP 83/83、Function 23/23 都在第 1 行</td><td>無</td></tr><tr><td>2</td><td>物件名帶 <code>SW.</code> schema 前綴</td><td>SP 82/83、Function 22/23、Trigger 13/13</td><td><code>DB/SP/S_OTA_OFDR050_GET.SQL:1</code>、<code>DB/Function/TTP12ATMP_F1.SQL:1</code>、<code>DB/View/FNDV01.SQL:1</code> 三支裸名</td></tr><tr><td>3</td><td>大小寫混用,Oracle 不在意</td><td><code>SW.</code> 與 <code>sw.</code> 都有;Trigger 兩支寫成 <code>"SW"."OFD002_T01"</code></td><td>—</td></tr><tr><td>4</td><td>檔尾一行 <code>/</code></td><td>SP / Function / Trigger 全部 119 支</td><td>View 2 支以 <code>;</code> 收尾</td></tr><tr><td>5</td><td>說明寫在物件名或參數右側的 <code>--</code> 註解</td><td>SP 69/83、Function 16/23</td><td>5 支用區塊註解(例 <code>DB/SP/S_OTA_OFDB600A_EXE.sql:3-5</code>)</td></tr></tbody></table></div>
+<p><code>_EXE</code> 型的範本是 <code>DB/SP/S_OTA_OFDB061_EXE.sql:1-6</code>(物件名右側 <code>--銷售日結轉作業</code>,五個 IN 參數,<code>IS</code> 起宣告區);<code>_GET</code> 型的範本在 <a class="sec" href="#4-1-現況">§4.1</a>。</p>
+<h3 id="3-2-檔名-vs-真名">3.2 檔名 vs 真名</h3>
+<p><code>architecture.md 附錄 B</code> 每一列都有「檔名與真名相符」欄。全 121 支只有<strong>一支不符</strong>:<code>DB/SP/S_OTA_OFDR601_GET.SQL:1</code> 宣告的真名是 <code>S_OTA_OFDR051_GET</code>,與 <code>DB/SP/S_OTA_OFDR051_GET.SQL:1</code> 同名同長度(都 320 行),但少了兩處 <code>TRIM</code>(<code>DB/SP/S_OTA_OFDR051_GET.SQL:97</code> 與 <code>:206</code>)——<strong>跑錯那支等於把 051 退版</strong>。</p>
+<p>規則:<strong>新檔的檔名一律等於真名</strong>(副檔名 <code>.SQL</code> / <code>.sql</code> 都有,不強求)。改既有檔時發現不符,<strong>不要順手改檔名</strong>——先確認線上到底有沒有那支物件,再決定是刪檔還是改內容,寫進 <a class="sec" href="#13-附錄-b-待輸入回填">§13</a>。</p>
+<h3 id="3-3-編碼-新檔用哪一個">3.3 編碼:新檔用哪一個</h3>
+<p><code>DB/</code> 底下 277 支的實測:<strong>cp950 196 支 · UTF-8 BOM 81 支</strong>。分資料夾:</p>
+<div class="tw"><table><thead><tr><th>資料夾</th><th>cp950</th><th>UTF-8 BOM</th><th>非 cp950 的是哪幾支</th></tr></thead><tbody><tr><td><code>DB/SP/</code> · <code>DB/View/</code></td><td>83 · 2</td><td>0 · 0</td><td>無</td></tr><tr><td><code>DB/Function/</code></td><td>20</td><td>3</td><td><code>DB/Function/F_OTA_GET_CRNCYAMTDEC.SQL</code>、<code>DB/Function/f_OTA_GetTradeNav.SQL</code>、<code>DB/Function/f_OTA_GetTradeNavLock.SQL</code></td></tr><tr><td><code>DB/Trigger/</code></td><td>12</td><td>1</td><td><code>DB/Trigger/OFD113_T1.sql</code></td></tr><tr><td><code>DB/Table/</code></td><td>79</td><td>77</td><td>票號腳本,見下</td></tr></tbody></table></div>
+<p><strong>結論兩條,不要混:</strong></p>
+<div class="tw"><table><thead><tr><th>情境</th><th>用什麼編碼</th><th>依據</th></tr></thead><tbody><tr><td><strong>改既有物件腳本</strong></td><td><strong>原編碼寫回</strong>(<code>read_text()</code> 的第二個回傳值)</td><td>轉編碼會讓整支檔在 diff 裡全紅,真正改的那幾行看不出來</td></tr><tr><td><strong>新增物件腳本 / 新增票號腳本</strong></td><td><strong>UTF-8 BOM</strong></td><td><code>DB/Table/</code> 內容裡有年份可判讀的 15 支中,2021 年之後的 14 支有 13 支是 UTF-8 BOM(例 <code>DB/Table/9000010311_update.sql</code>、<code>DB/Table/Update_9000010694.sql:1-3</code>);<code>DB/Function</code> / <code>DB/Trigger</code> 那 4 支非 cp950 的也是後來加的那批。<code>runbooks/add-column.md</code> 對 <code>DB/Table/</code> 已下同一結論</td></tr></tbody></table></div>
+<p>讀寫一律走 <code>docs/tools</code> 的 <code>atlas_scan.read_text(path)</code>(回傳 <code>(內容, 編碼)</code>),寫回時 <code>open(path, 'w', encoding=enc, newline='\n')</code>,<strong>不要用 <code>utf-8</code> 硬讀</strong>。存錯編碼的症狀是 <a class="sec" href="#11-常見錯誤與症狀">§11</a> 第一條:<strong>中文註解變亂碼,錯誤訊息上線後在畫面上是問號</strong>。</p>
+<h3 id="3-4-參數命名-有慣例但不統一">3.4 參數命名:有慣例但不統一</h3>
+<div class="tw"><table><thead><tr><th>類別</th><th>分佈</th><th>說明</th></tr></thead><tbody><tr><td>SP 的 IN 參數首字母</td><td><code>i</code> 150 · <code>w</code> 23 · <code>s</code> 4 · <code>c</code> 4 · <code>x</code> 3 · <code>m</code> 1</td><td><code>i</code> = in,新寫的一律用 <code>i</code>;<code>W</code> / <code>X</code> 是舊世代</td></tr><tr><td>SP 的 OUT 參數</td><td><code>o</code> 61,<strong>其中 61 個是 <code>OUT SYS_REFCURSOR</code></strong></td><td>名字幾乎都是 <code>OutTB1</code>(57 次)/ <code>OutTB2</code>(25)</td></tr><tr><td>Function 的參數首字母</td><td><code>x</code> 15 · <code>i</code> 13 · <code>c</code> 8 · <code>s</code> 4;型別 <code>VARCHAR2</code> 109 · <code>SYS_REFCURSOR</code> 61 · <code>%TYPE</code> 47 · <code>NUMBER</code> 18</td><td>另有匈牙利式 <code>striXXX</code> / <code>datiXXX</code>(<code>DB/Function/F_OTA_GETFNBUSINESSDAY.SQL:1</code>);無長度的 <code>VARCHAR</code> 還有 5 處,是舊寫法</td></tr></tbody></table></div>
+<p>規則:<strong>新參數用 <code>i</code> / <code>o</code> 開頭 + <code>&lt;表&gt;.&lt;欄&gt;%TYPE</code></strong>,範本在 <code>DB/SP/S_OTA_OFDB553_EXE.sql:2-3</code>。</p>
+<blockquote><p>同一支的第 4 行是 <code>messge      out   varchar</code>——參數名拼錯(少一個 <code>a</code>)、型別用了無長度的 <code>VARCHAR</code>。<strong>呼叫端跟著拼錯才通得過</strong>(<code>Dev/ATLAS.OTAB/Source/PO/PO.OTA/OFDB553_PO.cs:118</code>),所以<strong>不要順手改正拼字</strong>,那是 breaking change。</p></blockquote>
+<h3 id="3-5-例外處理慣例">3.5 例外處理慣例</h3>
+<div class="tw"><table><thead><tr><th>慣例</th><th>實測</th><th>錨點</th></tr></thead><tbody><tr><td>業務錯誤一律用 <code>RAISE_APPLICATION_ERROR</code>,錯誤碼 <code>-20001</code></td><td>全庫 46 次(<code>-20001</code> 41 · <code>-20000</code> 5)</td><td><code>DB/Trigger/OFD002_T01.SQL:42</code></td></tr><tr><td>訊息開頭 <code>#@@#</code>、結尾接兩個 <code>&amp;</code> 串接,是給前端解析的框架標記</td><td>SP 3 檔、Trigger 3 檔在用</td><td><code>DB/Trigger/BMS001A_TDCC_BF_NO.SQL:230</code></td></tr><tr><td><code>WHEN OTHERS</code> 少用</td><td>SP 2 檔、Function 3 檔、Trigger 1 檔</td><td>—</td></tr></tbody></table></div>
+<p>原文在 <code>DB/Trigger/OFD002_T01.SQL:40-43</code>:<code>EXCEPTION</code> → <code>WHEN ERRORS1 THEN</code> → 一行 <code>RAISE_APPLICATION_ERROR</code>,訊息是「尚有相對應的銷售機構資料，故不能刪除」。</p>
+<blockquote><p><strong>〔假設〕缺:PTPFBlock DLL。</strong><code>#@@#</code> 在 <code>Dev/Common/</code> 全部 <code>.cs</code> 裡搜不到任何解析程式碼,推論是框架 DLL 的例外轉譯器負責剝掉前綴。新訊息<strong>照抄這個格式</strong>就對了。</p></blockquote>
+</div></section><section class="sec" data-sec="4-步驟一-改-stored-procedure"><h2 id="4-步驟一-改-stored-procedure"><button class="tg" aria-label="收合/展開" type="button"></button>4. 步驟一:改 Stored Procedure</h2><div class="sec-body">
+<h3 id="4-1-現況">4.1 現況</h3>
+<p>83 支 SP 看名字尾巴分兩種形狀:<strong><code>_GET</code></strong> 是報表 / 查詢,IN 參數 + <code>OUT SYS_REFCURSOR</code>,PO 用 <code>LoadDataSet</code> 把游標倒進 typed DataSet;<strong><code>_EXE</code> 與其他</strong>是批次 / 異動,只有 IN 或 IN + OUT 純量,PO 用 <code>ExecuteNonQuery</code>。</p>
+<p><code>_GET</code> 範本(<code>DB/SP/S_OTA_OFDR051_GET.SQL:1-13</code>,省略中間六個同形參數):</p>
+<pre class="code lang-sql"><code>CREATE OR REPLACE PROCEDURE SW.S_OTA_OFDR051_GET
+(
+  iTYPE               IN VARCHAR2, -- 印表類別/A:全部, 0:一般, 1:自售
+  iALLOT_DATE_ST      IN VARCHAR2, -- 申購日期(起)
+  OutTB1              OUT SYS_REFCURSOR
+)</code></pre>
+<p>三個細節照抄:參數右側 <code>--</code> 寫<strong>中文欄名 + 值域</strong>、<code>OutTB1</code> 放<strong>最後</strong>、宣告區用 <code>%TYPE</code>(<code>DB/SP/S_OTA_OFDR051_GET.SQL:16-23</code>)。<code>_EXE</code> 範本見 <a class="sec" href="#3-1-全庫共通的五條-121-支實測">§3.1</a>;帶 OUT 純量回訊息的是 <code>DB/SP/S_OTA_OFDB553_EXE.sql:1-4</code>。</p>
+<h3 id="4-2-改法">4.2 改法</h3>
+<div class="tw"><table><thead><tr><th>你要改什麼</th><th>怎麼做</th><th>PO 要不要跟</th></tr></thead><tbody><tr><td>只改內部邏輯(WHERE、計算式)</td><td>改完整支貼上去跑</td><td><strong>不用</strong></td></tr><tr><td>加一個 IN 參數 / 改參數型別</td><td>加在既有 IN 的最後、<code>OutTB1</code> 之前(給 <code>DEFAULT</code> 也不能省 PO 那一行);型別優先用 <code>%TYPE</code>,純量型別變了 PO 的 <code>OracleDbType</code> 要一起換</td><td>要,<a class="sec" href="#8-2-加-in-參數-標準寫法">§8.2</a></td></tr><tr><td>加一個回傳游標</td><td>接在 <code>OutTB1</code> 後面命名 <code>OutTB2</code>,順序就是 PO 收表的順序</td><td>要,<a class="sec" href="#8-3-加游標-兩處都要改-而且是位置對應">§8.3</a></td></tr><tr><td>改游標的欄位清單</td><td>多的欄會被丟掉、少的欄拿不到</td><td>看 <a class="sec" href="#8-4-改游標欄位-typed-dataset-要不要跟">§8.4</a></td></tr></tbody></table></div>
+<p>三條硬規則:</p>
+<ul><li><strong>不要改參數順序。</strong>PO 是具名綁定(<code>Dev/ATLAS.OTA.Report/Source/PO/ReportPO.OTA/OFDR051_PO.cs:69-77</code>),順序理論上不影響;但有 3 個呼叫點<strong>用位置取 OUT 值</strong>(<a class="sec" href="#8-5-三個用位置取-out-值的呼叫點">§8.5</a>),順序一變就抓錯參數。</li><li><strong>不要改參數名的拼字</strong>,即使它拼錯(<a class="sec" href="#3-4-參數命名-有慣例但不統一">§3.4</a> 的 <code>messge</code>)。名字是綁定的鍵。</li><li><strong>不要刪參數。</strong>呼叫端還在傳就 <code>PLS-00306</code>,而且是<strong>執行期</strong>才炸,編譯 C# 沒有任何警告。</li></ul>
+<h3 id="4-3-驗證">4.3 驗證</h3>
+<pre class="code lang-sql"><code>-- 1. 編譯狀態一定要 VALID;2. 有錯看 all_errors;3. 簽名對 PO
+SELECT object_name, status, last_ddl_time FROM all_objects  WHERE owner='SW' AND object_name=UPPER('&lt;物件名&gt;');
+SELECT line, position, text                FROM all_errors   WHERE owner='SW' AND name=UPPER('&lt;物件名&gt;') ORDER BY sequence;
+SELECT position, argument_name, in_out, data_type FROM all_arguments WHERE owner='SW' AND object_name=UPPER('&lt;物件名&gt;') ORDER BY position;</code></pre>
+<p>第 3 條是 <a class="sec" href="#8-步驟五-呼叫端-po-要不要跟著改">§8</a> 的對照表:<code>argument_name</code> 要跟 PO 的 <code>AddInParameter</code> 字串<strong>一字不差</strong>。</p>
+</div></section><section class="sec" data-sec="5-步驟二-改-function"><h2 id="5-步驟二-改-function"><button class="tg" aria-label="收合/展開" type="button"></button>5. 步驟二:改 Function</h2><div class="sec-body">
+<h3 id="5-1-現況">5.1 現況</h3>
+<p>23 支 Function 與 SP 的差別只有三處:有回傳型別、<strong>沒有 OUT 參數</strong>(23 支全部沒有)、可以直接寫在 SQL 裡當運算式。回傳型別 15 支是純量(<code>VARCHAR2</code> / <code>NUMBER</code> / <code>DATE</code> / <code>%TYPE</code>,例 <code>DB/Function/GETCLASSNAMECHT.SQL:1</code> 回 <code>COD006A.CODE_DESCRP%TYPE</code>),8 支是自訂 nested table 型別(例 <code>DB/Function/F_OTA_GetDefFeeRate.SQL:11</code> 回 <code>T_RateData_TABLE</code>)。</p>
+<p>範本(<code>DB/Function/F_OTA_GetDefFeeRate.SQL:1-12</code>,省略中間七個同形參數):</p>
+<pre class="code lang-sql"><code>CREATE OR REPLACE FUNCTION SW.f_OTA_GetDefFeeRate(
+  iFUND_ID                 VARCHAR2,       --基金代碼
+  iALLOT_TYPE              VARCHAR2        --申購別(1:一般申購; 2:定期定額; 3:轉申購)
+)RETURN T_RateData_TABLE
+AS</code></pre>
+<h3 id="5-2-三個-function-專屬的坑">5.2 三個 Function 專屬的坑</h3>
+<div class="tw"><table><thead><tr><th>坑</th><th>說明</th></tr></thead><tbody><tr><td><strong>回傳型別是 <code>CREATE TYPE</code> 出來的,型別本身不在 repo</strong></td><td><code>T_RateData_TABLE</code> 在 <code>DB/</code> 找不到任何 <code>CREATE TYPE</code>。改回傳結構要先 <code>ALTER TYPE</code>,而那會讓所有相依物件 INVALID</td></tr><tr><td><strong>Function 被 SQL 內嵌呼叫,grep 不到 <code>GetStoredProcCommand</code></strong></td><td>例:<code>GET_FH_BF_NO(...)</code> 出現在 <code>DB/SP/S_OTA_OFDR051_GET.SQL:97</code>;<code>GETCLASSNAMECHT</code> 被 <code>OFDI011</code> 與 <code>OFDI531</code> 的 SQL 字串用。改簽名前要 grep 整個 <code>DB/</code> 與整個 PO 目錄</td></tr><tr><td><strong><code>--with encryption</code> 這種 T-SQL 殘留</strong></td><td><code>DB/Function/f_OTA_GetTradeNav.SQL:5</code> 留著被註解掉的 T-SQL。不要當 Oracle 語法照抄,也不要順手刪</td></tr></tbody></table></div>
+<h3 id="5-3-改法與驗證">5.3 改法與驗證</h3>
+<p>改法同 <a class="sec" href="#4-2-改法">§4.2</a>,再加兩條:</p>
+<p><strong>加參數一律加在最後</strong>,而且不要以為給了 <code>DEFAULT</code> 呼叫端就不用改——內嵌在 SQL 字串裡的呼叫是位置式的,個數對不上就 <code>PLS-00306</code>。<strong>改回傳型別等於改介面</strong>,先用 <code>SELECT owner, name, line, text FROM all_source WHERE owner = 'SW' AND UPPER(text) LIKE '%&lt;函式名&gt;%'</code> 找出誰在用。</p>
+<p>驗證照 <a class="sec" href="#4-3-驗證">§4.3</a> 三條。Function 的回傳值在 <code>all_arguments</code> 裡是 <code>position = 0</code> 那一列。</p>
+<blockquote><p><strong>〔假設〕缺:DB 連線。</strong>自訂型別的欄位定義只能查 <code>ALL_TYPE_ATTRS</code>,repo 內查不到;8 支 nested table function 的實際結構待補。</p></blockquote>
+</div></section><section class="sec" data-sec="6-步驟三-改-trigger"><h2 id="6-步驟三-改-trigger"><button class="tg" aria-label="收合/展開" type="button"></button>6. 步驟三:改 Trigger</h2><div class="sec-body">
+<h3 id="6-1-現況-13-支全部同一種形狀">6.1 現況:13 支全部同一種形狀</h3>
+<p><strong>13 支 100% 都是 <code>BEFORE … FOR EACH ROW</code></strong>——沒有 AFTER、沒有 statement level、沒有 INSTEAD OF、沒有 compound trigger。</p>
+<div class="tw"><table><thead><tr><th>Trigger</th><th>掛哪張表</th><th>事件</th><th>做什麼</th></tr></thead><tbody><tr><td><code>BMS001A_TDCC_BF_NO</code></td><td><code>BMS001A</code></td><td>INSERT / DELETE / UPDATE OF <code>OMNIBUS_ID</code></td><td>綜合帳戶開關切換時產生或清掉集保戶號(內含檢核碼演算法);取消綜合同意書時連帶改掉指定買回帳號。找不到集保總公司代號就丟 <code>-20001</code>(<code>DB/Trigger/BMS001A_TDCC_BF_NO.SQL:230</code>)</td></tr><tr><td><code>BMS001A_TSCDLOG</code></td><td><code>BMS001A</code></td><td>INSERT / DELETE / UPDATE OF 19 欄</td><td>綜合帳戶的異動寫進集保異動 Log;新增 / 修改 / 刪除三種情境各一套「先刪舊 Log 再寫」規則(<code>DB/Trigger/BMS001A_TSCDLOG.SQL:13-16</code>)</td></tr><tr><td><code>OFD002_T01</code></td><td><code>OFD002</code></td><td>DELETE / UPDATE OF 三個名稱欄</td><td>部門中英文名改了同步到 <code>OFD068A</code> 的機構名稱;<code>OFD068A</code> 還有資料就不准刪部門(<code>DB/Trigger/OFD002_T01.SQL:31-43</code>)。帶 <code>WHEN (LENGTH(NEW.DEPT_NO) = 5 …)</code> 條件</td></tr><tr><td><code>OFD109_T02</code></td><td><code>OFD109</code></td><td>INSERT / UPDATE / DELETE</td><td>INSERT 時自動配 <code>AUTO_NUM</code> 流水號;把匯款備註同步成 <code>OFD609</code> 一筆(先刪後插),<code>OFD601</code> 查不到受益人流水號就跳過(<code>DB/Trigger/OFD109_T02.SQL:21-44</code>)</td></tr><tr><td><code>OFD110_T01</code></td><td><code>OFD110</code></td><td>INSERT / UPDATE / DELETE</td><td>集保資料上傳中一律擋下丟 <code>-20001</code>,全檔 14 處;另外維護集保異動 Log 與回寫 <code>BMS001A</code>(<code>DB/Trigger/OFD110_T01.SQL:31</code>)</td></tr><tr><td><code>OFD113_T1</code></td><td><code>OFD113</code></td><td>INSERT</td><td>只做一件事:<code>DATA_ID = '1'</code> 時把 <code>ALLOT_NO</code> 洗成 20 個空白。全檔 11 行(<code>DB/Trigger/OFD113_T1.sql:1-11</code>)</td></tr><tr><td><code>OFD253_T01</code></td><td><code>OFD253</code></td><td>INSERT / DELETE / UPDATE</td><td>全庫最大一支(757 行)。轉換申請的連動:同步寫改刪 <code>OFD220</code> <code>OFD221</code> <code>OFD113</code> <code>OFD254</code> <code>OFD255</code> <code>OFD303</code>,含買回轉申購的付款方式與結算確認狀態機(<code>DB/Trigger/OFD253_T01.sql:1-9</code>)</td></tr><tr><td><code>OFD254_T01</code></td><td><code>OFD254</code></td><td>INSERT / DELETE / UPDATE</td><td>426 行。轉換確認的連動:寫 <code>OFD220</code> <code>OFD221</code> <code>OFD113</code>,更新 <code>OFD221</code> <code>OFD252</code> <code>OFD304</code>(<code>DB/Trigger/OFD254_T01.SQL:1-10</code>)</td></tr><tr><td><code>OFD561_T02</code></td><td><code>OFD561</code></td><td>INSERT / UPDATE / DELETE</td><td>與 <code>OFD109_T02</code> 同一個模子:把匯款備註同步成 <code>OFD661</code> 一筆,先刪後插(<code>DB/Trigger/OFD561_T02.SQL:21-40</code>)</td></tr><tr><td><code>OFD562_T01</code></td><td><code>OFD562</code></td><td>UPDATE OF <code>SEAL_PROCESS</code>, <code>SEAL_CD</code></td><td>印鑑狀態變了就對該受益人的每個 <code>SYSTEM_ID</code> 補一筆通知佇列 <code>TRPM101T1</code>,先刪後插(<code>DB/Trigger/OFD562_T01.SQL:28-44</code>)</td></tr><tr><td><code>OFD562_T02</code></td><td><code>OFD562</code></td><td>INSERT / UPDATE / DELETE</td><td>同 <code>OFD561_T02</code> 的模子,但比對條件是 12 個欄位全部 <code>NVL(…,'X')</code> 對齊才刪(<code>DB/Trigger/OFD562_T02.SQL:21-35</code>)</td></tr><tr><td><code>OFD607_T02</code></td><td><code>OFD607</code></td><td>INSERT / UPDATE</td><td>網銀密碼相關欄位異動時寫密碼異動記錄檔;帳號鎖定與密碼失效也算(<code>DB/Trigger/OFD607_T02.sql:17-34</code>)</td></tr><tr><td><code>OFD607_T03</code></td><td><code>OFD607</code></td><td>INSERT / UPDATE</td><td>註冊類別 / 開戶進度 / 應備文件異動時寫前後值記錄檔(<code>DB/Trigger/OFD607_T03.sql:13-35</code>)</td></tr></tbody></table></div>
+<p>三個一眼可見的模式:<strong>五支是「先刪後插」的投影表維護</strong>(<code>OFD109_T02</code> <code>OFD561_T02</code> <code>OFD562_T01</code> <code>OFD562_T02</code> <code>BMS001A_TSCDLOG</code>,改這類要同時改刪除條件與插入欄位,只改一邊會留孤兒列)· <strong>兩支是純 Log</strong>(<code>OFD607_T02</code> <code>OFD607_T03</code>,Log 表加欄位要同步這裡的 INSERT 清單)· <strong>三支會擋交易</strong>(<code>BMS001A_TDCC_BF_NO</code> <code>OFD002_T01</code> <code>OFD110_T01</code>,這是「存檔失敗但畫面沒說原因」的來源)。</p>
+<h3 id="6-2-改法">6.2 改法</h3>
+<div class="tw"><table><thead><tr><th>你要改什麼</th><th>注意</th></tr></thead><tbody><tr><td>改 <code>UPDATE OF</code> 的欄位清單</td><td>這是觸發條件不是宣告。漏列一欄等於那一欄改了不會觸發,<strong>完全靜默</strong></td></tr><tr><td>加一張連動表</td><td><code>INSERTING</code> / <code>UPDATING</code> / <code>DELETING</code> 三個分支都要想過。13 支全部用這組布林,沒有人用 <code>WHEN</code> 子句分事件</td></tr><tr><td>加擋交易的檢核</td><td>照 <a class="sec" href="#3-5-例外處理慣例">§3.5</a> 格式丟 <code>-20001</code>,訊息開頭要有 <code>#@@#</code></td></tr><tr><td>改 <code>:NEW</code> 賦值</td><td>只有 BEFORE 改得動 <code>:NEW</code>,<strong>不要順手改成 AFTER</strong>,<code>OFD113_T1</code> 那種指派會直接編不過</td></tr></tbody></table></div>
+<p><strong>不要在 trigger 裡查它自己掛的那張表。</strong><code>DB/Trigger/OFD109_T02.SQL:22</code> 在 row-level trigger 裡對自身表下 <code>SELECT NVL(MAX(AUTO_NUM),0)+1</code>,多筆同時 INSERT 會撞號,某些路徑還會丟 <code>ORA-04091</code>。<strong>這是既有寫法,不要照抄到新 trigger。</strong></p>
+<h3 id="6-3-驗證">6.3 驗證</h3>
+<pre class="code lang-sql"><code>SELECT trigger_name, table_name, trigger_type, triggering_event, status
+  FROM all_triggers WHERE owner = 'SW' AND trigger_name = UPPER('&lt;觸發器名&gt;');</code></pre>
+<p><code>status</code> 要 <code>ENABLED</code>、<code>trigger_type</code> 要 <code>BEFORE EACH ROW</code>,再跑 <a class="sec" href="#10-驗證清單">§10</a> 第 5、6 條。</p>
+</div></section><section class="sec" data-sec="7-步驟四-改-view"><h2 id="7-步驟四-改-view"><button class="tg" aria-label="收合/展開" type="button"></button>7. 步驟四:改 View</h2><div class="sec-body">
+<h3 id="7-1-現況-只有兩支-而且兩支長得完全不一樣">7.1 現況:只有兩支,而且兩支長得完全不一樣</h3>
+<p><code>FNDV01</code> 6 行、無 schema 前綴,被 <code>OFDM053</code> <code>OFDM111</code> 用,內容是基金清單 <code>UNION</code> 一列「所有基金」的假資料。<code>OFD068A_V02</code> 112 行、帶 <code>SW.</code>,被 <code>DSMM901</code> <code>DSMM903</code> <code>OFDI011</code> 用,是銷售機構六段 <code>UNION</code>(直銷 / 銀行總行 / 銀行分行 / 券商 / 投顧 / 投信 / 產壽險)。</p>
+<p><code>FNDV01</code> 全文(<code>DB/View/FNDV01.SQL:1-6</code>)——小到可以整支貼的那種:</p>
+<pre class="code lang-sql"><code>CREATE OR REPLACE VIEW FNDV01 AS
+SELECT FUND_ID ITEM, FUND_ID, FUND_SH_NM, FH_CD, REPORT_SEQ FROM OFD081
+ UNION
+SELECT '0', 'ALL FUNDS', '所有基金', OFD062.FH_CD, 0 AS REPORT_SEQ FROM OFD062;</code></pre>
+<p><code>OFD068A_V02</code>(<code>DB/View/OFD068A_V02.SQL:1-11</code>)的呼叫端是 PO 手寫 SQL 直接 join,不走 SP:<code>Dev/ATLAS.DSM/Source/PO/PO.DSM/DSMM901_PO.cs:340-344</code>、<code>Dev/ATLAS.DSM/Source/PO/PO.DSM/DSMM903_PO.cs:138</code>。</p>
+<h3 id="7-2-改法">7.2 改法</h3>
+<div class="tw"><table><thead><tr><th>你要改什麼</th><th>要跟著改的</th></tr></thead><tbody><tr><td>只改 <code>WHERE</code> 或 join 條件</td><td>什麼都不用跟</td></tr><tr><td><strong>加一個輸出欄</strong></td><td>每一段 <code>UNION</code> 都要加同一欄(<code>OFD068A_V02</code> 有六段,漏一段就 <code>ORA-01789</code>);再看 <a class="sec" href="#7-3-view-有-typed-dataset-的話一起改">§7.3</a> 決定要不要動 typed DataSet</td></tr><tr><td>改欄位順序</td><td><code>UNION</code> 靠位置對齊不靠名字,<strong>改一段就要改六段</strong></td></tr><tr><td>改欄位型別</td><td>各段型別要能隱含轉換,否則 <code>ORA-01790</code></td></tr></tbody></table></div>
+<p>最麻煩的是券商那一段(<code>DB/View/OFD068A_V02.SQL:36-79</code>):<code>ROW_NUMBER() OVER (PARTITION BY …)</code> + <code>WHERE RNO = 1</code> 的去重子查詢,裡面還硬寫了一筆常數資料列(<code>DB/View/OFD068A_V02.SQL:76</code>)。<strong>加欄位時那個子查詢的兩層 SELECT 都要加。</strong></p>
+<h3 id="7-3-view-有-typed-dataset-的話一起改">7.3 View 有 typed DataSet 的話一起改</h3>
+<p><code>OFD068A_V02</code> 有一組共用 typed DataSet:<code>Dev/Common/Source/DataSource/DataEntity.DataSource/OFD_AgentCodeOriginalListModel.xsd:15-22</code>(DataTable 名字就叫 <code>OFD068A_V02</code>,但<strong>只宣告 5 欄</strong>,view 實際回 9 欄)與同構的 <code>Dev/Common/Source/DataSource/UIEntity.DataSource/OFD_AgentCodeOriginalListView.xsd</code>。</p>
+<p>意思是 <strong>view 多回的欄位會被靜默丟掉</strong>(<code>LoadDataSet</code> 照欄名對應)。所以:</p>
+<p>新欄位只給 PO 手寫 SQL 用就不動 xsd;要進這組 DataSet 就兩份 xsd 都加、欄名一致,並重生 Designer.cs(做法照 <code>runbooks/add-column.md</code>)。</p>
+<h3 id="7-4-驗證">7.4 驗證</h3>
+<pre class="code lang-sql"><code>SELECT column_name, data_type FROM all_tab_columns
+ WHERE owner = 'SW' AND table_name = UPPER('&lt;view名&gt;') ORDER BY column_id;</code></pre>
+<p>回的欄位順序就是 <code>UNION</code> 第一段的順序,跟你的 xsd 對一次。</p>
+</div></section><section class="sec" data-sec="8-步驟五-呼叫端-po-要不要跟著改"><h2 id="8-步驟五-呼叫端-po-要不要跟著改"><button class="tg" aria-label="收合/展開" type="button"></button>8. 步驟五:呼叫端(PO)要不要跟著改</h2><div class="sec-body">
+<h3 id="8-1-判斷表">8.1 判斷表</h3>
+<div class="tw"><table><thead><tr><th>你在 SP / Function 改了什麼</th><th>PO 要改嗎</th><th>改哪一行</th></tr></thead><tbody><tr><td>內部邏輯、<code>WHERE</code>、計算式</td><td><strong>不用</strong></td><td>—</td></tr><tr><td>加 / 刪 IN 參數、改參數名</td><td>要</td><td><code>AddInParameter</code> 那一區,逐行對應;名字是第二個字串引數</td></tr><tr><td>改參數型別</td><td>要</td><td><code>AddInParameter</code> 的 <code>OracleDbType.*</code></td></tr><tr><td>加 / 刪 OUT 游標</td><td>要</td><td><code>AddOutParameter</code> <strong>與</strong> <code>LoadDataSet</code> 的表名清單,<strong>兩處都要</strong></td></tr><tr><td>改游標回傳的欄位</td><td>看情況</td><td>欄位要進畫面才要動 typed DataSet(<a class="sec" href="#8-4-改游標欄位-typed-dataset-要不要跟">§8.4</a>)</td></tr><tr><td>改 Trigger、改 View 的 <code>WHERE</code></td><td><strong>不用</strong></td><td>Trigger 對 PO 完全透明</td></tr></tbody></table></div>
+<h3 id="8-2-加-in-參數-標準寫法">8.2 加 IN 參數:標準寫法</h3>
+<p>現況(<code>Dev/ATLAS.OTA.Report/Source/PO/ReportPO.OTA/OFDR051_PO.cs:66-82</code>)——一個參數一行,順序與 SP 宣告相同,值從 <code>model.Utility.Parameters</code> 取:</p>
+<pre class="code lang-csharp"><code>using (cmd = m_db.GetStoredProcCommand("S_OTA_OFDR051_GET"))
+{   cmd.CommandTimeout = 0;
+    m_db.AddInParameter(cmd, "iTYPE", OracleDbType.Varchar2, EVAStringHelper.GetParamValue(model, "TYPE"));
+    ...
+    m_db.AddOutParameter(cmd, "OutTB1", OracleDbType.RefCursor, int.MaxValue);
+    m_db.LoadDataSet(cmd, model.DataEntity, tran, model.DataEntity.OFDR051_1.TableName);   }</code></pre>
+<p>改法:在最後一個 <code>AddInParameter</code> 之後、<code>AddOutParameter</code> 之前插一行 <code>m_db.AddInParameter(cmd, "i&lt;NEW_PARAM&gt;", OracleDbType.Varchar2, EVAStringHelper.GetParamValue(model, "&lt;NEW_PARAM&gt;"));</code>。三件事注意:<strong>參數名字串要跟 SP 宣告一字不差</strong>;<strong><code>GetParamValue</code> 的鍵是畫面查詢條件的名字不是 SP 參數名</strong>(兩者常差一個 <code>i</code> 前綴,別複製貼上時連鍵一起改);批次類 PO 的值不從畫面來,直接傳區域變數,範本 <code>Dev/ATLAS.OTAB/Source/PO/PO.OTA/OFDB061_PO.cs:305-315</code>。</p>
+<h3 id="8-3-加游標-兩處都要改-而且是位置對應">8.3 加游標:兩處都要改,而且是位置對應</h3>
+<p><strong>這是整節最容易漏的地方。</strong><code>AddOutParameter</code> 的<strong>宣告順序</strong>要對上 <code>LoadDataSet</code> 的<strong>表名順序</strong>——參數叫什麼名字不影響對應。範本(<code>Dev/ATLAS.TMK.Report/Source/PO/ReportPO.TMK/TMKR003_PO.cs:72-76</code>):</p>
+<pre class="code lang-csharp"><code>    m_db.AddOutParameter(cmd, "OutTB", OracleDbType.RefCursor, int.MaxValue);
+    m_db.AddOutParameter(cmd, "OutTB2", OracleDbType.RefCursor, int.MaxValue);
+    m_db.LoadDataSet(cmd, model.DataEntity, tran,
+        model.DataEntity.TMKR003_1A.TableName,
+        model.DataEntity.TMKR003_1B.TableName);</code></pre>
+<p>SP 裡把新游標加在 <code>OutTB1</code> 之後,PO 就要在對應位置補一行 <code>AddOutParameter</code>,<strong>同時</strong>在 <code>LoadDataSet</code> 的表名清單補一個表名。全庫命名分佈:<code>OutTB1</code> 57 · <code>OutTB2</code> 25 · <code>OutTB3</code> 9 · <code>OutTB4</code> 7 · <code>OutTB5</code> 5 · <code>OutTB6</code> 4 · 無數字的 <code>OutTB</code> 3,新加的照數字往後接。</p>
+<h3 id="8-4-改游標欄位-typed-dataset-要不要跟">8.4 改游標欄位:typed DataSet 要不要跟</h3>
+<p><code>LoadDataSet</code> 是照<strong>欄名</strong>把游標倒進 DataTable 的:</p>
+<p>SP 多回一欄(或欄名拼錯)而 xsd 沒有 → 那一欄被丟掉;SP 少回一欄而 xsd 有 → 那一欄全部空值。<strong>兩種都不報錯。</strong>所以「新欄位要顯示在報表上」就一定要改 <code>*Model.xsd</code> / <code>*View.xsd</code> 並重生 Designer.cs——步驟照 <code>runbooks/add-column.md</code>,本手冊不重複。</p>
+<h3 id="8-5-三個用位置取-out-值的呼叫點">8.5 三個用位置取 OUT 值的呼叫點</h3>
+<p>全庫只有 3 處用 <code>cmd.Parameters[&lt;數字&gt;]</code> 取值,其他都用名字。<strong>改到這三支的 SP 簽名時,參數順序一動就抓錯值,而且不報錯:</strong></p>
+<div class="tw"><table><thead><tr><th>PO</th><th>錨點</th><th>取的是</th></tr></thead><tbody><tr><td><code>OFDM053</code></td><td><code>Dev/ATLAS.OTA/Source/PO/PO.OTA/OFDM053_PO.cs:526</code></td><td><code>cmd.Parameters[1]</code>,即 <code>S_OTA_EC_PROGRESS</code> 的第 2 個參數(<code>DB/SP/S_OTA_EC_PROGRESS.SQL:1-3</code>)</td></tr><tr><td><code>DSMM902</code></td><td><code>Dev/ATLAS.DSM/Source/PO/PO.DSM/DSMM902_PO.cs</code></td><td>同型寫法</td></tr><tr><td><code>OFDR452</code></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR452_PO.cs</code></td><td>同型寫法</td></tr></tbody></table></div>
+<p>正確寫法是用名字取(<code>Dev/ATLAS.OTAB/Source/PO/PO.OTA/OFDB553_PO.cs:118-122</code>):<code>cmd.Parameters["messge"].Value</code>。<strong>本手冊不要求你順手把那 3 處改成具名取值</strong>——那是獨立重構,不要夾帶在 SP 改動裡。但你改的 SP 若是那三支之一,<strong>參數只能往後加,不能插隊</strong>。</p>
+<h3 id="8-6-驗證">8.6 驗證</h3>
+<pre class="code lang-bash"><code>findstr /s /i /n "&lt;SP名&gt;" %ATLAS_ROOT%\Dev\*.cs   :: 全庫有幾個呼叫點?每一個都要對過</code></pre>
+<p>同一支 SP 被兩處呼叫是常態(例 <code>S_OTA_OFDB135_EXE</code> 在 <code>Dev/ATLAS.OTAB/Source/PO/PO.OTA/OFDB135_PO.cs:620</code> 與 <code>:693</code> 各一次)。<strong>只改一處是最常見的漏改。</strong></p>
+</div></section><section class="sec" data-sec="9-步驟六-部署與-rollback"><h2 id="9-步驟六-部署與-rollback"><button class="tg" aria-label="收合/展開" type="button"></button>9. 步驟六:部署與 rollback</h2><div class="sec-body">
+<h3 id="9-1-部署順序">9.1 部署順序</h3>
+<div class="tw"><table><thead><tr><th>順序</th><th>動作</th><th>為什麼</th></tr></thead><tbody><tr><td>1</td><td>用 <code>SW</code> 帳號跑物件腳本(整支 <code>CREATE OR REPLACE</code>)</td><td>Oracle 沒有「改一行」,只能整支取代</td></tr><tr><td>2</td><td>跑 <a class="sec" href="#4-3-驗證">§4.3</a> 的三條確認 <code>VALID</code></td><td>語法錯了會建出 INVALID 物件而不是失敗</td></tr><tr><td>3</td><td>查相依物件有沒有被連坐弄成 INVALID</td><td>改 Function 回傳型別、改 View 欄位都會連坐</td></tr><tr><td>4</td><td>再佈 PO 的 DLL(<strong>簽名有變才需要</strong>)</td><td><strong>DB 先、程式後</strong>;反過來會在部署空窗期丟 <code>PLS-00306</code></td></tr></tbody></table></div>
+<p>第 3 步:<code>SELECT owner, object_name, object_type, status FROM all_objects WHERE owner = 'SW' AND status &lt;&gt; 'VALID';</code>,逐支 <code>ALTER PROCEDURE SW.&lt;物件名&gt; COMPILE;</code>。PO 的 DLL 佈到哪一台照 <code>architecture.md §8</code>——PO 屬伺服端,不用碰客戶端。</p>
+<h3 id="9-2-rollback-物件腳本沒有-rollback-慣例">9.2 rollback:物件腳本沒有 <code>_rollback</code> 慣例</h3>
+<p><code>DB/SP/</code> <code>DB/Function/</code> <code>DB/Trigger/</code> <code>DB/View/</code> <strong>一支 rollback 檔都沒有</strong>;只有 <code>DB/Table/</code> 的 158 支裡有 11 支檔名含 <code>rollback</code>。所以 PL/SQL 物件的 rollback 只有一條路:<strong>部署前先把線上那一版撈出來存檔</strong>(<a class="sec" href="#2-2-只在資料庫裡的物件-先撈出來再改">§2.2</a> 的 <code>ALL_SOURCE</code> 查詢),要回退就把舊版全文再 <code>CREATE OR REPLACE</code> 一次。</p>
+<h3 id="9-3-db-table-的票號腳本配對慣例-對照用">9.3 <code>DB/Table/</code> 的票號腳本配對慣例(對照用)</h3>
+<div class="tw"><table><thead><tr><th>特徵</th><th>實測</th></tr></thead><tbody><tr><td>命名</td><td>動作開頭 115 支(<code>Alter_*</code> / <code>update_*</code> / <code>Insert*</code>)· 票號開頭 13 支 · 其他 30 支</td></tr><tr><td>副檔名</td><td><code>.sql</code> 156 · <strong><code>.slq</code> 2 支拼錯</strong></td></tr><tr><td>rollback</td><td>11 支,命名 <code>&lt;正向檔名&gt;_rollback.sql</code></td></tr></tbody></table></div>
+<p><strong>但 rollback 不是逐檔配對。</strong>最大的反例:<code>DB/Table/11706_InsertOFD115A_1.sql</code> 那組(<code>OFD115A</code> 4 支 + <code>OFD116A</code> 4 支 + <code>DB/Table/11706_InsertOFD907.sql</code> 1 支,<strong>共 9 支正向</strong>)只對應<strong>一支</strong>票號級的 <code>DB/Table/11706_rollback.sql:1-10</code>——內容是先對三張表各下一句 <code>select count(*)</code> 當 before/after 對照,再依 <code>CREATEDATE = '20221227'</code> 逐表 <code>delete</code> 回去,不分正向腳本。</p>
+<p>規則:<strong>rollback 以票號為單位寫一支</strong>,檔名 <code>&lt;票號&gt;_rollback.sql</code>,內容先寫對照查詢再寫回復動作,編碼照 <a class="sec" href="#3-3-編碼-新檔用哪一個">§3.3</a> 用 UTF-8 BOM。</p>
+<h3 id="9-4-sp-沒有版本號-怎麼知道線上是哪一版">9.4 SP 沒有版本號,怎麼知道線上是哪一版</h3>
+<p><strong>沒有可靠答案,只有三個線索,而且前兩個都不可靠:</strong></p>
+<div class="tw"><table><thead><tr><th>線索</th><th>可信度</th><th>說明</th></tr></thead><tbody><tr><td>檔內日期修改註解</td><td>低</td><td>只有 21 / 83 支 SP、5 / 23 支 Function、4 / 13 支 Trigger 有(範本 <code>DB/SP/S_OTA_OFDB553_EXE.sql:6-10</code>),人工維護漏寫沒人發現</td></tr><tr><td><code>ALL_OBJECTS.LAST_DDL_TIME</code></td><td>中</td><td>只說「最後被取代的時間」,不說內容是哪一版</td></tr><tr><td><code>ALL_SOURCE</code> 全文比對</td><td><strong>高,唯一可靠</strong></td><td>撈下來跟 repo 的檔逐行 diff</td></tr></tbody></table></div>
+<p>上線前的標準動作:把 <code>ALL_SOURCE</code> 全文撈下來跟 <code>DB/SP/&lt;物件名&gt;.SQL</code> diff,<strong>有差異就先停手</strong>——代表線上有 repo 沒有的改動,直接覆蓋會弄丟它。</p>
+<blockquote><p><strong>〔假設〕缺:版本歷史。</strong><code><repo></code> 本機不是 git working copy(<code>git</code> 在此目錄回「not a git repository」),所以「哪一支檔是最近加的」「線上是不是就是 repo 這一版」無法從本機判斷。<a class="sec" href="#3-3-編碼-新檔用哪一個">§3.3</a> 判定新檔用 UTF-8 BOM 的依據是<strong>檔案內容裡的年份</strong>而不是版本歷史。</p></blockquote>
+</div></section><section class="sec" data-sec="10-驗證清單"><h2 id="10-驗證清單"><button class="tg" aria-label="收合/展開" type="button"></button>10. 驗證清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>#</th><th>動作</th><th>查什麼</th></tr></thead><tbody><tr><td>1</td><td>部署腳本</td><td>自己 <code>VALID</code>、<code>all_errors</code> 零筆,而且全 schema 沒有被連坐弄成 INVALID 的物件(<a class="sec" href="#4-3-驗證">§4.3</a> <a class="sec" href="#9-1-部署順序">§9.1</a>)</td></tr><tr><td>2</td><td>簽名對照</td><td><code>all_arguments</code> 的名稱 / 模式 / 型別與 PO 的 <code>AddInParameter</code> 逐行對(<a class="sec" href="#4-3-驗證">§4.3</a>)</td></tr><tr><td>3</td><td>正常路徑</td><td>從畫面跑一次,資料筆數與改動前一致(除非你就是要改筆數)</td></tr><tr><td>4</td><td>異常路徑</td><td>故意送空值 / 不存在的代碼,確認走到你寫的 <code>RAISE_APPLICATION_ERROR</code>,<strong>畫面上看得到中文而不是問號</strong>(這條同時驗編碼)</td></tr><tr><td>5</td><td>改 Trigger 時</td><td>INSERT / UPDATE / DELETE 各跑一次,<a class="sec" href="#6-1-現況-13-支全部同一種形狀">§6.1</a> 列的連動表逐一查有沒有跟著動</td></tr><tr><td>6</td><td>改 <code>UPDATE OF</code> 清單時</td><td>改<strong>清單內</strong>的欄位要觸發、改<strong>清單外</strong>的欄位不能觸發,兩邊都要驗</td></tr><tr><td>7</td><td>改 View 時</td><td><code>all_tab_columns</code> 的欄位順序與型別;再跑一次用到它的畫面(<a class="sec" href="#7-1-現況-只有兩支-而且兩支長得完全不一樣">§7.1</a>)</td></tr><tr><td>8</td><td>改游標數量時</td><td>每個 DataTable 都要有資料(<a class="sec" href="#8-3-加游標-兩處都要改-而且是位置對應">§8.3</a>);少一個表就是對應錯位。全部呼叫點都要跑,<a class="sec" href="#8-6-驗證">§8.6</a> 的 <code>findstr</code> 命中幾處就跑幾處</td></tr></tbody></table></div>
+<p><strong>第 4 與第 6 條最容易被跳過,而它們對應的正好是兩種靜默失敗。</strong></p>
+</div></section><section class="sec" data-sec="11-常見錯誤與症狀"><h2 id="11-常見錯誤與症狀"><button class="tg" aria-label="收合/展開" type="button"></button>11. 常見錯誤與症狀</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>病因</th><th>回去做</th></tr></thead><tbody><tr><td><strong>中文註解變亂碼 / 畫面錯誤訊息是問號</strong></td><td>存檔編碼換掉了(cp950 檔用 UTF-8 存,或反過來)</td><td><a class="sec" href="#3-3-編碼-新檔用哪一個">§3.3</a></td></tr><tr><td><strong>改了半天沒效果 / 另一支報表突然退版</strong></td><td>檔名不等於真名,你改的檔跑出去蓋到別支物件(<code>DB/SP/S_OTA_OFDR601_GET.SQL</code> 的真名是 <code>S_OTA_OFDR051_GET</code>)</td><td><a class="sec" href="#2-3-絕對不要做的事">§2.3</a>、<a class="sec" href="#3-2-檔名-vs-真名">§3.2</a></td></tr><tr><td><strong>重寫的 SP 上線後少了一堆邏輯</strong></td><td>物件不在 repo,憑空重寫覆蓋了線上十幾年的補丁</td><td><a class="sec" href="#2-2-只在資料庫裡的物件-先撈出來再改">§2.2</a></td></tr><tr><td><strong><code>PLS-00306</code> 參數個數或型別錯 / <code>PLS-00201</code> 識別碼未宣告</strong></td><td>SP 改了參數但 PO 沒跟,或參數名拼字不一致(含刻意保留的 <code>messge</code>)</td><td><a class="sec" href="#3-4-參數命名-有慣例但不統一">§3.4</a>、<a class="sec" href="#8-2-加-in-參數-標準寫法">§8.2</a></td></tr><tr><td><strong>報表某一區塊整個空白,其他區塊正常</strong></td><td>游標與 <code>LoadDataSet</code> 表名的位置對應錯了</td><td><a class="sec" href="#8-3-加游標-兩處都要改-而且是位置對應">§8.3</a></td></tr><tr><td><strong><code>ORA-24338</code> statement handle not executed</strong></td><td><code>AddOutParameter</code> 的游標數比 SP 實際回的多</td><td><a class="sec" href="#8-3-加游標-兩處都要改-而且是位置對應">§8.3</a></td></tr><tr><td><strong>新欄位查得到但畫面沒有</strong></td><td>typed DataSet 沒有那一欄,<code>LoadDataSet</code> 靜默丟掉</td><td><a class="sec" href="#8-4-改游標欄位-typed-dataset-要不要跟">§8.4</a></td></tr><tr><td><strong>OUT 值抓到別的參數的內容</strong></td><td>該 PO 用 <code>cmd.Parameters[數字]</code> 位置取值,而你把參數插隊了</td><td><a class="sec" href="#8-5-三個用位置取-out-值的呼叫點">§8.5</a></td></tr><tr><td><strong>改了 Trigger,某些異動就是不觸發</strong></td><td><code>UPDATE OF</code> 沒列到那一欄,<strong>不報錯</strong></td><td><a class="sec" href="#6-2-改法">§6.2</a></td></tr><tr><td><strong><code>ORA-04091</code> mutating table</strong></td><td>Trigger 裡查自己掛的那張表</td><td><a class="sec" href="#6-2-改法">§6.2</a></td></tr><tr><td><strong><code>ORA-01789</code> 欄數不正確 / <code>ORA-01790</code> 型態不符</strong></td><td>View 的 <code>UNION</code> 只加了一段的欄位,或各段型別對不上</td><td><a class="sec" href="#7-2-改法">§7.2</a></td></tr><tr><td><strong>物件建好了但一叫就 <code>ORA-06508</code>;或「我這台跑得動,測試環境不行」</strong></td><td>物件 INVALID 被連坐弄壞,或 DB 佈了程式沒佈</td><td><a class="sec" href="#9-1-部署順序">§9.1</a></td></tr><tr><td><strong>要回退卻回不去</strong></td><td>部署前沒把舊版從 <code>ALL_SOURCE</code> 撈下來存檔</td><td><a class="sec" href="#9-2-rollback-物件腳本沒有-rollback-慣例">§9.2</a></td></tr><tr><td><strong>同一支 SP 改完還是有地方壞掉</strong></td><td>那支 SP 有多個呼叫點,只改了一處</td><td><a class="sec" href="#8-6-驗證">§8.6</a></td></tr></tbody></table></div>
+<p><strong>這張表裡有五條是靜默失敗</strong>(欄位被丟掉、<code>UPDATE OF</code> 漏欄、位置取值抓錯、游標對應錯位、檔名真名不符),所以 <a class="sec" href="#10-驗證清單">§10</a> 不能跳。</p>
+</div></section><section class="sec" data-sec="12-附錄-a-本手冊引用的檔案清單"><h2 id="12-附錄-a-本手冊引用的檔案清單"><button class="tg" aria-label="收合/展開" type="button"></button>12. 附錄 A 本手冊引用的檔案清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>檔(同格多檔以 · 分隔)</th><th>錨點</th><th>用在</th></tr></thead><tbody><tr><td><code>DB/SP/S_OTA_OFDR051_GET.SQL</code></td><td><code>:1-13</code> <code>:16-23</code> <code>:97</code> <code>:206</code></td><td><a class="sec" href="#3-2-檔名-vs-真名">§3.2</a> <a class="sec" href="#4-1-現況">§4.1</a> <a class="sec" href="#5-2-三個-function-專屬的坑">§5.2</a></td></tr><tr><td><code>DB/SP/S_OTA_OFDB553_EXE.sql</code></td><td><code>:1-4</code> <code>:2-3</code> <code>:6-10</code></td><td><a class="sec" href="#2-3-絕對不要做的事">§2.3</a> <a class="sec" href="#3-4-參數命名-有慣例但不統一">§3.4</a> <a class="sec" href="#4-1-現況">§4.1</a> <a class="sec" href="#9-4-sp-沒有版本號-怎麼知道線上是哪一版">§9.4</a></td></tr><tr><td><code>DB/SP/S_OTA_OFDB061_EXE.sql</code> · <code>DB/SP/S_OTA_OFDR601_GET.SQL</code> · <code>DB/SP/S_OTA_EC_PROGRESS.SQL</code></td><td><code>:1-6</code> · <code>:1</code> · <code>:1-3</code></td><td><a class="sec" href="#2-3-絕對不要做的事">§2.3</a> <a class="sec" href="#3-1-全庫共通的五條-121-支實測">§3.1</a> <a class="sec" href="#3-2-檔名-vs-真名">§3.2</a> <a class="sec" href="#4-1-現況">§4.1</a> <a class="sec" href="#8-5-三個用位置取-out-值的呼叫點">§8.5</a></td></tr><tr><td><code>DB/SP/S_OTA_OFDB600A_EXE.sql</code> · <code>DB/SP/S_OTA_OFDR050_GET.SQL</code> · <code>DB/Function/F_OTA_GetDefFeeRate.SQL</code> · <code>DB/Function/f_OTA_GetTradeNav.SQL</code></td><td><code>:3-5</code> · <code>:1</code> · <code>:1-12</code> <code>:11</code> · <code>:4</code> <code>:5</code></td><td><a class="sec" href="#3-1-全庫共通的五條-121-支實測">§3.1</a> <a class="sec" href="#5-1-現況">§5.1</a> <a class="sec" href="#5-2-三個-function-專屬的坑">§5.2</a></td></tr><tr><td><code>DB/Function/GETCLASSNAMECHT.SQL</code> · <code>DB/Function/F_OTA_GETFNBUSINESSDAY.SQL</code> · <code>DB/Function/TTP12ATMP_F1.SQL</code> · <code>DB/Function/F_OTA_GET_CRNCYAMTDEC.SQL</code> · <code>DB/Function/f_OTA_GetTradeNavLock.SQL</code></td><td><code>:1</code> · <code>:1</code> · <code>:1</code> · — · —</td><td><a class="sec" href="#3-1-全庫共通的五條-121-支實測">§3.1</a> <a class="sec" href="#3-3-編碼-新檔用哪一個">§3.3</a> <a class="sec" href="#3-4-參數命名-有慣例但不統一">§3.4</a> <a class="sec" href="#5-1-現況">§5.1</a></td></tr><tr><td><code>DB/Trigger/OFD002_T01.SQL</code> · <code>DB/Trigger/OFD109_T02.SQL</code> · <code>DB/Trigger/BMS001A_TDCC_BF_NO.SQL</code> · <code>DB/Trigger/BMS001A_TSCDLOG.SQL</code> · <code>DB/Trigger/OFD110_T01.SQL</code> · <code>DB/Trigger/OFD113_T1.sql</code></td><td><code>:31-43</code> <code>:40-43</code> <code>:42</code> · <code>:21-44</code> <code>:22</code> · <code>:230</code> · <code>:13-16</code> · <code>:31</code> · <code>:1-11</code></td><td><a class="sec" href="#3-3-編碼-新檔用哪一個">§3.3</a> <a class="sec" href="#3-5-例外處理慣例">§3.5</a> <a class="sec" href="#6-1-現況-13-支全部同一種形狀">§6.1</a> <a class="sec" href="#6-2-改法">§6.2</a></td></tr><tr><td><code>DB/Trigger/OFD253_T01.sql</code> · <code>DB/Trigger/OFD254_T01.SQL</code> · <code>DB/Trigger/OFD561_T02.SQL</code> · <code>DB/Trigger/OFD562_T01.SQL</code> · <code>DB/Trigger/OFD562_T02.SQL</code> · <code>DB/Trigger/OFD607_T02.sql</code> · <code>DB/Trigger/OFD607_T03.sql</code></td><td><code>:1-9</code> · <code>:1-10</code> · <code>:21-40</code> · <code>:28-44</code> · <code>:21-35</code> · <code>:17-34</code> · <code>:13-35</code></td><td><a class="sec" href="#6-1-現況-13-支全部同一種形狀">§6.1</a></td></tr><tr><td><code>DB/View/FNDV01.SQL</code> · <code>DB/View/OFD068A_V02.SQL</code></td><td><code>:1-6</code> · <code>:1-11</code> <code>:36-79</code> <code>:76</code></td><td><a class="sec" href="#3-1-全庫共通的五條-121-支實測">§3.1</a> <a class="sec" href="#7-1-現況-只有兩支-而且兩支長得完全不一樣">§7.1</a> <a class="sec" href="#7-2-改法">§7.2</a></td></tr><tr><td><code>DB/Table/11706_rollback.sql</code> · <code>DB/Table/11706_InsertOFD115A_1.sql</code> · <code>DB/Table/11706_InsertOFD907.sql</code> · <code>DB/Table/9000010311_update.sql</code> · <code>DB/Table/Update_9000010694.sql</code></td><td><code>:1-10</code> · <code>:1</code> · <code>:1</code> · <code>:1</code> · <code>:1-3</code></td><td><a class="sec" href="#3-3-編碼-新檔用哪一個">§3.3</a> <a class="sec" href="#9-3-db-table-的票號腳本配對慣例-對照用">§9.3</a></td></tr><tr><td><code>Dev/ATLAS.CAS.Report/Source/PO/ReportPO.CAS/CASR001_PO.cs</code> · <code>Dev/ATLAS.OTA.Report/Source/PO/ReportPO.OTA/OFDR051_PO.cs</code> · <code>Dev/ATLAS.TMK.Report/Source/PO/ReportPO.TMK/TMKR003_PO.cs</code> · <code>Dev/ATLAS.OTA/Source/PO/PO.OTA/OFDM053_PO.cs</code></td><td><code>:58-68</code> · <code>:66-82</code> <code>:69-77</code> · <code>:62-77</code> <code>:72-76</code> · <code>:517-527</code> <code>:526</code></td><td><a class="sec" href="#2-3-絕對不要做的事">§2.3</a> <a class="sec" href="#4-2-改法">§4.2</a> <a class="sec" href="#8-2-加-in-參數-標準寫法">§8.2</a> <a class="sec" href="#8-3-加游標-兩處都要改-而且是位置對應">§8.3</a> <a class="sec" href="#8-5-三個用位置取-out-值的呼叫點">§8.5</a></td></tr><tr><td><code>Dev/ATLAS.OTAB/Source/PO/PO.OTA/OFDB061_PO.cs</code> · <code>Dev/ATLAS.OTAB/Source/PO/PO.OTA/OFDB135_PO.cs</code> · <code>Dev/ATLAS.OTAB/Source/PO/PO.OTA/OFDB553_PO.cs</code></td><td><code>:305-315</code> · <code>:620</code> <code>:693</code> · <code>:112-122</code> <code>:118-122</code></td><td><a class="sec" href="#3-4-參數命名-有慣例但不統一">§3.4</a> <a class="sec" href="#8-2-加-in-參數-標準寫法">§8.2</a> <a class="sec" href="#8-5-三個用位置取-out-值的呼叫點">§8.5</a> <a class="sec" href="#8-6-驗證">§8.6</a></td></tr><tr><td><code>Dev/ATLAS.DSM/Source/PO/PO.DSM/DSMM901_PO.cs</code> · <code>Dev/ATLAS.DSM/Source/PO/PO.DSM/DSMM903_PO.cs</code> · <code>Dev/ATLAS.DSM/Source/PO/PO.DSM/DSMM902_PO.cs</code> · <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR452_PO.cs</code> · <code>Dev/Common/Source/DataSource/DataEntity.DataSource/OFD_AgentCodeOriginalListModel.xsd</code> · <code>Dev/Common/Source/DataSource/UIEntity.DataSource/OFD_AgentCodeOriginalListView.xsd</code></td><td><code>:340-344</code> · <code>:138</code> · — · — · <code>:15-22</code> · —</td><td><a class="sec" href="#7-1-現況-只有兩支-而且兩支長得完全不一樣">§7.1</a> <a class="sec" href="#7-3-view-有-typed-dataset-的話一起改">§7.3</a> <a class="sec" href="#8-5-三個用位置取-out-值的呼叫點">§8.5</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="13-附錄-b-待輸入回填"><h2 id="13-附錄-b-待輸入回填"><button class="tg" aria-label="收合/展開" type="button"></button>13. 附錄 B 待輸入回填</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>缺什麼</th><th>影響哪幾段</th><th>補進來後要改什麼</th></tr></thead><tbody><tr><td><strong>Oracle 唯讀帳號(<code>ALL_SOURCE</code> / <code>ALL_ARGUMENTS</code> / <code>ALL_TYPE_ATTRS</code>)</strong></td><td><a class="sec" href="#2-2-只在資料庫裡的物件-先撈出來再改">§2.2</a> <a class="sec" href="#4-3-驗證">§4.3</a> <a class="sec" href="#5-2-三個-function-專屬的坑">§5.2</a> <a class="sec" href="#9-4-sp-沒有版本號-怎麼知道線上是哪一版">§9.4</a></td><td>本手冊所有 <code>all_*</code> 查詢都未實測。補進來後:(1) 把 319 支只在 DB 的 SP 撈出來建清單 (2) 補齊 8 支 nested table function 的自訂型別定義 (3) 對 121 支腳本與線上全文做一次 diff,列出「線上被手改過」的清單</td></tr><tr><td><strong>TFS / 版本歷史</strong></td><td><a class="sec" href="#3-3-編碼-新檔用哪一個">§3.3</a> <a class="sec" href="#9-4-sp-沒有版本號-怎麼知道線上是哪一版">§9.4</a></td><td>本機不是 git working copy,判斷「哪一支是新檔」只能靠檔案內容裡的年份。補上 changeset 日期後把 <a class="sec" href="#3-3-編碼-新檔用哪一個">§3.3</a> 的編碼結論改用實際加入時間佐證</td></tr><tr><td><strong>PTPFBlock DLL</strong></td><td><a class="sec" href="#3-5-例外處理慣例">§3.5</a></td><td><code>#@@#</code> 在 <code>Dev/Common/</code> 全部 <code>.cs</code> 搜不到解析程式碼,推論在框架 DLL 裡。補進來後補上它怎麼被剝掉、剝完顯示在哪</td></tr><tr><td><strong>部署程序與 <code>SW</code> 帳號歸屬</strong></td><td><a class="sec" href="#9-1-部署順序">§9.1</a></td><td>目前只能寫「用 <code>SW</code> 帳號跑」,寫不出實際部署管道(SQL*Plus?DBA 代跑?)與審批流程</td></tr><tr><td><strong><code>DB/</code> 以外的 DB 物件版控</strong></td><td><a class="sec" href="#2-先確認-你要改的物件在不在-repo-裡">§2</a></td><td>若客戶另有一套,<a class="sec" href="#2-先確認-你要改的物件在不在-repo-裡">§2</a> 的判斷流程要多一層「先查那邊」</td></tr><tr><td><strong>7 個物件不在掃描索引內</strong></td><td>全篇</td><td><code>OFD609</code> <code>OFD661</code> <code>OFD662</code> <code>OFD255</code> <code>LOG030</code> <code>LOG049</code> <code>CTL000</code> 是 Trigger 原始碼實際寫到的表、<code>TRPM101T1</code> 是通知佇列表,但沒有任何 PO 用 <code>xTableMapping</code> 宣告過,所以不在 <code>atlas_index.json</code>,本手冊 meta 以 <code>refcheck-ignore</code> 略過。補上 DB 連線後改用 <code>ALL_TABLES</code> 驗證</td></tr></tbody></table></div></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-14 14:23 產生 · 標題 48 · 圖 1 · 表格 24 · 程式錨點 56 · § 連結 113 · 引用檢查：畫面 8（缺 0） · Table 18（缺 0） · SP 3（缺 0） · Function 1（缺 0） · Trigger 13（缺 0） · View 2（缺 0） · 結果集 2（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

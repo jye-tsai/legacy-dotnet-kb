@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-15">
+<title>ATLAS 維護手冊 — 新增 / 維護一支 B 批次</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-適用範圍與前提">0. 適用範圍與前提</a>
+<a class="l3" href="#0-1-一句話版本與八個步驟">0.1 一句話版本與八個步驟</a>
+<a class="l2" href="#1-改動點總覽-圖">1. 改動點總覽(圖)</a>
+<a class="l2" href="#2-步驟一-決定代號與放哪個專案">2. 步驟一:決定代號與放哪個專案</a>
+<a class="l3" href="#2-1-現況-ofdb-代號散在三個專案">2.1 現況:OFDB 代號散在三個專案</a>
+<a class="l3" href="#2-2-改法-三條決定規則-取號">2.2 改法:三條決定規則 + 取號</a>
+<a class="l3" href="#2-3-驗證">2.3 驗證</a>
+<a class="l2" href="#3-步驟二-決定觸發方式">3. 步驟二:決定觸發方式</a>
+<a class="l3" href="#3-1-現況-四種-不是三種">3.1 現況:四種,不是三種</a>
+<a class="l3" href="#3-2-現況-第四種的完整機制-本手冊最值得記住的一段">3.2 現況:第四種的完整機制(本手冊最值得記住的一段)</a>
+<a class="l3" href="#3-3-改法-新批次選哪一種">3.3 改法:新批次選哪一種</a>
+<a class="l3" href="#3-4-改法-main-string-args-的參數慣例">3.4 改法:Main(string[] args) 的參數慣例</a>
+<a class="l3" href="#3-5-驗證">3.5 驗證</a>
+<a class="l2" href="#4-步驟三-要不要-remoting">4. 步驟三:要不要 Remoting</a>
+<a class="l3" href="#4-1-現況-同一批批次-有的有有的沒有">4.1 現況:同一批批次,有的有有的沒有</a>
+<a class="l3" href="#4-2-現況-ofdb680-少了-wellknown-結果是什麼">4.2 現況:OFDB680 少了 &lt;wellknown&gt;,結果是什麼</a>
+<a class="l3" href="#4-3-改法-新批次怎麼決定">4.3 改法:新批次怎麼決定</a>
+<a class="l3" href="#4-4-驗證">4.4 驗證</a>
+<a class="l2" href="#5-步驟四-entity-兩份-xsd-與卷別">5. 步驟四:Entity —— 兩份 xsd 與卷別</a>
+<a class="l3" href="#5-1-現況-批次的-xsd-裝的多半不是實體表">5.1 現況:批次的 xsd 裝的多半不是實體表</a>
+<a class="l3" href="#5-2-改法-卷別怎麼選-後綴怎麼取">5.2 改法:卷別怎麼選,後綴怎麼取</a>
+<a class="l3" href="#5-3-現況-可以少建這兩層-但不建議">5.3 現況:可以少建這兩層,但不建議</a>
+<a class="l3" href="#5-4-驗證">5.4 驗證</a>
+<a class="l2" href="#6-步驟五-po-全篇重點">6. 步驟五:PO —— 全篇重點</a>
+<a class="l3" href="#6-1-現況-四種世代-新的只用第一種">6.1 現況:四種世代,新的只用第一種</a>
+<a class="l3" href="#6-2-改法-骨架五件">6.2 改法:骨架五件</a>
+<a class="l3" href="#6-3-改法-交易邊界誰開-c-開-sp-跑在裡面">6.3 改法:交易邊界誰開 —— C# 開,SP 跑在裡面</a>
+<a class="l3" href="#6-4-改法-重跑安全">6.4 改法:重跑安全</a>
+<a class="l3" href="#6-5-改法-失敗回報-不可吞例外">6.5 改法:失敗回報 —— 不可吞例外</a>
+<a class="l3" href="#6-6-改法-出口有四種-順序不可調">6.6 改法:出口有四種,順序不可調</a>
+<a class="l3" href="#6-7-驗證">6.7 驗證</a>
+<a class="l2" href="#7-步驟六-control-與-formproxy-逐字樣板">7. 步驟六:Control 與 FormProxy —— 逐字樣板</a>
+<a class="l2" href="#8-步驟七-ui-xonestepprocessform">8. 步驟七:UI —— xOneStepProcessForm</a>
+<a class="l2" href="#9-步驟七之一-選配-加一個-windowsservice">9. 步驟七之一(選配):加一個 WindowsService</a>
+<a class="l3" href="#9-1-改法-一個服務專案有五個檔">9.1 改法:一個服務專案有五個檔</a>
+<a class="l3" href="#9-2-服務帳號不能改成網域帳號">9.2 ⚠ 服務帳號不能改成網域帳號</a>
+<a class="l2" href="#10-編譯與部署">10. 編譯與部署</a>
+<a class="l3" href="#10-1-六個-csproj-不會多出組件">10.1 六個 csproj,不會多出組件</a>
+<a class="l3" href="#10-2-重編順序與部署到哪">10.2 重編順序與部署到哪</a>
+<a class="l2" href="#11-驗證清單">11. 驗證清單</a>
+<a class="l2" href="#12-常見錯誤與症狀">12. 常見錯誤與症狀</a>
+<a class="l2" href="#13-接手一支不熟的批次">13. 接手一支不熟的批次</a>
+<a class="l2" href="#14-反例-新批次不要這樣寫">14. 反例:新批次不要這樣寫</a>
+<a class="l3" href="#14-1-catch-吞例外-空-catch">14.1 catch 吞例外 / 空 catch { }</a>
+<a class="l3" href="#14-2-fail-open-檢核-查詢炸掉等於檢核通過">14.2 fail-open 檢核:查詢炸掉等於檢核通過</a>
+<a class="l3" href="#14-3-i-1-蓋掉-executenonquery-的回傳值">14.3 i = 1; 蓋掉 ExecuteNonQuery 的回傳值</a>
+<a class="l3" href="#14-4-信在-commit-之前寄">14.4 信在 Commit 之前寄</a>
+<a class="l3" href="#14-5-region-old-sql-不是註解">14.5 #region old sql 不是註解</a>
+<a class="l3" href="#14-6-寫死字串決定-delete-的範圍">14.6 寫死字串決定 DELETE 的範圍</a>
+<a class="l3" href="#14-7-用-environment-username-system-決定跑不跑">14.7 用 Environment.UserName == "SYSTEM" 決定跑不跑</a>
+<a class="l3" href="#14-8-sql-字串串接使用者輸入">14.8 SQL 字串串接使用者輸入</a>
+<a class="l2" href="#附錄-a-本手冊引用的檔案清單">附錄 A 本手冊引用的檔案清單</a>
+<a class="l2" href="#附錄-b-待輸入回填">附錄 B 待輸入回填</a>
+<a class="l2" href="#附錄-c-版本紀錄">附錄 C 版本紀錄</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-15</span></div>
+<h1 id="atlas-維護手冊-新增-維護一支-b-批次">ATLAS 維護手冊 — 新增 / 維護一支 B 批次</h1>
+<blockquote><p>產出日期:2026-09-15(v1)。本手冊為<strong>純程式碼閱讀彙整 + 操作步驟</strong>,未修改任何 ATLAS 原始碼。每一步附程式錨點(<code>Dev/…/X.cs:行號</code>),行號為分析當下版本,動手前以最新程式為準。 ⚠ 標「<strong>〔假設〕缺:輸入</strong>」的是拿不到輸入(DB 連線 / PTPFBlock DLL / 選單表 / 部署機)只能推論的部分,附錄 B 彙整;標「<strong>〔客戶特定〕</strong>」的是本站台的值。</p>
+<p>前提知識在 <code>architecture.md</code>:六層與重編順序 <code>architecture.md §2</code>、交易邊界 <code>architecture.md §4.5</code>、畫面型別 <code>architecture.md §6.4</code>、Remoting 與服務 <code>architecture.md §8.4</code>。<strong>不要整份讀</strong>。六層樣板細節引用 <code>runbooks/add-screen.md</code>,部署引用 <code>runbooks/deploy.md</code>,都不重複。素材:<code>modules/ofdb.md</code>(18 支)、<code>modules/ofdb3.md</code>(35 支)、<code>modules/ofdb4.md</code>(35 支),合計 88 支已寫深的批次。</p></blockquote>
+<section class="sec" data-sec="0-適用範圍與前提"><h2 id="0-適用範圍與前提"><button class="tg" aria-label="收合/展開" type="button"></button>0. 適用範圍與前提</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>項目</th><th>內容</th></tr></thead><tbody><tr><td>適用情境</td><td><strong>新建或維護一支 B(批次)畫面</strong>:按一顆執行鈕、跑一段伺服端作業、改 DB 或產檔</td></tr><tr><td>主要範本</td><td><code>OFDB003</code> 受益人異動批次轉入(<strong>沒有</strong> Remoting 設定、沒有服務,交易由 C# 開)</td></tr><tr><td>對照範本</td><td><code>OFDB600</code> 網路交易時限截止(<strong>有</strong> Remoting 設定、有 WindowsService、排程時刻在 DB)</td></tr><tr><td>不適用</td><td>M 維護畫面(<code>runbooks/add-screen.md</code>)· I 查詢畫面(<code>runbooks/add-query-screen.md</code>)· R 報表(<code>runbooks/add-report.md</code>)</td></tr><tr><td>前提工具與變數</td><td>Visual Studio · Oracle 客戶端 · PTPFBlock DLL · TFS workspace;<code>%ATLAS_ROOT%</code> = <code><repo></code>〔客戶特定〕 · <code>%PTPF%</code> = <code>C:\Program Files\Vendor\PTPFBlock</code>〔客戶特定〕</td></tr><tr><td>佈位符</td><td><code>&lt;NEW&gt;</code> = 新代號 · <code>&lt;MOD&gt;</code> = 模組</td></tr></tbody></table></div>
+<h3 id="0-1-一句話版本與八個步驟">0.1 一句話版本與八個步驟</h3>
+<p><strong>B 就是 M 拔掉四眼、UI 換成一步式表單。</strong>六層一層都不少,csproj 一個都不能漏。 <code>architecture.md §6.4</code> 已證明「I 與 B 是同一份 143 行樣板複製刪減出來的」,B 比 I 多的只有寫入那條路徑。所以本手冊只講<strong>批次特有</strong>的五件事:專案怎麼選、怎麼被觸發、要不要 Remoting、交易誰開、失敗怎麼回報。</p>
+<div class="tw"><table><thead><tr><th>#</th><th>步驟</th><th>樣板程度</th><th>節</th></tr></thead><tbody><tr><td>1</td><td>決定代號與<strong>放哪個專案</strong></td><td><strong>要查</strong></td><td><a class="sec" href="#2-步驟一-決定代號與放哪個專案">§2</a></td></tr><tr><td>2</td><td>決定觸發方式(四種)</td><td><strong>要決定</strong></td><td><a class="sec" href="#3-步驟二-決定觸發方式">§3</a></td></tr><tr><td>3</td><td>決定要不要 Remoting</td><td><strong>要決定</strong></td><td><a class="sec" href="#4-步驟三-要不要-remoting">§4</a></td></tr><tr><td>4</td><td>Entity 兩份 xsd + 選卷別</td><td>半樣板</td><td><a class="sec" href="#5-步驟四-entity-兩份-xsd-與卷別">§5</a></td></tr><tr><td>5</td><td>PO:交易、參數、SP、出口</td><td><strong>全篇重點</strong></td><td><a class="sec" href="#6-步驟五-po-全篇重點">§6</a></td></tr><tr><td>6</td><td>Control 與 FormProxy</td><td>逐字樣板</td><td><a class="sec" href="#7-步驟六-control-與-formproxy-逐字樣板">§7</a></td></tr><tr><td>7</td><td>UI,必要時加 WindowsService</td><td>半樣板</td><td><a class="sec" href="#8-步驟七-ui-xonestepprocessform">§8</a> <a class="sec" href="#9-步驟七之一-選配-加一個-windowsservice">§9</a></td></tr><tr><td>8</td><td>六個 csproj + 編譯部署</td><td>樣板</td><td><a class="sec" href="#10-編譯與部署">§10</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="1-改動點總覽-圖"><h2 id="1-改動點總覽-圖"><button class="tg" aria-label="收合/展開" type="button"></button>1. 改動點總覽(圖)</h2><div class="sec-body">
+<figure><svg viewBox="0 0 1010 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="批次專案結構:三個專案怎麼選、六層、Entity 分卷、選配的 WindowsService"><defs><marker id="ah_batch_proj" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 先決定放哪個專案 —— 全庫沒有 Batch 資料夾</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="62" text-anchor="middle">ATLAS.OFDB</text>
+<text class="t2" x="145" y="82" text-anchor="middle">108 支 PO,本業批次的家</text>
+</g><g class="bx accent">
+<rect x="300" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="62" text-anchor="middle">ATLAS.EC</text>
+<text class="t2" x="425" y="82" text-anchor="middle">36 支,網路交易與服務</text>
+</g><g class="bx accent">
+<rect x="580" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="62" text-anchor="middle">ATLAS.OTAB</text>
+<text class="t2" x="695" y="82" text-anchor="middle">41 支,境外平台</text>
+</g><g class="bx">
+<rect x="840" y="40" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="62" text-anchor="middle">跟著表走</text>
+<text class="t2" x="915" y="82" text-anchor="middle">讀寫哪張表就住哪</text>
+</g><path class="ar" d="M 270 68 L 300 68" marker-end="url(#ah_batch_proj)"/><path class="ar" d="M 550 68 L 580 68" marker-end="url(#ah_batch_proj)"/><path class="ar lnk" d="M 810 68 L 840 68"/><text class="lane" x="20" y="130">② 六層跟 M 完全一樣,只是 UI 基底不同</text><g class="bx accent">
+<rect x="20" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="166" text-anchor="middle">UI &lt;NEW&gt;.cs</text>
+<text class="t2" x="145" y="186" text-anchor="middle">xOneStepProcessForm</text>
+</g><g class="bx accent">
+<rect x="300" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="166" text-anchor="middle">FormProxy &lt;NEW&gt;_Pxy</text>
+<text class="t2" x="425" y="186" text-anchor="middle">覆寫 Execute / Query</text>
+</g><g class="bx dash">
+<rect x="580" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="166" text-anchor="middle">Control &lt;NEW&gt;_Ctl</text>
+<text class="t2" x="695" y="186" text-anchor="middle">只覆寫 DataAccessPool</text>
+</g><g class="bx accent">
+<rect x="840" y="144" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="166" text-anchor="middle">PO 裸 DAO</text>
+<text class="t2" x="915" y="186" text-anchor="middle">自己 new Database</text>
+</g><path class="ar" d="M 145 96 L 145 144" marker-end="url(#ah_batch_proj)"/><path class="ar" d="M 270 172 L 300 172" marker-end="url(#ah_batch_proj)"/><path class="ar" d="M 550 172 L 580 172" marker-end="url(#ah_batch_proj)"/><path class="ar" d="M 810 172 L 840 172" marker-end="url(#ah_batch_proj)"/><text class="lane" x="20" y="234">③ Entity 兩份 xsd —— 選卷別,不要新開專案</text><g class="bx accent">
+<rect x="20" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="270" text-anchor="middle">DataEntity 四卷</text>
+<text class="t2" x="145" y="290" text-anchor="middle">OFDB / 1 / 2 / 3</text>
+</g><g class="bx accent">
+<rect x="300" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="270" text-anchor="middle">UIEntity 四卷</text>
+<text class="t2" x="425" y="290" text-anchor="middle">卷號必須配對</text>
+</g><g class="bx">
+<rect x="580" y="248" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="270" text-anchor="middle">放最大卷</text>
+<text class="t2" x="695" y="290" text-anchor="middle">OFDB3 已 41 份</text>
+</g><g class="bx">
+<rect x="840" y="248" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="270" text-anchor="middle">View 可精簡</text>
+<text class="t2" x="915" y="290" text-anchor="middle">批次常只放結果</text>
+</g><path class="ar" d="M 145 200 L 145 248" marker-end="url(#ah_batch_proj)"/><path class="ar" d="M 270 276 L 300 276" marker-end="url(#ah_batch_proj)"/><path class="ar lnk" d="M 550 276 L 580 276"/><text class="lane" x="20" y="338">④ 選配第五件:WindowsService(全庫只有四支有)</text><g class="bx vend">
+<rect x="20" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="374" text-anchor="middle">WindowsService 專案</text>
+<text class="t2" x="145" y="394" text-anchor="middle">獨立 exe,自帶 config</text>
+</g><g class="bx vend">
+<rect x="300" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="374" text-anchor="middle">ProjectInstaller</text>
+<text class="t2" x="425" y="394" text-anchor="middle">帳號 LocalSystem</text>
+</g><g class="bx vend">
+<rect x="580" y="352" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="374" text-anchor="middle">App.config</text>
+<text class="t2" x="695" y="394" text-anchor="middle">Remoting 段在這</text>
+</g><g class="bx dash">
+<rect x="840" y="352" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="374" text-anchor="middle">不重寫邏輯</text>
+<text class="t2" x="915" y="394" text-anchor="middle">只是另一個呼叫端</text>
+</g><path class="ar" d="M 145 304 L 145 352" marker-end="url(#ah_batch_proj)"/><path class="ar" d="M 270 380 L 300 380" marker-end="url(#ah_batch_proj)"/><path class="ar" d="M 550 380 L 580 380" marker-end="url(#ah_batch_proj)"/><path class="ar lnk" d="M 810 380 L 840 380"/></svg><figcaption>圖 1 批次放哪裡。橘色實框=這一步要自己決定;灰虛框=照抄樣板;橘色虛框=只有四支批次會用到、而且是〔客戶特定〕的部署件。全庫沒有 Source/Batch 資料夾,B 畫面就住在六層裡。</figcaption></figure>
+<p>三件事先記住:</p>
+<ol><li><strong>沒有 <code>Source/Batch/</code> 這種資料夾。</strong><code>find Dev -maxdepth 4 -type d -iname "Batch*"</code> 回 0 筆。B 畫面住在跟 M 完全一樣的六層裡,差別只在代號第四碼是 <code>B</code>、UI 基底是 <code>xOneStepProcessForm</code>。</li><li><strong>代號決定不了專案。</strong><code>OFDB</code> 開頭的批次散在三個專案,見 <a class="sec" href="#2-步驟一-決定代號與放哪個專案">§2</a>。</li><li><strong>批次的失敗是靜默的。</strong>沒有使用者盯著、沒有四眼留痕跡,所以 <a class="sec" href="#6-5-改法-失敗回報-不可吞例外">§6.5</a> 的失敗回報比 M 畫面重要得多。</li></ol>
+</div></section><section class="sec" data-sec="2-步驟一-決定代號與放哪個專案"><h2 id="2-步驟一-決定代號與放哪個專案"><button class="tg" aria-label="收合/展開" type="button"></button>2. 步驟一:決定代號與放哪個專案</h2><div class="sec-body">
+<h3 id="2-1-現況-ofdb-代號散在三個專案">2.1 現況:<code>OFDB</code> 代號散在三個專案</h3>
+<p>先 <code>ls</code> 確認,不要照代號猜:<code>ls Dev/ATLAS.OFDB/Source/</code> 得到 <code>Control Entity FormProxy PO UI</code>——沒有 Batch。再 <code>find Dev -name "OFDB*_PO.cs" -o -name "OFDB*OracleDao.cs" | grep -v /obj/</code>,實測分布:</p>
+<div class="tw"><table><thead><tr><th>專案</th><th>PO 檔數</th><th>負責什麼</th><th>依據</th></tr></thead><tbody><tr><td><code>Dev/ATLAS.OFDB</code></td><td>108</td><td>本業批次:結帳、過帳、產檔、集保、核印扣款</td><td><code>ofdb.md §3.3</code>、<code>ofdb4.md §0.4</code></td></tr><tr><td><code>Dev/ATLAS.EC</code></td><td>36</td><td>網路交易(EC)相關,三支 WindowsService 也在這</td><td><code>ofdb3.md §3.3</code></td></tr><tr><td><code>Dev/ATLAS.OTAB</code></td><td>41</td><td>境外平台(OTA)那一套</td><td><code>ofdb3.md §3.3</code></td></tr></tbody></table></div>
+<p>全庫 B 畫面 UI 檔分布(排除 Designer):<code>ATLAS.OFDB</code> 150 · <code>ATLAS.OTAB</code> 45 · <code>ATLAS.EC</code> 40 · <code>ATLAS.RSP</code> 18 · <code>ATLAS.COD</code> / <code>ATLAS.CRM</code> 各 5 · <code>ATLAS.BMS</code> 3 · <code>ATLAS.CAS</code> / <code>ATLAS.SDM</code> 各 2 · <code>ATLAS.DSM</code> 1。</p>
+<p><strong>同一個代號可能在兩個專案各有一份。</strong><code>OFDB562</code> / <code>OFDB563</code> / <code>OFDB564</code> 在 <code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/</code> 與 <code>Dev/ATLAS.OTAB/Source/PO/PO.OTA/</code> 各有一份,不是分岔而是新舊世代;<code>ATLAS.OFDB</code> 那三份的基底連線恆為 null,實際跑不起來(<code>ofdb3.md §2.5</code>)。</p>
+<h3 id="2-2-改法-三條決定規則-取號">2.2 改法:三條決定規則 + 取號</h3>
+<p>依序套,第一條命中就停:</p>
+<div class="tw"><table><thead><tr><th>#</th><th>規則</th><th>為什麼</th></tr></thead><tbody><tr><td>1</td><td><strong>跟著它要寫的表走。</strong>表由哪個模組的 M 畫面維護,批次就放那個模組</td><td>重編時 Entity 與 PO 的 <code>ProjectReference</code> 才不會跨專案(<code>architecture.md §2.4</code>)</td></tr><tr><td>2</td><td><strong>跟著同群連號的既有支走。</strong><code>OFDB701</code>–<code>OFDB707</code> 全在 <code>ATLAS.OFDB</code>、<code>OFDB6xx</code> 多半在 <code>ATLAS.EC</code></td><td>同群常共用 helper 與 entity,拆開就要多一組 <code>ProjectReference</code></td></tr><tr><td>3</td><td><strong>要 WindowsService 就放 <code>ATLAS.EC</code> 或 <code>ATLAS.RSP</code>。</strong>全庫只有這兩處有 <code>Source/WindowsService/</code></td><td><code>deploy.md §5</code> 的四支服務全在這兩處</td></tr></tbody></table></div>
+<p><strong>境外平台(OTA)的批次一律放 <code>Dev/ATLAS.OTAB</code></strong>,即使代號叫 <code>OFDB6xx</code>(<code>OFDB600A</code> / <code>OFDB601A</code> / <code>OFDB602A</code> / <code>OFDB603</code> / <code>OFDB604A</code> 全在 OTAB,<code>ofdb3.md §3.3</code>)。</p>
+<p>取號:同模組同型別最大號 +1,避開 <code>9xx</code>(慣例保留給對外申報與跨模組工具)。 <strong><code>A</code> 後綴在批次上沒有一致意義</strong>(<code>ofdb3.md §0.2</code>:<code>OFDB600</code> 與 <code>OFDB600A</code> 是不同業務、不同專案),<strong>新批次不要用 <code>A</code> 後綴表達任何語意</strong>。</p>
+<h3 id="2-3-驗證">2.3 驗證</h3>
+<p><code>py -V:3.12 %ATLAS_ROOT%\docs\tools\atlas_scan.py --screen &lt;NEW&gt;</code> 回「找不到」才是對的(代號還沒被用)。建完再跑一次,六層要全部列得出來。</p>
+</div></section><section class="sec" data-sec="3-步驟二-決定觸發方式"><h2 id="3-步驟二-決定觸發方式"><button class="tg" aria-label="收合/展開" type="button"></button>3. 步驟二:決定觸發方式</h2><div class="sec-body">
+<figure><svg viewBox="0 0 1010 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="批次的四種觸發方式:手動、被別支批次呼叫、WindowsService 的 60 秒 Timer、排程時刻存在資料庫欄位"><defs><marker id="ah_batch_trig" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">觸發來源 —— 四種,只有前三種在 repo 裡看得到</text><g class="bx">
+<rect x="20" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="62" text-anchor="middle">① 手動按執行</text>
+<text class="t2" x="145" y="82" text-anchor="middle">xOneStepProcessForm</text>
+</g><g class="bx">
+<rect x="300" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="62" text-anchor="middle">② 被別支批次叫</text>
+<text class="t2" x="425" y="82" text-anchor="middle">Pxy 再包一層</text>
+</g><g class="bx accent">
+<rect x="580" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="62" text-anchor="middle">③ 服務 60 秒 Timer</text>
+<text class="t2" x="695" y="82" text-anchor="middle">比對 HHmm 字串</text>
+</g><g class="bx vend">
+<rect x="840" y="40" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="62" text-anchor="middle">④ 時刻在 DB</text>
+<text class="t2" x="915" y="82" text-anchor="middle">改欄位不重編</text>
+</g><path class="ar lnk" d="M 810 68 L 840 68"/><text class="lane" x="20" y="130">④ 的細節:時刻欄由 SQL 五段 UNION 撈出來</text><g class="bx vend">
+<rect x="20" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="166" text-anchor="middle">OFD606A 四個時間欄</text>
+<text class="t2" x="145" y="186" text-anchor="middle">申購 匯款 贖回 定額</text>
+</g><g class="bx vend">
+<rect x="300" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="166" text-anchor="middle">OFD600A 一個時間欄</text>
+<text class="t2" x="425" y="186" text-anchor="middle">MEMBER_CHG_LIMIT</text>
+</g><g class="bx accent">
+<rect x="580" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="166" text-anchor="middle">GetTIMES 算最近一次</text>
+<text class="t2" x="695" y="186" text-anchor="middle">存成 HHmm 字串</text>
+</g><g class="bx dash">
+<rect x="840" y="144" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="166" text-anchor="middle">跑完再算</text>
+<text class="t2" x="915" y="186" text-anchor="middle">finally 重算</text>
+</g><path class="ar" d="M 695 96 L 695 144" marker-end="url(#ah_batch_trig)"/><path class="ar" d="M 270 172 L 300 172" marker-end="url(#ah_batch_trig)"/><path class="ar" d="M 550 172 L 580 172" marker-end="url(#ah_batch_trig)"/><path class="ar" d="M 810 172 L 840 172" marker-end="url(#ah_batch_trig)"/><text class="lane" x="20" y="234">四種觸發最後都收斂到同一個入口</text><g class="bx accent">
+<rect x="20" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="270" text-anchor="middle">FormProxy.Execute</text>
+<text class="t2" x="145" y="290" text-anchor="middle">唯一入口</text>
+</g><g class="bx dash">
+<rect x="300" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="270" text-anchor="middle">Control.Execute</text>
+<text class="t2" x="425" y="290" text-anchor="middle">取 PO 實例</text>
+</g><g class="bx accent">
+<rect x="580" y="248" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="270" text-anchor="middle">PO.Execute</text>
+<text class="t2" x="695" y="290" text-anchor="middle">交易 + SP + 出口</text>
+</g><g class="bx vend">
+<rect x="840" y="248" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="270" text-anchor="middle">⚠ 帳號決定跑不跑</text>
+<text class="t2" x="915" y="290" text-anchor="middle">UserName 判斷</text>
+</g><path class="ar" d="M 145 96 L 145 248" marker-end="url(#ah_batch_trig)"/><path class="ar" d="M 425 96 L 425 248" marker-end="url(#ah_batch_trig)"/><path class="ar" d="M 695 200 L 695 248" marker-end="url(#ah_batch_trig)"/><path class="ar" d="M 270 276 L 300 276" marker-end="url(#ah_batch_trig)"/><path class="ar" d="M 550 276 L 580 276" marker-end="url(#ah_batch_trig)"/><path class="ar lnk" d="M 810 276 L 840 276"/></svg><figcaption>圖 2 四種觸發。第四種是本手冊最容易被忽略的一條:排程時刻不在 Windows 排程器、也不在設定檔,而是資料表的欄位;改時間不用重編,但也查不到是誰設的。</figcaption></figure>
+<h3 id="3-1-現況-四種-不是三種">3.1 現況:四種,不是三種</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>觸發</th><th>在 repo 裡怎麼看出來</th><th>幾支</th></tr></thead><tbody><tr><td>1</td><td><strong>手動</strong>:使用者按「執行」</td><td>UI 繼承 <code>xOneStepProcessForm</code>,有 <code>BeforeExecuteButtonClicked</code></td><td>絕大多數</td></tr><tr><td>2</td><td><strong>被別支批次呼叫</strong></td><td>另一支的 Ctl / PO 裡 <code>new &lt;代號&gt;_Pxy()</code></td><td>少數</td></tr><tr><td>3</td><td><strong>WindowsService</strong>:獨立 exe,60 秒 Timer</td><td><code>Dev/&lt;專案&gt;/Source/WindowsService/WindowsService.&lt;代號&gt;/</code> 存在</td><td><strong>4 支</strong></td></tr><tr><td>4</td><td><strong>排程時刻存在資料庫</strong>:服務每分鐘比對 <code>HHmm</code></td><td>服務的 <code>GetTIMES()</code> 去撈時刻欄</td><td>3 支</td></tr></tbody></table></div>
+<p>第 3 與第 4 疊在一起:服務提供「每分鐘檢查一次」的心跳,<strong>真正的排程時間在資料表欄位裡</strong>。</p>
+<h3 id="3-2-現況-第四種的完整機制-本手冊最值得記住的一段">3.2 現況:第四種的完整機制(本手冊最值得記住的一段)</h3>
+<p>以 <code>OFDB600</code> 為例:</p>
+<div class="tw"><table><thead><tr><th>步</th><th>做什麼</th><th>錨點</th></tr></thead><tbody><tr><td>1</td><td>建構子掛 <code>Interval = 60000</code>(60 秒)的 <code>System.Timers.Timer</code></td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs:24-31</code></td></tr><tr><td>2</td><td><code>OnStart</code> 先讀自己的 <code>exe.config</code> 設 Remoting,再 <code>GetTIMES()</code></td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs:39-58</code></td></tr><tr><td>3</td><td><code>GetTIMES()</code> 透過 Pxy 撈候選時刻,各加 <code>LIMIT_TIME_BUFFER</code> 分鐘,已過的推到明天,取最近一個存成 <code>"HHmm"</code></td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs:109-155</code></td></tr><tr><td>4</td><td>每分鐘比對 <code>sTIMES == DateTime.Now.ToString("HHmm")</code>,相等才跑</td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs:65-75</code></td></tr><tr><td>5</td><td>跑完 <code>finally</code> 再 <code>GetTIMES()</code> 算下一次</td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs:103-106</code></td></tr></tbody></table></div>
+<p>候選時刻的 SQL 是五段 <code>UNION</code>(<code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB600OracleDao.cs:268-292</code>):<code>OFD606A</code> 的申購 / 匯款 / 贖回 / 定額四個截止時間欄(各被對應的 <code>*_YN = 'Y'</code> 過濾)再 <code>UNION</code> <code>OFD600A</code> 的 <code>MEMBER_CHG_LIMIT_TIME</code>。<code>OFDB609</code> 讀 <code>OFD600A</code>、<code>OFDB680</code> 讀 <code>OFD680A</code>(<code>ofdb3.md §3.3</code>)。</p>
+<blockquote><p>⚠ <strong>要改排程時間,不用重編、也不用碰 Windows 排程器,改資料表欄位就好。</strong> 反過來說:<strong>排錯時間時查不到「是誰設的」</strong>——這些欄位由哪支 M 畫面維護,三片批次篇都沒查到。</p></blockquote>
+<h3 id="3-3-改法-新批次選哪一種">3.3 改法:新批次選哪一種</h3>
+<div class="tw"><table><thead><tr><th>需求</th><th>選</th><th>要做什麼</th></tr></thead><tbody><tr><td>人工決定什麼時候跑</td><td>① 手動</td><td>只做六層,不加服務</td></tr><tr><td>固定時間跑,時間<strong>不會改</strong></td><td>③ 服務 + 時刻寫 <code>App.config</code></td><td>加一個 WindowsService 專案(<a class="sec" href="#9-步驟七之一-選配-加一個-windowsservice">§9</a>)</td></tr><tr><td>固定時間跑,時間<strong>業務會調</strong></td><td>③ + ④ 服務 + 時刻欄放 DB</td><td>同上,再加設定表欄位與維護它的 M 畫面</td></tr><tr><td>跟在別支批次後面</td><td>② 被呼叫</td><td>在前一支的 Ctl 裡 <code>new &lt;NEW&gt;_Pxy()</code></td></tr></tbody></table></div>
+<p><strong>預設選 ①。</strong>88 支樣本裡只有 3 支走到第四種;多一支服務就多一台要部署、要監控、要處理帳號的機器(<a class="sec" href="#9-2-服務帳號不能改成網域帳號">§9.2</a>)。</p>
+<h3 id="3-4-改法-main-string-args-的參數慣例">3.4 改法:<code>Main(string[] args)</code> 的參數慣例</h3>
+<p><strong>先確認現行主流寫法:沒有 <code>args</code>。</strong><code>ofdb3.md §6.1.3</code> 實測那 35 支:<code>Main()</code> 一律不收 <code>string[] args</code>,repo 內也沒有任何 <code>.bat</code>;<code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/Program.cs:13</code> 的簽名就是 <code>static void Main()</code>。</p>
+<p>參數有三個來源,<strong>全部按名字取,不是按位置</strong>:</p>
+<div class="tw"><table><thead><tr><th>來源</th><th>怎麼取</th><th>錨點</th></tr></thead><tbody><tr><td>畫面欄位</td><td>UI 端 <code>Util.Parameters.AddParametersRow("&lt;名&gt;", SQLOperator.Equal, 值)</code></td><td><code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB003.cs:43-48</code></td></tr><tr><td>服務自動跑</td><td>服務端自組同一組 <code>AddParametersRow</code>,使用者寫死字串</td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs:84-86</code></td></tr><tr><td>設定表</td><td>PO 自己去撈</td><td><code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB600OracleDao.cs:268-292</code></td></tr></tbody></table></div>
+<p>PO 端的樣板(<code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB600OracleDao.cs:55-62</code>):</p>
+<pre class="code lang-csharp"><code>if (vdb.Utility.Parameters.Rows.Contains("CHECK_DATE"))
+{
+    DataModelUtility.ParametersRow Row = (DataModelUtility.ParametersRow)vdb.Utility.Parameters.Rows.Find("CHECK_DATE");
+    if (!string.IsNullOrEmpty(Convert.ToString(Row.Value)))
+        db.AddInParameter(cmd, "wCHECKDATE", OracleDbType.Date, ConvertTo.DateTimeorDBNull(Convert.ToDateTime(Row["Value"])));
+}</code></pre>
+<p><code>OFDB003</code> 用包好的 <code>GetParamValue</code>(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:72-78</code>),兩種都可以。</p>
+<p><strong>「位置取參數」是已知缺陷,但它不在 <code>Main()</code>,在讀檔與下拉選單:</strong></p>
+<div class="tw"><table><thead><tr><th>缺陷型</th><th>實例與錨點</th></tr></thead><tbody><tr><td>用陣列索引取 CSV 欄位</td><td><code>OFDB560</code> 的 <code>strData[0]</code>~<code>strData[14]</code>(<code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB560.cs:64</code>、<code>:72-84</code>),上游調欄序就整批對錯</td></tr><tr><td>用列索引隱藏下拉選項</td><td><code>OFDB019A</code> 的 <code>ucomMSG_TYPE.Rows[3].Hidden = true</code>(<code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB019A.cs:42</code>)</td></tr><tr><td>用選鈕索引換算 SP 參數</td><td><code>OFDB019B</code> 的 <code>CheckedIndex + 2</code>(<code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB019B.cs:78</code>)</td></tr><tr><td>固定位移拆字串</td><td><code>OFDB901</code> 的 <code>Substring(0,11)</code> + <code>Substring(11,4)</code>(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB901_PO.cs:73</code>)</td></tr></tbody></table></div>
+<p><strong>怎麼避:任何「第 N 個」都要換成「叫什麼名字」。</strong>讀檔用表頭比對欄名、下拉用 <code>TextValue</code> 找、拆字串用分隔符。真的是定長檔案格式時,把位移抽成具名常數集中宣告,不要散在四個方法裡(<code>OFDB950</code> 的反例:<code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB950.cs:86</code>、<code>:120</code>、<code>:146</code>、<code>:183</code>)。</p>
+<h3 id="3-5-驗證">3.5 驗證</h3>
+<p>手動:執行鈕亮得起來。服務:<code>sc start &lt;NEW&gt;_Service</code> 後看事件檢視器有沒有 <code>Execute Error</code>(<code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs:92</code>)。第四種:把時刻欄改成「現在 + 2 分鐘」,兩分鐘內應該要跑;不跑先查 <a class="sec" href="#12-常見錯誤與症狀">§12</a> 的「服務在跑但不動作」。</p>
+</div></section><section class="sec" data-sec="4-步驟三-要不要-remoting"><h2 id="4-步驟三-要不要-remoting"><button class="tg" aria-label="收合/展開" type="button"></button>4. 步驟三:要不要 Remoting</h2><div class="sec-body">
+<h3 id="4-1-現況-同一批批次-有的有有的沒有">4.1 現況:同一批批次,有的有有的沒有</h3>
+<p><code>ofdb3.md §3.4</code> 把三個專案的 <strong>20 個 <code>App.config</code> 全部查過</strong>:</p>
+<div class="tw"><table><thead><tr><th><code>App.config</code></th><th><code>system.runtime.remoting</code></th><th><code>&lt;wellknown&gt;</code></th><th><code>&lt;connectionStrings&gt;</code></th></tr></thead><tbody><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config</code></td><td><strong>有</strong>(<code>:175-194</code>)</td><td><strong>1 個</strong>(<code>:189</code>)</td><td>無</td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB609/App.config</code></td><td><strong>有</strong>(<code>:175-194</code>)</td><td><strong>1 個</strong>(<code>:189</code>)</td><td>無</td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB680/App.config</code></td><td><strong>0 個</strong></td><td>0</td><td><strong>有(3 筆,<code>:246-262</code>)</strong></td></tr><tr><td>其餘 17 個(UI / PO / Control / FormProxy / Entity 各層)</td><td>0</td><td>0</td><td>無</td></tr></tbody></table></div>
+<blockquote><p>⚠ 那三筆 <code>&lt;connectionStrings&gt;</code> <strong>含明文帳密</strong>。本手冊只記位置(<code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB680/App.config:246-262</code>),<strong>不抄值</strong>。<code>architecture.md §8.7</code> 已標同型問題。</p></blockquote>
+<h3 id="4-2-現況-ofdb680-少了-wellknown-結果是什麼">4.2 現況:<code>OFDB680</code> 少了 <code>&lt;wellknown&gt;</code>,結果是什麼</h3>
+<p>三支服務的 <code>OnStart</code> 幾乎逐字相同,都呼叫 <code>RemotingConfiguration.Configure(自己的 exe.config)</code>(<code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs:50-52</code>)。但 <strong><code>&lt;wellknown&gt;</code> 才是讓 <code>new &lt;代號&gt;_Pxy()</code> 變成遠端代理的那一行</strong>。沒有它,<code>new</code> 出來的是本機物件,<code>FormProxy → Control → PO</code> 全跑在服務自己的行程裡——這正好解釋為什麼只有它的 config 需要 <code>&lt;connectionStrings&gt;</code>。</p>
+<div class="tw"><table><thead><tr><th>類型</th><th>誰</th><th>那台機器需要什麼</th></tr></thead><tbody><tr><td><strong>真 Remoting 客戶端</strong></td><td><code>OFDB600</code>、<code>OFDB609</code></td><td>Remoting 端點設定;<strong>不需要</strong>資料庫權限</td></tr><tr><td><strong>直連資料庫的行程</strong></td><td><code>OFDB680</code>、<code>RSPB008</code></td><td><code>TA</code> / <code>SWProduct</code> / <code>Logging</code> 三個帳號的連線權限</td></tr></tbody></table></div>
+<blockquote><p>〔假設〕<code>OFDB680</code> 是設定檔漏了 Remoting 區段,不是刻意設計——依據是三支的 <code>OnStart</code> 幾乎逐字相同。但 <code>&lt;connectionStrings&gt;</code> 又不像意外多出來的,<strong>兩種解釋都成立,沒有註解可判</strong>(<code>ofdb3.md §3.4</code>)。</p></blockquote>
+<h3 id="4-3-改法-新批次怎麼決定">4.3 改法:新批次怎麼決定</h3>
+<p><strong>只有一個判準:這支批次會不會以「非 UI 的宿主」去打伺服端的 FormProxy。</strong></p>
+<div class="tw"><table><thead><tr><th>情境</th><th>要不要自己的 Remoting 設定</th><th>做法</th></tr></thead><tbody><tr><td>只有畫面觸發(①)或被同行程的批次呼叫(②)</td><td><strong>不要</strong></td><td>什麼都不加。Remoting 邊界由主程式管,落在 UI → FormProxy 之間(<code>architecture.md §8.1</code>)</td></tr><tr><td>有服務,而且邏輯要跑在伺服端(③④)</td><td><strong>要</strong></td><td>抄 <code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config:175-194</code>,把 <code>&lt;wellknown&gt;</code> 的 <code>type</code> 與 <code>url</code> 換成 <code>&lt;NEW&gt;_Pxy</code></td></tr><tr><td>有服務,而且就是要在服務那台直連 DB</td><td><strong>不要,但要 <code>&lt;connectionStrings&gt;</code></strong></td><td>照 <code>RSPB008</code> 的形狀(<code>architecture.md §8.4</code>):csproj 參考 <code>Control.&lt;MOD&gt;</code> 而不是 <code>FormProxy.&lt;MOD&gt;</code></td></tr></tbody></table></div>
+<p><strong>不要學 <code>OFDB680</code>:程式碼呼叫 <code>RemotingConfiguration.Configure</code> 卻沒有 <code>&lt;wellknown&gt;</code>。</strong>兩種都合法,混在一起是最難查的那種。</p>
+<h3 id="4-4-驗證">4.4 驗證</h3>
+<p>拿掉 DB 權限後在服務那台跑:走 Remoting 的應照常成功(它不碰 DB);沒走 Remoting 的會在第一個查詢失敗。<strong>〔假設〕缺:部署機</strong>,未實測。</p>
+</div></section><section class="sec" data-sec="5-步驟四-entity-兩份-xsd-與卷別"><h2 id="5-步驟四-entity-兩份-xsd-與卷別"><button class="tg" aria-label="收合/展開" type="button"></button>5. 步驟四:Entity —— 兩份 xsd 與卷別</h2><div class="sec-body">
+<h3 id="5-1-現況-批次的-xsd-裝的多半不是實體表">5.1 現況:批次的 xsd 裝的多半不是實體表</h3>
+<p><code>ofdb.md §2.3</code> 與 <code>ofdb4.md §2.8</code> 都查過:批次 Model 裡的 DataTable <strong>大半是「SP 的 RefCursor 出參形狀」</strong>,不是實體表。<code>OFDB003</code> 的 Model 有 10 張 DataTable,其中 5 張對應 SP 的 5 個 RefCursor(<code>Dev/ATLAS.OFDB/Source/Entity/DataEntity.OFDB/OFDB003Model.xsd</code>,352 行);它的 View 只有 79 行(<code>Dev/ATLAS.OFDB/Source/Entity/UIEntity.OFDB/OFDB003View.xsd</code>)。</p>
+<p><strong>批次的 View 通常比 Model 精簡很多</strong>,因為只有要顯示的那幾張才需要送回用戶端。這點和 M 相反:M 的兩份幾乎逐字相同(<code>add-screen.md §4.1</code>)。</p>
+<h3 id="5-2-改法-卷別怎麼選-後綴怎麼取">5.2 改法:卷別怎麼選,後綴怎麼取</h3>
+<p><code>Dev/ATLAS.OFDB/Source/Entity/</code> 底下有<strong>四組</strong> Entity 專案,實測 <code>.xsd</code> 數:<code>OFDB</code> 19 / <code>OFDB1</code> 18 / <code>OFDB2</code> 27 / <code>OFDB3</code> <strong>41</strong>(UIEntity 側 19 / 17 / 27 / 41)。</p>
+<p>規則和 M 一樣(<code>add-screen.md §10.2</code>):<strong>放進編號最大的那一組</strong>(這裡是 <code>OFDB3</code>),<strong>Model 與 View 的卷號必須配對</strong>。分卷是為了避開 typed DataSet 專案過大,不是業務分群(<code>ofdb4.md §0.4</code>)。 <code>ATLAS.EC</code> 的批次 entity 全在 <code>DataEntity.EC</code> / <code>UIEntity.EC</code>(不分卷);<code>ATLAS.OTAB</code> 在 <code>DataEntity.OTA</code> / <code>UIEntity.OTA</code>(組件名是 <code>DataEntity.OTAB</code>)。</p>
+<p><strong><code>_9i</code> 後綴不要再用。</strong><code>OFDB600</code> 的 xsd 叫 <code>Dev/ATLAS.EC/Source/Entity/DataEntity.EC/OFDB600_9iModel.xsd</code> / <code>Dev/ATLAS.EC/Source/Entity/UIEntity.EC/OFDB600_9iView.xsd</code>;<code>_9i</code> 是第二代控件的後綴(<code>architecture.md §7.3</code>),掃描器會因此判「缺 entity」(<code>ofdb3.md §3.5</code> 列了 8 支)。<strong>新批次一律 <code>&lt;NEW&gt;Model.xsd</code> / <code>&lt;NEW&gt;View.xsd</code>。</strong></p>
+<h3 id="5-3-現況-可以少建這兩層-但不建議">5.3 現況:可以少建這兩層,但不建議</h3>
+<p><code>architecture.md §6.6</code> 實測:B 型有 28 支<strong>沒有 DataEntity + UIEntity</strong>,是四型裡唯一常態性少層的,條件是「跑完不回傳任何資料集」。但建 xsd 的成本是十分鐘(全是樣板),省下來換的是「以後要顯示任何東西都得回頭補兩份 xsd 與六個 csproj 段」。<strong>新批次一律建齊。</strong></p>
+<h3 id="5-4-驗證">5.4 驗證</h3>
+<p>xsd 骨架、10 個 <code>msprop</code>、csproj 三段全照 <code>add-screen.md §3</code>。批次特有的只有一條:<code>atlas_scan.py --screen &lt;NEW&gt;</code> 的 <code>DataEntity</code> 與 <code>UIEntity</code> 兩列要有路徑;<strong>「主檔 —」是正常的</strong>,批次不宣告 <code>xTableMapping</code>(<a class="sec" href="#6-1-現況-四種世代-新的只用第一種">§6.1</a>)。</p>
+</div></section><section class="sec" data-sec="6-步驟五-po-全篇重點"><h2 id="6-步驟五-po-全篇重點"><button class="tg" aria-label="收合/展開" type="button"></button>6. 步驟五:PO —— 全篇重點</h2><div class="sec-body">
+<figure><svg viewBox="0 0 1010 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="批次的執行流程與失敗處理:UI 驗證、C# 開交易跑 SP、commit 後才做不可回復的動作、三條失敗路徑"><defs><marker id="ah_batch_exec" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 按下執行之前 —— UI 端,唯一能真的擋住的地方</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="62" text-anchor="middle">DoValidate 必填</text>
+<text class="t2" x="145" y="82" text-anchor="middle">validatorManager1</text>
+</g><g class="bx accent">
+<rect x="300" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="62" text-anchor="middle">組 Parameters</text>
+<text class="t2" x="425" y="82" text-anchor="middle">AddParametersRow</text>
+</g><g class="bx accent">
+<rect x="580" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="62" text-anchor="middle">Pxy.Check 前置查詢</text>
+<text class="t2" x="695" y="82" text-anchor="middle">數一數會動幾筆</text>
+</g><g class="bx vend">
+<rect x="840" y="40" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="62" text-anchor="middle">e.Cancel = true</text>
+<text class="t2" x="915" y="82" text-anchor="middle">不設就照跑</text>
+</g><path class="ar" d="M 270 68 L 300 68" marker-end="url(#ah_batch_exec)"/><path class="ar" d="M 550 68 L 580 68" marker-end="url(#ah_batch_exec)"/><path class="ar" d="M 810 68 L 840 68" marker-end="url(#ah_batch_exec)"/><text class="lane" x="20" y="130">② PO 裡的交易邊界 —— C# 開、C# 關,SP 跑在裡面</text><g class="bx accent">
+<rect x="20" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="166" text-anchor="middle">GetStoredProcCommand</text>
+<text class="t2" x="145" y="186" text-anchor="middle">先建 cmd 再開交易</text>
+</g><g class="bx accent">
+<rect x="300" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="166" text-anchor="middle">BeginTransaction</text>
+<text class="t2" x="425" y="186" text-anchor="middle">一定寫在 try 裡面</text>
+</g><g class="bx accent">
+<rect x="580" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="166" text-anchor="middle">LoadDataSet 帶 tran</text>
+<text class="t2" x="695" y="186" text-anchor="middle">SP 參與同一交易</text>
+</g><g class="bx accent">
+<rect x="840" y="144" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="166" text-anchor="middle">看回傳再決定</text>
+<text class="t2" x="915" y="186" text-anchor="middle">不要寫死 i = 1</text>
+</g><path class="ar" d="M 145 96 L 145 144" marker-end="url(#ah_batch_exec)"/><path class="ar" d="M 270 172 L 300 172" marker-end="url(#ah_batch_exec)"/><path class="ar" d="M 550 172 L 580 172" marker-end="url(#ah_batch_exec)"/><path class="ar" d="M 810 172 L 840 172" marker-end="url(#ah_batch_exec)"/><text class="lane" x="20" y="234">③ 兩條出口 —— Commit 之後才做不可回復的事</text><g class="bx accent">
+<rect x="20" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="270" text-anchor="middle">Commit</text>
+<text class="t2" x="145" y="290" text-anchor="middle">先落地</text>
+</g><g class="bx accent">
+<rect x="300" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="270" text-anchor="middle">寄信 / 產檔 / 呼外部</text>
+<text class="t2" x="425" y="290" text-anchor="middle">commit 之後才做</text>
+</g><g class="bx accent">
+<rect x="580" y="248" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="270" text-anchor="middle">AddResultRow(true, n)</text>
+<text class="t2" x="695" y="290" text-anchor="middle">n 要是真筆數</text>
+</g><g class="bx dash">
+<rect x="840" y="248" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="270" text-anchor="middle">換頁顯示結果</text>
+<text class="t2" x="915" y="290" text-anchor="middle">ExecuteDataLoad</text>
+</g><path class="ar" d="M 145 200 L 145 248" marker-end="url(#ah_batch_exec)"/><path class="ar" d="M 270 276 L 300 276" marker-end="url(#ah_batch_exec)"/><path class="ar" d="M 550 276 L 580 276" marker-end="url(#ah_batch_exec)"/><path class="ar lnk" d="M 810 276 L 840 276"/><text class="lane" x="20" y="338">④ 失敗路徑 —— 三條,每一條都要留下原因</text><g class="bx accent">
+<rect x="20" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="374" text-anchor="middle">Rollback 前檢查 null</text>
+<text class="t2" x="145" y="394" text-anchor="middle">否則 NRE 蓋掉原因</text>
+</g><g class="bx accent">
+<rect x="300" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="374" text-anchor="middle">訊息不可空字串</text>
+<text class="t2" x="425" y="394" text-anchor="middle">空訊息 = 查不到</text>
+</g><g class="bx vend">
+<rect x="580" y="352" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="374" text-anchor="middle">寫 log 表或 EventLog</text>
+<text class="t2" x="695" y="394" text-anchor="middle">repo 內無統一 log 表</text>
+</g><g class="bx accent">
+<rect x="840" y="352" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="374" text-anchor="middle">禁止空 catch</text>
+<text class="t2" x="915" y="394" text-anchor="middle">吞了就永遠不知道</text>
+</g><path class="ar" d="M 145 304 L 145 352" marker-end="url(#ah_batch_exec)"/><path class="ar" d="M 270 380 L 300 380" marker-end="url(#ah_batch_exec)"/><path class="ar" d="M 550 380 L 580 380" marker-end="url(#ah_batch_exec)"/><path class="ar" d="M 810 380 L 840 380" marker-end="url(#ah_batch_exec)"/></svg><figcaption>圖 3 執行流程與失敗處理。橘色實框=新批次一定要自己寫對的地方;橘色虛框=現存批次最常寫錯、而且錯了不會有人發現的地方。順序不可調換:寄信與產檔一律排在 Commit 之後。</figcaption></figure>
+<h3 id="6-1-現況-四種世代-新的只用第一種">6.1 現況:四種世代,新的只用第一種</h3>
+<p><code>ofdb4.md §0.3</code> 把 35 支逐支查過:</p>
+<div class="tw"><table><thead><tr><th>世代</th><th>基底</th><th>連線</th><th>宣告 <code>xTableMapping</code></th><th>支數</th></tr></thead><tbody><tr><td><strong>裸 PO(主流)</strong></td><td>無基底,只實作 <code>I&lt;代號&gt;_PO</code></td><td>自己 <code>new Database("TA", DbServerType.Oracle)</code></td><td>無</td><td>22</td></tr><tr><td>EVA 滿血</td><td><code>BaseEVADaoPO</code></td><td>基底管(<code>dbProduct</code>)</td><td>有</td><td>3</td></tr><tr><td>MultiRow EVA</td><td><code>BaseMultiRowEVADaoPO</code></td><td>基底管</td><td>有</td><td>1</td></tr><tr><td><strong>舊世代(禁用)</strong></td><td><code>BasicEVAPO</code></td><td><strong><code>dbTA</code> 恆為 null</strong></td><td>多半無</td><td>5</td></tr></tbody></table></div>
+<p><strong>新批次用裸 PO。</strong>批次的輸出是 DB 狀態改變或外部檔案,不是回傳資料集,不需要 <code>xTableMapping</code>,四眼那套也用不上。 <strong>絕對不要繼承 <code>BasicEVAPO</code> / <code>MultiRowEVAPO</code></strong>,連查詢都會 NRE(<code>add-screen.md §5.7</code>、<code>architecture.md §3.1.1</code>)。</p>
+<h3 id="6-2-改法-骨架五件">6.2 改法:骨架五件</h3>
+<p><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs</code> 全檔 508 行:</p>
+<div class="tw"><table><thead><tr><th>件</th><th>錨點</th><th>內容</th></tr></thead><tbody><tr><td>介面</td><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:20-29</code></td><td><code>public interface IOFDB003_PO { T Execute&lt;T&gt;(T model, params object[] args); … }</code>——<strong>不繼承 <code>IEvaDataAccess</code></strong></td></tr><tr><td>類別宣告</td><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:32-33</code></td><td><code>[PODbType(DbServerType.Oracle)]</code> + <code>: IOFDB003_PO</code>,沒有基底</td></tr><tr><td>連線欄位</td><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:36</code></td><td><code>Database dbTA = new Database("TA", DbServerType.Oracle);</code></td></tr><tr><td><code>Execute&lt;T&gt;</code></td><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:57-155</code></td><td>交易 + SP + 判斷 + Commit / Rollback</td></tr><tr><td>前置檢查</td><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:315-322</code></td><td><code>Check&lt;T&gt;</code>,給 UI 在按執行前問一次</td></tr></tbody></table></div>
+<p>要兩個庫(<code>TA</code> + <code>SWProduct</code>)就宣告兩個 <code>Database</code>,但<strong>沒有分散式交易</strong>,兩邊各自 Commit(<code>architecture.md §4.5</code>);一邊成功一邊失敗就對不起來。<strong>能只用一個庫就只用一個。</strong></p>
+<h3 id="6-3-改法-交易邊界誰開-c-開-sp-跑在裡面">6.3 改法:交易邊界誰開 —— C# 開,SP 跑在裡面</h3>
+<p><code>ofdb.md §6.0</code> 的總表:18 支裡 17 支是 <strong>C# 端 <code>BeginTransaction</code>,SP 參與同一交易</strong>,只有 1 支走 EVA 基底讓框架管。照抄的順序(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:62-119</code>):</p>
+<pre class="code lang-csharp"><code>DbTransaction tranUpdate = null;
+try
+{
+    DbCommand cmd = dbTA.GetStoredProcCommand("s_TA_OFDB003_Excute");
+    // 綁 IN 參數(按名字取,見 §3.4);綁 OUT 參數:RefCursor 一張表一個
+    tranUpdate = dbTA.BeginTransaction();
+    dbTA.LoadDataSet(cmd, mModel.DataEntity, tranUpdate, new string[] { "OFDB003", … });
+    // 判斷結果,不成立就 Rollback
+    if (tranUpdate.Connection != null) { tranUpdate.Commit(); }
+}</code></pre>
+<p>五條規則:</p>
+<ol><li><strong><code>BeginTransaction()</code> 一定寫在 <code>try</code> 裡面。</strong>寫在外面時,開交易本身失敗的例外會穿過 PO 打到 FormProxy,使用者看到框架錯誤(<code>OFDB608</code> / <code>OFDB616</code> 的反例,<code>ofdb3.md</code> E5.8)。</li><li><strong><code>Commit</code> / <code>Rollback</code> 之前檢查 <code>tranUpdate.Connection != null</code>。</strong><code>OFDB003</code> 有做(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:100-101</code>、<code>:118-119</code>);沒做的會在 catch 裡再噴一個 <code>NullReferenceException</code>,<strong>把原始例外蓋掉</strong>。</li><li><strong>執行 SP 一定把 <code>tran</code> 傳進去</strong>,否則 SP 跑在自己的交易裡,C# 的 Rollback 管不到它。</li><li><strong><code>finally</code> 裡釋放</strong>:<code>if (tranUpdate != null) { dbTA.Dispose(tranUpdate); } else { dbTA.Dispose(); }</code>(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:148-153</code>)。</li><li><strong>不要抄 <code>CommandTimeout = 0</code>。</strong>全庫 9 處以上寫著「此程式讓它永久跑」(<code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB600OracleDao.cs:51</code>),卡住的 SP 不會超時,只會一直佔連線。新批次給一個明確秒數。</li></ol>
+<h3 id="6-4-改法-重跑安全">6.4 改法:重跑安全</h3>
+<p><code>ofdb3.md §3.3</code> 把 35 支分四類:<code>阻擋</code> 6 · <code>覆蓋</code> 4 · <strong><code>不保護</code> 19</strong> · <code>不可執行</code> 4。 <strong>「不保護」是現況的多數,不是可以照抄的慣例。</strong>新批次二選一:</p>
+<div class="tw"><table><thead><tr><th>做法</th><th>怎麼寫</th><th>適用</th><th>實例</th></tr></thead><tbody><tr><td><strong>先 DELETE 再 INSERT(覆蓋)</strong></td><td>用一把能唯一決定本批範圍的鍵先 <code>DELETE</code>,同一交易內再寫</td><td>產出型(產名單、產檔、產申報資料)</td><td><code>OFDB570</code> 先 <code>DELETE … WHERE Data_ID</code>、<code>OFDB671</code> 先 <code>DELETE OFD678A</code></td></tr><tr><td><strong>已處理旗標(阻擋)</strong></td><td>來源列有處理碼欄,只撈 <code>= '0'</code> 的,跑完改成 <code>'1'</code></td><td>交易處理型</td><td><code>OFDB600</code> 靠七張表的處理碼欄過濾(<code>ofdb3.md §6.1</code>)</td></tr></tbody></table></div>
+<p><strong>用「覆蓋」時那把鍵必須是決定性的。</strong><code>OFDB680</code> 的重跑鍵是「基金清單 + 日期 + <code>-1</code>」拼出來的字串,中途基金上下架就變了鍵值,舊資料刪不掉、重跑會重複(<code>ofdb3.md</code> E12.6)。 <strong>用「旗標」時,旗標與撈取條件要寫在同一支 SQL 裡。</strong> 另外,提供「取消 / 回復」功能是 ATLAS 既有慣例(<code>OFDB222</code> 取消關帳、<code>OFDB286</code> 取消退匯、<code>OFDB281</code> 有「重新產生」與「刪除」,<code>ofdb.md §6.0</code>)。<strong>能做就做,它比 rollback 好用。</strong></p>
+<h3 id="6-5-改法-失敗回報-不可吞例外">6.5 改法:失敗回報 —— 不可吞例外</h3>
+<p>三片批次篇的附錄 E 裡,「一律回報成功」與「例外被吞」合計 20 條以上,是<strong>批次的頭號坑</strong>。規則:</p>
+<div class="tw"><table><thead><tr><th>#</th><th>規則</th><th>反例</th></tr></thead><tbody><tr><td>1</td><td><strong><code>catch</code> 一定要留下原因</strong>,訊息不可是 <code>string.Empty</code></td><td><code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB600OracleDao.cs:100</code></td></tr><tr><td>2</td><td><strong>不可有空 <code>catch { }</code></strong></td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs:149-151</code>,整個時刻消失且無 log</td></tr><tr><td>3</td><td><strong>不要寫 <code>catch (SqlException)</code></strong>,連線是 Oracle,這個 catch 永遠進不去,是死碼</td><td>全庫 6 處以上(<code>ofdb3.md</code> E2.5)</td></tr><tr><td>4</td><td><strong>例外要進 <code>CommonExceptionBlocker.HandleBusinessException(ex)</code></strong></td><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB913_PO.cs:133-138</code> 連這行都沒有</td></tr><tr><td>5</td><td><strong>回傳的 VDB 要和塞訊息的 VDB 是同一個</strong></td><td><code>OFDB615</code> / <code>OFDB616</code> 訊息寫進輸入的 vdb、回傳新建的 result,呼叫端看不到失敗(<code>ofdb3.md</code> E4.6)</td></tr></tbody></table></div>
+<p><strong>寫哪張 log 表?repo 內沒有統一的批次 log 表。</strong>現況三條各走各的:</p>
+<div class="tw"><table><thead><tr><th>管道</th><th>誰在用</th><th>位置</th></tr></thead><tbody><tr><td><code>Utility.Result</code>(回給畫面)</td><td>全部</td><td><code>AddResultRow(bool, int, string)</code></td></tr><tr><td><code>CommonExceptionBlocker</code>(框架 log)</td><td>多數 PO</td><td>落地在 <code>C:\Vendor\VendorProduct\*.log</code>(<code>architecture.md §8.5</code>)〔客戶特定〕</td></tr><tr><td>Windows <code>EventLog</code> + 自寫文字檔</td><td>三支服務</td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs:92</code>、<code>:239-252</code></td></tr></tbody></table></div>
+<p><strong>新批次三條都走。不要抄那個自寫文字檔的 <code>WriteLog</code></strong>——它先整檔讀進記憶體再整檔覆寫,複雜度 O(n²),寫到一半當掉整天的 log 就沒了(<code>ofdb3.md</code> E9.5)。</p>
+<h3 id="6-6-改法-出口有四種-順序不可調">6.6 改法:出口有四種,順序不可調</h3>
+<div class="tw"><table><thead><tr><th>出口</th><th>幾支(35 支樣本)</th><th>規則</th></tr></thead><tbody><tr><td>呼叫 SP,DB 狀態被改</td><td>18</td><td>一定帶 <code>tran</code>;SP 回的 RefCursor 要接進 Model</td></tr><tr><td>C# 自己組 SQL 寫表</td><td>12</td><td>參數化(<a class="sec" href="#14-8-sql-字串串接使用者輸入">§14.8</a>);<code>ExecuteNonQuery</code> 的回傳值<strong>要用</strong></td></tr><tr><td>產生 / 讀取外部檔案</td><td>6</td><td>明確指定編碼,不要 <code>Encoding.Default</code></td></tr><tr><td>寄信 / 呼叫外部 API</td><td>8</td><td><strong>一律排在 <code>Commit</code> 之後</strong></td></tr></tbody></table></div>
+<p>數字出自 <code>ofdb3.md §6.0</code>(同一支可能有多個出口,相加大於 35)。</p>
+<blockquote><p>⚠ <strong>最後一條是硬規則。</strong><code>OFDB600</code> 在 <code>tran.Commit()</code> <strong>之前</strong>就 <code>SendMail</code>(<code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB600OracleDao.cs:75-76</code> 對 <code>:84</code>):commit 失敗時信已寄出、資料卻回滾。寄信、產檔、呼叫外部系統都是不可回復的動作,<strong>放在交易裡等於把交易的保證作廢</strong>。</p></blockquote>
+<p><code>OFDB003</code> 做對了這件事:LDAP 同步排在 <code>Execute</code> 回來之後(<code>Dev/ATLAS.OFDB/Source/Control/Control.OFDB/OFDB003_Ctl.cs:59-61</code>),但它換了另一個問題——LDAP 失敗時把 <code>Result</code> 清掉改塞失敗訊息,<strong>使用者看到「失敗」,DB 其實已經生效</strong>(<code>ofdb.md §6.1</code>)。正確做法是<strong>兩個結果分開回報</strong>。</p>
+<h3 id="6-7-驗證">6.7 驗證</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>查什麼</th><th>怎麼查</th></tr></thead><tbody><tr><td>1</td><td>有沒有寫死成功</td><td><code>grep -n "AddResultRow(true" &lt;PO&gt;</code>,每處後面的筆數都要是變數,不可是常數</td></tr><tr><td>2</td><td>有沒有空訊息</td><td><code>grep -n "string.Empty)" &lt;PO&gt;</code>,出現在 <code>AddResultRow(false</code> 那行就是缺陷</td></tr><tr><td>3</td><td>有沒有空 catch</td><td><code>grep -n -A2 "catch" &lt;PO&gt;</code> 逐處看</td></tr><tr><td>4</td><td>交易有沒有帶進 SP</td><td><code>grep -n "LoadDataSet" &lt;PO&gt;</code>,每處都要有 <code>tran</code></td></tr><tr><td>5</td><td>寄信 / 產檔在哪</td><td><code>grep -n "SendMail|StreamWriter|Commit" &lt;PO&gt;</code>,行號上 <code>Commit</code> 必須在前</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="7-步驟六-control-與-formproxy-逐字樣板"><h2 id="7-步驟六-control-與-formproxy-逐字樣板"><button class="tg" aria-label="收合/展開" type="button"></button>7. 步驟六:Control 與 FormProxy —— 逐字樣板</h2><div class="sec-body">
+<p>Control 只覆寫一個初始化方法 + 一個業務入口(<code>Dev/ATLAS.OFDB/Source/Control/Control.OFDB/OFDB003_Ctl.cs:35-38</code> 與 <code>:52-70</code>):</p>
+<pre class="code lang-csharp"><code>public override void InitializeDataAccessPool() { base.DataAccessPool.Add(new &lt;NEW&gt;_PO()); }
+
+public &lt;NEW&gt;ViewVDB Execute(&lt;NEW&gt;ViewVDB view)
+{
+    var m_PO = base.GetDaoInstance&lt;I&lt;NEW&gt;_PO&gt;();
+    return (&lt;NEW&gt;ViewVDB)this.ExecPOActionToViewVDB(view, m_PO.Execute);
+}</code></pre>
+<p><strong>批次的 Ctl 不覆寫 <code>InitializeVDBTypes()</code></strong>(那是 M 用來接四眼的),也不覆寫 <code>CustomTransfer*</code> 四件套,除非要自己搬表。<code>OFDB600</code> 的 Ctl 同形(<code>Dev/ATLAS.EC/Source/Control/Control.EC/OFDB600_Ctl.cs:150-154</code>)。</p>
+<p>FormProxy 覆寫 <code>Execute</code>,例外一律轉成 <code>ServerSideError</code>(<code>Dev/ATLAS.OFDB/Source/FormProxy/FormProxy.OFDB/OFDB003_Pxy.cs:34-49</code>)。需要「按執行前先數一數」就多開一個方法(<code>Dev/ATLAS.OFDB/Source/FormProxy/FormProxy.OFDB/OFDB003_Pxy.cs:56-71</code> 的 <code>Check</code>),UI 端在 <code>DoValidate</code> 裡呼叫。 <code>Query</code> 在純批次裡是空殼,回 <code>(true, 0, "")</code>(<code>Dev/ATLAS.OFDB/Source/FormProxy/FormProxy.OFDB/OFDB003_Pxy.cs:77-82</code>)。<strong>想做成「先查清單、勾選、再按執行」就把 <code>Query</code> 實作出來</strong>——<code>ofdb3.md §3.2</code> 查到 12 支批次是這樣寫的。</p>
+<p><strong>驗證</strong>:<code>grep -c "InitializeControl" &lt;NEW&gt;_Pxy.cs</code> 應為 0(那是 M 的樣板);<code>GetDaoInstance</code> 的泛型參數必須是介面型別,打錯會在執行期回 <code>ServerSideError</code>。</p>
+</div></section><section class="sec" data-sec="8-步驟七-ui-xonestepprocessform"><h2 id="8-步驟七-ui-xonestepprocessform"><button class="tg" aria-label="收合/展開" type="button"></button>8. 步驟七:UI —— <code>xOneStepProcessForm</code></h2><div class="sec-body">
+<p><code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB003.cs</code> 全檔 118 行,是最乾淨的批次 UI 範本,三個掛點:</p>
+<div class="tw"><table><thead><tr><th>事件</th><th>做什麼</th><th>錨點</th></tr></thead><tbody><tr><td><code>&lt;NEW&gt;_FormInitial</code></td><td><code>TabPages</code> / <code>ProcessVDB</code> / <code>SetPermissionInfo</code> / <code>FormProxy</code> 四件</td><td><code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB003.cs:69-76</code></td></tr><tr><td><code>&lt;NEW&gt;_RefreshPage</code></td><td>關查詢鈕、開執行鈕、帶預設值</td><td><code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB003.cs:99-104</code></td></tr><tr><td><code>&lt;NEW&gt;_BeforeExecuteButtonClicked</code></td><td>驗證,不過就 <code>e.Cancel = true</code></td><td><code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB003.cs:83-92</code></td></tr></tbody></table></div>
+<p>驗證集中在 <code>DoValidate</code>(<code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB003.cs:33-59</code>):先 <code>ValidateErrList.Clear()</code> → <code>validatorManager1.DataValidate()</code> → 自訂檢核 → 有錯就回 → 清空並重組 <code>Parameters</code>。三條規則:</p>
+<ol><li><strong>參數名要跟 PO 端 <code>Rows.Contains("…")</code> 的字串一模一樣</strong>(<a class="sec" href="#3-4-改法-main-string-args-的參數慣例">§3.4</a>)。又一個靠字串對上的跨層綁定,打錯不紅字、條件靜靜不生效。</li><li><strong><code>BeforeExecuteButtonClicked</code> 沒設 <code>e.Cancel = true</code> 就等於沒擋。</strong><code>OFDB673</code> 的「是否同意變更?」按「否」也照樣執行,就是漏了這一行(<code>Dev/ATLAS.EC/Source/UI/UI.EC/OFDB673.cs:89-93</code>)。</li><li><strong>「還有 N 筆沒處理完」這種前置檢查是詢問不是阻擋。</strong><code>OFDB003</code> 跳 <code>Warn02</code> 讓使用者按 OK 繼續(<code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB003.cs:52-54</code>);想真的擋就 <code>return false</code>,不要用對話框。</li></ol>
+<p><strong>驗證</strong>:開畫面 → 什麼都不填按執行 → 必填訊息要跳出來且擋住,再把每條自訂檢核各觸發一次。</p>
+</div></section><section class="sec" data-sec="9-步驟七之一-選配-加一個-windowsservice"><h2 id="9-步驟七之一-選配-加一個-windowsservice"><button class="tg" aria-label="收合/展開" type="button"></button>9. 步驟七之一(選配):加一個 WindowsService</h2><div class="sec-body">
+<p><strong>只有 <a class="sec" href="#3-3-改法-新批次選哪一種">§3.3</a> 判定要走第 ③ 或第 ④ 種觸發時才做這一步。</strong>四支服務的清單與安裝指令在 <code>deploy.md §5</code>,本節不重複。</p>
+<h3 id="9-1-改法-一個服務專案有五個檔">9.1 改法:一個服務專案有五個檔</h3>
+<p>抄 <code>WindowsService.OFDB600</code> 換名字:</p>
+<div class="tw"><table><thead><tr><th>檔</th><th>內容</th><th>錨點</th></tr></thead><tbody><tr><td><code>&lt;NEW&gt;_Service.cs</code></td><td>Timer + <code>OnStart</code> + <code>DoExecute</code></td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs:24-31</code></td></tr><tr><td><code>Program.cs</code></td><td><code>Main()</code>(不收 <code>args</code>)+ 執行模式判斷</td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/Program.cs:13</code>、<code>:28-44</code></td></tr><tr><td><code>ProjectInstaller.cs</code> + Designer</td><td>服務名與帳號</td><td>見 <code>deploy.md §5</code></td></tr><tr><td><code>App.config</code></td><td>Remoting 段(<a class="sec" href="#4-3-改法-新批次怎麼決定">§4.3</a>)</td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config:175-194</code></td></tr><tr><td><code>WindowsService.&lt;NEW&gt;.csproj</code></td><td><code>OutputType</code> <code>WinExe</code>、<code>TargetFrameworkVersion</code> <code>v4.8</code></td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/WindowsService.OFDB600.csproj:9</code>、<code>:22</code></td></tr></tbody></table></div>
+<p><strong>csproj 的參考全部是 <code>HintPath</code> 指向 <code>%PTPF%</code> 的預編 DLL</strong>,不是 <code>ProjectReference</code>(<code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/WindowsService.OFDB600.csproj:74-101</code>)。所以<strong>改了 <code>FormProxy.&lt;MOD&gt;</code> 或 <code>UIEntity.&lt;MOD&gt;</code> 之後,不更新 <code>%PTPF%</code> 的話服務拿到的還是舊的</strong>——正是 <code>deploy.md §2</code> 講的 DLL 覆寫陷阱。服務專案<strong>不在任何模組 sln 裡</strong>,要自己開(<code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/WindowsService.OFDB600.sln</code>)。</p>
+<h3 id="9-2-服務帳號不能改成網域帳號">9.2 ⚠ 服務帳號不能改成網域帳號</h3>
+<pre class="code lang-csharp"><code>if (Environment.UserName == "SYSTEM") { ServiceBase.Run(ServicesToRun); }
+else { var DebugToRun = new &lt;NEW&gt;_Service(); DebugToRun.Start(); Console.ReadLine(); }</code></pre>
+<p><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/Program.cs:28-44</code>。配合安裝時的 <code>ServiceAccount.LocalSystem</code>,<code>UserName</code> 才會是 <code>"SYSTEM"</code>。<strong>換成網域帳號就走進 else、卡在 <code>Console.ReadLine()</code>,SCM 等到逾時判定啟動失敗,而且沒有任何錯誤訊息。</strong></p>
+<p><code>deploy.md §5</code> 已記過這條。<strong>新服務不要抄這個判斷</strong>——要區分除錯模式就用命令列旗標或 <code>#if DEBUG</code>,不要用執行帳號。</p>
+<p><strong>驗證</strong>:<code>sc start &lt;NEW&gt;_Service</code> → 狀態要停在「執行中」而不是「正在啟動」。停在「正在啟動」直接看上面那段。</p>
+</div></section><section class="sec" data-sec="10-編譯與部署"><h2 id="10-編譯與部署"><button class="tg" aria-label="收合/展開" type="button"></button>10. 編譯與部署</h2><div class="sec-body">
+<h3 id="10-1-六個-csproj-不會多出組件">10.1 六個 csproj,不會多出組件</h3>
+<div class="tw"><table><thead><tr><th>專案</th><th>加什麼</th><th>錨點(<code>OFDB003</code> 範本)</th></tr></thead><tbody><tr><td><code>DataEntity.&lt;卷&gt;</code></td><td><code>Compile</code> × 2 + <code>None</code> × 3</td><td><code>Dev/ATLAS.OFDB/Source/Entity/DataEntity.OFDB/DataEntity.OFDB.csproj:102-107</code> 與 <code>:233-243</code></td></tr><tr><td><code>UIEntity.&lt;卷&gt;</code></td><td>同上</td><td><code>Dev/ATLAS.OFDB/Source/Entity/UIEntity.OFDB/UIEntity.OFDB.csproj:102-107</code> 與 <code>:233-243</code></td></tr><tr><td><code>PO.&lt;MOD&gt;</code></td><td><code>Compile</code> × 1</td><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/PO.OFDB.csproj:132</code></td></tr><tr><td><code>Control.&lt;MOD&gt;</code></td><td><code>Compile</code> × 1</td><td><code>Dev/ATLAS.OFDB/Source/Control/Control.OFDB/Control.OFDB.csproj:140</code></td></tr><tr><td><code>FormProxy.&lt;MOD&gt;</code></td><td><code>Compile</code> × 1</td><td><code>Dev/ATLAS.OFDB/Source/FormProxy/FormProxy.OFDB/FormProxy.OFDB.csproj:104</code></td></tr><tr><td><code>UI.&lt;MOD&gt;</code></td><td><code>Compile</code> × 2 + <code>EmbeddedResource</code> × 1</td><td><code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/UI.OFDB.csproj:321-325</code> 與 <code>:1225-1226</code></td></tr></tbody></table></div>
+<blockquote><p>⚠ <strong><code>UI.OFDB.csproj:324</code> 掛的是 <code>OFDB003.designer.cs</code>,小寫的 <code>d</code>。</strong>同一個專案裡兩種大小寫並存,Windows 編得過,大小寫敏感的工具會判缺。<strong>新批次一律用 Visual Studio 產生的大寫 <code>.Designer.cs</code>。</strong></p></blockquote>
+<p>有服務的話再加第七個 <code>WindowsService.&lt;NEW&gt;.csproj</code>(<a class="sec" href="#9-1-改法-一個服務專案有五個檔">§9.1</a>)。</p>
+<h3 id="10-2-重編順序與部署到哪">10.2 重編順序與部署到哪</h3>
+<p>重編順序照 <code>add-column.md §9.1</code>(Entity → PO → Control → FormProxy → UI),依據在 <code>architecture.md §2.4</code>。部署對照表是 <code>deploy.md §2</code>,批次沒有例外:</p>
+<div class="tw"><table><thead><tr><th>你改了</th><th>客戶端</th><th>伺服端 IIS</th><th>WindowsService</th></tr></thead><tbody><tr><td><code>UI.&lt;MOD&gt;</code>(批次畫面)</td><td>✔</td><td></td><td></td></tr><tr><td><code>UIEntity.&lt;卷&gt;</code>(<code>View.xsd</code>)</td><td>✔</td><td>✔</td><td>✔(若該服務用到)</td></tr><tr><td><code>FormProxy.&lt;MOD&gt;</code> / <code>Control.&lt;MOD&gt;</code> / <code>PO.&lt;MOD&gt;</code> / <code>DataEntity.&lt;卷&gt;</code></td><td></td><td>✔</td><td></td></tr></tbody></table></div>
+<p><strong>服務那台要什麼看 <code>deploy.md §5</code></strong>:自己的 exe 與 <code>exe.config</code>、<code>FormProxy.&lt;MOD&gt;.dll</code>、<code>UIEntity.&lt;MOD&gt;.dll</code>、共用層、PTPFBlock。<strong>它要的是「客戶端那一套」加自己的 exe,不是伺服端那一套</strong>(<code>deploy.md §2</code> 第 3 條規則)。換伺服器時四支服務的 <code>exe.config</code> 都要改。</p>
+<blockquote><p><strong>〔假設〕缺:PTPFBlock DLL / 部署機。</strong>整個 <a class="sec" href="#10-編譯與部署">§10</a> 未實測(<code>architecture.md 附錄 C.1</code>)。csproj 三段來自 <code>OFDB003</code> 原文,重編順序來自 <code>ProjectReference</code> 相依。</p></blockquote>
+</div></section><section class="sec" data-sec="11-驗證清單"><h2 id="11-驗證清單"><button class="tg" aria-label="收合/展開" type="button"></button>11. 驗證清單</h2><div class="sec-body">
+<p>第一輪先確認六層接上:</p>
+<div class="tw"><table><thead><tr><th>#</th><th>動作</th><th>過的條件</th><th>沒過回去做</th></tr></thead><tbody><tr><td>1</td><td><code>atlas_scan.py --screen &lt;NEW&gt;</code></td><td>六層都有路徑</td><td><a class="sec" href="#5-步驟四-entity-兩份-xsd-與卷別">§5</a> <a class="sec" href="#10-1-六個-csproj-不會多出組件">§10.1</a></td></tr><tr><td>2</td><td>依 <code>add-column.md §9.1</code> 順序重編六個專案</td><td>六個都成功</td><td><a class="sec" href="#10-1-六個-csproj-不會多出組件">§10.1</a></td></tr><tr><td>3</td><td>開畫面、什麼都不填按執行</td><td>版面出得來;必填訊息跳出來且擋住</td><td><a class="sec" href="#8-步驟七-ui-xonestepprocessform">§8</a></td></tr></tbody></table></div>
+<p>第二輪跑真的:</p>
+<div class="tw"><table><thead><tr><th>#</th><th>動作</th><th>查什麼</th></tr></thead><tbody><tr><td>4</td><td>給<strong>查無資料</strong>的條件執行</td><td>要回「查無可執行之資料」而不是「成功 0 筆」,且已 Rollback(<a class="sec" href="#6-5-改法-失敗回報-不可吞例外">§6.5</a>)</td></tr><tr><td>5</td><td>給<strong>正常</strong>條件執行</td><td>回報筆數要等於 DB 實際變動筆數(<a class="sec" href="#6-7-驗證">§6.7</a> 第 1 條)</td></tr><tr><td>6</td><td><strong>同樣條件再跑一次</strong></td><td>依 <a class="sec" href="#6-4-改法-重跑安全">§6.4</a> 選的策略,要嘛被擋、要嘛結果相同,不可變兩倍</td></tr><tr><td>7</td><td>執行中<strong>故意讓 SP 失敗</strong>(給不存在的鍵)</td><td>DB 完全沒動、訊息有內容、框架 log 有一筆</td></tr><tr><td>8</td><td>有出口的話:把 Commit 那步中斷</td><td>信不可已寄出、檔不可已產生(<a class="sec" href="#6-6-改法-出口有四種-順序不可調">§6.6</a>)</td></tr><tr><td>9</td><td>有服務的話:改時刻欄成「現在 + 2 分鐘」</td><td>兩分鐘內跑起來;<code>EventLog</code> 沒有 Error</td></tr></tbody></table></div>
+<p><strong>第 4、6、8 最容易失敗</strong>,而且失敗時不會有人發現——它們對應的正是 <a class="sec" href="#14-反例-新批次不要這樣寫">§14</a> 的頭幾條反例。</p>
+</div></section><section class="sec" data-sec="12-常見錯誤與症狀"><h2 id="12-常見錯誤與症狀"><button class="tg" aria-label="收合/展開" type="button"></button>12. 常見錯誤與症狀</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>病因</th><th>回去做</th></tr></thead><tbody><tr><td><strong>回報成功,DB 一筆都沒動</strong></td><td><code>ExecuteNonQuery</code> 回傳值被常數蓋掉,或成功訊息寫死</td><td><a class="sec" href="#6-5-改法-失敗回報-不可吞例外">§6.5</a> <a class="sec" href="#6-7-驗證">§6.7</a></td></tr><tr><td><strong>回報失敗,但資料其實已經生效</strong></td><td>Commit 之後的動作失敗時把 <code>Result</code> 清掉重塞</td><td><a class="sec" href="#6-6-改法-出口有四種-順序不可調">§6.6</a></td></tr><tr><td><strong>使用者看到空白錯誤訊息</strong></td><td><code>AddResultRow(false, 0, string.Empty)</code></td><td><a class="sec" href="#6-5-改法-失敗回報-不可吞例外">§6.5</a></td></tr><tr><td><strong>重跑一次資料變兩倍</strong></td><td>沒有 DELETE 也沒有旗標</td><td><a class="sec" href="#6-4-改法-重跑安全">§6.4</a></td></tr><tr><td><strong>信寄出去了,資料卻沒進去</strong></td><td>寄信排在 Commit 之前</td><td><a class="sec" href="#6-6-改法-出口有四種-順序不可調">§6.6</a></td></tr><tr><td><strong>服務裝起來,狀態卡在「正在啟動」</strong></td><td>用非 <code>LocalSystem</code> 帳號安裝</td><td><a class="sec" href="#9-2-服務帳號不能改成網域帳號">§9.2</a></td></tr><tr><td><strong>服務在跑,但就是不動作</strong></td><td>時刻欄格式不足四碼被例外吞掉,或設定表有第二列</td><td><a class="sec" href="#3-2-現況-第四種的完整機制-本手冊最值得記住的一段">§3.2</a> <a class="sec" href="#6-5-改法-失敗回報-不可吞例外">§6.5</a></td></tr><tr><td><strong>改了 <code>FormProxy</code> 重編了,服務行為沒變</strong></td><td>服務走 <code>HintPath</code> 綁 <code>%PTPF%</code> 的 DLL</td><td><a class="sec" href="#9-1-改法-一個服務專案有五個檔">§9.1</a>、<code>deploy.md §2</code></td></tr><tr><td><strong>執行鈕按下去什麼都沒發生</strong></td><td><code>e.Cancel = true</code> 被無條件執行</td><td><a class="sec" href="#8-步驟七-ui-xonestepprocessform">§8</a></td></tr><tr><td><strong><code>ORA-01008</code> 或參數對不上</strong></td><td><code>AddInParameter</code> 的名字多一個冒號,或與 SP 宣告不符</td><td><a class="sec" href="#3-4-改法-main-string-args-的參數慣例">§3.4</a></td></tr><tr><td><strong>例外訊息是「ServerSideError」</strong></td><td>PO 的例外穿過 Ctl 打到 Pxy</td><td><a class="sec" href="#6-3-改法-交易邊界誰開-c-開-sp-跑在裡面">§6.3</a> 第 1 條</td></tr><tr><td><strong>凌晨跑跟白天跑結果不同</strong></td><td>日期補丁只改了一半的表</td><td><a class="sec" href="#14-6-寫死字串決定-delete-的範圍">§14.6</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="13-接手一支不熟的批次"><h2 id="13-接手一支不熟的批次"><button class="tg" aria-label="收合/展開" type="button"></button>13. 接手一支不熟的批次</h2><div class="sec-body">
+<p>跑完 <code>atlas_scan.py --screen &lt;代號&gt;</code> 之後查這六件事,每件都有固定看法:</p>
+<div class="tw"><table><thead><tr><th>要知道</th><th>去哪看</th></tr></thead><tbody><tr><td>怎麼被觸發</td><td><code>Dev/&lt;專案&gt;/Source/WindowsService/</code> 底下有沒有同名資料夾;沒有就是純手動</td></tr><tr><td>要不要 Remoting</td><td>該服務的 <code>App.config</code> 搜 <code>system.runtime.remoting</code> 與 <code>&lt;wellknown&gt;</code></td></tr><tr><td>交易誰開</td><td>PO 裡搜 <code>BeginTransaction</code>;搜不到就是走 EVA 基底或根本不開</td></tr><tr><td>能不能重跑</td><td>PO 裡搜 <code>DELETE</code>;沒有就再搜處理碼欄的 <code>= '0'</code></td></tr><tr><td>出口是什麼</td><td>PO + Ctl 裡搜 <code>SendMail</code> / <code>StreamWriter</code> / <code>GetStoredProcCommand</code></td></tr><tr><td>有沒有踩到已知坑</td><td>直接讀 <code>ofdb.md 附錄 E</code> / <code>ofdb3.md 附錄 E</code> / <code>ofdb4.md 附錄 E</code> 裡有沒有點名它</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="14-反例-新批次不要這樣寫"><h2 id="14-反例-新批次不要這樣寫"><button class="tg" aria-label="收合/展開" type="button"></button>14. 反例:新批次不要這樣寫</h2><div class="sec-body">
+<p>八條,全部來自三片批次篇的附錄 E。<strong>共同點是「錯了不會有人發現」。</strong></p>
+<h3 id="14-1-catch-吞例外-空-catch">14.1 <code>catch</code> 吞例外 / 空 <code>catch { }</code></h3>
+<p><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs:149-151</code> 是一個完全空的 <code>catch { }</code>:時刻字串格式壞掉時,那個時刻整個消失、批次當天不跑,而且<strong>沒有任何 log</strong>(<code>ofdb3.md</code> E4.4)。同型:<code>OFDB731</code> 的存檔方法是 <code>catch { return false; }</code>,磁碟滿 / 權限不足 / 路徑太長全被吞成同一句(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB731_PO.cs:514-517</code>);<code>OFDB913</code> 連 <code>HandleBusinessException</code> 都沒有(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB913_PO.cs:133-138</code>)。</p>
+<p><strong>正確寫法:<code>catch (Exception ex)</code> → 塞有內容的 <code>AddResultRow(false, 0, …)</code> → <code>CommonExceptionBlocker.HandleBusinessException(ex)</code>。</strong></p>
+<h3 id="14-2-fail-open-檢核-查詢炸掉等於檢核通過">14.2 fail-open 檢核:查詢炸掉等於檢核通過</h3>
+<pre class="code lang-csharp"><code>bool boolvalue = true;
+try { …查 DB… }
+catch { }          // ← 不改值
+return boolvalue;  // ← 永遠 true</code></pre>
+<p><code>ofdb3.md</code> E4.1 實測 <strong><code>OFDB601A</code> / <code>OFDB602A</code> / <code>OFDB603</code> / <code>OFDB604A</code> 的 27 個檢核方法全部是這個形狀</strong>(<code>Dev/ATLAS.OTAB/Source/PO/PO.OTA/OFDB601A_PO.cs:284</code>、<code>:313-319</code>)。效果:DB 連不上、表改名、權限不足 → <strong>所有前置卡控「通過」→ SP 照跑</strong>。同型:<code>OFDB605</code> 的兩支驗證方法例外時 <code>return true</code>(<code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB605OracleDao.cs:206-210</code>、<code>:259-263</code>);<code>OFDB281</code> 六支檢核全部 <code>return true</code>(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB281_PO.cs:88-92</code>)。</p>
+<p><strong>正確寫法:檢核方法初值給 <code>false</code>,只有真的查到「可以放行」的證據才改 <code>true</code>;例外一律往外丟或回 <code>false</code>。</strong></p>
+<h3 id="14-3-i-1-蓋掉-executenonquery-的回傳值">14.3 <code>i = 1;</code> 蓋掉 <code>ExecuteNonQuery</code> 的回傳值</h3>
+<pre class="code lang-csharp"><code>int i = db.ExecuteNonQuery(cmd, tran);
+i = 1;                       // ← 這一行讓上面那行的結果消失
+if (i == 1) tran.Commit();   // ← else 永遠到不了</code></pre>
+<p><code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB615OracleDao.cs:285-286</code> 與 <code>:405-414</code>(<code>ofdb3.md</code> E3.2)。同型:<code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB605OracleDao.cs:97</code> 與 <code>:158-162</code>、<code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB616OracleDao.cs:202</code> 與 <code>:309</code>。變形:成功訊息寫死「執行成功」不看回傳值,五支(<code>ofdb3.md</code> E3.6)。</p>
+<p><strong>正確寫法:<code>ExecuteNonQuery</code> 的回傳值就是決定 Commit / Rollback 的那個數字,不要另開變數蓋掉它。</strong>全片唯一寫對的是 <code>OFDB612</code> 的 <code>i += ExecuteNonQuery(…)</code>(<code>ofdb3.md §6.8</code>)。</p>
+<h3 id="14-4-信在-commit-之前寄">14.4 信在 Commit 之前寄</h3>
+<p><code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB600OracleDao.cs:75-76</code> 呼叫寄信,<code>:84</code> 才 <code>tran.Commit()</code>(<code>ofdb3.md</code> E5.9);寄信方法的回傳值也沒有任何檢查。</p>
+<p><strong>正確寫法見 <a class="sec" href="#6-6-改法-出口有四種-順序不可調">§6.6</a>:寄信、產檔、呼叫外部 API 一律排在 <code>Commit</code> 之後,而且失敗要另外回報,不可蓋掉「DB 已成功」這件事。</strong></p>
+<h3 id="14-5-region-old-sql-不是註解">14.5 <code>#region old sql</code> 不是註解</h3>
+<p><code>OFDB600</code> 的執行前筆數方法把<strong>舊版</strong>與<strong>新版</strong>兩段完整的 <code>SELECT … FROM (…) A</code> 接在同一個字串上:舊版在 <code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB600OracleDao.cs:320-359</code>(外面包的是 <code>#region old sql</code> / <code>#endregion old sql</code>)、新版在 <code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB600OracleDao.cs:361-398</code>。</p>
+<p><strong><code>#region</code> 不是註解,那 38 行是活的。</strong>送進 Oracle 的是兩個 SELECT 黏在一起,任何 Oracle 都會拒絕。對照組是同一個檔的執行後筆數方法,那邊的舊版是用 <code>//</code> 逐行註解掉的(<code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB600OracleDao.cs:443-466</code>),所以是好的。<strong>壞掉的那支剛好沒有任何呼叫端,所以沒人發現</strong>(<code>ofdb3.md</code> E2.2)。</p>
+<p><strong>正確寫法:舊 SQL 要嘛刪掉(版控裡找得回來),要嘛整段 <code>/* */</code>。不要用 <code>#region</code> 當註解,也不要留在同一個字串串接鏈裡。</strong></p>
+<h3 id="14-6-寫死字串決定-delete-的範圍">14.6 寫死字串決定 <code>DELETE</code> 的範圍</h3>
+<p><code>OFDB671</code> 的 <code>DELETE OFD678A WHERE INV_DEP_YN = :INV_DEP_YN</code>,而那個值由寫死字串比對 FunctionID 決定(<code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB671OracleDao.cs:43-49</code>,<code>ofdb3.md</code> E6.2)。FunctionID 一改就洗錯半邊;grid 是空的時候會把那半邊整個清空。同型:<code>OFDB673</code> 的查詢<strong>完全沒有 <code>WHERE</code></strong>,整張表全撈(<code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB673OracleDao.cs:66-75</code>)。另一個變形是<strong>成對邏輯只改一邊</strong>:<code>OFDB600</code> 的跨午夜補丁只加在五張表,<code>OFD620A</code> / <code>OFD651A</code> 兩張沒加,凌晨 0~2 點跑會少算(<code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB600OracleDao.cs:366</code>、<code>:371</code> 對 <code>:376</code>,<code>ofdb3.md</code> E7.1)。</p>
+<p><strong>正確寫法:<code>DELETE</code> / <code>UPDATE</code> 的範圍一律由參數決定,而且那個參數要能從畫面或設定表追出來。字面常數只准出現在具名常數的宣告處。</strong></p>
+<h3 id="14-7-用-environment-username-system-決定跑不跑">14.7 用 <code>Environment.UserName == "SYSTEM"</code> 決定跑不跑</h3>
+<p>見 <a class="sec" href="#9-2-服務帳號不能改成網域帳號">§9.2</a>。三支服務都有(<code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/Program.cs:28</code>,<code>ofdb3.md</code> E12.3),<code>RSPB008</code> 沒有。</p>
+<p><strong>正確寫法:執行模式用命令列旗標或建置組態決定,不要用執行帳號。</strong>執行帳號是部署決策,綁上去之後資安要求一來就整支不能跑。</p>
+<h3 id="14-8-sql-字串串接使用者輸入">14.8 SQL 字串串接使用者輸入</h3>
+<p><code>ofdb4.md</code> E10 列了七處,最嚴重的是 <code>OFDB703</code> 的銀行代碼串接——<code>=</code> / <code>&lt;&gt;</code> 兩處<strong>連引號都沒有</strong>(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB703_PO.cs:1406</code>、<code>:1411</code>);<code>OFDB691</code> 全部的 <code>UPDATE</code> 都走 <code>sb.AppendFormat</code> 樣板(<code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB691OracleDao.cs:173</code>)。<code>architecture.md §4.3</code> 已定調:參數化在這套系統裡「做了一半」,另一半就是字串串接。</p>
+<p><strong>正確寫法:值一律 <code>AddInParameter</code>,SQL 裡用 <code>:名稱</code> 佔位。</strong>表名或欄名真的要動態決定時,先把候選值列成白名單再比對,不要直接串。</p>
+</div></section><section class="sec" data-sec="附錄-a-本手冊引用的檔案清單"><h2 id="附錄-a-本手冊引用的檔案清單"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 A 本手冊引用的檔案清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>檔</th><th>錨點</th><th>用在</th></tr></thead><tbody><tr><td><code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB003.cs</code></td><td><code>:33-59</code> <code>:43-48</code> <code>:52-54</code> <code>:69-76</code> <code>:83-92</code> <code>:99-104</code></td><td><a class="sec" href="#3-4-改法-main-string-args-的參數慣例">§3.4</a> <a class="sec" href="#8-步驟七-ui-xonestepprocessform">§8</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/FormProxy/FormProxy.OFDB/OFDB003_Pxy.cs</code></td><td><code>:34-49</code> <code>:56-71</code> <code>:77-82</code></td><td><a class="sec" href="#7-步驟六-control-與-formproxy-逐字樣板">§7</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/Control/Control.OFDB/OFDB003_Ctl.cs</code></td><td><code>:35-38</code> <code>:52-70</code> <code>:59-61</code></td><td><a class="sec" href="#6-6-改法-出口有四種-順序不可調">§6.6</a> <a class="sec" href="#7-步驟六-control-與-formproxy-逐字樣板">§7</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs</code></td><td><code>:20-29</code> <code>:32-33</code> <code>:36</code> <code>:57-155</code> <code>:62-119</code> <code>:72-78</code> <code>:100-101</code> <code>:118-119</code> <code>:148-153</code> <code>:315-322</code></td><td><a class="sec" href="#6-步驟五-po-全篇重點">§6</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/Entity/DataEntity.OFDB/OFDB003Model.xsd</code> · <code>Dev/ATLAS.OFDB/Source/Entity/UIEntity.OFDB/OFDB003View.xsd</code></td><td>全檔</td><td><a class="sec" href="#5-1-現況-批次的-xsd-裝的多半不是實體表">§5.1</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/Entity/DataEntity.OFDB/DataEntity.OFDB.csproj</code> · <code>Dev/ATLAS.OFDB/Source/Entity/UIEntity.OFDB/UIEntity.OFDB.csproj</code></td><td><code>:102-107</code> <code>:233-243</code></td><td><a class="sec" href="#10-1-六個-csproj-不會多出組件">§10.1</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/PO.OFDB.csproj</code></td><td><code>:132</code></td><td><a class="sec" href="#10-1-六個-csproj-不會多出組件">§10.1</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/Control/Control.OFDB/Control.OFDB.csproj</code></td><td><code>:140</code></td><td><a class="sec" href="#10-1-六個-csproj-不會多出組件">§10.1</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/FormProxy/FormProxy.OFDB/FormProxy.OFDB.csproj</code></td><td><code>:104</code></td><td><a class="sec" href="#10-1-六個-csproj-不會多出組件">§10.1</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/UI.OFDB.csproj</code></td><td><code>:321-325</code> <code>:1225-1226</code></td><td><a class="sec" href="#10-1-六個-csproj-不會多出組件">§10.1</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/Control/Control.EC/OFDB600_Ctl.cs</code></td><td><code>:137</code> <code>:150-154</code></td><td><a class="sec" href="#7-步驟六-control-與-formproxy-逐字樣板">§7</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB600OracleDao.cs</code></td><td><code>:51</code> <code>:55-62</code> <code>:75-76</code> <code>:84</code> <code>:100</code> <code>:268-292</code> <code>:320-359</code> <code>:361-398</code> <code>:366</code> <code>:371</code> <code>:376</code> <code>:443-466</code></td><td><a class="sec" href="#3-步驟二-決定觸發方式">§3</a> <a class="sec" href="#6-步驟五-po-全篇重點">§6</a> <a class="sec" href="#14-反例-新批次不要這樣寫">§14</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs</code></td><td><code>:24-31</code> <code>:39-58</code> <code>:50-52</code> <code>:65-75</code> <code>:84-86</code> <code>:92</code> <code>:103-106</code> <code>:109-155</code> <code>:149-151</code> <code>:239-252</code></td><td><a class="sec" href="#3-2-現況-第四種的完整機制-本手冊最值得記住的一段">§3.2</a> <a class="sec" href="#6-5-改法-失敗回報-不可吞例外">§6.5</a> <a class="sec" href="#9-步驟七之一-選配-加一個-windowsservice">§9</a> <a class="sec" href="#14-1-catch-吞例外-空-catch">§14.1</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/Program.cs</code></td><td><code>:13</code> <code>:28</code> <code>:28-44</code></td><td><a class="sec" href="#3-4-改法-main-string-args-的參數慣例">§3.4</a> <a class="sec" href="#9-2-服務帳號不能改成網域帳號">§9.2</a> <a class="sec" href="#14-7-用-environment-username-system-決定跑不跑">§14.7</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config</code></td><td><code>:175-194</code> <code>:189</code></td><td><a class="sec" href="#4-步驟三-要不要-remoting">§4</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB609/App.config</code></td><td><code>:175-194</code> <code>:189</code></td><td><a class="sec" href="#4-1-現況-同一批批次-有的有有的沒有">§4.1</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB680/App.config</code></td><td><code>:246-262</code></td><td><a class="sec" href="#4-1-現況-同一批批次-有的有有的沒有">§4.1</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/WindowsService.OFDB600.csproj</code></td><td><code>:9</code> <code>:22</code> <code>:74-101</code></td><td><a class="sec" href="#9-1-改法-一個服務專案有五個檔">§9.1</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/WindowsService.OFDB600.sln</code></td><td>全檔</td><td><a class="sec" href="#9-1-改法-一個服務專案有五個檔">§9.1</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/Entity/DataEntity.EC/OFDB600_9iModel.xsd</code> · <code>Dev/ATLAS.EC/Source/Entity/UIEntity.EC/OFDB600_9iView.xsd</code></td><td>全檔</td><td><a class="sec" href="#5-2-改法-卷別怎麼選-後綴怎麼取">§5.2</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB605OracleDao.cs</code></td><td><code>:97</code> <code>:158-162</code> <code>:206-210</code> <code>:259-263</code></td><td><a class="sec" href="#14-2-fail-open-檢核-查詢炸掉等於檢核通過">§14.2</a> <a class="sec" href="#14-3-i-1-蓋掉-executenonquery-的回傳值">§14.3</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB615OracleDao.cs</code></td><td><code>:285-286</code> <code>:405-414</code></td><td><a class="sec" href="#14-3-i-1-蓋掉-executenonquery-的回傳值">§14.3</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB616OracleDao.cs</code></td><td><code>:202</code> <code>:309</code></td><td><a class="sec" href="#14-3-i-1-蓋掉-executenonquery-的回傳值">§14.3</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB671OracleDao.cs</code></td><td><code>:43-49</code></td><td><a class="sec" href="#14-6-寫死字串決定-delete-的範圍">§14.6</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB673OracleDao.cs</code></td><td><code>:66-75</code></td><td><a class="sec" href="#14-6-寫死字串決定-delete-的範圍">§14.6</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB691OracleDao.cs</code></td><td><code>:173</code></td><td><a class="sec" href="#14-8-sql-字串串接使用者輸入">§14.8</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/UI/UI.EC/OFDB673.cs</code></td><td><code>:89-93</code></td><td><a class="sec" href="#8-步驟七-ui-xonestepprocessform">§8</a></td></tr><tr><td><code>Dev/ATLAS.OTAB/Source/PO/PO.OTA/OFDB601A_PO.cs</code></td><td><code>:284</code> <code>:313-319</code></td><td><a class="sec" href="#14-2-fail-open-檢核-查詢炸掉等於檢核通過">§14.2</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB281_PO.cs</code></td><td><code>:88-92</code></td><td><a class="sec" href="#14-2-fail-open-檢核-查詢炸掉等於檢核通過">§14.2</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB703_PO.cs</code></td><td><code>:1406</code> <code>:1411</code></td><td><a class="sec" href="#14-8-sql-字串串接使用者輸入">§14.8</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB731_PO.cs</code></td><td><code>:514-517</code></td><td><a class="sec" href="#14-1-catch-吞例外-空-catch">§14.1</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB913_PO.cs</code></td><td><code>:133-138</code></td><td><a class="sec" href="#6-5-改法-失敗回報-不可吞例外">§6.5</a> <a class="sec" href="#14-1-catch-吞例外-空-catch">§14.1</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB901_PO.cs</code></td><td><code>:73</code></td><td><a class="sec" href="#3-4-改法-main-string-args-的參數慣例">§3.4</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB560.cs</code></td><td><code>:64</code> <code>:72-84</code></td><td><a class="sec" href="#3-4-改法-main-string-args-的參數慣例">§3.4</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB019A.cs</code> · <code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB019B.cs</code></td><td><code>:42</code> / <code>:78</code></td><td><a class="sec" href="#3-4-改法-main-string-args-的參數慣例">§3.4</a></td></tr><tr><td><code>Dev/ATLAS.OFDB/Source/UI/UI.OFDB/OFDB950.cs</code></td><td><code>:86</code> <code>:120</code> <code>:146</code> <code>:183</code></td><td><a class="sec" href="#3-4-改法-main-string-args-的參數慣例">§3.4</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-b-待輸入回填"><h2 id="附錄-b-待輸入回填"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 B 待輸入回填</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>缺什麼</th><th>影響哪幾段</th><th>補進來後要改什麼</th></tr></thead><tbody><tr><td><strong>部署機</strong></td><td><a class="sec" href="#4-4-驗證">§4.4</a> <a class="sec" href="#9-步驟七之一-選配-加一個-windowsservice">§9</a> <a class="sec" href="#10-2-重編順序與部署到哪">§10.2</a></td><td>Remoting 有無的實測、服務安裝與目錄實際內容都未驗證</td></tr><tr><td><strong>PTPFBlock DLL</strong></td><td><a class="sec" href="#10-編譯與部署">§10</a> <a class="sec" href="#11-驗證清單">§11</a></td><td>六層重編與服務建置全未實測;<code>HintPath</code> 綁 DLL 的影響只能從 csproj 推</td></tr><tr><td><strong>DB 連線</strong></td><td><a class="sec" href="#3-2-現況-第四種的完整機制-本手冊最值得記住的一段">§3.2</a> <a class="sec" href="#6-4-改法-重跑安全">§6.4</a> <a class="sec" href="#11-驗證清單">§11</a></td><td>排程時刻欄由哪支 M 畫面維護查不到;重跑行為與 SP 內部邏輯無法驗</td></tr><tr><td><strong>SP 腳本(380 支裡 319 支沒有)</strong></td><td><a class="sec" href="#6-6-改法-出口有四種-順序不可調">§6.6</a> <a class="sec" href="#11-驗證清單">§11</a></td><td>SP 到底動了哪些表只能從呼叫端的前後筆數 SQL 反推(<code>architecture.md 附錄 B.0</code>)</td></tr><tr><td><strong>統一的批次 log 表</strong></td><td><a class="sec" href="#6-5-改法-失敗回報-不可吞例外">§6.5</a></td><td>目前只能列出三條各走各的管道;若現場其實有一張總表,<a class="sec" href="#6-5-改法-失敗回報-不可吞例外">§6.5</a> 要改寫成單一規則</td></tr><tr><td><strong>選單 / 權限表</strong></td><td><a class="sec" href="#2-3-驗證">§2.3</a> <a class="sec" href="#11-驗證清單">§11</a></td><td>新批次怎麼掛進選單、怎麼授權,與 <code>add-screen.md §9</code> 同一個缺口</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-c-版本紀錄"><h2 id="附錄-c-版本紀錄"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 C 版本紀錄</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>版本</th><th>日期</th><th>變更</th></tr></thead><tbody><tr><td>v1</td><td>2026-09-15</td><td>初版。以 <code>OFDB003</code>(無 Remoting)與 <code>OFDB600</code>(有 Remoting + 服務)為兩支範例,素材取自 <code>modules/ofdb.md</code> <code>modules/ofdb3.md</code> <code>modules/ofdb4.md</code> 共 88 支批次</td></tr></tbody></table></div></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-15 17:56 產生 · 標題 55 · 圖 3 · 表格 30 · 程式錨點 128 · § 連結 107 · 引用檢查：畫面 35（缺 0） · Table 3（缺 0） · 結果集 2（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

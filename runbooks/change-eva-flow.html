@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-14">
+<title>ATLAS 維護手冊 — 改四眼流程</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-適用範圍與前提">0. 適用範圍與前提</a>
+<a class="l3" href="#0-1-先看清楚-哪些是活的-哪些是死碼">0.1 先看清楚:哪些是活的、哪些是死碼</a>
+<a class="l3" href="#0-2-第二件要先知道的-四眼的主體不在-repo-裡">0.2 第二件要先知道的:四眼的主體不在 repo 裡</a>
+<a class="l2" href="#1-改動點總覽">1. 改動點總覽</a>
+<a class="l2" href="#2-先決定-改在哪一層">2. 先決定:改在哪一層</a>
+<a class="l2" href="#3-事件掛點-唯一的正規擴充點">3. 事件掛點:唯一的正規擴充點</a>
+<a class="l3" href="#3-1-掛點總表">3.1 掛點總表</a>
+<a class="l3" href="#3-2-每個-handler-第一行都要判斷表名">3.2 ⚠ 每個 handler 第一行都要判斷表名</a>
+<a class="l3" href="#3-3-訂閱寫在建構子">3.3 訂閱寫在建構子</a>
+<a class="l2" href="#4-三種常見需求怎麼做">4. 三種常見需求怎麼做</a>
+<a class="l3" href="#4-1-加一條-覆核時檢核">4.1 加一條「覆核時檢核」</a>
+<a class="l3" href="#4-2-加一條-新增時的預設值-流水號">4.2 加一條「新增時的預設值 / 流水號」</a>
+<a class="l3" href="#4-3-加稽核軌跡">4.3 加稽核軌跡</a>
+<a class="l2" href="#5-改狀態機本身-在-repo-裡做不到">5. 改狀態機本身:在 repo 裡做不到</a>
+<a class="l3" href="#5-1-那實務上怎麼辦">5.1 那實務上怎麼辦</a>
+<a class="l2" href="#6-多筆-multirow-的差異">6. 多筆(MultiRow)的差異</a>
+<a class="l2" href="#7-四眼欄位與-status">7. 四眼欄位與 STATUS</a>
+<a class="l2" href="#8-驗證清單">8. 驗證清單</a>
+<a class="l2" href="#9-常見錯誤與症狀">9. 常見錯誤與症狀</a>
+<a class="l2" href="#附錄-a-本手冊引用的檔案清單">附錄 A 本手冊引用的檔案清單</a>
+<a class="l2" href="#附錄-b-待輸入回填">附錄 B 待輸入回填</a>
+<a class="l2" href="#附錄-c-與計劃書的差異">附錄 C 與計劃書的差異</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-14</span></div>
+<h1 id="atlas-維護手冊-改四眼流程">ATLAS 維護手冊 — 改四眼流程</h1>
+<blockquote><p>產出日期:2026-09-14(v1)。本手冊為<strong>純程式碼閱讀彙整 + 操作步驟</strong>,未修改任何 ATLAS 原始碼。每一步附程式錨點,行號為分析當下版本,動手前以最新程式為準。</p>
+<p>⚠ 標「<strong>〔假設〕缺:輸入</strong>」的段落是目前拿不到該輸入只能從結構推論,附錄 B 彙整。</p>
+<p>前提知識在 <code>architecture.md §3</code>(四眼引擎)與 <code>architecture.md §4</code>(資料存取)。<strong>不要整份讀</strong>。</p></blockquote>
+<section class="sec" data-sec="0-適用範圍與前提"><h2 id="0-適用範圍與前提"><button class="tg" aria-label="收合/展開" type="button"></button>0. 適用範圍與前提</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>項目</th><th>內容</th></tr></thead><tbody><tr><td>適用情境</td><td>在四眼流程上加檢核、加稽核軌跡、改新增時的預設值、加自訂動作</td></tr><tr><td><strong>不適用</strong></td><td><strong>改狀態機本身</strong>(例:跳過覆核直接核准)——見 <a class="sec" href="#5-改狀態機本身-在-repo-裡做不到">§5</a>,這件事在 repo 裡做不到</td></tr><tr><td>前提</td><td>先讀懂 <code>architecture.md §3</code> 的狀態機與 <code>EVAType</code> 值域</td></tr><tr><td>影響半徑</td><td>依你改哪一層而定,從「一支畫面」到「908 支全中」,見 <a class="sec" href="#2-先決定-改在哪一層">§2</a></td></tr></tbody></table></div>
+<h3 id="0-1-先看清楚-哪些是活的-哪些是死碼">0.1 先看清楚:哪些是活的、哪些是死碼</h3>
+<p><strong>這是本手冊最重要的一頁。改錯地方會白做一整天,而且不會有任何錯誤訊息。</strong></p>
+<div class="tw"><table><thead><tr><th>類別</th><th>位置</th><th>子類數</th><th>狀態</th></tr></thead><tbody><tr><td><code>BaseEVADaoPO</code></td><td><code>Dev/Common/Source/Base/TA.DataAccess/BaseEVADaoPO.cs:17-27</code></td><td><strong>271</strong></td><td>✅ <strong>現行主線(單筆)</strong></td></tr><tr><td><code>BaseMultiRowEVADaoPO</code></td><td><code>Dev/Common/Source/Base/TA.DataAccess/BaseMultiRowEVADaoPO.cs:18-31</code></td><td><strong>61</strong></td><td>✅ <strong>現行主線(多筆)</strong></td></tr><tr><td><code>BasicEVAPO</code></td><td><code>Dev/Common/Source/Base/TA.DataAccess/BasicEVAPO.cs:24-24</code></td><td>66</td><td>⚠ 舊世代,仍有人用</td></tr><tr><td><code>MultiRowEVAPO</code></td><td><code>Dev/Common/Source/Base/TA.DataAccess/MultiRowEVAPO.cs:16-16</code></td><td>11</td><td>⚠ 舊世代,仍有人用</td></tr><tr><td><code>TA_PO</code>(2,106 行)</td><td><code>Dev/Common/Source/Base/TA.DataAccess/TA_PO.cs:19-19</code></td><td><strong>0</strong></td><td>❌ <strong>死碼</strong></td></tr><tr><td><code>Basic4EyesPO</code>(4,257 行)</td><td><code>Dev/Common/Source/Base/TA.DataAccess/Basic4EyesPO.cs:28-28</code></td><td><strong>0</strong></td><td>❌ <strong>死碼</strong></td></tr><tr><td><code>MultiRow4EyesPO</code></td><td><code>Dev/Common/Source/Base/TA.DataAccess/Basic4EyesPO.cs:2428-2428</code></td><td><strong>0</strong></td><td>❌ <strong>死碼</strong></td></tr></tbody></table></div>
+<p><code>TA_PO</code> 與 <code>Basic4EyesPO</code> 加起來 <strong>6,363 行躺在核心目錄裡,沒有任何東西繼承或實例化它們</strong>。它們僅存的「子類」宣告都是被 <code>//</code> 註解掉的行(<code>Dev/ATLAS.EC/Source/PO/PO.EC/MSSQL/OFDM603_PO.cs:18</code>、<code>Dev/ATLAS.EC/Source/PO/PO.EC/MSSQL/OFDM694_PO.cs:20</code>)。</p>
+<p><strong>動手前先確認你那支畫面的 PO 繼承誰:</strong></p>
+<pre class="code lang-bash"><code>grep -n "class .*_PO *:" "%ATLAS_ROOT%\Dev\ATLAS.&lt;MOD&gt;\Source\PO\PO.&lt;MOD&gt;\&lt;代號&gt;_PO.cs"</code></pre>
+<p>看到 <code>: BaseEVADaoPO</code> 或 <code>: BaseMultiRowEVADaoPO</code> 才是主線。看到 <code>TA_PO</code> 或 <code>Basic4EyesPO</code>,那支根本沒在跑。</p>
+<h3 id="0-2-第二件要先知道的-四眼的主體不在-repo-裡">0.2 第二件要先知道的:四眼的主體不在 repo 裡</h3>
+<p><code>BaseEVADaoPO</code> 本體<strong>只做三件事</strong>(<code>Dev/Common/Source/Base/TA.DataAccess/BaseEVADaoPO.cs:22-26</code>、<code>:143-146</code>、<code>:155-227</code>):鎖死連線為 <code>("TA", DbServerType.Oracle)</code>、一個 <code>AddM</code> 轉呼叫、一個 <code>CopyDetail</code>。</p>
+<p><strong><code>Add</code> / <code>Update</code> / <code>Verify</code> / <code>Approve</code> / <code>Reject</code> 這些 EVA 動作本身,全部在 <code>BaseEVADao</code>(PTPFBlock,無原始碼)裡。</strong></p>
+<p>所以本手冊能教你的只有一件事:<strong>在框架留給你的掛點上做文章</strong>。掛點在哪、能做什麼、不能做什麼,就是 <a class="sec" href="#3-事件掛點-唯一的正規擴充點">§3</a> 與 <a class="sec" href="#4-三種常見需求怎麼做">§4</a>。</p>
+</div></section><section class="sec" data-sec="1-改動點總覽"><h2 id="1-改動點總覽"><button class="tg" aria-label="收合/展開" type="button"></button>1. 改動點總覽</h2><div class="sec-body">
+<figure><svg viewBox="0 0 1010 530" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="改四眼流程:活的基底與死碼、四眼主體在無原始碼的 DLL 裡、事件掛點是唯一擴充點、四種改法的影響半徑"><defs><marker id="ah_eva_change" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 先確認你改的東西是活的</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="62" text-anchor="middle">BaseEVADaoPO</text>
+<text class="t2" x="135" y="82" text-anchor="middle">271 子類 · 現行主線</text>
+</g><g class="bx accent">
+<rect x="280" y="40" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="400" y="62" text-anchor="middle">BaseMultiRowEVADaoPO</text>
+<text class="t2" x="400" y="82" text-anchor="middle">61 子類 · 多筆主線</text>
+</g><g class="bx">
+<rect x="550" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="675" y="62" text-anchor="middle">BasicEVAPO · MultiRowEVAPO</text>
+<text class="t2" x="675" y="82" text-anchor="middle">66 + 11 · 舊世代仍有人用</text>
+</g><g class="bx dash">
+<rect x="830" y="40" rx="10" ry="10" width="160" height="56"/>
+<text class="t1" x="910" y="62" text-anchor="middle">TA_PO · Basic4EyesPO</text>
+<text class="t2" x="910" y="82" text-anchor="middle">6,363 行死碼 · 改了沒效</text>
+</g><text class="lane" x="20" y="130">② 主體不在 repo 裡</text><g class="bx accent">
+<rect x="20" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="166" text-anchor="middle">BaseEVADaoPO 本體</text>
+<text class="t2" x="135" y="186" text-anchor="middle">只做三件事</text>
+</g><g class="bx ext">
+<rect x="280" y="144" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="400" y="166" text-anchor="middle">BaseEVADao</text>
+<text class="t2" x="400" y="186" text-anchor="middle">PTPFBlock · 無原始碼</text>
+</g><g class="bx ext">
+<rect x="550" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="675" y="166" text-anchor="middle">Add / Verify / Approve …</text>
+<text class="t2" x="675" y="186" text-anchor="middle">全在 DLL 裡,改不到</text>
+</g><path class="ar" d="M 250 172 L 280 172" marker-end="url(#ah_eva_change)"/><path class="ar" d="M 520 172 L 550 172" marker-end="url(#ah_eva_change)"/><path class="ar" d="M 135 96 L 135 144" marker-end="url(#ah_eva_change)"/><text class="lane" x="20" y="234">③ 唯一的正規擴充點:PO 的事件掛點</text><g class="bx accent">
+<rect x="20" y="248" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="270" text-anchor="middle">BeforeAdd</text>
+<text class="t2" x="135" y="290" text-anchor="middle">參數綁定前 · 改得到 model</text>
+</g><g class="bx ext">
+<rect x="280" y="248" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="400" y="270" text-anchor="middle">DLL 執行 EVA 動作</text>
+<text class="t2" x="400" y="290" text-anchor="middle">無原始碼</text>
+</g><g class="bx accent">
+<rect x="550" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="675" y="270" text-anchor="middle">After* 七個</text>
+<text class="t2" x="675" y="290" text-anchor="middle">交易未 commit · throw 可回滾</text>
+</g><g class="bx">
+<rect x="830" y="248" rx="10" ry="10" width="160" height="56"/>
+<text class="t1" x="910" y="281" text-anchor="middle">commit</text>
+</g><path class="ar" d="M 250 276 L 280 276" marker-end="url(#ah_eva_change)"/><path class="ar" d="M 520 276 L 550 276" marker-end="url(#ah_eva_change)"/><path class="ar" d="M 800 276 L 830 276" marker-end="url(#ah_eva_change)"/><text class="lane" x="20" y="338">④ 影響半徑 —— 選錯不是效率問題是事故</text><g class="bx accent">
+<rect x="20" y="352" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="374" text-anchor="middle">某支畫面的 _PO.cs</text>
+<text class="t2" x="135" y="394" text-anchor="middle">1 支 · 預設選這個</text>
+</g><g class="bx">
+<rect x="280" y="352" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="400" y="374" text-anchor="middle">某支畫面的 _Ctl.cs</text>
+<text class="t2" x="400" y="394" text-anchor="middle">1 支</text>
+</g><g class="bx vend">
+<rect x="550" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="675" y="374" text-anchor="middle">BaseEVADaoPO</text>
+<text class="t2" x="675" y="394" text-anchor="middle">271 支全中 · 幾乎不該動</text>
+</g><g class="bx ext">
+<rect x="830" y="352" rx="10" ry="10" width="160" height="56"/>
+<text class="t1" x="910" y="374" text-anchor="middle">BaseEVADao</text>
+<text class="t2" x="910" y="394" text-anchor="middle">全系統 · 做不到</text>
+</g><text class="lane" x="20" y="442">⚠ 兩個最常見的錯</text><g class="bx vend">
+<rect x="20" y="456" rx="10" ry="10" width="460" height="56"/>
+<text class="t1" x="250" y="478" text-anchor="middle">handler 少了表名判斷</text>
+<text class="t2" x="250" y="498" text-anchor="middle">主檔+每個明細各觸發一次 → 跑好幾遍</text>
+</g><g class="bx vend">
+<rect x="510" y="456" rx="10" ry="10" width="480" height="56"/>
+<text class="t1" x="750" y="478" text-anchor="middle">After* 只 return 不 throw</text>
+<text class="t2" x="750" y="498" text-anchor="middle">檢核擋了但資料庫有殘留</text>
+</g></svg><figcaption>圖 1 改四眼流程的全貌。灰虛框=死碼,改了沒效果;灰框=PTPFBlock 黑箱,改不到;橘實框=你能動的地方;橘虛框=警告。</figcaption></figure>
+</div></section><section class="sec" data-sec="2-先決定-改在哪一層"><h2 id="2-先決定-改在哪一層"><button class="tg" aria-label="收合/展開" type="button"></button>2. 先決定:改在哪一層</h2><div class="sec-body">
+<p>影響半徑差三個數量級,選錯不是效率問題是事故:</p>
+<div class="tw"><table><thead><tr><th>改在哪</th><th>影響</th><th>什麼時候用</th></tr></thead><tbody><tr><td><strong>某支畫面的 <code>_PO.cs</code> 事件 handler</strong></td><td><strong>1 支畫面</strong></td><td>絕大多數需求。<strong>預設選這個</strong></td></tr><tr><td>某支畫面的 <code>_Ctl.cs</code></td><td>1 支畫面</td><td>需要在轉換 Model↔View 時做事</td></tr><tr><td><code>Dev/Common/Source/Base/TA.DataAccess/BaseEVADaoPO.cs</code></td><td><strong>271 支畫面</strong></td><td>幾乎不該動</td></tr><tr><td><code>BaseEVADao</code>(DLL)</td><td><strong>全系統</strong></td><td><strong>做不到</strong>,無原始碼</td></tr></tbody></table></div>
+<blockquote><p>⚠ <strong><code>TA.DataAccess</code> 是共用引擎。</strong>動 <code>BaseEVADaoPO</code> 或 <code>BasicEVAPO</code>,271 + 66 支畫面全部跟著變,而且它們分散在 34 個專案資料夾裡,沒有任何自動化測試會告訴你哪裡壞了(repo 內沒有測試專案)。</p>
+<p><strong>需求如果只影響一支畫面,就不要動共用層。</strong>這句話沒有例外。</p></blockquote>
+</div></section><section class="sec" data-sec="3-事件掛點-唯一的正規擴充點"><h2 id="3-事件掛點-唯一的正規擴充點"><button class="tg" aria-label="收合/展開" type="button"></button>3. 事件掛點:唯一的正規擴充點</h2><div class="sec-body">
+<h3 id="3-1-掛點總表">3.1 掛點總表</h3>
+<p>事件宣告在 <code>Dev/Common/Source/Base/TA.DataAccess/BasicEVAPO.cs:37-94</code>(Before 15 個)與 <code>:100-157</code>(After 15 個);新世代同名事件改吃 <code>xEVAEventArgs</code>(PTPFBlock,無原始碼,從呼叫端反推)。</p>
+<div class="tw"><table><thead><tr><th>掛點</th><th>何時觸發</th><th>能改什麼</th><th><strong>不能做什麼</strong></th></tr></thead><tbody><tr><td><code>BeforeAdd</code></td><td>INSERT 指令組好、<strong>參數還沒綁</strong>之前;主檔一次 + <strong>每個明細表各一次</strong></td><td>改 model 欄位值(會被後續綁定吃進去)、換掉 <code>args.DbCmd</code>、<code>args.Cancel = true</code> 跳過</td><td>不能假設只跑一次;不能自己 commit</td></tr><tr><td><code>BeforeSelect</code> · <code>BeforeGetMaintainData</code> · <code>BeforeGetToDoData</code></td><td>查詢 SQL 組好之前</td><td>整個換掉 <code>args.DbCmd</code></td><td>同上</td></tr><tr><td><code>AfterGetMaintainData</code></td><td>資料已進 model</td><td>往 model 補掛額外資料</td><td>不能改 <code>DbCmd</code>(已執行完)</td></tr><tr><td><code>AfterVerify</code> · <code>AfterApprove</code> · <code>AfterReject</code> · <code>AfterResend</code> · <code>AfterDelete</code> · <code>AfterUnDelete</code> · <code>AfterApproveDelete</code></td><td>對應動作成功、<strong>交易尚未 commit</strong></td><td>在同一交易內再下 SQL(<code>args.DbTran</code> 還活著)、寫稽核軌跡、<strong><code>throw</code> 讓整筆回滾</strong></td><td><strong>不能自己 commit / rollback</strong></td></tr></tbody></table></div>
+<p><code>args</code> 拿得到:<code>args.ModelVDB</code> · <code>args.TableName</code> · <code>args.DbCmd</code> · <code>args.DbTran</code> · <code>args.DbTranPTPF</code>。</p>
+<h3 id="3-2-每個-handler-第一行都要判斷表名">3.2 ⚠ 每個 handler 第一行都要判斷表名</h3>
+<p>事件會<strong>對主檔與每一個明細表各觸發一次</strong>。所以 <code>CASM001_PO</code> 的每個 handler 開頭都是:</p>
+<pre class="code lang-csharp"><code>if (args.TableName != this.MasterTable.dbTableName) return;</code></pre>
+<p><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:571</code></p>
+<p><strong>漏掉這一行,你的邏輯會在一次新增裡跑好幾遍。</strong>症狀:流水號跳號、稽核軌跡重複、檢核訊息跳兩次。</p>
+<h3 id="3-3-訂閱寫在建構子">3.3 訂閱寫在建構子</h3>
+<p><code>CASM001_PO</code> 在建構子一次訂 12 個事件(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:40-60</code>),handler 本體在 <code>:77-153</code> 與 <code>:569-630</code>。</p>
+<p>加一個掛點就是兩步:建構子加一行 <code>this.&lt;事件&gt; += &lt;handler&gt;;</code>,再寫 handler。</p>
+</div></section><section class="sec" data-sec="4-三種常見需求怎麼做"><h2 id="4-三種常見需求怎麼做"><button class="tg" aria-label="收合/展開" type="button"></button>4. 三種常見需求怎麼做</h2><div class="sec-body">
+<h3 id="4-1-加一條-覆核時檢核">4.1 加一條「覆核時檢核」</h3>
+<p><strong>寫在 <code>AfterVerify</code>,用 <code>throw</code> 否決。</strong></p>
+<p>現況範本(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:593-599</code>)——<code>CASM001</code> 七個 <code>After*</code> 都是同一個寫法:</p>
+<pre class="code lang-csharp"><code>private void CASM001_PO_AfterVerify(object sender, xEVAEventArgs args)
+{
+    if (args.TableName != this.MasterTable.dbTableName) return;
+    if (!SrNoCommentProcessor.AddCommentHistory(...)) throw new ApplicationException("");
+}</code></pre>
+<p>改法:在 <code>return</code> 之後、原有邏輯之前,加你的檢核:</p>
+<pre class="code lang-csharp"><code>if (&lt;檢核不通過&gt;) throw new ApplicationException("&lt;給使用者看的中文訊息&gt;");</code></pre>
+<p><strong><code>throw</code> 是 After 掛點唯一能否決整筆交易的手段。</strong>交易此時還沒 commit,例外會讓它整個回滾。</p>
+<blockquote><p>範本那七處都 <code>throw new ApplicationException("")</code>——<strong>空訊息</strong>。使用者看到的會是空白錯誤框。你自己加的一定要給中文訊息。</p></blockquote>
+<h3 id="4-2-加一條-新增時的預設值-流水號">4.2 加一條「新增時的預設值 / 流水號」</h3>
+<p><strong>寫在 <code>BeforeAdd</code>,而且必須在參數綁定之前。</strong></p>
+<p>現況範本(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:88-101</code>):do-while 取流水號 <code>genSrNo.GetPR_NO()</code>,用 <code>IsExistByData</code> 檢查撞號就重取,取到之後回填到所有明細 row。</p>
+<p>兩個要點:</p>
+<ol><li><strong>一定要在 <code>BeforeAdd</code>。</strong><code>architecture.md §4.2</code> 說明 INSERT 的參數是由 DataRow 的欄位值綁的,<code>BeforeAdd</code> 之後才綁——在 <code>After*</code> 改 model 沒有用。</li><li><strong>主檔改完要記得回填明細。</strong>主明細是分開觸發的,主檔的新值不會自動傳到明細 row。</li></ol>
+<h3 id="4-3-加稽核軌跡">4.3 加稽核軌跡</h3>
+<p><strong>寫在對應的 <code>After*</code>,用 <code>args.DbTran</code> 在同一交易內下 SQL。</strong></p>
+<p>這樣寫的好處是稽核紀錄與業務資料同進同退——業務資料回滾,稽核紀錄也回滾。如果你希望「即使失敗也要留紀錄」,那就<strong>不能</strong>用 <code>args.DbTran</code>,要另開連線;但這樣就沒有交易保護,要自己處理失敗。</p>
+<blockquote><p><code>architecture.md §3.7</code> 提到業務庫與待辦庫是<strong>兩個獨立交易、沒有分散式交易</strong>,而且兩個世代的 commit 順序相反。加稽核軌跡時不要假設它們是原子的。</p></blockquote>
+</div></section><section class="sec" data-sec="5-改狀態機本身-在-repo-裡做不到"><h2 id="5-改狀態機本身-在-repo-裡做不到"><button class="tg" aria-label="收合/展開" type="button"></button>5. 改狀態機本身:在 repo 裡做不到</h2><div class="sec-body">
+<p>計劃書原本要求本節說明「改狀態轉換(例:跳過 Verify 直接 Approve)要動 <code>TA_PO.EVA()</code> 的哪一段」。<strong>這個問題的前提是錯的:</strong></p>
+<ol><li><code>TA_PO</code> 是死碼(<a class="sec" href="#0-1-先看清楚-哪些是活的-哪些是死碼">§0.1</a>),改它不會有任何效果。</li><li>現行主線 <code>BaseEVADaoPO</code> 的 EVA 動作全在 <code>BaseEVADao</code>(PTPFBlock,無原始碼)裡(<a class="sec" href="#0-2-第二件要先知道的-四眼的主體不在-repo-裡">§0.2</a>)。</li></ol>
+<p>所以狀態轉換的規則、<code>EVAStatusCode</code> 的實際字面值、<code>SetTASecurityData</code> 怎麼依 <code>EVAType</code> 寫欄位,<strong>都在編譯好的 DLL 內,repo 改不到</strong>。</p>
+<h3 id="5-1-那實務上怎麼辦">5.1 那實務上怎麼辦</h3>
+<div class="tw"><table><thead><tr><th>需求</th><th>可行做法</th></tr></thead><tbody><tr><td>某些條件下<strong>不需要覆核</strong></td><td>在 <code>BeforeAdd</code> 依條件直接把 <code>STATUS</code> 設成 <code>Approve*</code> 那組值,略過中間狀態。<strong>〔假設〕</strong>——<code>STATUS</code> 是 model 的一般欄位,<code>BeforeAdd</code> 改得到;但 DLL 後續是否會覆寫它未經驗證</td></tr><tr><td>加一個<strong>新的動作</strong>(例:「暫緩」)</td><td>不要動狀態機。用一個自訂欄位 + 畫面按鈕 + PO 自訂方法實作,不要試圖新增 <code>EVAType</code> 值</td></tr><tr><td>改<strong>誰能做哪個動作</strong></td><td>權限不在 repo(選單 / 權限表不在版控),要在資料庫端處理</td></tr><tr><td>只是想<strong>看懂</strong>目前的規則</td><td><code>architecture.md §3.3</code>(<code>EVAType</code> 10 個值)與 <code>§3.10</code>(<code>STATUS</code> 12 個值),都是反推的</td></tr></tbody></table></div>
+<blockquote><p><strong>〔假設〕缺:PTPFBlock DLL 原始碼。</strong>上表第一列的做法未經驗證。要確定得反編譯 <code>Vendor.Product.DataAccess.dll</code>,或在測試環境實測一次。<strong>動正式環境前一定要先驗。</strong></p></blockquote>
+</div></section><section class="sec" data-sec="6-多筆-multirow-的差異"><h2 id="6-多筆-multirow-的差異"><button class="tg" aria-label="收合/展開" type="button"></button>6. 多筆(MultiRow)的差異</h2><div class="sec-body">
+<p>如果你那支畫面的 PO 繼承 <code>BaseMultiRowEVADaoPO</code>(61 支),規則不同:</p>
+<div class="tw"><table><thead><tr><th>面向</th><th>單筆</th><th>多筆</th></tr></thead><tbody><tr><td>主檔</td><td><code>TableMapping MasterTable</code> 單一</td><td><code>List&lt;TableMapping&gt; MasterTable</code>(<code>Dev/Common/Source/Base/TA.DataAccess/MultiRowEVAPO.cs:20</code>)</td></tr><tr><td>明細</td><td><code>List&lt;TableMapping&gt; DetailTable</code></td><td><strong>沒有明細概念</strong></td></tr><tr><td>筆數</td><td>Add 時主檔強制恰好 1 筆,否則丟例外(<code>Dev/Common/Source/Base/TA.DataAccess/BasicEVAPO.cs:194-196</code>)</td><td>無限制,整張表逐筆跑</td></tr><tr><td>重複檢查</td><td><code>IsExistByData</code></td><td>多一支 <code>IsExistByMasterPK</code>(<code>Dev/Common/Source/Base/TA.DataAccess/MultiRowEVAPO.cs:1465-1487</code>)</td></tr><tr><td>複製</td><td><code>CopyDetail</code>(<code>Dev/Common/Source/Base/TA.DataAccess/BaseEVADaoPO.cs:155-227</code>)</td><td><code>Copy</code>(<code>Dev/Common/Source/Base/TA.DataAccess/BaseMultiRowEVADaoPO.cs:49-175</code>)</td></tr></tbody></table></div>
+<p><strong>對事件 handler 的實際影響</strong>:多筆版沒有明細,所以 <a class="sec" href="#3-2-每個-handler-第一行都要判斷表名">§3.2</a> 那行表名判斷的寫法要改成比對 <code>MasterTable</code> 清單裡的哪一張,不能直接 <code>!= this.MasterTable.dbTableName</code>(那是單筆的寫法,多筆時 <code>MasterTable</code> 是 <code>List</code> 沒有 <code>.dbTableName</code>)。</p>
+</div></section><section class="sec" data-sec="7-四眼欄位與-status"><h2 id="7-四眼欄位與-status"><button class="tg" aria-label="收合/展開" type="button"></button>7. 四眼欄位與 <code>STATUS</code></h2><div class="sec-body">
+<p>加檢核時常需要判斷「現在在哪一段」。</p>
+<p><code>STATUS</code> 的 12 個值分三段四動作(<code>architecture.md §3.10</code>):</p>
+<div class="tw"><table><thead><tr><th>段</th><th>常數</th><th>意思</th></tr></thead><tbody><tr><td>Entry</td><td><code>EntryAdd</code> / <code>EntryModify</code> / <code>EntryDelete</code> / <code>EntryUndoDelete</code></td><td>輸入完成,待驗證</td></tr><tr><td>Verify</td><td><code>VerifyAdd</code> / <code>VerifyModify</code> / <code>VerifyDelete</code> / <code>VerifyUndoDelete</code></td><td>驗證完成,待覆核</td></tr><tr><td>Approve</td><td><code>ApproveAdd</code> / <code>ApproveModify</code> / <code>ApproveDelete</code> / <code>ApproveUndoDelete</code></td><td>已覆核,正式生效</td></tr></tbody></table></div>
+<p>判斷用 <code>TAEVAUtility</code>(<code>Dev/Common/Source/Utility/TA.Utility/TAEVAUtility.cs:20-34</code> 吃 <code>string Status</code>,<code>:41-61</code> 吃 <code>DataRow</code>)。<strong>它們是字串比較不是 enum</strong>,所以拼錯不會編譯失敗。</p>
+<p>15 個系統欄位(<code>DATAID</code> · <code>STATUS</code> · <code>CREATEID/DATE</code> · <code>UPDATEID/DATE</code> · <code>ENTRYID/DATE</code> · <code>VERIFYID/DATE</code> · <code>APPROVEID/DATE</code> · <code>REJECTID/DATE</code> · <code>DATAFLAG</code>)<strong>都在 xsd 裡</strong>,由引擎賦值(<code>runbooks/add-column.md 附錄 C</code> H8)。<strong>檢核時可以讀,不要寫。</strong></p>
+</div></section><section class="sec" data-sec="8-驗證清單"><h2 id="8-驗證清單"><button class="tg" aria-label="收合/展開" type="button"></button>8. 驗證清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>#</th><th>動作</th><th>過關標準</th></tr></thead><tbody><tr><td>1</td><td>確認你改的 PO 繼承 <code>BaseEVADaoPO</code> 或 <code>BaseMultiRowEVADaoPO</code></td><td>不是死碼基底(<a class="sec" href="#0-1-先看清楚-哪些是活的-哪些是死碼">§0.1</a>)</td></tr><tr><td>2</td><td>每個新 handler 第一行有表名判斷</td><td><a class="sec" href="#3-2-每個-handler-第一行都要判斷表名">§3.2</a></td></tr><tr><td>3</td><td>新增一筆(檢核應通過)</td><td>成功;<code>STATUS</code> 進 <code>Entry*</code></td></tr><tr><td>4</td><td>新增一筆(<strong>故意讓檢核不通過</strong>)</td><td>擋下來,<strong>看得到中文訊息</strong>,而且資料庫沒有殘留</td></tr><tr><td>5</td><td>覆核 / 核准 / 退回 各跑一次</td><td>狀態正確流轉,檢核在該擋的地方擋</td></tr><tr><td>6</td><td>有明細的畫面:一次新增多筆明細</td><td>檢核 / 流水號<strong>只跑一次</strong>(驗 <a class="sec" href="#3-2-每個-handler-第一行都要判斷表名">§3.2</a>)</td></tr><tr><td>7</td><td>檢核擋下後查資料庫</td><td>主檔與明細都沒有半筆殘留(驗交易有回滾)</td></tr><tr><td>8</td><td>若改的是共用層:抽驗<strong>另外三支</strong>不同模組的畫面</td><td>四眼流程照舊</td></tr></tbody></table></div>
+<p><strong>第 6 步與第 7 步最容易漏。</strong></p>
+</div></section><section class="sec" data-sec="9-常見錯誤與症狀"><h2 id="9-常見錯誤與症狀"><button class="tg" aria-label="收合/展開" type="button"></button>9. 常見錯誤與症狀</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>病因</th><th>回去做</th></tr></thead><tbody><tr><td><strong>改了完全沒反應</strong></td><td>改到 <code>TA_PO</code> / <code>Basic4EyesPO</code> 死碼</td><td><a class="sec" href="#0-1-先看清楚-哪些是活的-哪些是死碼">§0.1</a></td></tr><tr><td><strong>檢核跑了好幾遍 / 流水號跳號</strong></td><td>handler 少了表名判斷那一行</td><td><a class="sec" href="#3-2-每個-handler-第一行都要判斷表名">§3.2</a></td></tr><tr><td><strong>使用者看到空白錯誤框</strong></td><td><code>throw new ApplicationException("")</code> 沒給訊息</td><td><a class="sec" href="#4-1-加一條-覆核時檢核">§4.1</a></td></tr><tr><td><strong>在 <code>BeforeAdd</code> 改了值但沒存進去</strong></td><td>改的是明細但只處理了主檔(事件分開觸發)</td><td><a class="sec" href="#4-2-加一條-新增時的預設值-流水號">§4.2</a></td></tr><tr><td><strong>在 <code>After*</code> 改 model 沒有效果</strong></td><td>參數早就綁完了</td><td><a class="sec" href="#4-2-加一條-新增時的預設值-流水號">§4.2</a></td></tr><tr><td><strong>檢核擋下來了但資料庫有殘留</strong></td><td>沒有 <code>throw</code>,只是 <code>return</code></td><td><a class="sec" href="#4-1-加一條-覆核時檢核">§4.1</a></td></tr><tr><td><strong>稽核紀錄跟著業務資料一起消失</strong></td><td>用了 <code>args.DbTran</code>,同進同退</td><td><a class="sec" href="#4-3-加稽核軌跡">§4.3</a></td></tr><tr><td><strong>自己 commit 之後整個流程壞掉</strong></td><td>掛點內不能 commit / rollback</td><td><a class="sec" href="#3-1-掛點總表">§3.1</a></td></tr><tr><td><strong>多筆畫面上 <code>this.MasterTable.dbTableName</code> 編不過</strong></td><td>多筆版 <code>MasterTable</code> 是 <code>List</code></td><td><a class="sec" href="#6-多筆-multirow-的差異">§6</a></td></tr><tr><td><strong>改了共用層,別的模組壞了才發現</strong></td><td>影響 271 支畫面,沒有自動化測試</td><td><a class="sec" href="#2-先決定-改在哪一層">§2</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-a-本手冊引用的檔案清單"><h2 id="附錄-a-本手冊引用的檔案清單"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 A 本手冊引用的檔案清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>檔</th><th>錨點</th><th>用在</th></tr></thead><tbody><tr><td><code>Dev/Common/Source/Base/TA.DataAccess/BaseEVADaoPO.cs</code></td><td><code>:17-27</code> <code>:22-26</code> <code>:143-146</code> <code>:155-227</code></td><td><a class="sec" href="#0-1-先看清楚-哪些是活的-哪些是死碼">§0.1</a> <a class="sec" href="#0-2-第二件要先知道的-四眼的主體不在-repo-裡">§0.2</a> <a class="sec" href="#6-多筆-multirow-的差異">§6</a></td></tr><tr><td><code>Dev/Common/Source/Base/TA.DataAccess/BaseMultiRowEVADaoPO.cs</code></td><td><code>:18-31</code> <code>:49-175</code></td><td><a class="sec" href="#0-1-先看清楚-哪些是活的-哪些是死碼">§0.1</a> <a class="sec" href="#6-多筆-multirow-的差異">§6</a></td></tr><tr><td><code>Dev/Common/Source/Base/TA.DataAccess/BasicEVAPO.cs</code></td><td><code>:24</code> <code>:37-94</code> <code>:100-157</code> <code>:194-196</code></td><td><a class="sec" href="#0-1-先看清楚-哪些是活的-哪些是死碼">§0.1</a> <a class="sec" href="#3-1-掛點總表">§3.1</a> <a class="sec" href="#6-多筆-multirow-的差異">§6</a></td></tr><tr><td><code>Dev/Common/Source/Base/TA.DataAccess/MultiRowEVAPO.cs</code></td><td><code>:16</code> <code>:20</code> <code>:1465-1487</code></td><td><a class="sec" href="#0-1-先看清楚-哪些是活的-哪些是死碼">§0.1</a> <a class="sec" href="#6-多筆-multirow-的差異">§6</a></td></tr><tr><td><code>Dev/Common/Source/Base/TA.DataAccess/TA_PO.cs</code></td><td><code>:19</code></td><td><a class="sec" href="#0-1-先看清楚-哪些是活的-哪些是死碼">§0.1</a></td></tr><tr><td><code>Dev/Common/Source/Base/TA.DataAccess/Basic4EyesPO.cs</code></td><td><code>:28</code> <code>:2428</code></td><td><a class="sec" href="#0-1-先看清楚-哪些是活的-哪些是死碼">§0.1</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs</code></td><td><code>:40-60</code> <code>:77-153</code> <code>:88-101</code> <code>:569-630</code> <code>:571</code> <code>:593-599</code></td><td><a class="sec" href="#3-事件掛點-唯一的正規擴充點">§3</a> <a class="sec" href="#4-三種常見需求怎麼做">§4</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/PO/PO.EC/MSSQL/OFDM603_PO.cs</code></td><td><code>:18</code></td><td><a class="sec" href="#0-1-先看清楚-哪些是活的-哪些是死碼">§0.1</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/PO/PO.EC/MSSQL/OFDM694_PO.cs</code></td><td><code>:20</code></td><td><a class="sec" href="#0-1-先看清楚-哪些是活的-哪些是死碼">§0.1</a></td></tr><tr><td><code>Dev/Common/Source/Utility/TA.Utility/TAEVAUtility.cs</code></td><td><code>:20-34</code> <code>:41-61</code></td><td><a class="sec" href="#7-四眼欄位與-status">§7</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-b-待輸入回填"><h2 id="附錄-b-待輸入回填"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 B 待輸入回填</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>缺什麼</th><th>影響哪幾段</th><th>補進來後要改什麼</th></tr></thead><tbody><tr><td><strong>PTPFBlock DLL(或其原始碼)</strong></td><td><a class="sec" href="#0-2-第二件要先知道的-四眼的主體不在-repo-裡">§0.2</a> <a class="sec" href="#5-改狀態機本身-在-repo-裡做不到">§5</a></td><td>四眼動作的主體看不到,所以「改狀態機」只能說做不到。反編譯 <code>Vendor.Product.DataAccess.dll</code> 後可補上真正的狀態轉換規則與 <code>EVAStatusCode</code> 字面值</td></tr><tr><td><strong>測試環境</strong></td><td><a class="sec" href="#5-1-那實務上怎麼辦">§5.1</a></td><td>「在 <code>BeforeAdd</code> 直接設 <code>STATUS</code> 略過覆核」這個做法未驗證,實測後改成明確可行 / 不可行</td></tr><tr><td><strong>權限表</strong></td><td><a class="sec" href="#5-1-那實務上怎麼辦">§5.1</a></td><td>「誰能做哪個動作」查不到</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-c-與計劃書的差異"><h2 id="附錄-c-與計劃書的差異"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 C 與計劃書的差異</h2><div class="sec-body">
+<p>計劃書 <a class="sec" href="#4-三種常見需求怎麼做">§4</a> 要求本手冊寫「改狀態轉換動到 <code>TA_PO.EVA()</code> 的哪一段,以及這是共用引擎、改了 923 支畫面全中」。</p>
+<p>實際讀碼後兩點都要修正:</p>
+<div class="tw"><table><thead><tr><th>計劃書</th><th>實際</th></tr></thead><tbody><tr><td>改 <code>TA_PO.EVA()</code></td><td><strong><code>TA_PO</code> 是死碼</strong>,零繼承零實例化。改它不會有任何效果</td></tr><tr><td>共用引擎改了 923 支全中</td><td>現行主線是 <code>BaseEVADaoPO</code>(<strong>271</strong> 子類)與 <code>BaseMultiRowEVADaoPO</code>(<strong>61</strong>),不是 923;而且真正的 EVA 動作在無原始碼的 DLL 裡,repo 內能改的只有掛點</td></tr></tbody></table></div>
+<p>「改了很多支畫面全中」這個警告本身<strong>仍然成立</strong>,只是數字與位置不同——所以 <a class="sec" href="#2-先決定-改在哪一層">§2</a> 保留了它,並給了正確的影響半徑。</p></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-14 14:23 產生 · 標題 23 · 圖 1 · 表格 12 · 程式錨點 32 · § 連結 43 · 引用檢查：畫面 1（缺 0） · 結果集 1（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

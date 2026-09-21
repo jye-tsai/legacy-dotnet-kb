@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-21">
+<title>ATLAS 症狀路由表</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#1-畫面-開不起來-按了就爆">1. 畫面:開不起來、按了就爆</a>
+<a class="l2" href="#2-資料-少了-沒進去-被蓋掉">2. 資料:少了、沒進去、被蓋掉</a>
+<a class="l2" href="#3-報表">3. 報表</a>
+<a class="l2" href="#4-批次與-windowsservice">4. 批次與 WindowsService</a>
+<a class="l2" href="#5-部署與環境">5. 部署與環境</a>
+<a class="l2" href="#6-找東西與統計">6. 找東西與統計</a>
+<a class="l2" href="#7-文件裡-還沒有-答案的症狀-別白花時間找">7. 文件裡還沒有答案的症狀(別白花時間找)</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-21</span></div>
+<h1 id="atlas-症狀路由表">ATLAS 症狀路由表</h1>
+<blockquote><p><strong>遇到 X → 先看哪份的哪節。</strong>這份不解釋原因,只負責把你三十秒內丟到對的那一頁。 <strong>只收「文件裡已經有答案」的症狀</strong>;查不到答案的另列在 <a class="sec" href="#7-文件裡-還沒有-答案的症狀-別白花時間找">§7</a>,免得你找一整天才發現沒人寫過。骨幹知識在 <code>CHEATSHEET.md</code>,業務全貌在 <code>OVERVIEW.md</code>,技術通則在 <code>architecture.md</code>。</p>
+<p>三個離線頁雙擊即開:<code>query.html</code>(代號 / 表反查)· <code>messages.html</code>(錯誤訊息反查)· <code>defects.html</code>(1,682 條缺陷)。</p></blockquote>
+<section class="sec" data-sec="1-畫面-開不起來-按了就爆"><h2 id="1-畫面-開不起來-按了就爆"><button class="tg" aria-label="收合/展開" type="button"></button>1. 畫面:開不起來、按了就爆</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>先看哪</th><th>為什麼</th></tr></thead><tbody><tr><td>畫面一按查詢就 <code>NullReferenceException</code></td><td><code>query.html</code> 打代號看 <strong>PO 基底</strong>;<code>architecture.md §3.1.1</code></td><td>繼承 <code>BasicEVAPO</code> / <code>MultiRowEVAPO</code> 的 <code>dbTA</code> 恆 null,<strong>連查詢都爆</strong>,全庫 76 支</td></tr><tr><td>報表一按預覽就 <code>NullReferenceException</code></td><td><code>query.html</code> 看 PO 基底;<code>architecture.md 附錄 D.3</code></td><td>報表派 <code>Basic_PO</code> 的 <code>m_db</code> 恆 null,全庫 76 支(NFD 55 · OFD 19 · RSP 6)</td></tr><tr><td>新建的畫面一按存檔就 NRE</td><td><code>runbooks/add-screen.md §5.7</code></td><td>基底選錯。新畫面只准 <code>BaseEVADaoPO</code> / <code>BaseMultiRowEVADaoPO</code></td></tr><tr><td>新建的畫面存得進去、查不回來</td><td><code>runbooks/add-screen.md §5.2</code></td><td>主明細<strong>三處同名</strong>沒對齊:<code>xTableMapping</code> 兩個參數 + xsd 表名</td></tr><tr><td>既有畫面加了欄位,存得進去、查不回來</td><td><code>runbooks/add-column.md §5.2</code></td><td><strong>寫入端自動、讀取端手寫</strong>:<code>Build*SQLString</code> 的欄位清單沒加就撈不回來</td></tr><tr><td>加了欄位,維護畫面看得到、待辦清單看不到</td><td><code>runbooks/add-column.md §5.3</code></td><td><code>BuildMasterSQLString</code> 有 <code>isToDoString</code> 兩條分支,只加了一邊</td></tr><tr><td>改了 xsd,build 過了但行為還是舊的</td><td><code>architecture.md §5</code></td><td><code>.Designer.cs</code> 已 commit 且<strong>不由 MSBuild 重生</strong>,要在 VS 裡存檔觸發</td></tr><tr><td>查詢畫面(<code>I</code>)找不到 <code>MasterTable</code> 宣告</td><td><code>ofdi1.md §0.2</code></td><td>不是漏寫。I 畫面 35 支<strong>全部沒有</strong> <code>MasterTable</code> / <code>DetailTable</code>,也沒有四眼欄</td></tr><tr><td>同一個代號有兩份 PO,不知道線上跑哪一份</td><td><code>architecture.md 附錄 D.3</code>(D3);<code>ofd4.md 附錄 E</code></td><td>同代號雙實作真實存在(境內 / 境外各一份、MSSQL / Oracle 各一份),<strong>兩版讀不同表</strong>出過事故</td></tr><tr><td>選單點得到的畫面,<code>atlas_scan</code> 查不到</td><td><code>architecture.md 附錄 D.4</code></td><td>畫面母體是以 <code>_Ctl.cs</code> 建的,<strong>連 Control 都沒有的代號不在 911 裡</strong>(48 個)</td></tr><tr><td><code>atlas_scan</code> 說缺某一層,但檔案明明在</td><td><code>architecture.md 附錄 D.3</code>(D9–D11)</td><td>檔名壞掉照樣編得起來:副檔名前夾空白、副檔名重複、層後綴大小寫或少字母</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="2-資料-少了-沒進去-被蓋掉"><h2 id="2-資料-少了-沒進去-被蓋掉"><button class="tg" aria-label="收合/展開" type="button"></button>2. 資料:少了、沒進去、被蓋掉</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>先看哪</th><th>為什麼</th></tr></thead><tbody><tr><td>覆核通過了,資料沒進本表</td><td><code>bms.md §2.1</code></td><td>受益人資料變更走<strong>變更申請單</strong>,覆核≠生效,要等批次 <code>OFDB003</code> 把變更後的值寫回</td></tr><tr><td>想判斷某張變更單生效了沒</td><td><code>bms.md §2.1</code></td><td>全庫一致的判準是變更生效時間欄位為空代表尚未生效</td></tr><tr><td>查詢條件填了值,某些資料就是撈不出來</td><td><code>defects.html</code> 篩「Oracle 三值邏輯」;<code>ofd8.md 附錄 E</code></td><td><code>欄 &lt;&gt; '值'</code> / <code>= ''</code> / <code>NOT IN</code> / <code>NVL(TRIM(:p),欄)</code> 碰到 NULL 是 UNKNOWN,<strong>無聲過濾</strong>,十個模組中過</td></tr><tr><td>資料被條件濾掉,畫面卻不提示</td><td><code>modules/README.md</code> 的五類卡控說明</td><td>「過濾(無提示)」是五類卡控之一,設計如此,不是 bug</td></tr><tr><td>某筆資料沒走四眼就進了正式表</td><td><code>OVERVIEW.md §5</code>;<code>misc.md §2</code></td><td>全庫 36 支畫面 / 批次繞過四眼,狀態欄直接寫死核准值</td></tr><tr><td>匯入淨值後,同一天別的基金淨值全不見</td><td><code>misc.md §4.11</code></td><td>整批匯入的 <code>DELETE</code> 條件<strong>只有淨值日期</strong>,不含基金,先刪光再只補回檔案裡有的</td></tr><tr><td>表名長得像、不知道該改哪一張(帶 <code>A</code> / <code>B</code> 後綴)</td><td><code>OVERVIEW.md 附錄 A</code></td><td><code>A</code>、<code>B</code> 後綴<strong>至少七種成因</strong>,看到必須逐張查,不能套規則</td></tr><tr><td>文件寫某表幾欄,跟實際對不上</td><td><code>modules/README.md</code> 的警告段;改用 <code>atlas_scan.py --table</code></td><td>前七篇寫於掃描器第二輪修正之前,內文欄位數可能偏低</td></tr><tr><td>改一處生效、另一處沒生效</td><td><code>defects.html</code> 篩「成對 / 平行複本只改一邊」</td><td>同一概念常有兩份實作(境內外、MSSQL 與 Oracle),141 條缺陷是這一型</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="3-報表"><h2 id="3-報表"><button class="tg" aria-label="收合/展開" type="button"></button>3. 報表</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>先看哪</th><th>為什麼</th></tr></thead><tbody><tr><td>報表少印幾列,而且沒有任何提示</td><td><code>defects.html</code> 篩「INNER JOIN」;<code>nfdr1.md 附錄 E</code></td><td><code>INNER JOIN</code> 讓對不到的資料無聲消失,66 條缺陷是這一型</td></tr><tr><td>兩個人同時按同一張報表,資料互相蓋掉</td><td><code>ofdr2.md §2.4</code>;<code>ofdr2.md 附錄 E</code></td><td>報表 SP 用<strong>全域、不分使用者的暫存表</strong>做資料權限過濾,沒有使用者鍵、<code>DELETE</code> 全表重建</td></tr><tr><td>報表欄位要加 / 版面要調</td><td><code>runbooks/add-report.md §2</code>(加欄)/ <code>§5</code>(版面)</td><td>報表是<strong>七層</strong>,多一層 Crystal;範本是 build 出來的不是部署過去的</td></tr><tr><td>報表範本改了但現場沒變</td><td><code>runbooks/deploy.md §7</code></td><td>範本由 build 產出,不是單獨複製過去的檔案</td></tr><tr><td>報表看不到筆數,按預覽才知道有沒有資料</td><td><code>ofdr2.md §7</code></td><td>36 支裡只有 1 支保留「查詢」按鈕,其餘按預覽前<strong>什麼都看不到</strong>,是設計如此</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="4-批次與-windowsservice"><h2 id="4-批次與-windowsservice"><button class="tg" aria-label="收合/展開" type="button"></button>4. 批次與 WindowsService</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>先看哪</th><th>為什麼</th></tr></thead><tbody><tr><td>要改批次幾點跑,在 Windows 工作排程器裡找不到</td><td><code>ofdb3.md §6</code></td><td>時刻存在<strong>資料表欄位</strong>裡,服務每 60 秒比對一次;改排程不用碰排程器也不用重編</td></tr><tr><td>服務裝好了、啟動了,就是不跑</td><td><code>ofdb3.md §0.6</code></td><td>三支服務的進入點判斷執行帳號,不等於系統帳號就走 Console 偵錯模式,不會進服務迴圈</td></tr><tr><td>批次回報「執行成功」,但一筆都沒動</td><td><code>defects.html</code> 篩「<code>ExecuteNonQuery</code> 回傳值被蓋」;<code>cpm.md 附錄 E</code></td><td><code>i = 1;</code> 或 <code>if (i == -1)</code> 把影響列數檢核蓋掉,111 條缺陷是這一型</td></tr><tr><td>批次中途失敗,前半段的資料留在庫裡</td><td><code>runbooks/add-batch.md §6.3</code>;<code>defects.html</code> 篩「交易 / rollback 破口」</td><td>交易由 C# 端開、SP 跑在裡面;沒包同一交易或例外後沒 rollback,128 條缺陷是這一型</td></tr><tr><td>批次重跑一次,資料變兩份</td><td><code>runbooks/add-batch.md §6.4</code></td><td>重跑安全要自己做(先 <code>DELETE</code> 或用旗標),框架不管</td></tr><tr><td>批次參數給錯位置就跑錯東西</td><td><code>runbooks/add-batch.md §3.4</code></td><td><code>Main(string[] args)</code> 靠<strong>位置</strong>取參數,是已知缺陷;手冊教怎麼避</td></tr><tr><td>批次連不上伺服端</td><td><code>runbooks/add-batch.md §4.1</code></td><td>同一批批次有的設定檔有 Remoting 區段、有的沒有;要不要設看它打不打伺服端門面</td></tr><tr><td>批次出錯但沒人知道</td><td><code>runbooks/add-batch.md §6.5</code></td><td>不可吞例外;失敗要寫進 log 表,手冊列了寫哪張</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="5-部署與環境"><h2 id="5-部署與環境"><button class="tg" aria-label="收合/展開" type="button"></button>5. 部署與環境</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>先看哪</th><th>為什麼</th></tr></thead><tbody><tr><td>部署後客戶端反序列化錯誤</td><td><code>runbooks/deploy.md §2</code></td><td><code>View.xsd</code>(UIEntity)是跨 Remoting 的型別,<strong>兩端都要佈</strong>,版本不一致就在反序列化時爆</td></tr><tr><td>我這台好了,別人還是舊的</td><td><code>runbooks/deploy.md §2</code>;<code>architecture.md §8</code></td><td>Remoting 邊界在 UI 與 FormProxy 之間:改 UI 佈客戶端,改其餘五層佈伺服端</td></tr><tr><td>程式重編了,現場行為完全沒變</td><td><code>runbooks/deploy.md §2.1</code>;<code>architecture.md 附錄 C.5</code></td><td>25 個組件 repo 有原始碼卻被綁成預編 DLL,只重編不更新落點等於沒改,<strong>開發機上看不出來</strong></td></tr><tr><td>新人的機器編不過 / 改了沒效果</td><td><code>runbooks/build-env.md §8</code></td><td>該本有症狀對照表;前提三件在 <code>runbooks/build-env.md §0.1</code></td></tr><tr><td>要重裝服務或改服務帳號</td><td><code>runbooks/deploy.md §5</code></td><td>服務帳號<strong>不能</strong>改成網域帳號,該節寫了原因</td></tr><tr><td>要改的 SP 資料庫有、repo 沒有</td><td><code>runbooks/change-sp-fn-trigger.md §2</code>;<code>architecture.md 附錄 B</code></td><td>程式呼叫 380 支 SP,repo 只有 61 支有腳本,批次與報表邏輯大量在版控外</td></tr><tr><td>覆核流程要多一條檢核 / 要加稽核軌跡</td><td><code>runbooks/change-eva-flow.md §4.1</code></td><td>掛在 PO 建構子註冊的四眼事件上</td></tr><tr><td>改了四眼相關的舊基底,完全沒反應</td><td><code>runbooks/change-eva-flow.md §0.1</code></td><td><code>TA_PO</code> 與 <code>Basic4EyesPO</code> 共 6,363 行是死碼,零繼承零實例化</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="6-找東西與統計"><h2 id="6-找東西與統計"><button class="tg" aria-label="收合/展開" type="button"></button>6. 找東西與統計</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>先看哪</th><th>為什麼</th></tr></thead><tbody><tr><td>線上跳一句中文訊息,不知道是哪支程式丟的</td><td><code>messages.html</code></td><td>9,440 筆常值訊息反查程式檔與行號;支援全形半形拉平與 <code>…</code> 萬用字元</td></tr><tr><td>模組篇附錄 E 抄的訊息,在原始碼裡 grep 不到</td><td><code>messages.html</code></td><td>實測 4 句是寫文件的人<strong>意譯</strong>,不是原文;要原文一律以該頁為準</td></tr><tr><td>grep 中文字串在某些檔完全沒命中</td><td><code>CHEATSHEET.md §8</code>;<code>architecture.md 附錄 D.3</code></td><td><code>Dev/</code> 有 241 個 cp950 檔,用 UTF-8 讀會漏;讀檔走 <code>atlas_scan.read_text</code></td></tr><tr><td>自己 grep 出來的統計數字比文件大一截</td><td><code>CHEATSHEET.md §8</code>;<code>architecture.md 附錄 D.3</code></td><td><strong>沒剝註解</strong>。這個 repo 保留大量註解掉的程式碼,<code>//</code> 和 <code>/* */</code> 都要剝</td></tr><tr><td>要知道改這張表會影響誰</td><td><code>query.html</code> 查表名;<code>atlas_scan.py --table &lt;表名&gt;</code></td><td>反查哪些 PO 宣告它、誰在 SQL 裡讀寫它。<strong>跨模組共用在這套系統是常態不是例外</strong></td></tr><tr><td>要知道某支畫面已知有什麼坑</td><td><code>defects.html</code> 依模組 / 代號篩;該模組篇附錄 E</td><td>1,682 條缺陷總表,高 435 條</td></tr><tr><td>不知道該讀哪一份文件</td><td><code>OVERVIEW.md §7</code>(讀序)· <code>runbooks/README.md</code> 的「我要做 X → 看哪本」路由表</td><td>兩張路由表,一張給讀、一張給改</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="7-文件裡-還沒有-答案的症狀-別白花時間找"><h2 id="7-文件裡-還沒有-答案的症狀-別白花時間找"><button class="tg" aria-label="收合/展開" type="button"></button>7. 文件裡<strong>還沒有</strong>答案的症狀(別白花時間找)</h2><div class="sec-body">
+<p>以下都是會真實遇到、但目前 29 篇模組篇 + 架構篇 + 9 本手冊裡<strong>查不到答案</strong>的。原因一律是「輸入拿不到」,不是沒寫。</p>
+<div class="tw"><table><thead><tr><th>症狀</th><th>為什麼沒有</th><th>拿到什麼就能補</th></tr></thead><tbody><tr><td>「使用者說權限不足 / 看不到某筆資料」——權限怎麼設的</td><td>選單與角色權限表在資料庫、不在版控</td><td>一份權限相關表的 dump</td></tr><tr><td>「這支 SP 裡到底做了什麼」——查不到腳本</td><td>380 支被呼叫的 SP 只有 61 支在版控(<code>architecture.md 附錄 B</code>)</td><td>資料庫連線,或 SP 全量匯出</td></tr><tr><td>「這個代碼值 <code>'3'</code> 是什麼意思」</td><td>值域主檔在資料庫;版控內的代碼類別檔有 216 個值域類別但<strong>沒有任何訊息碼類別</strong></td><td>代碼主檔的 dump</td></tr><tr><td>「線上還有沒有人在用這支畫面」</td><td>repo 內沒有使用率、沒有存取 log 的分析資料</td><td>一段時間的系統 log</td></tr><tr><td>「這支畫面 / 報表為什麼這麼慢」</td><td>沒有執行計畫、沒有索引清單、沒有資料量級</td><td>正式庫的統計資訊</td></tr><tr><td>「昨天那支批次失敗了,log 在哪一張表」</td><td>各批次各寫各的,沒有全庫彙整</td><td>逐支批次的 log 表對照(可由 <code>atlas_scan</code> 補掃)</td></tr><tr><td>「框架 DLL 裡這個方法實際上做什麼」</td><td>框架組件無原始碼,文件一律標「從呼叫端反推」</td><td>框架原始碼或反編譯授權</td></tr><tr><td>「正式環境的主機名 / 落地路徑是什麼」</td><td>手冊標〔客戶特定〕,本站台的值未回填(<code>runbooks/deploy.md 附錄 B</code>)</td><td>部署機的存取權</td></tr><tr><td>「這個控件對應哪個欄位」</td><td>規範上不 Read <code>*.Designer.cs</code>(一支 5,375 行、全庫 2,190 支),沒有控件對欄位的彙整</td><td>一支只抽 Designer 控件對應的掃描器</td></tr><tr><td>「報表範本裡哪一格印哪個欄位」</td><td>範本是二進位,只彙整到範本與資料集層級</td><td>範本轉文字的工具</td></tr></tbody></table></div>
+<blockquote><p>這張表本身就是<strong>下一輪要補什麼</strong>的清單。補到答案的人,請把該列搬到上面六節去。</p></blockquote></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-21 13:52 產生 · 標題 8 · 圖 0 · 表格 7 · 程式錨點 0 · § 連結 1 · 引用檢查：畫面 1（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

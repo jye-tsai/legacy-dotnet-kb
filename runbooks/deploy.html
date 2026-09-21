@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-14">
+<title>ATLAS 維護手冊 — 部署</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-適用範圍與前提">0. 適用範圍與前提</a>
+<a class="l3" href="#0-1-一句話版本">0.1 一句話版本</a>
+<a class="l2" href="#1-部署拓撲">1. 部署拓撲</a>
+<a class="l2" href="#2-核心對照表-改了什麼-要部署哪些">2. 核心對照表:改了什麼、要部署哪些</a>
+<a class="l3" href="#2-1-先查你改的組件在不在-dll-覆寫名單裡">2.1 ⚠ 先查你改的組件在不在 DLL 覆寫名單裡</a>
+<a class="l2" href="#3-客戶端">3. 客戶端</a>
+<a class="l3" href="#3-1-放什麼">3.1 放什麼</a>
+<a class="l3" href="#3-2-citrix">3.2 Citrix</a>
+<a class="l3" href="#3-3-客戶端的-remoting-設定不在版控裡">3.3 ⚠ 客戶端的 Remoting 設定不在版控裡</a>
+<a class="l2" href="#4-伺服端-iis">4. 伺服端(IIS)</a>
+<a class="l3" href="#4-1-端點">4.1 端點</a>
+<a class="l3" href="#4-2-放什麼">4.2 放什麼</a>
+<a class="l3" href="#4-3-資料庫型態設定">4.3 資料庫型態設定</a>
+<a class="l2" href="#5-windowsservice-四支">5. WindowsService 四支</a>
+<a class="l3" href="#5-1-清單">5.1 清單</a>
+<a class="l3" href="#5-2-安裝與啟停">5.2 安裝與啟停</a>
+<a class="l3" href="#5-3-服務帳號-不能-改成網域帳號">5.3 ⚠ 服務帳號不能改成網域帳號</a>
+<a class="l3" href="#5-4-服務也要跟著佈的東西">5.4 服務也要跟著佈的東西</a>
+<a class="l2" href="#6-資料庫腳本">6. 資料庫腳本</a>
+<a class="l3" href="#6-1-順序">6.1 順序</a>
+<a class="l3" href="#6-2-編碼">6.2 編碼</a>
+<a class="l3" href="#6-3-rollback">6.3 rollback</a>
+<a class="l3" href="#6-4-有些腳本不可重跑">6.4 ⚠ 有些腳本不可重跑</a>
+<a class="l3" href="#6-5-sp-大量不在版控">6.5 SP 大量不在版控</a>
+<a class="l2" href="#7-crystal-報表">7. Crystal 報表</a>
+<a class="l3" href="#7-1-範本是-build-出來的-不是部署過去的">7.1 範本是 build 出來的,不是部署過去的</a>
+<a class="l3" href="#7-2-客戶端要有-crystal-執行期">7.2 客戶端要有 Crystal 執行期</a>
+<a class="l2" href="#8-設定檔與連線字串">8. 設定檔與連線字串</a>
+<a class="l3" href="#8-1-哪裡有連線字串">8.1 哪裡有連線字串</a>
+<a class="l3" href="#8-2-設定檔含明文密碼">8.2 ⚠ 設定檔含明文密碼</a>
+<a class="l3" href="#8-3-商業參數也在設定檔">8.3 商業參數也在設定檔</a>
+<a class="l3" href="#8-4-落地路徑">8.4 落地路徑</a>
+<a class="l2" href="#9-驗證清單">9. 驗證清單</a>
+<a class="l2" href="#10-常見錯誤與症狀">10. 常見錯誤與症狀</a>
+<a class="l2" href="#附錄-a-本手冊引用的檔案清單">附錄 A 本手冊引用的檔案清單</a>
+<a class="l2" href="#附錄-b-待輸入回填">附錄 B 待輸入回填</a>
+<a class="l2" href="#附錄-c-本手冊未實測">附錄 C 本手冊未實測</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-14</span></div>
+<h1 id="atlas-維護手冊-部署">ATLAS 維護手冊 — 部署</h1>
+<blockquote><p>產出日期:2026-09-14(v1)。本手冊為<strong>純程式碼閱讀彙整 + 操作步驟</strong>,未修改任何 ATLAS 原始碼。每一步附程式錨點,行號為分析當下版本,動手前以最新程式為準。</p>
+<p>⚠ 標「<strong>〔假設〕缺:輸入</strong>」的段落是目前拿不到該輸入只能從結構推論,附錄 B 彙整。 ⚠ 標「<strong>〔客戶特定〕</strong>」的是本站台的值,其他站台不同。</p>
+<p><strong>本手冊未實測。</strong>本機沒有 PTPFBlock DLL、拿不到部署機,以下全部從 <code>.csproj</code> / <code>App.config</code> / <code>ProjectInstaller</code> 的設定反推(<code>architecture.md 附錄 C.1</code>)。第一次照做的人請把實際結果回填。</p></blockquote>
+<section class="sec" data-sec="0-適用範圍與前提"><h2 id="0-適用範圍與前提"><button class="tg" aria-label="收合/展開" type="button"></button>0. 適用範圍與前提</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>項目</th><th>內容</th></tr></thead><tbody><tr><td>適用情境</td><td>改完程式要送測試 / 正式環境;或新裝一台伺服器</td></tr><tr><td>不適用</td><td>開發機環境建置(見 <code>runbooks/build-env.md</code>)· 資料庫本身的安裝</td></tr><tr><td>變數</td><td><code>%PTPF%</code> = <code>C:\Program Files\Vendor\PTPFBlock</code>〔客戶特定〕</td></tr><tr><td>最重要的前提</td><td><strong>Remoting 邊界在 UI 與 FormProxy 之間</strong>(<code>architecture.md §8.1</code>)。這一條決定所有部署分工</td></tr></tbody></table></div>
+<h3 id="0-1-一句話版本">0.1 一句話版本</h3>
+<p><strong>改 UI 佈客戶端,改其餘五層佈伺服端,<code>UIEntity</code> 兩邊都要。</strong></p>
+<p>其他都是這句話的細節。</p>
+</div></section><section class="sec" data-sec="1-部署拓撲"><h2 id="1-部署拓撲"><button class="tg" aria-label="收合/展開" type="button"></button>1. 部署拓撲</h2><div class="sec-body">
+<figure><svg viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="部署拓撲:客戶端、Remoting 端點、伺服端 IIS、資料與批次服務,各放什麼;四個常見陷阱"><defs><marker id="ah_deployrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 客戶端(桌機 / Citrix)</text><g class="bx">
+<rect x="20" y="40" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="140" y="62" text-anchor="middle">main.exe + UI.&lt;MOD&gt;</text>
+<text class="t2" x="140" y="82" text-anchor="middle">改 UI 只佈這裡</text>
+</g><g class="bx accent">
+<rect x="20" y="106" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="140" y="128" text-anchor="middle">UIEntity.&lt;MOD&gt;</text>
+<text class="t2" x="140" y="148" text-anchor="middle">兩端版本必須一致</text>
+</g><g class="bx">
+<rect x="20" y="172" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="140" y="194" text-anchor="middle">ClientUtility · 控件 · Crystal</text>
+<text class="t2" x="140" y="214" text-anchor="middle">Infragistics 19.1</text>
+</g><g class="bx dash">
+<rect x="20" y="238" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="140" y="260" text-anchor="middle">main.exe.config</text>
+<text class="t2" x="140" y="280" text-anchor="middle">不在版控,端點寫在這</text>
+</g><text class="lane" x="300" y="26">② Remoting</text><g class="bx accent">
+<rect x="290" y="120" rx="10" ry="10" width="160" height="56"/>
+<text class="t1" x="370" y="142" text-anchor="middle">*.rem 端點</text>
+<text class="t2" x="370" y="162" text-anchor="middle">http + binary</text>
+</g><g class="bx vend">
+<rect x="290" y="200" rx="10" ry="10" width="160" height="56"/>
+<text class="t1" x="370" y="222" text-anchor="middle">ATLAS_TAService</text>
+<text class="t2" x="370" y="242" text-anchor="middle"><內網伺服器IP></text>
+</g><path class="ar" d="M 260 68 L 275 68 L 275 148 L 290 148" marker-end="url(#ah_deployrb)"/><path class="ar dsh" d="M 260 266 L 275 266 L 275 228 L 290 228" marker-end="url(#ah_deployrb)"/><text class="lane" x="490" y="26">③ 伺服端 IIS</text><g class="bx">
+<rect x="480" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="605" y="62" text-anchor="middle">FormProxy · Control · PO</text>
+<text class="t2" x="605" y="82" text-anchor="middle">四層改動佈這裡</text>
+</g><g class="bx accent">
+<rect x="480" y="106" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="605" y="128" text-anchor="middle">DataEntity · UIEntity</text>
+<text class="t2" x="605" y="148" text-anchor="middle">UIEntity 兩端都要</text>
+</g><g class="bx accent">
+<rect x="480" y="172" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="605" y="194" text-anchor="middle">TA.DataAccess 四眼引擎</text>
+<text class="t2" x="605" y="214" text-anchor="middle">改這裡 908 支全中</text>
+</g><g class="bx">
+<rect x="480" y="238" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="605" y="260" text-anchor="middle">PTPFBlock\CrystalReports</text>
+<text class="t2" x="605" y="280" text-anchor="middle">609 支範本</text>
+</g><path class="ar" d="M 450 148 L 465 148 L 465 68 L 480 68" marker-end="url(#ah_deployrb)"/><text class="lane" x="770" y="26">④ 資料與批次</text><g class="bx">
+<rect x="760" y="40" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="870" y="62" text-anchor="middle">Oracle</text>
+<text class="t2" x="870" y="82" text-anchor="middle">先 DB 後程式</text>
+</g><g class="bx vend">
+<rect x="760" y="106" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="870" y="128" text-anchor="middle">DB/ 腳本 277 支</text>
+<text class="t2" x="870" y="148" text-anchor="middle">混編碼 · 票號級 rollback</text>
+</g><g class="bx">
+<rect x="760" y="172" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="870" y="194" text-anchor="middle">WindowsService 四支</text>
+<text class="t2" x="870" y="214" text-anchor="middle">是 Remoting 呼叫端</text>
+</g><g class="bx vend">
+<rect x="760" y="238" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="870" y="260" text-anchor="middle">設定檔商業參數</text>
+<text class="t2" x="870" y="280" text-anchor="middle">要合併不要覆蓋</text>
+</g><path class="ar" d="M 730 200 L 760 200 L 760 96 L 760 68" marker-end="url(#ah_deployrb)"/><path class="ar lnk" d="M 730 68 L 760 68"/><path class="ar dsh" d="M 870 172 L 870 156 L 745 156 L 745 148 L 450 148" marker-end="url(#ah_deployrb)"/><text class="lane" x="20" y="330">⚠ 四個照直覺做就會錯的地方</text><g class="bx vend">
+<rect x="20" y="344" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="170" y="366" text-anchor="middle">DLL 覆寫名單 25 個組件</text>
+<text class="t2" x="170" y="386" text-anchor="middle">重編不更新 PTPFBlock = 沒效果</text>
+</g><g class="bx vend">
+<rect x="350" y="344" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="500" y="366" text-anchor="middle">服務帳號改網域帳號</text>
+<text class="t2" x="500" y="386" text-anchor="middle">會掉進 Console.ReadLine 啟動失敗</text>
+</g><g class="bx vend">
+<rect x="680" y="344" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="830" y="366" text-anchor="middle">rollback 是票號級一整包</text>
+<text class="t2" x="830" y="386" text-anchor="middle">不能只退一支</text>
+</g></svg><figcaption>圖 1 部署拓撲。橘實框=兩端都要或改了影響全系統;灰虛框=不在版控,要向部署機拿;橘虛框=照直覺做會錯的地方,對應 §2.1 / §5.3 / §6.3。</figcaption></figure>
+</div></section><section class="sec" data-sec="2-核心對照表-改了什麼-要部署哪些"><h2 id="2-核心對照表-改了什麼-要部署哪些"><button class="tg" aria-label="收合/展開" type="button"></button>2. 核心對照表:改了什麼、要部署哪些</h2><div class="sec-body">
+<p><strong>這張表是本手冊的重點,其餘各節是它的展開。</strong></p>
+<div class="tw"><table><thead><tr><th>你改了</th><th>客戶端</th><th>伺服端 IIS</th><th>WindowsService</th><th>資料庫</th></tr></thead><tbody><tr><td><code>UI.&lt;MOD&gt;</code></td><td>✔</td><td></td><td></td><td></td></tr><tr><td><code>UIEntity.&lt;MOD&gt;</code>(<code>View.xsd</code>)</td><td>✔</td><td>✔</td><td>✔(若該服務用到)</td><td></td></tr><tr><td><code>FormProxy.&lt;MOD&gt;</code></td><td></td><td>✔</td><td></td><td></td></tr><tr><td><code>Control.&lt;MOD&gt;</code></td><td></td><td>✔</td><td></td><td></td></tr><tr><td><code>PO.&lt;MOD&gt;</code></td><td></td><td>✔</td><td></td><td></td></tr><tr><td><code>DataEntity.&lt;MOD&gt;</code>(<code>Model.xsd</code>)</td><td></td><td>✔</td><td></td><td></td></tr><tr><td><code>TA.DataAccess</code>(四眼引擎)</td><td></td><td>✔</td><td></td><td></td></tr><tr><td><code>TA.MappingCode</code>(代碼字典)</td><td>✔</td><td>✔</td><td>✔</td><td></td></tr><tr><td><code>TA.ClientUtility</code></td><td>✔</td><td></td><td></td><td></td></tr><tr><td><code>TA.ServerUtility</code></td><td></td><td>✔</td><td>✔</td><td></td></tr><tr><td><code>TA.Utility*</code> 五件套</td><td>✔</td><td>✔</td><td>✔</td><td></td></tr><tr><td><code>Exceptions</code></td><td>✔</td><td>✔</td><td>✔</td><td></td></tr><tr><td><code>.rpt</code> 報表範本</td><td>✔(檢視)</td><td>✔(產出)</td><td></td><td></td></tr><tr><td>SP / Function / Trigger / View</td><td></td><td></td><td></td><td>✔</td></tr><tr><td>表結構</td><td></td><td></td><td></td><td>✔</td></tr><tr><td><code>appSettings</code> 的商業參數</td><td></td><td>✔</td><td>✔</td><td></td></tr></tbody></table></div>
+<p>三條規則解釋這張表:</p>
+<ol><li><strong><code>UIEntity</code> 兩端都要</strong>,因為它是跨 Remoting 序列化的型別,兩端版本不一致會在反序列化時出錯。<strong>此為推論</strong>,依據見 <code>architecture.md §8.1</code>。</li><li><strong>共用層(<code>Common/</code> 底下)一律三邊都佈</strong>,因為客戶端、伺服端、批次服務都參考它。判斷方法:該組件被哪一側的專案 <code>ProjectReference</code>,就佈到哪一側;共用層通常三邊都有。</li><li><strong>WindowsService 是 Remoting 的呼叫端</strong>(<code>architecture.md §8.4</code>),它需要的是「客戶端那一套」加上它自己的 exe,不是伺服端那一套。</li></ol>
+<h3 id="2-1-先查你改的組件在不在-dll-覆寫名單裡">2.1 ⚠ 先查你改的組件在不在 DLL 覆寫名單裡</h3>
+<p><code>architecture.md 附錄 C.5</code> 列了 <strong>25 個組件</strong>:repo 有原始碼,但有 <strong>143 筆 <code>&lt;HintPath&gt;</code></strong> 把它們綁成 <code>%PTPF%</code> 底下的預編 DLL。</p>
+<p><strong>改了這類組件,只重編不更新 <code>%PTPF%</code> 的話,下游拿到的還是舊的。</strong>症狀是「改了沒效果」。</p>
+<p>查法:在該組件的 <code>.csproj</code> 裡搜 <code>PTPFBlock</code>,搜得到就是被綁 DLL 的那種。名單前幾名:</p>
+<div class="tw"><table><thead><tr><th>組件</th><th>被幾支 csproj 綁 DLL</th></tr></thead><tbody><tr><td><code>Vendor.Product.Framework.Exceptions</code></td><td>90</td></tr><tr><td><code>Vendor.Product.TA.FormProxy.EC</code> · <code>TA.MappingCode</code> · <code>TA.DataAccess</code></td><td>各 5</td></tr><tr><td><code>Vendor.Product.TA.ServerUtility</code> · <code>TA.Utility</code></td><td>各 4</td></tr></tbody></table></div>
+<blockquote><p>開發機上這件事看不出來,因為 build 產出的落點就是 <code>%PTPF%</code>(<code>runbooks/build-env.md §5.1</code>)。<strong>到了部署機就會爆。</strong></p></blockquote>
+</div></section><section class="sec" data-sec="3-客戶端"><h2 id="3-客戶端"><button class="tg" aria-label="收合/展開" type="button"></button>3. 客戶端</h2><div class="sec-body">
+<h3 id="3-1-放什麼">3.1 放什麼</h3>
+<div class="tw"><table><thead><tr><th>檔</th><th>說明</th></tr></thead><tbody><tr><td><code>main.exe</code> + 設定檔</td><td>主程式。<strong>不在 repo 內</strong>,見 <a class="sec" href="#3-3-客戶端的-remoting-設定不在版控裡">§3.3</a></td></tr><tr><td><code>UI.&lt;MOD&gt;.dll</code></td><td>各模組畫面</td></tr><tr><td><code>UIEntity.&lt;MOD&gt;.dll</code></td><td>與伺服端<strong>版本必須一致</strong></td></tr><tr><td><code>Vendor.Product.TA.ClientUtility.dll</code> · <code>UI.CustomControl</code> · <code>UI.WindowControls</code></td><td>客戶端共用</td></tr><tr><td>Infragistics v19.1 執行期</td><td>11 支 DLL</td></tr><tr><td>Crystal Reports 執行期</td><td>檢視報表用,版本見 <code>runbooks/build-env.md §2</code></td></tr><tr><td>PTPFBlock 客戶端那部分</td><td><code>Vendor.Product.UI</code> / <code>Dialog</code> / <code>CustomerDefineControl</code> 等</td></tr></tbody></table></div>
+<h3 id="3-2-citrix">3.2 Citrix</h3>
+<p>設定檔開了 Citrix 支援(<code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config:262</code>):</p>
+<pre class="code lang-xml"><code>&lt;add key="IsSupportCitrix" value="true"/&gt;</code></pre>
+<p>註解說明它會改變兩件事:不檢查 <code>main.exe</code> 是否重複執行、報表範本的暫存目錄從 <code>ApplicationData</code> 換到 log 目錄下的 <code>CrystalReport</code>。<strong>部署到 Citrix 環境時這個值要是 <code>true</code>。</strong>〔客戶特定〕</p>
+<p>版本字串也是分開的(<code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config:264</code>):<code>基金事務系統(VENDOR) (v 1.7.0.1)</code>。</p>
+<h3 id="3-3-客戶端的-remoting-設定不在版控裡">3.3 ⚠ 客戶端的 Remoting 設定不在版控裡</h3>
+<p>全 repo 只有三支設定檔含 <code>&lt;channel&gt;</code>,而 <code>.rem</code> 註冊只有 20 筆——其中 18 筆屬於 <code>SWEmailService</code> / <code>SWService</code> 兩個別的 Vendor 產品,真正屬於 TA 的只有 <code>OFDB600_Pxy</code> 與 <code>OFDB609_Pxy</code> 兩筆(<code>architecture.md §8.1.1</code>)。</p>
+<p><strong>908 支畫面顯然不是靠這兩筆在跑。<code>main.exe.config</code> 是部署產物,不在版控內。</strong></p>
+<blockquote><p><strong>〔假設〕缺:部署機的 <code>main.exe.config</code>。</strong>推論它會用同一種 <code>&lt;wellknown&gt;</code> 語法,替每一支 <code>_Pxy</code> 型別註冊一個 <code>.rem</code> 端點,或用萬用的 <code>RegisterActivatedClientType</code>。依據是 <code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config:189</code> 那筆的寫法。<strong>拿到部署機的設定檔才能寫出正確步驟。</strong></p></blockquote>
+</div></section><section class="sec" data-sec="4-伺服端-iis"><h2 id="4-伺服端-iis"><button class="tg" aria-label="收合/展開" type="button"></button>4. 伺服端(IIS)</h2><div class="sec-body">
+<h3 id="4-1-端點">4.1 端點</h3>
+<p>從 WindowsService 的客戶端設定反推(<code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config:189</code>):</p>
+<pre class="code lang-xml"><code>&lt;wellknown type="Vendor.Product.TA.FormProxy.EC.OFDB600_Pxy, Vendor.Product.TA.FormProxy.EC"
+           url="http://<內網伺服器IP>/ATLAS_TAService/OFDB600_Pxy.rem"/&gt;</code></pre>
+<div class="tw"><table><thead><tr><th>項目</th><th>值</th></tr></thead><tbody><tr><td>伺服器</td><td><code><內網伺服器IP></code>〔客戶特定〕——設定檔註解寫「趴板時請變更 url 屬性中的伺服器位置」</td></tr><tr><td>虛擬目錄</td><td><code>ATLAS_TAService</code>〔客戶特定〕</td></tr><tr><td>通道</td><td><code>http</code> + <code>binary</code> formatter(<code>…App.config:179</code>)</td></tr><tr><td>驗證</td><td><code>useDefaultCredentials="true"</code>(Windows 整合驗證)</td></tr></tbody></table></div>
+<h3 id="4-2-放什麼">4.2 放什麼</h3>
+<p><code>FormProxy.&lt;MOD&gt;.dll</code> · <code>Control.&lt;MOD&gt;.dll</code> · <code>PO.&lt;MOD&gt;.dll</code> · <code>DataEntity.&lt;MOD&gt;.dll</code> · <code>UIEntity.&lt;MOD&gt;.dll</code> · <code>TA.DataAccess.dll</code> · <code>TA.ServerUtility.dll</code> · 共用層 · PTPFBlock 伺服端部分。</p>
+<h3 id="4-3-資料庫型態設定">4.3 資料庫型態設定</h3>
+<p>執行期用哪個資料庫引擎由 Fusion 框架設定決定,不是寫死的(<code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config:62-67</code>):</p>
+<pre class="code lang-xml"><code>
+&lt;add name="TA" dataBaseProvider="Oracle" sqlLogEnable="false"/&gt;</code></pre>
+<p>六個具名資料庫(<code>Fusion</code> / <code>SWProduct</code> / <code>Logging</code> / <code>TA</code> / <code>SWEMail</code> / <code>Scripting</code>)本站台全設 Oracle。另有 <code>appSettings</code> 的 <code>DbServerType</code>(<code>…App.config:200</code>)。</p>
+<p><strong>這兩處要一致</strong>,而且 <code>DbServerType</code> 在同一個檔裡出現兩次(<code>:200</code> 與 <code>:202</code>),值相同所以目前無害,改的時候兩處都要改(<code>architecture.md 附錄 E21</code>)。</p>
+</div></section><section class="sec" data-sec="5-windowsservice-四支"><h2 id="5-windowsservice-四支"><button class="tg" aria-label="收合/展開" type="button"></button>5. WindowsService 四支</h2><div class="sec-body">
+<h3 id="5-1-清單">5.1 清單</h3>
+<div class="tw"><table><thead><tr><th>服務名</th><th>專案</th><th>安裝帳號</th></tr></thead><tbody><tr><td><code>OFDB600_Service</code></td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600</code></td><td><code>LocalSystem</code></td></tr><tr><td><code>OFDB609_Service</code></td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB609</code></td><td><code>LocalSystem</code></td></tr><tr><td><code>OFDB680_Service</code></td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB680</code></td><td><code>LocalSystem</code></td></tr><tr><td><code>RSPB008_Service</code></td><td><code>Dev/ATLAS.RSP/Source/WindowsService/WindowsService.RSPB008</code></td><td><code>LocalSystem</code></td></tr></tbody></table></div>
+<p>服務名定義在 <code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/ProjectInstaller.Designer.cs:42</code>,帳號在同檔 <code>:36</code>。</p>
+<h3 id="5-2-安裝與啟停">5.2 安裝與啟停</h3>
+<p>四支都有 <code>ProjectInstaller.cs</code>,所以走 <code>InstallUtil</code>:</p>
+<pre class="code"><code>"%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe" Vendor.Product.TA.WindowsService.OFDB600.exe
+sc start OFDB600_Service
+sc stop  OFDB600_Service
+"%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe" /u Vendor.Product.TA.WindowsService.OFDB600.exe</code></pre>
+<blockquote><p><strong>〔假設〕缺:部署機。</strong><code>InstallUtil</code> 的路徑與位元版本(Framework vs Framework64)未實測。依據是專案為 .NET Framework 4.8 且含 <code>ProjectInstaller</code>,這是標準做法。</p></blockquote>
+<h3 id="5-3-服務帳號-不能-改成網域帳號">5.3 ⚠ 服務帳號<strong>不能</strong>改成網域帳號</h3>
+<p><code>Program.cs</code> 用 <code>Environment.UserName</code> 判斷自己是不是以服務身分啟動(<code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/Program.cs:27</code>):</p>
+<pre class="code lang-csharp"><code>if (Environment.UserName == "SYSTEM")
+{
+    ServiceBase.Run(ServicesToRun);      // 服務模式
+}
+else
+{
+    OFDB600_Service DebugToRun = new OFDB600_Service();
+    DebugToRun.Start();
+    Console.ReadLine();                  // 除錯模式
+}</code></pre>
+<p><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/Program.cs:26-44</code></p>
+<p>配合安裝時的 <code>ServiceAccount.LocalSystem</code>,<code>Environment.UserName</code> 才會是 <code>"SYSTEM"</code>。</p>
+<p><strong>如果為了資安把服務帳號改成網域帳號,<code>UserName</code> 就不是 <code>"SYSTEM"</code>,程式會走進除錯分支,呼叫 <code>Console.ReadLine()</code>——服務沒有主控台,<code>ServiceBase.Run</code> 永遠不會被呼叫,SCM 等到逾時後判定啟動失敗。</strong></p>
+<p>三支 <code>OFDB*</code> 都有這個判斷;<code>RSPB008</code> 沒有(<code>Program.cs</code> 裡沒有 <code>Environment.UserName</code>)。要改帳號就得先改這段程式。</p>
+<h3 id="5-4-服務也要跟著佈的東西">5.4 服務也要跟著佈的東西</h3>
+<p>服務是 Remoting 的呼叫端,所以它的目錄要有:自己的 exe 與 <code>exe.config</code>、<code>FormProxy.&lt;MOD&gt;.dll</code>、<code>UIEntity.&lt;MOD&gt;.dll</code>、共用層、PTPFBlock。</p>
+<p><strong><code>exe.config</code> 裡有伺服器位址</strong>(<code>…App.config:189</code>),換伺服器時四支都要改。</p>
+</div></section><section class="sec" data-sec="6-資料庫腳本"><h2 id="6-資料庫腳本"><button class="tg" aria-label="收合/展開" type="button"></button>6. 資料庫腳本</h2><div class="sec-body">
+<h3 id="6-1-順序">6.1 順序</h3>
+<p><strong>一律先資料庫、後程式。</strong>理由:程式端的 INSERT / UPDATE 欄位清單是執行期跟資料庫要 schema 決定的(<code>runbooks/add-column.md §5.2</code>),資料庫還沒有新欄位,程式先上線就會炸。</p>
+<p>反過來,刪欄位要先下程式、再改資料庫。</p>
+<h3 id="6-2-編碼">6.2 編碼</h3>
+<p><code>DB/</code> 底下 277 支腳本 <strong>cp950 196 支 + UTF-8 BOM 81 支混用</strong>(<code>architecture.md 附錄 B.5</code>)。</p>
+<ul><li>執行前確認你的工具用對編碼,否則中文註解會變亂碼,<strong>有些工具會連帶把整支腳本解析壞</strong>。</li><li>要程式化讀取一律走 <code>atlas_scan.py</code> 的 <code>read_text()</code>。</li></ul>
+<h3 id="6-3-rollback">6.3 rollback</h3>
+<p><code>DB/Table/</code> 的 rollback <strong>不是逐檔配對</strong>。<code>DB/Table/11706_rollback.sql</code> 是<strong>票號級一整包</strong>,對應該票號的 9 支正向腳本(<code>architecture.md 附錄 B.5</code>)。</p>
+<p>所以回退時是「整個票號一起退」,不能只退其中一支。<strong>部署前先確認該票號的 rollback 存在且涵蓋你要上的全部腳本。</strong></p>
+<h3 id="6-4-有些腳本不可重跑">6.4 ⚠ 有些腳本不可重跑</h3>
+<p><code>DB/Table/</code> 內有腳本含正式資料(受益人編號、經手人帳號),重跑會產生重複資料(<code>architecture.md 附錄 E</code>)。<strong>執行前先看內容,不要當成冪等腳本無腦重跑。</strong></p>
+<h3 id="6-5-sp-大量不在版控">6.5 SP 大量不在版控</h3>
+<p>程式呼叫 380 支 SP,repo 只有 61 支有腳本(缺 84%,<code>architecture.md 附錄 B.0</code>)。<strong>部署一支 SP 之前,先確認你手上這份是不是線上的最新版</strong>——多數情況要先從資料庫 <code>ALL_SOURCE</code> 撈出來比對。細節見 <code>runbooks/change-sp-fn-trigger.md</code>。</p>
+</div></section><section class="sec" data-sec="7-crystal-報表"><h2 id="7-crystal-報表"><button class="tg" aria-label="收合/展開" type="button"></button>7. Crystal 報表</h2><div class="sec-body">
+<h3 id="7-1-範本是-build-出來的-不是部署過去的">7.1 範本是 build 出來的,不是部署過去的</h3>
+<p>25 支 <code>Report.&lt;模組&gt;</code> 專案帶 PostBuild(<code>Dev/ATLAS.BBS.Report/Source/CrystalReports/Report.BBS/Report.BBS.csproj</code>):</p>
+<pre class="code"><code>xcopy "$(ProjectDir)*.rpt" "C:\Program Files\Vendor\PTPFBlock\CrystalReports\." /d /r /y</code></pre>
+<p>所以 609 支範本在建置機上就落到 <code>%PTPF%\CrystalReports\</code>。<strong>部署時要把這個目錄一起帶到伺服端。</strong></p>
+<h3 id="7-2-客戶端要有-crystal-執行期">7.2 客戶端要有 Crystal 執行期</h3>
+<p>檢視報表在客戶端,所以客戶端要裝 Crystal Reports 執行期。版本見 <code>runbooks/build-env.md §2</code>(<strong>13.0.4000.0 與 13.0.2000.0 兩版並存</strong>,裝新的)。</p>
+</div></section><section class="sec" data-sec="8-設定檔與連線字串"><h2 id="8-設定檔與連線字串"><button class="tg" aria-label="收合/展開" type="button"></button>8. 設定檔與連線字串</h2><div class="sec-body">
+<h3 id="8-1-哪裡有連線字串">8.1 哪裡有連線字串</h3>
+<div class="tw"><table><thead><tr><th>檔</th><th>用途</th></tr></thead><tbody><tr><td><code>Dev/Common/Source/Base/TA.DataEntity/app.config:6</code></td><td>SqlClient,<strong>AGI 產品線的設計期殘留,不要照抄</strong></td></tr><tr><td><code>Dev/Common/Source/DataSource/DataEntity.DataSource/App.config</code></td><td>同上,14 筆</td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/App.config:8</code></td><td>Devart,<strong>設計期</strong>用的 Oracle 開發庫</td></tr></tbody></table></div>
+<p><strong>這些都不是執行期連線。</strong>執行期的資料庫由 Fusion 設定決定(<a class="sec" href="#4-3-資料庫型態設定">§4.3</a>),實際連線字串在部署機的設定檔裡。</p>
+<blockquote><p><strong>〔假設〕缺:部署機設定檔。</strong>repo 內找不到正式環境的連線字串。依據是 repo 內的三種連線字串分別對應設計期與另一個客戶,見 <code>architecture.md §8.2</code>。</p></blockquote>
+<h3 id="8-2-設定檔含明文密碼">8.2 ⚠ 設定檔含明文密碼</h3>
+<p><code>architecture.md 附錄 E3</code> 列了多處:資料庫密碼、服務帳號密碼、SMTP 密碼、影像印鑑系統帳密。</p>
+<p><strong>部署時不要把開發用的設定檔直接複製到正式環境</strong>,而且這些密碼在版控裡人人看得到,建議另案處理。本文一律不重製密碼值。</p>
+<h3 id="8-3-商業參數也在設定檔">8.3 商業參數也在設定檔</h3>
+<p><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config:207</code> 之類的 <code>appSettings</code> 放了短線費率、計費區間、TDCC 檔案路徑等<strong>商業規則</strong>。</p>
+<p><strong>改這些不用重編,改設定檔重啟服務即可</strong>——但也代表部署時如果整份覆蓋設定檔,會把站台調過的參數蓋掉。<strong>設定檔要合併不要覆蓋。</strong></p>
+<h3 id="8-4-落地路徑">8.4 落地路徑</h3>
+<p>固定寫死在設定檔,部署機上這些目錄要先建好並給權限:</p>
+<div class="tw"><table><thead><tr><th>用途</th><th>路徑</th></tr></thead><tbody><tr><td>框架 log</td><td><code>C:\Vendor\VendorProduct\*.log</code></td></tr><tr><td>加密金鑰</td><td><code>C:\Vendor\Keys\DefaultKey.key</code>(<code>…App.config:43</code>)</td></tr><tr><td>匯出檔</td><td><code>C:\Vendor\ExportFile</code></td></tr><tr><td>TDCC 指託資料檔</td><td><code>C:\Vendor\TDCC指託\…</code></td></tr></tbody></table></div>
+<p>〔客戶特定〕</p>
+</div></section><section class="sec" data-sec="9-驗證清單"><h2 id="9-驗證清單"><button class="tg" aria-label="收合/展開" type="button"></button>9. 驗證清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>#</th><th>動作</th><th>過關標準</th></tr></thead><tbody><tr><td>1</td><td>比對伺服端與客戶端的 <code>UIEntity.&lt;MOD&gt;.dll</code> 版本</td><td>兩邊相同</td></tr><tr><td>2</td><td>查你改的組件在不在 <code>architecture.md 附錄 C.5</code> 名單</td><td>在的話 <code>%PTPF%</code> 也更新了</td></tr><tr><td>3</td><td>開一支該模組的畫面查詢</td><td>查得出資料(驗 Remoting 通、PO 正常)</td></tr><tr><td>4</td><td>新增 → 覆核 → 核准 一輪</td><td>四眼狀態正確流轉(<code>architecture.md §3</code>)</td></tr><tr><td>5</td><td><code>sc query &lt;服務名&gt;</code> 四支</td><td><code>RUNNING</code></td></tr><tr><td>6</td><td>看服務 log</td><td><code>C:\Vendor\VendorProduct\</code> 底下有新紀錄且無例外</td></tr><tr><td>7</td><td>印一支該模組的報表</td><td>出得來(驗 <code>%PTPF%\CrystalReports</code> 有帶到)</td></tr><tr><td>8</td><td>資料庫腳本</td><td>對應票號的物件都存在且版本正確</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="10-常見錯誤與症狀"><h2 id="10-常見錯誤與症狀"><button class="tg" aria-label="收合/展開" type="button"></button>10. 常見錯誤與症狀</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>病因</th><th>回去做</th></tr></thead><tbody><tr><td><strong>改了沒效果</strong></td><td>改的組件在 DLL 覆寫名單裡,<code>%PTPF%</code> 沒更新</td><td><a class="sec" href="#2-1-先查你改的組件在不在-dll-覆寫名單裡">§2.1</a></td></tr><tr><td><strong>改了沒效果(另一種)</strong></td><td>只佈了伺服端或只佈了客戶端</td><td><a class="sec" href="#2-核心對照表-改了什麼-要部署哪些">§2</a> 對照表</td></tr><tr><td><strong>反序列化例外 / 型別版本不符</strong></td><td><code>UIEntity</code> 只佈了一端</td><td><a class="sec" href="#2-核心對照表-改了什麼-要部署哪些">§2</a> 規則 1</td></tr><tr><td><strong>服務裝好了但啟動逾時失敗</strong></td><td>服務帳號不是 <code>LocalSystem</code>,程式走進 <code>Console.ReadLine()</code> 分支</td><td><a class="sec" href="#5-3-服務帳號-不能-改成網域帳號">§5.3</a></td></tr><tr><td><strong><code>ORA-00904</code> invalid identifier</strong></td><td>程式先上線、資料庫腳本還沒跑</td><td><a class="sec" href="#6-1-順序">§6.1</a></td></tr><tr><td><strong>腳本執行後中文全變亂碼</strong></td><td>cp950 / UTF-8 BOM 混用,工具用錯編碼</td><td><a class="sec" href="#6-2-編碼">§6.2</a></td></tr><tr><td><strong>回退時退不乾淨</strong></td><td>rollback 是票號級一整包,只退了其中一支</td><td><a class="sec" href="#6-3-rollback">§6.3</a></td></tr><tr><td><strong>重跑腳本後資料重複</strong></td><td>該腳本含正式資料,不可重跑</td><td><a class="sec" href="#6-4-有些腳本不可重跑">§6.4</a></td></tr><tr><td><strong>報表印不出來 / 找不到範本</strong></td><td><code>%PTPF%\CrystalReports</code> 沒帶到伺服端</td><td><a class="sec" href="#7-1-範本是-build-出來的-不是部署過去的">§7.1</a></td></tr><tr><td><strong>站台調過的費率被打回預設</strong></td><td>整份覆蓋設定檔</td><td><a class="sec" href="#8-3-商業參數也在設定檔">§8.3</a></td></tr><tr><td><strong>連得到畫面但存檔報錯</strong></td><td>資料庫型態設定 <code>dataBaseProvider</code> 與 <code>DbServerType</code> 不一致</td><td><a class="sec" href="#4-3-資料庫型態設定">§4.3</a></td></tr><tr><td><strong>換伺服器後客戶端連不上</strong></td><td><code>main.exe.config</code> 的 <code>.rem</code> 位址沒改</td><td><a class="sec" href="#3-3-客戶端的-remoting-設定不在版控裡">§3.3</a> <a class="sec" href="#4-1-端點">§4.1</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-a-本手冊引用的檔案清單"><h2 id="附錄-a-本手冊引用的檔案清單"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 A 本手冊引用的檔案清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>檔</th><th>錨點</th><th>用在</th></tr></thead><tbody><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config</code></td><td><code>:43</code> <code>:62-67</code> <code>:179</code> <code>:189</code> <code>:200</code> <code>:202</code> <code>:207</code> <code>:262</code> <code>:264</code></td><td><a class="sec" href="#3-客戶端">§3</a> <a class="sec" href="#4-伺服端-iis">§4</a> <a class="sec" href="#8-設定檔與連線字串">§8</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/Program.cs</code></td><td><code>:26-44</code> <code>:27</code></td><td><a class="sec" href="#5-3-服務帳號-不能-改成網域帳號">§5.3</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/ProjectInstaller.Designer.cs</code></td><td><code>:36</code> <code>:42</code></td><td><a class="sec" href="#5-1-清單">§5.1</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB609/OFDB609_Service.cs</code></td><td><code>:40-42</code></td><td><a class="sec" href="#5-1-清單">§5.1</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB680/OFDB680_Service.cs</code></td><td><code>:42-44</code></td><td><a class="sec" href="#5-1-清單">§5.1</a></td></tr><tr><td><code>Dev/ATLAS.BBS.Report/Source/CrystalReports/Report.BBS/Report.BBS.csproj</code></td><td><code>:1</code></td><td><a class="sec" href="#7-1-範本是-build-出來的-不是部署過去的">§7.1</a></td></tr><tr><td><code>Dev/Common/Source/Base/TA.DataEntity/app.config</code></td><td><code>:6</code></td><td><a class="sec" href="#8-1-哪裡有連線字串">§8.1</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/App.config</code></td><td><code>:8</code></td><td><a class="sec" href="#8-1-哪裡有連線字串">§8.1</a></td></tr><tr><td><code>Dev/Common/Source/DataSource/DataEntity.DataSource/App.config</code></td><td><code>:7</code></td><td><a class="sec" href="#8-1-哪裡有連線字串">§8.1</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-b-待輸入回填"><h2 id="附錄-b-待輸入回填"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 B 待輸入回填</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>缺什麼</th><th>影響哪幾段</th><th>補進來後要改什麼</th></tr></thead><tbody><tr><td><strong>部署機的 <code>main.exe.config</code></strong></td><td><a class="sec" href="#3-3-客戶端的-remoting-設定不在版控裡">§3.3</a> <a class="sec" href="#4-1-端點">§4.1</a></td><td>客戶端 Remoting 註冊方式目前是推論;補進來後寫出實際的端點清單與換機器要改哪幾行</td></tr><tr><td><strong>部署機存取權</strong></td><td>全篇</td><td>整本未實測。跑一次完整部署,把實際指令、路徑、耗時回填</td></tr><tr><td><strong>正式環境連線字串與帳號</strong></td><td><a class="sec" href="#8-1-哪裡有連線字串">§8.1</a></td><td>目前只知道設計期的值</td></tr><tr><td><strong>PTPFBlock DLL</strong></td><td><a class="sec" href="#2-1-先查你改的組件在不在-dll-覆寫名單裡">§2.1</a> <a class="sec" href="#3-客戶端">§3</a> <a class="sec" href="#4-伺服端-iis">§4</a></td><td>無法確認伺服端 / 客戶端各要哪幾支;目前只能給「該側專案參考到的就要」這個原則</td></tr><tr><td><strong>IIS 設定(應用程式集區、<code>.rem</code> 對應)</strong></td><td><a class="sec" href="#4-伺服端-iis">§4</a></td><td>repo 內沒有 <code>web.config</code>,伺服端的裝載設定完全看不到</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-c-本手冊未實測"><h2 id="附錄-c-本手冊未實測"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 C 本手冊未實測</h2><div class="sec-body">
+<p>與 <code>runbooks/build-env.md 附錄 C</code> 同樣的狀況:<strong>沒有任何一步實際跑過</strong>。部署分工的結論來自 Remoting 邊界(有三項程式證據,<code>architecture.md §8.1</code>),但「複製哪些檔到哪個目錄」這種操作細節,repo 裡沒有答案。</p>
+<p>本手冊的定位是:<strong>拿到部署機那天的檢查清單與陷阱提醒</strong>,特別是 <a class="sec" href="#2-1-先查你改的組件在不在-dll-覆寫名單裡">§2.1</a>(DLL 覆寫)、<a class="sec" href="#5-3-服務帳號-不能-改成網域帳號">§5.3</a>(服務帳號)、<a class="sec" href="#6-3-rollback">§6.3</a>(票號級 rollback)、<a class="sec" href="#8-3-商業參數也在設定檔">§8.3</a>(設定檔要合併不要覆蓋)這四條——它們都是「照直覺做就會錯」的地方。</p></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-14 14:23 產生 · 標題 38 · 圖 1 · 表格 12 · 程式錨點 23 · § 連結 37 · 引用檢查：畫面 1（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

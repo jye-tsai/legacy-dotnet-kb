@@ -1,0 +1,1034 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-15">
+<title>ATLAS OFDR1 模組 全流程商業邏輯</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-系統邊界與角色">0. 系統邊界與角色</a>
+<a class="l3" href="#0-1-先破除一個假設-報表是-七層-不是六層">0.1 先破除一個假設:報表是七層,不是六層</a>
+<a class="l3" href="#0-2-m-i-r-三欄對照表-本篇最重要的一張表-後面-189-支報表靠它">0.2 M / I / R 三欄對照表(本篇最重要的一張表,後面 189 支報表靠它)</a>
+<a class="l3" href="#0-3-三句話版本">0.3 三句話版本</a>
+<a class="l3" href="#0-4-資料怎麼從-sp-流到-rpt">0.4 資料怎麼從 SP 流到 .rpt</a>
+<a class="l3" href="#0-5-這-40-支涵蓋哪些業務線-推測-依報表中文名與-sp-名歸類">0.5 這 40 支涵蓋哪些業務線(推測,依報表中文名與 SP 名歸類)</a>
+<a class="l3" href="#0-6-誰用-什麼時候用">0.6 誰用、什麼時候用</a>
+<a class="l3" href="#0-7-不管什麼">0.7 不管什麼</a>
+<a class="l2" href="#1-全景與各式流程圖">1. 全景與各式流程圖</a>
+<a class="l3" href="#1-1-全景圖">1.1 全景圖</a>
+<a class="l3" href="#1-2-七層結構與-m-i-r-差異">1.2 七層結構與 M / I / R 差異</a>
+<a class="l3" href="#1-3-資料來源三種分流">1.3 資料來源三種分流</a>
+<a class="l3" href="#1-4-最重的一支-ofdr452-的完整路徑">1.4 最重的一支:OFDR452 的完整路徑</a>
+<a class="l3" href="#1-5-跨模組-報表讀的表是誰建的">1.5 跨模組:報表讀的表是誰建的</a>
+<a class="l2" href="#2-資料模型">2. 資料模型</a>
+<a class="l3" href="#2-1-主表與明細-本片沒有">2.1 主表與明細:本片沒有</a>
+<a class="l3" href="#2-2-sp-與-function-71-個-版控內-0-個">2.2 SP 與 Function:71 個,版控內 0 個</a>
+<a class="l3" href="#2-3-資料來源三種分流-逐支歸類">2.3 資料來源三種分流(逐支歸類)</a>
+<a class="l3" href="#2-4-參數化程度">2.4 參數化程度</a>
+<a class="l3" href="#2-5-參數命名慣例-四套並存">2.5 參數命名慣例:四套並存</a>
+<a class="l3" href="#2-6-rpt-對應表-m-i-沒有這一節">2.6 .rpt 對應表(M / I 沒有這一節)</a>
+<a class="l3" href="#2-7-c-裡看得見的表-只有-13-張">2.7 C# 裡看得見的表(只有 13 張)</a>
+<a class="l3" href="#2-8-欄位中文名">2.8 欄位中文名</a>
+<a class="l3" href="#2-9-狀態碼">2.9 狀態碼</a>
+<a class="l2" href="#3-畫面清冊">3. 畫面清冊</a>
+<a class="l3" href="#3-1-維護-m">3.1 維護 M</a>
+<a class="l3" href="#3-2-查詢-i">3.2 查詢 I</a>
+<a class="l3" href="#3-3-批次-b">3.3 批次 B</a>
+<a class="l3" href="#3-4-報表-r-40-支">3.4 報表 R(40 支)</a>
+<a class="l3" href="#3-5-從清冊讀出來的六件事">3.5 從清冊讀出來的六件事</a>
+<a class="l2" href="#4-維護畫面-m-一支一節">4. 維護畫面(M)— 一支一節</a>
+<a class="l2" href="#5-查詢畫面-i">5. 查詢畫面(I)</a>
+<a class="l2" href="#6-批次-b-與-windowsservice">6. 批次(B)與 WindowsService</a>
+<a class="l2" href="#7-報表-r">7. 報表(R)</a>
+<a class="l3" href="#7-1-通則-一支報表從按鈕到出紙的五段">7.1 通則:一支報表從按鈕到出紙的五段</a>
+<a class="l3" href="#7-2-ofdr001a-ofdr002a-那個-a-是什麼">7.2 OFDR001A / OFDR002A:那個 A 是什麼</a>
+<a class="l3" href="#7-3-連號群-ofdr021-ofdr024-不是同一個業務系列">7.3 連號群 OFDR021–OFDR024:不是同一個業務系列</a>
+<a class="l3" href="#7-4-連號群-ofdr235-ofdr239-兩支一組-其餘各自獨立">7.4 連號群 OFDR235–OFDR239:兩支一組,其餘各自獨立</a>
+<a class="l3" href="#7-5-連號群-ofdr511-ofdr513-同系列-但參數慣例三套">7.5 連號群 OFDR511–OFDR513:同系列,但參數慣例三套</a>
+<a class="l3" href="#7-6-連號群-ofdr751-ofdr752-不是同一系列">7.6 連號群 OFDR751 / OFDR752:不是同一系列</a>
+<a class="l3" href="#7-7-連號群-ofdr731-ofdr733-兩支毫無關係">7.7 連號群 OFDR731 / OFDR733:兩支毫無關係</a>
+<a class="l3" href="#7-8-請款四支-ofdr452-ofdr453-ofdr455-ofdr457-全片最重-也最會咬人">7.8 請款四支 OFDR452 OFDR453 OFDR455 OFDR457:全片最重,也最會咬人</a>
+<a class="l3" href="#7-9-ofdr716-rpt-引用懸空-本片唯一的版控外版型">7.9 OFDR716:.rpt 引用懸空,本片唯一的版控外版型</a>
+<a class="l3" href="#7-10-ofdr540-唯一動態組報表類別名的一支">7.10 OFDR540:唯一動態組報表類別名的一支</a>
+<a class="l3" href="#7-11-只出-excel-的兩支-ofdr237-ofdr453">7.11 只出 Excel 的兩支:OFDR237 OFDR453</a>
+<a class="l3" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">7.12 OFDR022 OFDR023:不是報表,而且開畫面就壞</a>
+<a class="l3" href="#7-13-卡控總表">7.13 卡控總表</a>
+<a class="l3" href="#7-14-其餘各支-分群帶過">7.14 其餘各支(分群帶過)</a>
+<a class="l2" href="#8-跨模組共用">8. 跨模組共用</a>
+<a class="l3" href="#8-1-本片讀別人的-雙向-不是單向">8.1 本片讀別人的:雙向,不是單向</a>
+<a class="l3" href="#8-2-本片的表被誰用-沒有自己的表">8.2 本片的表被誰用:沒有自己的表</a>
+<a class="l3" href="#8-3-共用元件">8.3 共用元件</a>
+<a class="l3" href="#8-4-改動影響面速查">8.4 改動影響面速查</a>
+<a class="l2" href="#附錄-a-資料表總表">附錄 A. 資料表總表</a>
+<a class="l2" href="#附錄-b-sp-function-trigger-view">附錄 B. SP / Function / Trigger / View</a>
+<a class="l2" href="#附錄-c-代碼對照">附錄 C. 代碼對照</a>
+<a class="l2" href="#附錄-d-掃描母體與覆蓋率">附錄 D. 掃描母體與覆蓋率</a>
+<a class="l3" href="#d-1-不在本片的-5-支-劃給下一片">D.1 不在本片的 5 支(劃給下一片)</a>
+<a class="l2" href="#附錄-e-讀本文時要注意的地方">附錄 E. 讀本文時要注意的地方</a>
+<a class="l3" href="#e-30-交辦缺陷型錄的逐項核對">E.30 交辦缺陷型錄的逐項核對</a>
+<a class="l3" href="#e-31-最需要人工複驗的一條">E.31 最需要人工複驗的一條</a>
+<a class="l2" href="#附錄-f-版本紀錄">附錄 F. 版本紀錄</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-15</span></div>
+<h1 id="atlas-ofdr1-模組-全流程商業邏輯">ATLAS OFDR1 模組 全流程商業邏輯</h1>
+<blockquote><p>產出日期:2026-09-15(v1)。本文為<strong>純程式碼閱讀彙整</strong>,未修改任何 ATLAS 原始碼。每條規則附程式錨點(<code>Dev/…/X.cs:行號</code>),行號為分析當下版本。 <strong>建議讀法</strong>:<strong>第一次讀報表畫面的人,只讀 <a class="sec" href="#0-2-m-i-r-三欄對照表-本篇最重要的一張表-後面-189-支報表靠它">§0.2</a> 那張 M / I / R 三欄對照表就夠用</strong>——全庫 189 支報表都以它為前提。要動手改某一支的人,查 <a class="sec" href="#3-畫面清冊">§3</a> 清冊定位,再跳 <a class="sec" href="#7-報表-r">§7</a> 的對應小節。急著知道哪裡會咬人的人直接翻附錄 E。加新報表的步驟另有前人寫的 <code>add-report.md</code>,本文不重複那 292 行,只補它沒講的:<strong>實際長出來的 40 支跟那份步驟書差在哪</strong>。</p>
+<p>⚠ <strong>OFDR1 不是一個業務模組,是一份切片。</strong> 這是全庫第一篇專門寫<strong>報表畫面(R)</strong>的文件。OFD 模組有 550 支畫面,本文只涵蓋 <code>Dev/ATLAS.OFD.Report</code> 這個獨立方案底下的 <strong>40 支 R 畫面</strong>(方案內實有 45 支,另 5 支 <code>OFDR285</code> <code>OFDR287</code> <code>OFDR461</code> <code>OFDR561</code> <code>OFDR562</code> 劃給下一片)。切片依據是專案資料夾與型別碼,不是業務;所以本片內部含<strong>八條互不相干的業務線</strong>(<a class="sec" href="#0-5-這-40-支涵蓋哪些業務線-推測-依報表中文名與-sp-名歸類">§0.5</a>)。名稱 <code>OFDR1</code> 為<strong>推測</strong>,取自「OFD 的 R 畫面第 1 片」。</p>
+<p>⚠ <strong>前 24 篇都是 M(維護)/ B(批次)/ I(查詢)。</strong> 本篇建立的章節配置會被後續報表片沿用:<strong><a class="sec" href="#4-維護畫面-m-一支一節">§4</a> <a class="sec" href="#5-查詢畫面-i">§5</a> <a class="sec" href="#6-批次-b-與-windowsservice">§6</a> 全空、<a class="sec" href="#7-報表-r">§7</a> 才是主體</strong>,而且 <a class="sec" href="#2-資料模型">§2</a> 多一張 M / I 都沒有的表——<strong><code>.rpt</code> 對應表</strong>(<a class="sec" href="#2-6-rpt-對應表-m-i-沒有這一節">§2.6</a>)。</p>
+<p>⚠ <strong>「報表唯讀」是錯的。</strong> 本片 40 支裡 <strong>7 支的 PO 帶寫入路徑</strong>(<code>ExecuteNonQuery</code>),其中 2 支(<code>OFDR022</code> <code>OFDR023</code>)根本不是報表、UI 基底是 <code>xOneStepProcessForm</code>。細節見 <a class="sec" href="#0-3-三句話版本">§0.3</a> 與 <a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>。把 R 當唯讀去做影響面評估會漏。</p>
+<p>⚠ <strong>〔客戶特定〕</strong>:集保(TDCC)平台代號 <code>FUY</code> / <code>FUS</code>、亞太基金受益人大會的十種票別編號(<code>0</code>~<code>9</code>)、退休財富管理月報的欄位配置為本站台的值。</p>
+<p>⚠ <strong>〔共用〕</strong>:基金基本資料與受益人主檔幾乎每一支的 SP 都讀,改欄位會同時打到本片十幾支報表(見 <a class="sec" href="#8-跨模組共用">§8</a>)。</p>
+<p>前提知識在 <code>architecture.md</code>:六層看 <code>architecture.md §2</code>、四眼(EVA)看 <code>architecture.md §3</code>、SQL 組法與參數化看 <code>architecture.md §4</code>、typed DataSet 看 <code>architecture.md §5</code>、畫面型別四種看 <code>architecture.md §6</code>。<strong>不要整份讀</strong>。I 畫面的對照基準全部取自 <code>ofdi1.md §0</code>。</p></blockquote>
+<section class="sec" data-sec="0-系統邊界與角色"><h2 id="0-系統邊界與角色"><button class="tg" aria-label="收合/展開" type="button"></button>0. 系統邊界與角色</h2><div class="sec-body"><figure><svg viewBox="0 0 1120 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="M I R 三種畫面的層級結構差異,R 多出第七層 Crystal"><defs><marker id="ah_ofdr1_layer" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">M 維護畫面:六層 + 四眼寫回</text><g class="bx">
+<rect x="20" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="62" text-anchor="middle">UI xMaintainForm</text>
+<text class="t2" x="145" y="82" text-anchor="middle">兩個 TabPage 掛 Add Modify</text>
+</g><g class="bx">
+<rect x="290" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="405" y="62" text-anchor="middle">Pxy</text>
+<text class="t2" x="405" y="82" text-anchor="middle">Add Modify Delete Select</text>
+</g><g class="bx">
+<rect x="540" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="665" y="62" text-anchor="middle">Ctl BaseController</text>
+<text class="t2" x="665" y="82" text-anchor="middle">InitializeVDBTypes 有覆寫</text>
+</g><g class="bx accent">
+<rect x="810" y="40" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="950" y="62" text-anchor="middle">PO BaseEVADaoPO</text>
+<text class="t2" x="950" y="82" text-anchor="middle">MasterTable + DetailTable</text>
+</g><path class="ar" d="M 270 68 L 290 68" marker-end="url(#ah_ofdr1_layer)"/><path class="ar" d="M 520 68 L 540 68" marker-end="url(#ah_ofdr1_layer)"/><path class="ar" d="M 790 68 L 810 68" marker-end="url(#ah_ofdr1_layer)"/><text class="lane" x="20" y="116">I 查詢畫面:同樣六層,MasterTable 與四眼整組消失</text><g class="bx">
+<rect x="20" y="130" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="152" text-anchor="middle">UI xOneStepProcessForm</text>
+<text class="t2" x="145" y="172" text-anchor="middle">一頁式 一顆查詢鈕</text>
+</g><g class="bx">
+<rect x="290" y="130" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="405" y="152" text-anchor="middle">Pxy</text>
+<text class="t2" x="405" y="172" text-anchor="middle">GetData 單一入口</text>
+</g><g class="bx">
+<rect x="540" y="130" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="665" y="152" text-anchor="middle">Ctl BaseController</text>
+<text class="t2" x="665" y="172" text-anchor="middle">三支連 BaseController 都沒繼承</text>
+</g><g class="bx vend">
+<rect x="810" y="130" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="950" y="152" text-anchor="middle">PO 三派並存</text>
+<text class="t2" x="950" y="172" text-anchor="middle">無基底 20 BaseEVADaoPO 12 BasicEVAPO 3</text>
+</g><path class="ar" d="M 270 158 L 290 158" marker-end="url(#ah_ofdr1_layer)"/><path class="ar" d="M 520 158 L 540 158" marker-end="url(#ah_ofdr1_layer)"/><path class="ar" d="M 790 158 L 810 158" marker-end="url(#ah_ofdr1_layer)"/><text class="lane" x="20" y="206">R 報表畫面:多出第七層 Crystal,PO 退成兩派,加回一整套列印前檢核</text><g class="bx accent">
+<rect x="20" y="220" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="242" text-anchor="middle">UI xReportForm</text>
+<text class="t2" x="145" y="262" text-anchor="middle">查詢 預覽 列印 三顆鈕 38 支</text>
+</g><g class="bx">
+<rect x="290" y="220" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="405" y="242" text-anchor="middle">Pxy</text>
+<text class="t2" x="405" y="262" text-anchor="middle">GetData 加上各自的檢核方法</text>
+</g><g class="bx">
+<rect x="540" y="220" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="665" y="242" text-anchor="middle">Ctl BaseController</text>
+<text class="t2" x="665" y="262" text-anchor="middle">26 支有 14 支無基底宣告</text>
+</g><g class="bx accent">
+<rect x="810" y="220" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="950" y="242" text-anchor="middle">PO 兩派</text>
+<text class="t2" x="950" y="262" text-anchor="middle">I 代號 PO 介面 26 支 Basic_PO 13 支</text>
+</g><path class="ar" d="M 270 248 L 290 248" marker-end="url(#ah_ofdr1_layer)"/><path class="ar" d="M 520 248 L 540 248" marker-end="url(#ah_ofdr1_layer)"/><path class="ar" d="M 790 248 L 810 248" marker-end="url(#ah_ofdr1_layer)"/><g class="bx">
+<rect x="20" y="296" rx="10" ry="10" width="360" height="56"/>
+<text class="t1" x="200" y="318" text-anchor="middle">Model.xsd 結果集形狀</text>
+<text class="t2" x="200" y="338" text-anchor="middle">根節點是畫面代號 不是表名</text>
+</g><g class="bx">
+<rect x="400" y="296" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="570" y="318" text-anchor="middle">View.xsd 同構</text>
+<text class="t2" x="570" y="338" text-anchor="middle">TransferVDBHelper 整表搬</text>
+</g><g class="bx ext">
+<rect x="760" y="296" rx="10" ry="10" width="330" height="56"/>
+<text class="t1" x="925" y="318" text-anchor="middle">.rpt 內部第三份 schema</text>
+<text class="t2" x="925" y="338" text-anchor="middle">二進位 改了不會編譯錯</text>
+</g><path class="ar" d="M 380 324 L 400 324" marker-end="url(#ah_ofdr1_layer)"/><path class="ar" d="M 740 324 L 760 324" marker-end="url(#ah_ofdr1_layer)"/><g class="bx vend">
+<rect x="20" y="372" rx="10" ry="10" width="1070" height="56"/>
+<text class="t1" x="555" y="394" text-anchor="middle">第七層 CrystalReports Report.OFD</text>
+<text class="t2" x="555" y="414" text-anchor="middle">SetRptSchemaOnDoc 綁 schema 再 SetParameterValue 補抬頭 這一段沒有編譯期檢查</text>
+</g><path class="ar" d="M 560 352 L 560 372" marker-end="url(#ah_ofdr1_layer)"/><text class="lane" x="20" y="448">三者唯一相同的地方:查詢條件都走 Util.Parameters 這個字串 key-value 袋</text><g class="bx">
+<rect x="20" y="462" rx="10" ry="10" width="350" height="56"/>
+<text class="t1" x="195" y="484" text-anchor="middle">M 從 Model 資料列逐欄搬</text>
+<text class="t2" x="195" y="504" text-anchor="middle">參數化 UPDATE INSERT</text>
+</g><g class="bx vend">
+<rect x="390" y="462" rx="10" ry="10" width="350" height="56"/>
+<text class="t1" x="565" y="484" text-anchor="middle">I 從 Parameters 袋撈</text>
+<text class="t2" x="565" y="504" text-anchor="middle">13 支直接串進 SQL</text>
+</g><g class="bx accent">
+<rect x="760" y="462" rx="10" ry="10" width="330" height="56"/>
+<text class="t1" x="925" y="484" text-anchor="middle">R 從 Parameters 袋撈</text>
+<text class="t2" x="925" y="504" text-anchor="middle">36 支走 SP 具名參數 3 支串接</text>
+</g></svg><figcaption>圖 2 M / I / R 層級對照,對應 §0.2 那張三十列的表。三排由上到下是 M、I、R;R 那排底下再展開第五到第七層。紫框=風險點:I 的三派 PO 有一派開畫面就壞,R 的第七層完全沒有編譯期保護。要記一件事就記:R 的資料層跟 I 一樣空,差別全在輸出端與檢核端。</figcaption></figure>
+<h3 id="0-1-先破除一個假設-報表是-七層-不是六層">0.1 先破除一個假設:報表是<strong>七層</strong>,不是六層</h3>
+<p>M / I / B 三種畫面都是六層。<strong>報表多一層</strong>:Crystal Reports 專案 <code>Report.OFD</code>。七層在 <code>Dev/ATLAS.OFD.Report/Source</code> 底下的實際落點,已逐層 <code>ls</code> 核對:</p>
+<div class="tw"><table><thead><tr><th>層</th><th>資料夾</th><th>csproj</th><th>檔名慣例</th><th>例</th></tr></thead><tbody><tr><td>1 UI</td><td><code>Source/UI/ReportUI.OFD/</code></td><td><code>ReportUI.OFD.csproj</code></td><td><code>&lt;代號&gt;.cs</code></td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs</code></td></tr><tr><td>2 FormProxy</td><td><code>Source/FormProxy/ReportFormProxy/</code></td><td><code>ReportFormProxy.OFD.csproj</code></td><td><code>&lt;代號&gt;_Pxy.cs</code></td><td><code>Dev/ATLAS.OFD.Report/Source/FormProxy/ReportFormProxy/OFDR001A_Pxy.cs</code></td></tr><tr><td>3 Control</td><td><code>Source/Control/ReportControl.OFD/</code></td><td><code>ReportControl.OFD.csproj</code></td><td><code>&lt;代號&gt;_Ctl.cs</code></td><td><code>Dev/ATLAS.OFD.Report/Source/Control/ReportControl.OFD/OFDR001A_Ctl.cs</code></td></tr><tr><td>4 PO</td><td><code>Source/PO/ReportPO.OFD/</code></td><td><code>ReportPO.OFD.csproj</code></td><td><code>&lt;代號&gt;_PO.cs</code></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR001A_PO.cs</code></td></tr><tr><td>5 DataEntity</td><td><code>Source/Entity/ReportDataEntity.OFD/</code></td><td><code>ReportDataEntity.OFD.csproj</code></td><td><code>&lt;代號&gt;Model.xsd</code></td><td><code>Dev/ATLAS.OFD.Report/Source/Entity/ReportDataEntity.OFD/OFDR001AModel.xsd</code></td></tr><tr><td>6 UIEntity</td><td><code>Source/Entity/ReportUIEntity.OFD/</code></td><td><code>ReportUIEntity.OFD.csproj</code></td><td><code>&lt;代號&gt;View.xsd</code></td><td><code>Dev/ATLAS.OFD.Report/Source/Entity/ReportUIEntity.OFD/OFDR001AView.xsd</code></td></tr><tr><td><strong>7 CrystalReports</strong></td><td><code>Source/CrystalReports/Report.OFD/</code></td><td><code>Report.OFD.csproj</code></td><td><strong><code>&lt;代號&gt;RPS.rpt</code> + 同名 <code>.cs</code></strong></td><td><code>Dev/ATLAS.OFD.Report/Source/CrystalReports/Report.OFD/OFDR001ARPS.rpt</code></td></tr></tbody></table></div>
+<p><strong>兩個資料夾命名不對稱,會讓 <code>find</code> 寫錯</strong>:</p>
+<ol><li><strong>FormProxy 那層的資料夾沒有 <code>.OFD</code> 後綴</strong>(<code>ReportFormProxy/</code>),但<strong>裡面的 csproj 有</strong>(<code>ReportFormProxy.OFD.csproj</code>)。其餘六層資料夾與 csproj 同名。</li><li>第 7 層的資料夾叫 <code>Report.OFD</code>,不是 <code>ReportCrystal.OFD</code>,跟前六層的 <code>Report&lt;層名&gt;.OFD</code> 構詞相反。</li></ol>
+<h3 id="0-2-m-i-r-三欄對照表-本篇最重要的一張表-後面-189-支報表靠它">0.2 M / I / R 三欄對照表(<strong>本篇最重要的一張表,後面 189 支報表靠它</strong>)</h3>
+<p>M 欄取自 <code>architecture.md §6</code> 的通則; I 欄<strong>全部是 <code>ofdi1.md §0</code> 的 35 支實測值,直接引用不重算</strong>; R 欄是本片 40 支逐支核對的結果。<strong>「差異性質」欄寫的是 R 相對 M / I 的位置。</strong></p>
+<div class="tw"><table><thead><tr><th>#</th><th>面向</th><th>M 維護畫面</th><th>I 查詢畫面(<code>ofdi1.md §0</code> 實測 35 支)</th><th><strong>R 報表畫面(本片實測 40 支)</strong></th><th>差異性質</th></tr></thead><tbody><tr><td>1</td><td><strong>層數</strong></td><td>六層</td><td>六層(6 支退化成四層,缺 xsd)</td><td><strong>七層。多出 <code>Source/CrystalReports/Report.OFD</code></strong>(<a class="sec" href="#0-1-先破除一個假設-報表是-七層-不是六層">§0.1</a>)</td><td><strong>R 獨有</strong></td></tr><tr><td>2</td><td>層數退化</td><td>—</td><td>6 支缺 Model / View xsd</td><td><strong>0 支缺。40 支的 Model.xsd 與 View.xsd 全齊</strong>(<a class="sec" href="#0-1-先破除一個假設-報表是-七層-不是六層">§0.1</a> 逐層 <code>ls</code> 核對)</td><td>R 比 I 完整</td></tr><tr><td>3</td><td><strong>UI 基底</strong></td><td><code>xMaintainForm</code></td><td><strong><code>xOneStepProcessForm</code>,35 支無一例外</strong></td><td><strong><code>xReportForm</code> 38 支;<code>xOneStepProcessForm</code> 2 支</strong>(<code>OFDR022</code> <code>OFDR023</code>)</td><td><strong>第三種基底</strong></td></tr><tr><td>4</td><td>那 2 支例外是什麼</td><td>—</td><td>—</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR023.cs:15</code> 的 <code>xOneStepProcessForm</code>——<strong>它們不印報表,是掛在報表專案下的「執行型」畫面</strong>(<a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>)</td><td>分類錯置</td></tr><tr><td>5</td><td>UI 頁籤</td><td>查詢頁 + 維護頁兩個 TabPage</td><td>一頁式,一個「查詢」按鈕</td><td><strong>一頁式,但有三顆按鈕:查詢 / 預覽 / 列印</strong>(<code>ButtonPreviewEnable</code> <code>ButtonPrintEnable</code>,例 <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:172-173</code>)</td><td>R 獨有</td></tr><tr><td>6</td><td><strong>UI 的列印生命週期</strong></td><td>無</td><td>無</td><td><strong><code>BeforePrintButtonClicked</code> → <code>SetQueryParameters(rpt, rpt, 中文名)</code> → <code>ReportLoad</code> → <code>SetRptSchemaOnDoc()</code> → <code>m_ReportDocument.SetParameterValue(...)</code></strong>(<code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:248-296</code>)</td><td><strong>R 獨有,是本片主軸</strong></td></tr><tr><td>7</td><td><strong>PO 基底</strong></td><td><code>BaseEVADaoPO</code> / <code>BaseMultiRowEVADaoPO</code></td><td>三派:<code>BaseEVADaoPO</code> 12 / <code>BasicEVAPO</code> 3 / 無基底 20</td><td><strong>兩派:只實作自家介面 <code>I&lt;代號&gt;_PO</code> 共 26 支 · <code>Basic_PO</code> 共 13 支 · 完全無基底無介面 1 支(<code>OFDR288</code>)</strong></td><td><strong>與 I 的三派不同</strong></td></tr><tr><td>8</td><td>有沒有 <code>BasicEVAPO</code></td><td>—</td><td>3 支,開畫面就 NRE(<code>ofdi1.md §5</code>)</td><td><strong>0 支。本片沒有任何一支繼承 <code>BasicEVAPO</code></strong>,所以 <code>ofdi1.md</code> 那個 NRE 缺陷型在 R 不存在</td><td><strong>缺陷型不適用</strong></td></tr><tr><td>9</td><td><code>Basic_PO</code> 是什麼</td><td>—</td><td>—</td><td>框架 DLL 類別,<strong>無原始碼,從呼叫端反推</strong>。13 支 <code>Basic_PO</code> 派全都是<strong>早期</strong>畫面(SP 名無 TA 中綴,<a class="sec" href="#2-2-sp-與-function-71-個-版控內-0-個">§2.2</a>)</td><td>R 專有分派</td></tr><tr><td>10</td><td><strong>PO 介面</strong></td><td><code>I&lt;代號&gt;_PO : IEvaDataAccess</code></td><td>只有 8 支寫 <code>: IEvaDataAccess</code></td><td><strong>26 支宣告 <code>I&lt;代號&gt;_PO</code>,但一支都沒有 <code>: IEvaDataAccess</code>。介面裡只有 <code>GetXxx&lt;T&gt;(T model, params object[] args)</code> 一類取數方法</strong>(例 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR001A_PO.cs:12-21</code>)</td><td>介面留著,EVA 掉光</td></tr><tr><td>11</td><td><strong><code>MasterTable</code> 宣告</strong></td><td>建構子必宣告,是全庫「實體表」清單來源</td><td><strong>35 支全無</strong></td><td><strong>40 支全無。</strong> <code>grep -c MasterTable</code> 在 <code>ReportPO.OFD</code> 全目錄是 0</td><td><strong>與 I 一致</strong></td></tr><tr><td>12</td><td><code>DetailTable</code> 宣告</td><td>有</td><td>35 支全無</td><td><strong>40 支全無</strong></td><td>與 I 一致</td></tr><tr><td>13</td><td>那實體表清單從哪來</td><td><code>MasterTable</code></td><td>PO 的 <code>LoadDataSet(..., model.DataEntity.&lt;結果集&gt;.TableName)</code></td><td><strong>同 I,但再往下一層</strong>:<code>LoadDataSet</code> 的第三參是<strong>結果集名</strong>,真實表名只存在 <strong>SP 內部</strong>(<a class="sec" href="#2-1-主表與明細-本片沒有">§2.1</a>)。<strong>36 支報表的取數 SQL 完全不在版控</strong>,比 I 更不透明</td><td><strong>R 更黑箱</strong></td></tr><tr><td>14</td><td><strong>四眼 13 欄</strong></td><td>每表一整組,PO 掛 10 個事件</td><td><strong>0 個</strong></td><td><strong>0 個。40 支 PO 沒有任何 <code>BeforeAdd</code> / <code>AfterVerify</code> / <code>AfterApprove</code> 掛鉤</strong></td><td>與 I 一致</td></tr><tr><td>15</td><td>四眼欄位會不會出現在輸出</td><td>—</td><td>會,當顯示欄</td><td>會,而且是報表上印出來的「製表人 / 覆核人」欄</td><td>語意同 I</td></tr><tr><td>16</td><td><strong><code>Model.xsd</code> 的角色</strong></td><td>實體表形狀</td><td><strong>結果集形狀</strong>,根節點是畫面代號</td><td><strong>結果集形狀,根節點是畫面代號。40 支全部如此</strong>(例 <code>Dev/ATLAS.OFD.Report/Source/Entity/ReportDataEntity.OFD/OFDR001AModel.xsd</code>)</td><td>與 I 一致</td></tr><tr><td>17</td><td><code>View.xsd</code> 的角色</td><td>與 Model 同構,<code>Ctl</code> 逐欄手搬</td><td>多半同構,2 支欄數對不上</td><td>同構,<code>Ctl</code> 用 <code>TransferVDBHelper.TransferTable</code> 整表搬(<a class="sec" href="#0-4-資料怎麼從-sp-流到-rpt">§0.4</a>)</td><td>與 I 一致</td></tr><tr><td>18</td><td><strong>第三份 schema</strong></td><td>無</td><td>無</td><td><strong>有。<code>.rpt</code> 內部也存一份欄位 schema</strong>,靠 <code>SetRptSchemaOnDoc()</code> 綁 Model。<strong><code>.rpt</code> 是二進位、schema 改了不會編譯錯</strong>——這是 R 獨有的最大破口(附錄 E)</td><td><strong>R 獨有風險</strong></td></tr><tr><td>19</td><td><strong><code>Ctl</code> 基底</strong></td><td><code>BaseController</code></td><td>32 支 <code>BaseController</code>,3 支無</td><td><strong>26 支 <code>BaseController</code>(即 <code>I&lt;代號&gt;_PO</code> 派);14 支 <code>Ctl</code> 沒有基底宣告</strong>(<code>Basic_PO</code> 派 13 支 + <code>OFDR288</code>)</td><td>兩派對齊 PO</td></tr><tr><td>20</td><td><strong>寫入路徑</strong></td><td><code>Add</code> / <code>Modify</code> / <code>Delete</code> + 四眼四段</td><td><strong>零。35 支 PO 無任何 <code>ExecuteNonQuery</code></strong></td><td><strong>7 支有 <code>ExecuteNonQuery</code></strong>:<code>OFDR022</code> <code>OFDR023</code> <code>OFDR452</code> <code>OFDR453</code> <code>OFDR455</code> <code>OFDR457</code> <code>OFDR564</code>(<a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>)</td><td><strong>R 不是唯讀</strong></td></tr><tr><td>21</td><td>寫入在做什麼</td><td>業務資料異動</td><td>—</td><td>兩類:<strong>(a) 改業務旗標</strong>(<code>OFDR022</code> <code>OFDR023</code> 標記已寄送、<code>OFDR564</code> 標記已通知)、<strong>(b) 請款作業把計算結果寫進暫存工作區再讀回</strong>(<code>OFDR452</code> <code>OFDR453</code> <code>OFDR455</code> <code>OFDR457</code>,<a class="sec" href="#7-8-請款四支-ofdr452-ofdr453-ofdr455-ofdr457-全片最重-也最會咬人">§7.8</a>)</td><td>副作用</td></tr><tr><td>22</td><td><strong>查詢條件從哪來</strong></td><td>Model 資料列逐欄搬</td><td><code>model.Utility.Parameters</code> key-value 袋</td><td><strong>同 I,<code>ResultVDB.Util.Parameters.AddParametersRow(欄名, SQLOperator, 值)</code></strong>(<code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:161-162</code>)</td><td>與 I 一致</td></tr><tr><td>23</td><td><strong>條件怎麼進 SQL</strong></td><td>參數化</td><td><strong>13 支直接字串串接</strong>(I 最大風險)</td><td><strong>36 支走 SP 具名參數(<code>AddInParameter</code>),4 支在 C# 自組 SQL、其中 3 支字串串接</strong>(<a class="sec" href="#2-3-資料來源三種分流-逐支歸類">§2.3</a>)</td><td><strong>R 比 I 安全得多</strong></td></tr><tr><td>24</td><td>為什麼 R 比 I 安全</td><td>—</td><td>—</td><td>因為 R 幾乎全走 SP:SP 名寫死在 PO,條件透過 <code>AddInParameter</code> 具名綁定,<strong>攻擊面被 SP 簽名擋住</strong>。<code>ofdi1.md</code> 的 13 支串接問題在 R 只剩 3 支</td><td>結構性差異</td></tr><tr><td>25</td><td><strong>輸出介面</strong></td><td>存回 DB</td><td>畫面 Grid</td><td><strong>三種:Crystal 預覽 / 列印(36 支)· Excel 檔(2 支 <code>OFDR237</code> <code>OFDR453</code>)· 無輸出只改狀態(2 支 <code>OFDR022</code> <code>OFDR023</code>)</strong></td><td><strong>R 獨有</strong></td></tr><tr><td>26</td><td><strong>報表中文名在哪</strong></td><td>選單表</td><td><strong>不存在 code 內,只能由控件標題反推</strong>(<code>ofdi1.md §0</code>)</td><td><strong>在 code 裡,<code>SetQueryParameters</code> 的第三參就是報表中文名</strong>——<code>grep -n "SetQueryParameters" *.cs</code> 一次撈齊(<a class="sec" href="#3-畫面清冊">§3</a>)</td><td><strong>R 比 I 好查</strong></td></tr><tr><td>27</td><td>中文名可靠嗎</td><td>—</td><td>—</td><td>大致可靠,但有<strong>兩支被 cp950 編碼污染</strong>(<code>OFDR511</code> <code>OFDR513</code>,附錄 E)、一支<strong>傳空字串</strong>(<code>OFDR716</code> 第三分支,附錄 E)</td><td>有雜訊</td></tr><tr><td>28</td><td><strong>例外處理</strong></td><td>走 <code>ImsError</code> 階層</td><td>兩派混用,5 支兩個都做</td><td><strong>一派為主:<code>catch (Exception ex)</code> → <code>AddResultRow(false, 0, ex.Message)</code>,把 Oracle 錯誤原文貼到畫面</strong>;部分再 <code>throw</code></td><td>與 I 近似</td></tr><tr><td>29</td><td><strong>DB 型別</strong></td><td>—</td><td>Oracle</td><td><strong>Oracle。PO 一律 <code>[PODbType(DbServerType.Oracle)]</code> + <code>new Database("TA", DbServerType.Oracle)</code> + <code>OracleDbType.RefCursor</code> 出參</strong>(<code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR001A_PO.cs:23-26</code>)</td><td>與 I 一致</td></tr><tr><td>30</td><td><strong>卡控</strong></td><td>四眼 + 存檔前檢核</td><td>過濾(無提示)為主</td><td><strong>四類都有:阻擋(<code>ValidateErrList</code> + <code>e.Cancel = true</code>)· 警示 · 詢問 · 過濾(無提示)</strong>。R 的阻擋比 I 多,因為列印前要驗營業日 / 已過帳(<a class="sec" href="#7-報表-r">§7</a> 各節、<a class="sec" href="#7-13-卡控總表">§7.13</a> 總表)</td><td><strong>R 卡控比 I 重</strong></td></tr></tbody></table></div>
+<h3 id="0-3-三句話版本">0.3 三句話版本</h3>
+<p>給沒空看上表的人:</p>
+<ol><li><strong>R = I 的取數模型 + 一層 Crystal + 三顆按鈕 + 比 I 硬得多的前置檢核。</strong> 資料層(無 <code>MasterTable</code>、xsd 是結果集形狀、<code>Parameters</code> 袋子傳條件)跟 I 一模一樣,差別全在輸出端與檢核端。</li><li><strong>R 不是唯讀。</strong> 7 / 40 支會寫 DB,2 支根本不印報表。</li><li><strong>R 的真正商業邏輯不在 C#,在 SP 裡,而 SP 不在版控。</strong> 本片 40 支引用的 SP / Function <strong>全部找不到原始碼</strong>(<a class="sec" href="#2-2-sp-與-function-71-個-版控內-0-個">§2.2</a>)。C# 那層只負責組參數、接 RefCursor、丟給 Crystal。<strong>要查「這張報表為什麼少一列」,讀 C# 是白費力氣——要去 DB 撈 SP 原始碼。</strong></li></ol>
+<h3 id="0-4-資料怎麼從-sp-流到-rpt">0.4 資料怎麼從 SP 流到 <code>.rpt</code></h3>
+<p>以 <code>OFDR001A</code> 為例,七層一條線走完(錨點逐段標):</p>
+<div class="tw"><table><thead><tr><th>步</th><th>在哪</th><th>做什麼</th><th>錨點</th></tr></thead><tbody><tr><td>1</td><td>UI</td><td>使用者選基金 + 資料日期,按「查詢」</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:152</code></td></tr><tr><td>2</td><td>UI</td><td>驗營業日 + 驗已過帳,不過就 <code>AddError</code> 擋住</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:34-63</code></td></tr><tr><td>3</td><td>UI</td><td>條件塞進 <code>ResultVDB.Util.Parameters</code></td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:161-162</code></td></tr><tr><td>4</td><td>FormProxy</td><td><code>GetData(VDB)</code> 送過 WCF</td><td><code>Dev/ATLAS.OFD.Report/Source/FormProxy/ReportFormProxy/OFDR001A_Pxy.cs</code></td></tr><tr><td>5</td><td>Control</td><td>建 Model VDB、呼叫 PO、<code>TransferVDBHelper.TransferTable</code> 把 Model 表搬成 View 表</td><td><code>Dev/ATLAS.OFD.Report/Source/Control/ReportControl.OFD/OFDR001A_Ctl.cs</code></td></tr><tr><td>6</td><td>PO</td><td><code>GetStoredProcCommand("s_TA_OFDR001A_Get")</code> + <code>AddInParameter</code> ×2 + <code>AddOutParameter(RefCursor)</code> + <code>LoadDataSet</code></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR001A_PO.cs:42-51</code></td></tr><tr><td>7</td><td>UI</td><td>列印前檢核過了,<code>SetQueryParameters("OFDR001ARPS", "OFDR001ARPS", "基金結餘單位數查核表")</code></td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:280</code></td></tr><tr><td>8</td><td>UI</td><td><code>ReportLoad</code> 事件:<code>SetRptSchemaOnDoc()</code> 把 View 的 schema 綁上 <code>.rpt</code>,再逐個 <code>SetParameterValue</code> 補抬頭參數</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:288-296</code></td></tr><tr><td>9</td><td>CrystalReports</td><td><code>OFDR001ARPS.rpt</code> 照 schema 排版輸出</td><td><code>Dev/ATLAS.OFD.Report/Source/CrystalReports/Report.OFD/OFDR001ARPS.rpt</code></td></tr></tbody></table></div>
+<p>第 8 步的 <code>SetRptSchemaOnDoc()</code> 與 <code>m_ReportDocument</code> 都來自 <code>xReportForm</code>,<strong>無原始碼,從呼叫端反推</strong>。 <strong>第 8 步是唯一把 C# 與 <code>.rpt</code> 綁在一起的地方,而它沒有編譯期檢查</strong>——<code>.rpt</code> 少一個欄位,要跑起來才知道(附錄 E)。</p>
+<h3 id="0-5-這-40-支涵蓋哪些業務線-推測-依報表中文名與-sp-名歸類">0.5 這 40 支涵蓋哪些業務線(推測,依報表中文名與 SP 名歸類)</h3>
+<p>中文名取自 <code>SetQueryParameters</code> 第三參,<strong>是 code 裡的字面值,不是猜的</strong>;業務線分組是<strong>推測</strong>。</p>
+<div class="tw"><table><thead><tr><th>業務線</th><th>支數</th><th>代號</th><th>依據</th></tr></thead><tbody><tr><td><strong>A. 受益人資料與客服</strong></td><td>7</td><td><code>OFDR013</code> <code>OFDR014</code> <code>OFDR015</code> <code>OFDR034</code> <code>OFDR035</code> <code>OFDR040</code> <code>OFDR043</code></td><td>中文名「受益人查詢記錄報表」「客服通聯服務統計表」「客戶補件通知書」「受益人退郵資料」等</td></tr><tr><td><strong>B. 集保(TDCC)往來</strong></td><td>7</td><td><code>OFDR021</code> <code>OFDR024</code> <code>OFDR563</code> <code>OFDR564</code> <code>OFDR716</code> <code>OFDR751</code> <code>OFDR752</code></td><td>中文名帶「集保」;<code>OFDR716</code> 的 <code>FUY</code> / <code>FUS</code> 也是集保平台代號〔客戶特定〕</td></tr><tr><td><strong>C. 基金單位數與淨值</strong></td><td>3</td><td><code>OFDR001A</code> <code>OFDR002A</code> <code>OFDR236</code></td><td>「基金結餘單位數查核表」「基金結餘單位數查核清冊」「淨值月報表」</td></tr><tr><td><strong>D. 收益分配(配息)</strong></td><td>4</td><td><code>OFDR281</code> <code>OFDR282</code> <code>OFDR286</code> <code>OFDR288</code></td><td>「收益分配名冊」「收益分配付款彙總表」「收益分配扣繳憑單」「配息專戶明細表」</td></tr><tr><td><strong>E. 手續費與服務費請款</strong></td><td>4</td><td><code>OFDR452</code> <code>OFDR453</code> <code>OFDR455</code> <code>OFDR457</code></td><td>「服務費明細表」「申購手續費請款總表」「買回手續費請款總表」</td></tr><tr><td><strong>F. 銷售與行銷統計</strong></td><td>5</td><td><code>OFDR235</code> <code>OFDR237</code> <code>OFDR238</code> <code>OFDR239</code> <code>OFDR501</code></td><td>「促銷活動明細表」「每日銷售單位彙總表」「銷售預估明細表」「行銷身分群組明細表」</td></tr><tr><td><strong>G. 基金合併與清算</strong></td><td>4</td><td><code>OFDR495</code> <code>OFDR511</code> <code>OFDR512</code> <code>OFDR513</code></td><td>「基金合併確認單」「基金清算名冊列印作業」「基金清算資料彙總表」</td></tr><tr><td><strong>H. 法規申報與會議</strong></td><td>3</td><td><code>OFDR540</code> <code>OFDR731</code> <code>OFDR733</code></td><td>「亞太基金受益人大會開票結果」「結匯申報收檔查核表」「國內貨幣市場共同基金受益憑證持有者統計表」</td></tr><tr><td><strong>X. 不是報表</strong></td><td>2</td><td><code>OFDR022</code> <code>OFDR023</code></td><td><code>xOneStepProcessForm</code>,無 <code>.rpt</code>,只改 DB 狀態(<a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>)</td></tr></tbody></table></div>
+<p>加總 39;<code>OFDR237</code> 的「退休財富管理月報」同時具備銷售統計與申報性質,本表只算在 F 一次。<strong>歸類是推測,以報表中文名為唯一依據,選單表不在本專案內無法核實。</strong></p>
+<h3 id="0-6-誰用-什麼時候用">0.6 誰用、什麼時候用</h3>
+<ul><li><strong>使用角色</strong>(推測):營運後台人員(受益人 / 集保線)、會計與清算人員(單位數 / 淨值 / 清算線)、通路管理人員(請款線)、法遵人員(申報線)。依據是報表中文名,<strong>ATLAS 的選單權限表不在本專案內,無法核實</strong>。</li><li><strong>時點</strong>(推測):多數帶「資料日期」或「起訖日」條件且驗「已過帳」(<a class="sec" href="#7-1-通則-一支報表從按鈕到出紙的五段">§7.1</a>),屬<strong>日終 / 月結後</strong>作業;<code>OFDR238</code> <code>OFDR239</code> 名稱帶「每日」,屬<strong>日中</strong>。</li><li><strong>全域開關</strong>:本片沒有任何組態開關控制報表啟停;<code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/App.config</code> 只有連線與 WCF 設定。</li></ul>
+<h3 id="0-7-不管什麼">0.7 不管什麼</h3>
+<ul><li><strong>不管資料怎麼算出來的。</strong> 算法在 SP,SP 不在版控(<a class="sec" href="#2-2-sp-與-function-71-個-版控內-0-個">§2.2</a>)。</li><li><strong>不管報表長什麼樣。</strong> 版面在 <code>.rpt</code>,二進位,本文不 Read(<a class="sec" href="#2-6-rpt-對應表-m-i-沒有這一節">§2.6</a> 只做檔案存在性與對應規則)。</li><li><strong>不管排程。</strong> 本片 40 支全是使用者按按鈕觸發,沒有 WindowsService / Batch 入口(<a class="sec" href="#6-批次-b-與-windowsservice">§6</a>)。</li></ul>
+</div></section><section class="sec" data-sec="1-全景與各式流程圖"><h2 id="1-全景與各式流程圖"><button class="tg" aria-label="收合/展開" type="button"></button>1. 全景與各式流程圖</h2><div class="sec-body">
+<h3 id="1-1-全景圖">1.1 全景圖</h3>
+<figure><svg viewBox="0 0 1120 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OFDR1 全景:受益人、集保、單位數與配息、請款、統計申報五群,加共同的黑箱結構"><defs><marker id="ah_ofdr1_all" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 受益人資料與客服:七支,全走 SP,單表輸出</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="150" y="62" text-anchor="middle">OFDR013 OFDR014 OFDR015</text>
+<text class="t2" x="150" y="82" text-anchor="middle">查詢記錄 通聯統計 資料需求</text>
+</g><g class="bx accent">
+<rect x="300" y="40" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="430" y="62" text-anchor="middle">OFDR034 OFDR035</text>
+<text class="t2" x="430" y="82" text-anchor="middle">補件通知書 姓名ID異動通知</text>
+</g><g class="bx accent">
+<rect x="580" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="705" y="62" text-anchor="middle">OFDR040 OFDR043</text>
+<text class="t2" x="705" y="82" text-anchor="middle">退郵資料 變更資料查核</text>
+</g><g class="bx dash">
+<rect x="850" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="975" y="62" text-anchor="middle">COD006A</text>
+<text class="t2" x="975" y="82" text-anchor="middle">退郵項目與原因代碼 共用</text>
+</g><path class="ar dsh" d="M 830 68 L 850 68" marker-end="url(#ah_ofdr1_all)"/><text class="lane" x="20" y="126">② 集保 TDCC 往來:七支,含兩支不印報表的執行型</text><g class="bx accent">
+<rect x="20" y="140" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="150" y="162" text-anchor="middle">OFDR021 OFDR024</text>
+<text class="t2" x="150" y="182" text-anchor="middle">核對清冊 密碼申請明細</text>
+</g><g class="bx accent">
+<rect x="300" y="140" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="430" y="162" text-anchor="middle">OFDR563 OFDR564</text>
+<text class="t2" x="430" y="182" text-anchor="middle">核印費彙總明細 核印失敗通知</text>
+</g><g class="bx accent">
+<rect x="580" y="140" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="705" y="162" text-anchor="middle">OFDR751 OFDR752</text>
+<text class="t2" x="705" y="182" text-anchor="middle">平台交易明細 下單檢核</text>
+</g><g class="bx vend">
+<rect x="850" y="140" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="975" y="162" text-anchor="middle">OFDR022 OFDR023</text>
+<text class="t2" x="975" y="182" text-anchor="middle">簡訊發送 開畫面即 NRE</text>
+</g><text class="lane" x="20" y="226">③ 單位數 淨值 與 收益分配:七支,月結後作業</text><g class="bx accent">
+<rect x="20" y="240" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="150" y="262" text-anchor="middle">OFDR001A OFDR002A</text>
+<text class="t2" x="150" y="282" text-anchor="middle">結餘單位數查核表 與清冊</text>
+</g><g class="bx accent">
+<rect x="300" y="240" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="430" y="262" text-anchor="middle">OFDR236 OFDR716</text>
+<text class="t2" x="430" y="282" text-anchor="middle">淨值月報 集保登錄 FUY FUS</text>
+</g><g class="bx accent">
+<rect x="580" y="240" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="705" y="262" text-anchor="middle">OFDR281 OFDR282 OFDR286</text>
+<text class="t2" x="705" y="282" text-anchor="middle">分配名冊 付款 扣繳憑單</text>
+</g><g class="bx accent">
+<rect x="850" y="240" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="975" y="262" text-anchor="middle">OFDR288</text>
+<text class="t2" x="975" y="282" text-anchor="middle">配息專戶明細表</text>
+</g><text class="lane" x="20" y="326">④ 手續費與服務費請款:四支連號同型,四支都會寫 DB</text><g class="bx accent">
+<rect x="20" y="340" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="150" y="362" text-anchor="middle">OFDR452</text>
+<text class="t2" x="150" y="382" text-anchor="middle">服務費 A2 A3 A4 三張</text>
+</g><g class="bx vend">
+<rect x="300" y="340" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="430" y="362" text-anchor="middle">OFDR453</text>
+<text class="t2" x="430" y="382" text-anchor="middle">只出 Excel 沒有 rpt</text>
+</g><g class="bx accent">
+<rect x="580" y="340" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="705" y="362" text-anchor="middle">OFDR455</text>
+<text class="t2" x="705" y="382" text-anchor="middle">申購手續費 A1 A2 A3</text>
+</g><g class="bx accent">
+<rect x="850" y="340" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="975" y="362" text-anchor="middle">OFDR457</text>
+<text class="t2" x="975" y="382" text-anchor="middle">買回手續費 B1 B2 B3</text>
+</g><text class="lane" x="20" y="426">⑤ 銷售統計 清算 與 法規申報:十二支</text><g class="bx accent">
+<rect x="20" y="440" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="150" y="462" text-anchor="middle">OFDR235 OFDR238 OFDR239</text>
+<text class="t2" x="150" y="482" text-anchor="middle">促銷 每日銷售 預估</text>
+</g><g class="bx accent">
+<rect x="300" y="440" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="430" y="462" text-anchor="middle">OFDR237 OFDR501</text>
+<text class="t2" x="430" y="482" text-anchor="middle">退休財管月報 行銷群組</text>
+</g><g class="bx accent">
+<rect x="580" y="440" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="705" y="462" text-anchor="middle">OFDR495 OFDR511 OFDR512 OFDR513</text>
+<text class="t2" x="705" y="482" text-anchor="middle">基金合併與清算四支</text>
+</g><g class="bx accent">
+<rect x="850" y="440" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="975" y="462" text-anchor="middle">OFDR540 OFDR731 OFDR733</text>
+<text class="t2" x="975" y="482" text-anchor="middle">受益人大會 結匯 貨幣基金</text>
+</g><text class="lane" x="20" y="526">⑥ 共同結構:本片沒有任何一支報表的取數邏輯在版控內</text><g class="bx ext">
+<rect x="20" y="540" rx="10" ry="10" width="530" height="56"/>
+<text class="t1" x="285" y="562" text-anchor="middle">71 個 SP 與 Function</text>
+<text class="t2" x="285" y="582" text-anchor="middle">DB/SP 底下一個都找不到</text>
+</g><g class="bx ext">
+<rect x="570" y="540" rx="10" ry="10" width="520" height="56"/>
+<text class="t1" x="830" y="562" text-anchor="middle">71 個 .rpt</text>
+<text class="t2" x="830" y="582" text-anchor="middle">版面二進位 全在 csproj 內但無法 diff</text>
+</g></svg><figcaption>圖 1 OFDR1 全景。橘框=本片的 40 支報表畫面;紫框=有寫入副作用或已壞掉的;灰虛框=被讀但不歸本片管的共用表;黑框=版控外或無法 diff 的資產。五群之間沒有任何程式呼叫——R 畫面彼此不互叫,只靠共同讀同一批表而相關。最下面一排是本片與 M / I 最大的差別:取數邏輯與版面兩端都在版控外。</figcaption></figure>
+<h3 id="1-2-七層結構與-m-i-r-差異">1.2 七層結構與 M / I / R 差異</h3>
+<p>圖 2 是 <a class="sec" href="#0-2-m-i-r-三欄對照表-本篇最重要的一張表-後面-189-支報表靠它">§0.2</a> 那張三十列對照表的圖形版。<strong>只看一張圖的人看這張。</strong></p>
+<h3 id="1-3-資料來源三種分流">1.3 資料來源三種分流</h3>
+<p>圖 3。要判斷「改這支報表要動哪裡」,先用這張圖定位它走的是 SP 路還是自組 SQL 路。</p>
+<h3 id="1-4-最重的一支-ofdr452-的完整路徑">1.4 最重的一支:<code>OFDR452</code> 的完整路徑</h3>
+<p>圖 4。條件檢核 → 八個 SP 取數 → 寫回 DB → 三張 <code>.rpt</code> 輸出。 <code>OFDR453</code> <code>OFDR455</code> <code>OFDR457</code> 三支形狀幾乎相同(<a class="sec" href="#7-8-請款四支-ofdr452-ofdr453-ofdr455-ofdr457-全片最重-也最會咬人">§7.8</a>)。</p>
+<h3 id="1-5-跨模組-報表讀的表是誰建的">1.5 跨模組:報表讀的表是誰建的</h3>
+<p>圖 5。左欄表、中欄寫入端、右欄本片讀取端。最下面一排標出 R 與 I 的分水嶺。</p>
+</div></section><section class="sec" data-sec="2-資料模型"><h2 id="2-資料模型"><button class="tg" aria-label="收合/展開" type="button"></button>2. 資料模型</h2><div class="sec-body"><figure><svg viewBox="0 0 1120 590" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PO 取數的三條路:呼叫 SP、C 井自組 SQL、直接讀表"><defs><marker id="ah_ofdr1_src" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">分流起點:PO 拿到 Util.Parameters 之後只有三條路</text><g class="bx accent">
+<rect x="20" y="50" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="190" y="72" text-anchor="middle">路 A 呼叫 SP 取 RefCursor</text>
+<text class="t2" x="190" y="92" text-anchor="middle">36 支 佔九成</text>
+</g><g class="bx vend">
+<rect x="390" y="50" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="560" y="72" text-anchor="middle">路 B C# 自組 SQL 字串</text>
+<text class="t2" x="560" y="92" text-anchor="middle">4 支 OFDR002A OFDR022 OFDR023 OFDR040</text>
+</g><g class="bx dash">
+<rect x="750" y="50" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="920" y="72" text-anchor="middle">路 C 讀既有表</text>
+<text class="t2" x="920" y="92" text-anchor="middle">0 支 本片沒有任何一支直接 SELECT 實體表而不經 SP 或自組 SQL</text>
+</g><g class="bx">
+<rect x="20" y="130" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="190" y="152" text-anchor="middle">GetStoredProcCommand(SP名)</text>
+<text class="t2" x="190" y="172" text-anchor="middle">SP 名是 C# 內的字面常數</text>
+</g><g class="bx">
+<rect x="390" y="130" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="560" y="152" text-anchor="middle">GetSqlStringCommand(strSQL)</text>
+<text class="t2" x="560" y="172" text-anchor="middle">strSQL 由 += 疊出來</text>
+</g><path class="ar" d="M 190 106 L 190 130" marker-end="url(#ah_ofdr1_src)"/><path class="ar" d="M 560 106 L 560 130" marker-end="url(#ah_ofdr1_src)"/><g class="bx accent">
+<rect x="20" y="206" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="190" y="228" text-anchor="middle">AddInParameter 具名綁定</text>
+<text class="t2" x="190" y="248" text-anchor="middle">條件值不會進 SQL 文字</text>
+</g><g class="bx vend">
+<rect x="390" y="206" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="560" y="228" text-anchor="middle">條件值直接串進 SQL 文字</text>
+<text class="t2" x="560" y="248" text-anchor="middle">OFDR022 OFDR023 OFDR002A 三支</text>
+</g><path class="ar" d="M 190 186 L 190 206" marker-end="url(#ah_ofdr1_src)"/><path class="ar" d="M 560 186 L 560 206" marker-end="url(#ah_ofdr1_src)"/><g class="bx">
+<rect x="20" y="282" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="190" y="304" text-anchor="middle">AddOutParameter RefCursor</text>
+<text class="t2" x="190" y="324" text-anchor="middle">OracleDbType.RefCursor int.MaxValue</text>
+</g><g class="bx vend">
+<rect x="390" y="282" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="560" y="304" text-anchor="middle">整段 SQL 送出</text>
+<text class="t2" x="560" y="324" text-anchor="middle">OFDR002A 還留著 T-SQL 中括號</text>
+</g><path class="ar" d="M 190 262 L 190 282" marker-end="url(#ah_ofdr1_src)"/><path class="ar" d="M 560 262 L 560 282" marker-end="url(#ah_ofdr1_src)"/><g class="bx ext">
+<rect x="20" y="358" rx="10" ry="10" width="710" height="56"/>
+<text class="t1" x="375" y="380" text-anchor="middle">LoadDataSet(cmd, DataEntity, 結果集名)</text>
+<text class="t2" x="375" y="400" text-anchor="middle">第三參是結果集名 不是表名 真實表名只在 SP 裡</text>
+</g><path class="ar" d="M 190 338 L 190 358" marker-end="url(#ah_ofdr1_src)"/><path class="ar" d="M 560 338 L 560 358" marker-end="url(#ah_ofdr1_src)"/><g class="bx">
+<rect x="20" y="434" rx="10" ry="10" width="710" height="56"/>
+<text class="t1" x="375" y="456" text-anchor="middle">Ctl TransferVDBHelper.TransferTable</text>
+<text class="t2" x="375" y="476" text-anchor="middle">Model 表整表搬成 View 表</text>
+</g><path class="ar" d="M 375 414 L 375 434" marker-end="url(#ah_ofdr1_src)"/><g class="bx">
+<rect x="20" y="510" rx="10" ry="10" width="710" height="56"/>
+<text class="t1" x="375" y="532" text-anchor="middle">UI 拿 View 資料 再交給 Crystal 或 ExcelHelper</text>
+<text class="t2" x="375" y="552" text-anchor="middle">兩個出口</text>
+</g><path class="ar" d="M 375 490 L 375 510" marker-end="url(#ah_ofdr1_src)"/><g class="bx dash">
+<rect x="750" y="130" rx="10" ry="10" width="340" height="132"/>
+<text class="t1" x="920" y="190" text-anchor="middle">為什麼 R 比 I 安全</text>
+<text class="t2" x="920" y="210" text-anchor="middle">I 有 13 支串接 R 只有 3 支 差別在九成走 SP</text>
+</g><g class="bx ext">
+<rect x="750" y="282" rx="10" ry="10" width="340" height="132"/>
+<text class="t1" x="920" y="342" text-anchor="middle">代價是什麼</text>
+<text class="t2" x="920" y="362" text-anchor="middle">71 個 SP 全不在版控 少印一列讀 C# 沒用</text>
+</g></svg><figcaption>圖 3 資料來源三種分流,對應 §2.3。左欄=九成走的 SP 路;中欄=四支自組 SQL 的路;右欄=本片實際上不存在的第三種。兩條路在 LoadDataSet 那一格合流,之後完全相同。右側兩塊是這個設計的一好一壞:安全性換來的是取數邏輯整個看不到。</figcaption></figure>
+<h3 id="2-1-主表與明細-本片沒有">2.1 主表與明細:<strong>本片沒有</strong></h3>
+<p><code>grep -c "MasterTable" Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/*.cs</code> 全目錄是 <strong>0</strong>。 40 支 PO 一個 <code>MasterTable</code> / <code>DetailTable</code> 宣告都沒有,這點與 I 完全一致(<code>ofdi1.md §0</code>), 也與前人手冊 <code>add-report.md</code> 的 <code>§0.3</code> 對 <code>CASR001</code> 的觀察一致——<strong>不是 OFD 的特例,是 R 型別的通則</strong>。</p>
+<p>取而代之的是 PO 的這一行(以 <code>OFDR001A</code> 為例):</p>
+<pre class="code"><code>m_db.LoadDataSet(dbcomd, modelVDB.DataEntity, modelVDB.DataEntity.OFDR001A.TableName);</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR001A_PO.cs:51</code>。 <strong>第三個參數是結果集名(<code>OFDR001A</code>,就是畫面代號),不是實體表名。</strong> 所以工具想從 PO 反推「這支報表讀哪些表」,<strong>在本片會全數落空</strong>。</p>
+<h3 id="2-2-sp-與-function-71-個-版控內-0-個">2.2 SP 與 Function:<strong>71 個,版控內 0 個</strong></h3>
+<p>本片 40 支 PO 引用的 SP / Function 全清單如下。比對基準是 <code><repo>/DB/</code> 底下的 279 個檔(<code>DB/SP/</code> <code>DB/Function/</code> <code>DB/Table/</code> <code>DB/Trigger/</code> <code>DB/View/</code>),以檔名(不含副檔名、大小寫不敏感)比對。</p>
+<div class="tw"><table><thead><tr><th>畫面</th><th>SP / Function</th><th>在版控</th></tr></thead><tbody><tr><td><code>OFDR001A</code></td><td><code>s_TA_OFDR001A_Get</code></td><td>否</td></tr><tr><td><code>OFDR002A</code></td><td><code>s_OFDR002A_Get</code></td><td>否</td></tr><tr><td><code>OFDR013</code></td><td><code>s_OFDR013_Get</code></td><td>否</td></tr><tr><td><code>OFDR014</code></td><td><code>s_OFDR014_Get</code></td><td>否</td></tr><tr><td><code>OFDR015</code></td><td><code>s_OFDR015_Get</code></td><td>否</td></tr><tr><td><code>OFDR021</code></td><td><code>s_OFDR021_Get</code> <code>s_OFDR021_1_Get</code> <code>s_OFDR021_2_Get</code> <code>s_OFDR021_3_Get</code> <code>s_OFDR021_4_Get</code> <code>s_OFDR021_5_Get</code> <code>s_OFDR021_6_Get</code> <code>s_OFDR021_BACC_OFF_Get</code> <code>s_OFDR021_SACC_OFF_Get</code></td><td>否(9 個)</td></tr><tr><td><code>OFDR022</code></td><td><code>Sp_ForTa_Batch_Send</code></td><td>否</td></tr><tr><td><code>OFDR023</code></td><td><code>Sp_ForTa_Batch_Send</code></td><td>否</td></tr><tr><td><code>OFDR024</code></td><td><code>s_OFDR024_Get</code></td><td>否</td></tr><tr><td><code>OFDR034</code></td><td><code>S_TA_OFDR034_GET</code></td><td>否</td></tr><tr><td><code>OFDR035</code></td><td><code>S_TA_OFDR035_GET</code></td><td>否</td></tr><tr><td><code>OFDR040</code></td><td><code>S_TA_OFDR040_GET</code></td><td>否</td></tr><tr><td><code>OFDR041</code></td><td><code>S_TA_OFDR041_GET</code> <code>S_TA_OFDR041_GET_T</code></td><td>否(2 個)</td></tr><tr><td><code>OFDR043</code></td><td><code>S_TA_OFDR043_Get</code></td><td>否</td></tr><tr><td><code>OFDR235</code></td><td><code>S_TA_OFDR235_GET</code></td><td>否</td></tr><tr><td><code>OFDR236</code></td><td><code>S_TA_OFDR236_GET</code></td><td>否</td></tr><tr><td><code>OFDR237</code></td><td><code>S_TA_OFDR237_GET</code></td><td>否</td></tr><tr><td><code>OFDR238</code></td><td><code>S_TA_OFDR238_GET</code></td><td>否</td></tr><tr><td><code>OFDR239</code></td><td><code>S_TA_OFDR239_GET</code></td><td>否</td></tr><tr><td><code>OFDR281</code></td><td><code>s_TA_OFDR281_Get</code></td><td>否</td></tr><tr><td><code>OFDR282</code></td><td><code>s_TA_OFDR282_Get</code></td><td>否</td></tr><tr><td><code>OFDR286</code></td><td><code>s_TA_OFDR286_Get</code></td><td>否</td></tr><tr><td><code>OFDR288</code></td><td><code>s_OFDR288_Get</code></td><td>否</td></tr><tr><td><code>OFDR452</code></td><td><code>S_TA_OFDR452_GET</code> <code>S_TA_OFDR452_A0_Get</code> <code>S_TA_OFDR452_A1_Get</code> <code>S_TA_OFDR452_A2_Get</code> <code>S_TA_OFDR452_A3_Get</code> <code>S_TA_OFDR452_A4_Get</code> <code>S_TA_OFDR452_A5_Get</code> <code>S_TA_OFDR452_DEL</code></td><td>否(8 個)</td></tr><tr><td><code>OFDR453</code></td><td><code>S_TA_OFDR453_GET</code> <code>S_TA_OFDR453_B1_Get</code> <code>S_TA_OFDR453_B2_Get</code> <code>S_TA_OFDR453_B3_Get</code> <code>S_TA_OFDR453_B4_Get</code> <code>S_TA_OFDR453_B5_Get</code> <code>S_TA_OFDR453_DEL</code></td><td>否(7 個)</td></tr><tr><td><code>OFDR455</code></td><td><code>S_TA_OFDR455_GET</code> <code>S_TA_OFDR455_A1_Get</code> <code>S_TA_OFDR455_A2_Get</code> <code>S_TA_OFDR455_A3_Get</code> <code>S_TA_OFDR455_A4_Get</code></td><td>否(5 個)</td></tr><tr><td><code>OFDR457</code></td><td><code>S_TA_OFDR457_GET</code> <code>S_TA_OFDR457_B1_Get</code> <code>S_TA_OFDR457_B2_Get</code> <code>S_TA_OFDR457_B3_Get</code></td><td>否(4 個)</td></tr><tr><td><code>OFDR495</code></td><td><code>s_TA_OFDR495_Get</code> <code>s_TA_OFDR495_1_Get</code></td><td>否(2 個)</td></tr><tr><td><code>OFDR501</code></td><td><code>s_OFDR501_Get</code></td><td>否</td></tr><tr><td><code>OFDR511</code></td><td><code>s_TA_OFDR511_Get</code></td><td>否</td></tr><tr><td><code>OFDR512</code></td><td><code>s_TA_OFDR512_Get</code></td><td>否</td></tr><tr><td><code>OFDR513</code></td><td><code>s_TA_OFDR513_Get</code></td><td>否</td></tr><tr><td><code>OFDR540</code></td><td><code>BF_VOTE.OFDR540_Statistics</code> <code>BF_VOTE.OFDR540_Detail_Get</code> <code>BF_VOTE.OFDR540_Detail_VALID</code> <code>BF_VOTE.OFDR540_Detail_AGENT</code> <code>BF_VOTE.OFDR540_AGENT_Statistics</code> <code>BF_VOTE.OFDR540_AGENT_EMP</code></td><td>否(6 個,<strong>唯一用 package 命名的</strong>)</td></tr><tr><td><code>OFDR563</code></td><td><code>s_OFDR563_Get</code></td><td>否</td></tr><tr><td><code>OFDR564</code></td><td><code>s_OFDR564_Get</code></td><td>否</td></tr><tr><td><code>OFDR716</code></td><td><code>s_TA_OFDR716_Get</code> <code>s_TA_OFDR716_1_Get</code> <code>s_TA_OFDR716_2_Get</code></td><td>否(3 個)</td></tr><tr><td><code>OFDR731</code></td><td><code>s_OFDR731_Get</code></td><td>否</td></tr><tr><td><code>OFDR733</code></td><td><code>s_TA_OFDR733_Get</code></td><td>否</td></tr><tr><td><code>OFDR751</code></td><td><code>S_TA_OFDR751_GET</code> <code>S_TA_OFDR751_SUM_GET</code> <code>S_TA_OFDR751_SHOET_GET</code></td><td>否(3 個,<strong>注意第三個是 <code>SHOET</code>,疑為 <code>SHORT</code> 的拼錯</strong>)</td></tr><tr><td><code>OFDR752</code></td><td><code>S_TA_OFDR752_GET</code></td><td>否</td></tr></tbody></table></div>
+<p><strong>合計 71 個不同的 SP / package procedure,版控內 0 個。</strong> 全部進 meta <code>refcheck-ignore</code>。</p>
+<p>命名沒有統一慣例,實際存在五種:</p>
+<div class="tw"><table><thead><tr><th>樣式</th><th>例</th><th>支數</th></tr></thead><tbody><tr><td><code>s_TA_&lt;代號&gt;_Get</code> 混合大小寫</td><td><code>s_TA_OFDR001A_Get</code></td><td>13</td></tr><tr><td><code>S_TA_&lt;代號&gt;_GET</code> 全大寫</td><td><code>S_TA_OFDR034_GET</code></td><td>30</td></tr><tr><td><code>s_&lt;代號&gt;_Get</code> <strong>沒有 <code>TA_</code> 中綴</strong></td><td><code>s_OFDR013_Get</code></td><td>21</td></tr><tr><td><code>Sp_ForTa_Batch_Send</code> <strong>完全不照代號</strong></td><td>共用簡訊發送</td><td>1</td></tr><tr><td><code>BF_VOTE.&lt;名&gt;</code> <strong>Oracle package</strong></td><td><code>BF_VOTE.OFDR540_Statistics</code></td><td>6</td></tr></tbody></table></div>
+<p><strong>第三種(無 <code>TA_</code> 中綴)與第一、二種的分野,正好等於 PO 基底的兩派</strong>: <code>Basic_PO</code> 派 13 支全部用沒有 TA 中綴的樣式,<code>I&lt;代號&gt;_PO</code> 派全部用帶 TA 中綴的樣式。 <strong>〔假設〕這是兩個世代</strong>:<code>Basic_PO</code> 加上無 TA 中綴的 SP 名是早期寫法,<code>I&lt;代號&gt;_PO</code> 加上有 TA 中綴的 SP 名是後期。依據是兩組完全不交叉,且早期那組的 UI 裡留著大量 <code>//this.SetQueryParameters("OFDRxxxRPS"); //@@@ 步驟2 :指定報表ClassName</code> 這種範本殘留註解(例 <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR014.cs:60</code>),後期那組沒有。</p>
+<h3 id="2-3-資料來源三種分流-逐支歸類">2.3 資料來源三種分流(逐支歸類)</h3>
+<p>三種來源的定義:<strong>自組 SQL</strong> = PO 內出現 <code>GetSqlStringCommand</code>;<strong>呼叫 SP</strong> = 出現 <code>GetStoredProcCommand</code>;<strong>讀既有表</strong> = 兩者皆無而直接走框架的表級存取。</p>
+<div class="tw"><table><thead><tr><th>來源</th><th>支數</th><th>代號</th></tr></thead><tbody><tr><td><strong>呼叫 SP</strong></td><td>36</td><td><code>OFDR001A</code> <code>OFDR013</code> <code>OFDR014</code> <code>OFDR015</code> <code>OFDR024</code> <code>OFDR034</code> <code>OFDR035</code> <code>OFDR041</code> <code>OFDR043</code> <code>OFDR235</code> <code>OFDR236</code> <code>OFDR237</code> <code>OFDR238</code> <code>OFDR239</code> <code>OFDR281</code> <code>OFDR282</code> <code>OFDR286</code> <code>OFDR288</code> <code>OFDR452</code> <code>OFDR453</code> <code>OFDR455</code> <code>OFDR457</code> <code>OFDR495</code> <code>OFDR501</code> <code>OFDR511</code> <code>OFDR512</code> <code>OFDR513</code> <code>OFDR540</code> <code>OFDR563</code> <code>OFDR564</code> <code>OFDR716</code> <code>OFDR733</code> <code>OFDR751</code> <code>OFDR752</code> + 混合的 <code>OFDR021</code> <code>OFDR731</code></td></tr><tr><td><strong>SP + 自組 SQL 混合</strong></td><td>4</td><td><code>OFDR002A</code> <code>OFDR021</code> <code>OFDR040</code> <code>OFDR731</code></td></tr><tr><td><strong>純自組 SQL(無 SP 取數)</strong></td><td>2</td><td><code>OFDR022</code> <code>OFDR023</code>(只呼叫共用的 <code>Sp_ForTa_Batch_Send</code> 做寄送,取數全靠自組 SQL)</td></tr><tr><td><strong>讀既有表(不經 SP 也不自組 SQL)</strong></td><td><strong>0</strong></td><td>—</td></tr></tbody></table></div>
+<p>混合的那四支,自組 SQL 只用來<strong>填下拉選單</strong>,不是報表主資料:</p>
+<div class="tw"><table><thead><tr><th>畫面</th><th>自組 SQL 用途</th><th>錨點</th></tr></thead><tbody><tr><td><code>OFDR002A</code></td><td>撈基金清單填多選框</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR002A_PO.cs:83-93</code></td></tr><tr><td><code>OFDR040</code></td><td>撈退郵項目代碼(<code>COD006A.CODE_SORT = 'E2'</code>)</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR040_PO.cs:159-165</code></td></tr><tr><td><code>OFDR040</code></td><td>撈退郵原因代碼(<code>COD006A.CODE_SORT = 'E3'</code>)</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR040_PO.cs:204-210</code></td></tr><tr><td><code>OFDR021</code></td><td>撈國別代碼 <code>CTL014</code></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR021_PO.cs:125-132</code></td></tr></tbody></table></div>
+<p><strong>只有 <code>OFDR022</code> <code>OFDR023</code> 的報表主資料是 C# 自組的。</strong> 這兩支也正好是壞的(附錄 E)。</p>
+<h3 id="2-4-參數化程度">2.4 參數化程度</h3>
+<div class="tw"><table><thead><tr><th>作法</th><th>支數</th><th>說明</th></tr></thead><tbody><tr><td><code>AddInParameter</code> 具名綁定</td><td>37</td><td>SP 路一律如此,值不進 SQL 文字</td></tr><tr><td><code>AddInParameter</code> + 部分字串串接</td><td>1</td><td><code>OFDR002A</code>:<code>@FUNDCODE</code> 走綁定,但整段 SQL 由 <code>+=</code> 疊,見下</td></tr><tr><td><strong>條件值直接串進 SQL 文字</strong></td><td>2</td><td><code>OFDR022</code> <code>OFDR023</code></td></tr></tbody></table></div>
+<p><strong>唯一兩支真正把使用者輸入串進 SQL 的</strong>:</p>
+<pre class="code"><code>case "ID_NO":
+    strSQL += " AND BMS001.ID_NO = '" + rrRow.Value + "' " + Environment.NewLine;
+    break;</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:259</code>。同一個 method 內 <code>BF_NO</code>(<code>:256</code>)、<code>ConfirmDate_ST</code> / <code>_ED</code>(<code>:250</code> <code>:253</code>)、<code>RECEIPT_DOC_ID</code>(<code>:263</code> 起的四個 case)全部同型。 <code>OFDR023_PO</code> 的對應段落結構相同。</p>
+<p><strong>這比 <code>ofdi1.md</code> 的 13 支好太多</strong>——但要注意原因不是本片寫得比較小心,是<strong>九成走 SP 所以沒有機會串</strong>(<a class="sec" href="#0-2-m-i-r-三欄對照表-本篇最重要的一張表-後面-189-支報表靠它">§0.2</a> 第 24 列)。</p>
+<h3 id="2-5-參數命名慣例-四套並存">2.5 參數命名慣例:<strong>四套並存</strong></h3>
+<p>同一個專案內,傳給 SP 的參數名前綴有四種寫法:</p>
+<div class="tw"><table><thead><tr><th>前綴</th><th>例</th><th>用在哪</th></tr></thead><tbody><tr><td><code>@stri</code> / <code>@data</code> / <code>@deci</code> / <code>@dat</code></td><td><code>@striID_NO_ST</code>(<code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR021.cs:93</code>)</td><td><code>OFDR021</code> <code>OFDR022</code> <code>OFDR023</code> <code>OFDR024</code> <code>OFDR731</code> <code>OFDR564</code> — <strong><code>@</code> 是 T-SQL 的參數前綴,Oracle 用 <code>:</code></strong>,留在這裡是遷移殘留</td></tr><tr><td><code>stri</code> / <code>dati</code> / <code>inti</code> / <code>deci</code> 無 <code>@</code></td><td><code>striFUND_ID</code>(<code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR512_PO.cs:63</code>)</td><td>清算群、<code>OFDR239</code></td></tr><tr><td><code>i</code> 單字母開頭</td><td><code>iFUND_ID</code>(<code>OFDR238</code> <code>OFDR235</code> <code>OFDR236</code> <code>OFDR237</code> <code>OFDR751</code> <code>OFDR752</code>)</td><td>銷售統計群、集保下單群</td></tr><tr><td>裸欄名</td><td><code>FUND_ID</code> <code>ISSUE_CODE</code>(<code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR512_PO.cs:129-131</code>)</td><td><code>OFDR512</code> <code>OFDR513</code> 的第二個 SP 呼叫</td></tr></tbody></table></div>
+<p><code>OFDR512_PO</code> <strong>同一支裡三套都用到</strong>:<code>:61-76</code> 用 <code>stri</code> / <code>dati</code> / <code>int</code>,<code>:129-131</code> 用裸欄名。這代表<strong>兩段是不同人不同時期寫的</strong>;改參數時不能假設同一支畫面的慣例一致。</p>
+<h3 id="2-6-rpt-對應表-m-i-沒有這一節">2.6 <code>.rpt</code> 對應表(<strong>M / I 沒有這一節</strong>)</h3>
+<h4 id="2-6-1-對應規則">2.6.1 對應規則</h4>
+<p><strong>一對多,不是一對一。</strong> 規則是:</p>
+<pre class="code"><code>&lt;畫面代號&gt;RPS[後綴].rpt</code></pre>
+<p>後綴有三種形態,<strong>沒有統一規律</strong>:</p>
+<div class="tw"><table><thead><tr><th>形態</th><th>例</th><th>意義</th></tr></thead><tbody><tr><td>無後綴</td><td><code>OFDR001ARPS.rpt</code></td><td>單版型畫面(21 支)</td></tr><tr><td>數字</td><td><code>OFDR238RPS1</code> ~ <code>RPS4</code></td><td>同畫面的四種報表(依 UI 選項切)</td></tr><tr><td><strong>字母 + 數字</strong></td><td><code>OFDR452A2RPS</code> <code>OFDR455A1RPS</code> <code>OFDR457B1RPS</code></td><td>請款群專有:字母對應 SP 的 <code>_A2_Get</code> / <code>_B1_Get</code> 後綴,<strong><code>RPS</code> 跑到最後面去了</strong></td></tr></tbody></table></div>
+<p>第三種是<strong>構詞例外</strong>:一般是 <code>&lt;代號&gt;RPS&lt;n&gt;</code>,請款群是 <code>&lt;代號&gt;&lt;分頁碼&gt;RPS</code>。 <code>grep</code> 找 <code>OFDR452RPS</code> 會一無所獲——要找 <code>OFDR452A*RPS</code>。</p>
+<p>編號也不連續:<code>OFDR751</code> 有 <code>RPS</code> <code>RPS2</code> <code>RPS3</code>(<strong>沒有 <code>RPS1</code></strong>); <code>OFDR540</code> 有 <code>RPS</code> <code>RPS1</code> <code>RPS6</code> <code>RPS7</code> <code>RPS8</code> <code>RPS9</code>(<strong>沒有 <code>RPS2</code>~<code>RPS5</code></strong>,因為 UI 把選項 <code>1</code>~<code>5</code> 全導到 <code>RPS1</code>,見 <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR540.cs:96-102</code>)。</p>
+<h4 id="2-6-2-版控狀況-71-個全在-1-個引用懸空">2.6.2 版控狀況:<strong>71 個全在,1 個引用懸空</strong></h4>
+<p><code>Dev/ATLAS.OFD.Report/Source/CrystalReports/Report.OFD/</code> 底下實有 <strong>71 個 <code>.rpt</code></strong>, 逐個比對 <code>Report.OFD.csproj</code>:</p>
+<ul><li><strong>磁碟上有、csproj 沒有:0 個</strong></li><li><strong>csproj 有、磁碟上沒有:0 個</strong></li><li><strong>71 個都有同名伴生 <code>.cs</code>,且 71 個 <code>.cs</code> 都在 csproj 內</strong></li></ul>
+<p><strong>這與 <code>misc.md</code> 實測的「2 支 <code>.rpt</code> 躺在沒有 csproj 的資料夾」是相反的結果——本專案沒有那一型。</strong> 部署路徑也齊全:<code>Dev/ATLAS.OFD.Report/Source/CrystalReports/Report.OFD/Report.OFD.csproj:793</code> 有 PostBuild</p>
+<pre class="code"><code>xcopy "$(ProjectDir)*.rpt" "C:\Program Files\Vendor\PTPFBlock\CrystalReports\." /d /r /y</code></pre>
+<p><code>*.rpt</code> 通配,所以不管 csproj 怎麼宣告都會被複製走。</p>
+<p><strong>唯一的破口是反過來的:UI 要一個不存在的版型。</strong></p>
+<pre class="code"><code>this.SetQueryParameters("OFDR716RPS2", "OFDR716RPS2", "");</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR716.cs:56</code>。 <code>OFDR716RPS2</code> <strong>沒有 <code>.rpt</code>、沒有伴生 <code>.cs</code>、不在 csproj、不在磁碟上</strong>。報表中文名也是空字串。走到這個分支必定執行期失敗。嚴重度見附錄 E。</p>
+<h4 id="2-6-3-宣告方式兩派">2.6.3 宣告方式兩派</h4>
+<p>71 個 <code>.rpt</code> 在 csproj 內有兩種宣告方式:</p>
+<div class="tw"><table><thead><tr><th>方式</th><th>個數</th><th>例</th></tr></thead><tbody><tr><td>伴生 <code>.cs</code> 用 <code>&lt;DependentUpon&gt;x.rpt&lt;/DependentUpon&gt;</code> 掛著,<code>.rpt</code> 本身不另外列</td><td>62</td><td><code>Dev/ATLAS.OFD.Report/Source/CrystalReports/Report.OFD/Report.OFD.csproj:102</code></td></tr><tr><td><code>.rpt</code> 額外列一筆 <code>&lt;None Include="x.rpt" /&gt;</code></td><td>9</td><td><code>Dev/ATLAS.OFD.Report/Source/CrystalReports/Report.OFD/Report.OFD.csproj:506-514</code></td></tr></tbody></table></div>
+<p>那 9 個正好是請款群的全部:<code>OFDR452A2</code> <code>OFDR452A3</code> <code>OFDR452A4</code> <code>OFDR455A1</code> <code>OFDR455A2</code> <code>OFDR455A3</code> <code>OFDR457B1</code> <code>OFDR457B2</code> <code>OFDR457B3</code>。 <strong>〔假設〕這一批是後來手工加進 csproj 的</strong>,依據是它們同時也是命名構詞例外的那一批(<a class="sec" href="#2-6-rpt-對應表-m-i-沒有這一節">§2.6</a>.1),且 <code>&lt;None&gt;</code> 區塊緊接在 <code>App.config</code> 後面、與其他 <code>.rpt</code> 分開。 <strong>實務上不影響</strong>——PostBuild 的 <code>*.rpt</code> 通配會複製它們。</p>
+<h4 id="2-6-4-逐支對應">2.6.4 逐支對應</h4>
+<div class="tw"><table><thead><tr><th>畫面</th><th><code>.rpt</code></th><th>張數</th><th>全在版控</th></tr></thead><tbody><tr><td><code>OFDR001A</code></td><td><code>OFDR001ARPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR002A</code></td><td><code>OFDR002ARPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR013</code></td><td><code>OFDR013RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR014</code></td><td><code>OFDR014RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR015</code></td><td><code>OFDR015RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR021</code></td><td><code>OFDR021RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR022</code></td><td><strong>無</strong></td><td>0</td><td>不適用(不是報表)</td></tr><tr><td><code>OFDR023</code></td><td><strong>無</strong></td><td>0</td><td>不適用(不是報表)</td></tr><tr><td><code>OFDR024</code></td><td><code>OFDR024RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR034</code></td><td><code>OFDR034RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR035</code></td><td><code>OFDR035RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR040</code></td><td><code>OFDR040RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR041</code></td><td><code>OFDR041RPS</code> <code>OFDR041RPS1</code></td><td>2</td><td>是</td></tr><tr><td><code>OFDR043</code></td><td><code>OFDR043RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR235</code></td><td><code>OFDR235RPS1</code> <code>OFDR235RPS2</code></td><td>2</td><td>是(<strong>無無後綴版</strong>)</td></tr><tr><td><code>OFDR236</code></td><td><code>OFDR236RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR237</code></td><td><strong>無</strong></td><td>0</td><td>不適用(只出 Excel)</td></tr><tr><td><code>OFDR238</code></td><td><code>OFDR238RPS1</code> ~ <code>RPS4</code></td><td>4</td><td>是</td></tr><tr><td><code>OFDR239</code></td><td><code>OFDR239RPS1</code> ~ <code>RPS3</code></td><td>3</td><td>是</td></tr><tr><td><code>OFDR281</code></td><td><code>OFDR281RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR282</code></td><td><code>OFDR282RPS</code> <code>OFDR282RPS1</code></td><td>2</td><td>是</td></tr><tr><td><code>OFDR286</code></td><td><code>OFDR286RPS</code> <code>OFDR286RPS1</code> <code>OFDR286RPS2</code></td><td>3</td><td>是</td></tr><tr><td><code>OFDR288</code></td><td><code>OFDR288RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR452</code></td><td><code>OFDR452A2RPS</code> <code>OFDR452A3RPS</code> <code>OFDR452A4RPS</code></td><td>3</td><td>是(<strong>八個 SP 只有三張圖</strong>)</td></tr><tr><td><code>OFDR453</code></td><td><strong>無</strong></td><td>0</td><td>不適用(只出 Excel)</td></tr><tr><td><code>OFDR455</code></td><td><code>OFDR455A1RPS</code> <code>OFDR455A2RPS</code> <code>OFDR455A3RPS</code></td><td>3</td><td>是</td></tr><tr><td><code>OFDR457</code></td><td><code>OFDR457B1RPS</code> <code>OFDR457B2RPS</code> <code>OFDR457B3RPS</code></td><td>3</td><td>是</td></tr><tr><td><code>OFDR495</code></td><td><code>OFDR495RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR501</code></td><td><code>OFDR501RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR511</code></td><td><code>OFDR511RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR512</code></td><td><code>OFDR512RPS</code> <code>OFDR512RPS1</code></td><td>2</td><td>是</td></tr><tr><td><code>OFDR513</code></td><td><code>OFDR513RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR540</code></td><td><code>OFDR540RPS</code> <code>RPS1</code> <code>RPS6</code> <code>RPS7</code> <code>RPS8</code> <code>RPS9</code></td><td>6</td><td>是(<strong>動態組名,見 <a class="sec" href="#7-10-ofdr540-唯一動態組報表類別名的一支">§7.10</a></strong>)</td></tr><tr><td><code>OFDR563</code></td><td><code>OFDR563RPS1</code> <code>OFDR563RPS2</code></td><td>2</td><td>是</td></tr><tr><td><code>OFDR564</code></td><td><code>OFDR564RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR716</code></td><td><code>OFDR716RPS</code> <code>OFDR716RPS1</code> · <strong><code>OFDR716RPS2</code> 不存在</strong></td><td>2 + 1 懸空</td><td><strong>否</strong></td></tr><tr><td><code>OFDR731</code></td><td><code>OFDR731RPS</code></td><td>1</td><td>是</td></tr><tr><td><code>OFDR733</code></td><td><code>OFDR733RPS1</code> <code>OFDR733RPS2</code></td><td>2</td><td>是(<strong>無無後綴版</strong>)</td></tr><tr><td><code>OFDR751</code></td><td><code>OFDR751RPS</code> <code>OFDR751RPS2</code> <code>OFDR751RPS3</code></td><td>3</td><td>是(<strong>跳過 <code>RPS1</code></strong>)</td></tr><tr><td><code>OFDR752</code></td><td><code>OFDR752RPS</code></td><td>1</td><td>是</td></tr></tbody></table></div>
+<p><strong>合計</strong>:本片 40 支用掉 <strong>63 個 <code>.rpt</code></strong>,全部在版控;另有 <strong>1 個懸空引用</strong>(<code>OFDR716RPS2</code>)。專案內其餘 8 個 <code>.rpt</code>(<code>OFDR285RPS</code> <code>OFDR285RPS1</code> <code>OFDR287RPS</code> <code>OFDR287RPS1</code> <code>OFDR461RPS</code> <code>OFDR461RPS1</code> <code>OFDR561RPS</code> <code>OFDR562RPS</code>)屬於劃給下一片的那 5 支畫面。</p>
+<h3 id="2-7-c-裡看得見的表-只有-13-張">2.7 C# 裡看得見的表(只有 13 張)</h3>
+<p>由 <code>FROM</code> / <code>JOIN</code> / <code>UPDATE</code> / <code>INTO</code> 的字面值抽出。<strong>這不是完整清單,只是「不經 SP 就看得到」的那部分</strong>; 其餘取數表名全在 71 個版控外 SP 裡。</p>
+<div class="tw"><table><thead><tr><th>表</th><th>誰讀 / 寫</th><th>用途(推測)</th></tr></thead><tbody><tr><td><code>BMS001</code></td><td><code>OFDR022</code> <code>OFDR023</code>(<strong>讀 + 寫</strong>)</td><td>受益人開戶主檔;<code>RECEIPT_DOC_ID</code> / <code>RECEIPT_DOC_ID2</code> 是境內 / 境外文件寄發旗標</td></tr><tr><td><code>OFD132</code></td><td><code>OFDR022</code></td><td>文件寄發設定;<code>STATEMENT_CODE</code> <code>SEND_CODE</code> <code>SEND_NEW_FLASH</code></td></tr><tr><td><code>OFD081V</code></td><td><code>OFDR002A</code></td><td>基金主檔檢視(<code>V</code> 結尾,<strong>假設</strong>為 view)</td></tr><tr><td><code>OFD038</code></td><td><code>OFDR002A</code></td><td>基金分群;<code>FUND_GRPCD</code></td></tr><tr><td><code>OFD303A</code></td><td><code>OFDR001A</code> <code>OFDR002A</code></td><td>結帳控制;<code>CTL_DATE</code> 過帳日期</td></tr><tr><td><code>COD006A</code></td><td><code>OFDR040</code></td><td>共用代碼;<code>CODE_SORT = 'E2'</code> 退郵項目、<code>'E3'</code> 退郵原因</td></tr><tr><td><code>CTL014</code></td><td><code>OFDR021</code></td><td>全庫代碼對照(與 <code>ofdi1.md</code> 同一張)</td></tr><tr><td><code>OFD281A</code></td><td><code>OFDR286</code></td><td>收益分配</td></tr><tr><td><code>OFD494A</code> <code>OFD496A</code></td><td><code>OFDR512</code> <code>OFDR513</code></td><td>基金清算(與 <code>ofdi1.md</code> 的 <code>OFDI481</code> 同一批)</td></tr><tr><td><code>OFD562</code></td><td><code>OFDR564</code>(<strong>讀 + 寫</strong>)</td><td>境外核印;<code>RECEIPT_DOC_ID2</code> 旗標</td></tr></tbody></table></div>
+<p><code>dbo</code> 與 <code>P_GP</code> 兩個字面值是誤抓(前者是 schema 限定詞、後者是 SQL 內的別名),不列入。</p>
+<h3 id="2-8-欄位中文名">2.8 欄位中文名</h3>
+<p><strong>本片不做欄位中文名總表。</strong> 原因:xsd 是結果集形狀(<a class="sec" href="#0-2-m-i-r-三欄對照表-本篇最重要的一張表-後面-189-支報表靠它">§0.2</a> 第 16 列),<code>msdata:Caption</code> 描述的是「這張報表的第 N 欄叫什麼」, 不是實體表欄位的中文名,<strong>拿來當表欄位字典會誤導</strong>。要查某張報表印哪些欄,直接看該支的 <code>Model.xsd</code>。</p>
+<h3 id="2-9-狀態碼">2.9 狀態碼</h3>
+<p>本片沒有自己的狀態碼。<strong>唯二會被本片改動的狀態欄</strong>:</p>
+<div class="tw"><table><thead><tr><th>欄</th><th>表</th><th>值</th><th>誰改</th><th>錨點</th></tr></thead><tbody><tr><td><code>RECEIPT_DOC_ID</code></td><td><code>BMS001</code></td><td><code>'Y'</code> / <code>'N'</code></td><td><code>OFDR022</code></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:137-157</code></td></tr><tr><td><code>RECEIPT_DOC_ID2</code></td><td><code>BMS001</code></td><td><code>'Y'</code> / <code>'N'</code></td><td><code>OFDR022</code></td><td>同上</td></tr><tr><td><code>RECEIPT_DOC_ID2</code></td><td><code>OFD562</code></td><td><code>'Y'</code></td><td><code>OFDR564</code></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR564_PO.cs:123-128</code></td></tr></tbody></table></div>
+<p><code>OFDR022</code> 另外用 <code>BMS001.OPEN_BF_TYPE</code> 的 <code>'1'</code> / <code>'2'</code> 分境內 / 境外 (<code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:204-208</code>)。 <strong>這組值域與 <code>ofd5</code> / <code>ofd7</code> 記的 <code>FUND_TYPE</code> <code>'2'</code> / <code>'1'</code> 不是同一個欄位,不要混用</strong>—— 那邊是基金的境內外,這裡是<strong>開戶</strong>的境內外。</p>
+</div></section><section class="sec" data-sec="3-畫面清冊"><h2 id="3-畫面清冊"><button class="tg" aria-label="收合/展開" type="button"></button>3. 畫面清冊</h2><div class="sec-body">
+<h3 id="3-1-維護-m">3.1 維護 M</h3>
+<p>(本片無此類畫面)本片切的是 <code>Dev/ATLAS.OFD.Report</code> 這個報表專案,型別碼全是 <code>R</code>。</p>
+<h3 id="3-2-查詢-i">3.2 查詢 I</h3>
+<p>(本片無此類畫面)OFD 的 I 畫面在另一個獨立方案 <code>Dev/ATLAS.OFD.Query</code>,已由 <code>ofdi1.md</code> 涵蓋。</p>
+<h3 id="3-3-批次-b">3.3 批次 B</h3>
+<p>(本片無此類畫面)OFD 的 B 畫面在 <code>Dev/ATLAS.OFDB</code>,不在本專案內。</p>
+<h3 id="3-4-報表-r-40-支">3.4 報表 R(40 支)</h3>
+<p>欄位說明:</p>
+<ul><li><strong>報表中文名</strong>:<code>SetQueryParameters</code> 的第三參字面值。多版型的取第一張;完整對應看 <a class="sec" href="#2-6-rpt-對應表-m-i-沒有這一節">§2.6</a>.4。</li><li><strong>PO 基底</strong>:<code>&lt;代號&gt;_PO</code> 的基底宣告,<strong>已先用 <code>strip_cs_comments</code> 剝掉 <code>//</code> 註解</strong>再比對——這一步不能省,<code>ofd4.md</code> 記過 <code>OFDM125A_PO.cs:28</code> 留誘餌註解的事;本片沒有同型誘餌,但流程照走。</li><li><strong>資料來源</strong>:<code>SP</code> = 有 <code>GetStoredProcCommand</code>;<code>SQL</code> = 有 <code>GetSqlStringCommand</code>;<code>SP+SQL</code> = 兩者都有。</li><li><strong>條件</strong>:<code>綁定</code> = 全走 <code>AddInParameter</code>;<code>串接</code> = 有使用者輸入直接進 SQL 文字。</li><li><strong>匯出</strong>:<code>Crystal</code> / <code>Excel</code> / <code>TXT</code>(<code>StreamWriter</code> 產純文字檔)。</li><li><strong>在 csproj</strong>:六層檔案是否全部同時在磁碟上且在對應 csproj 內。</li></ul>
+<div class="tw"><table><thead><tr><th>代號</th><th>報表中文名</th><th>PO 基底</th><th>資料來源</th><th><code>.rpt</code></th><th>在版控</th><th>條件</th><th>匯出</th><th>在 csproj</th></tr></thead><tbody><tr><td><code>OFDR001A</code></td><td>基金結餘單位數查核表</td><td><code>IOFDR001A_PO</code></td><td>SP</td><td><code>OFDR001ARPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR002A</code></td><td>基金結餘單位數查核清冊</td><td><code>Basic_PO</code></td><td>SP+SQL</td><td><code>OFDR002ARPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR013</code></td><td>受益人查詢記錄報表</td><td><code>Basic_PO</code></td><td>SP</td><td><code>OFDR013RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR014</code></td><td>客服通聯服務統計表</td><td><code>Basic_PO</code></td><td>SP</td><td><code>OFDR014RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR015</code></td><td>資料需求統計表</td><td><code>Basic_PO</code></td><td>SP</td><td><code>OFDR015RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR021</code></td><td>受益人核對清冊作業</td><td><code>Basic_PO</code></td><td>SP+SQL</td><td><code>OFDR021RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR022</code></td><td>(無報表,簡訊發送)</td><td><code>Basic_PO</code></td><td>SQL</td><td>—</td><td>不適用</td><td><strong>串接</strong></td><td>無</td><td>是</td></tr><tr><td><code>OFDR023</code></td><td>(無報表,簡訊發送)</td><td><code>Basic_PO</code></td><td>SQL</td><td>—</td><td>不適用</td><td><strong>串接</strong></td><td>無</td><td>是</td></tr><tr><td><code>OFDR024</code></td><td>集保網路/語音密碼申請明細表</td><td><code>Basic_PO</code></td><td>SP</td><td><code>OFDR024RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR034</code></td><td>客戶補件通知書</td><td><code>IOFDR034_PO</code></td><td>SP</td><td><code>OFDR034RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR035</code></td><td>受益人姓名／ID異動確認通知信列印作業</td><td><code>IOFDR035_PO</code></td><td>SP</td><td><code>OFDR035RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR040</code></td><td>受益人退郵資料</td><td><code>IOFDR040_PO</code></td><td>SP+SQL</td><td><code>OFDR040RPS</code></td><td>是</td><td>綁定</td><td>Crystal · Excel</td><td>是</td></tr><tr><td><code>OFDR041</code></td><td>受益人開戶缺件查核表</td><td><code>IOFDR041_PO</code></td><td>SP</td><td><code>OFDR041RPS</code> <code>RPS1</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR043</code></td><td>受益人變更資料查核表</td><td><code>IOFDR043_PO</code></td><td>SP</td><td><code>OFDR043RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR235</code></td><td>促銷活動明細表</td><td><code>IOFDR235_PO</code></td><td>SP</td><td><code>OFDR235RPS1</code> <code>RPS2</code></td><td>是</td><td>綁定</td><td>Crystal · Excel</td><td>是</td></tr><tr><td><code>OFDR236</code></td><td>淨值月報表</td><td><code>IOFDR236_PO</code></td><td>SP</td><td><code>OFDR236RPS</code></td><td>是</td><td>綁定</td><td>Crystal · Excel</td><td>是</td></tr><tr><td><code>OFDR237</code></td><td>退休財富管理月報</td><td><code>IOFDR237_PO</code></td><td>SP</td><td><strong>無</strong></td><td>不適用</td><td>綁定</td><td><strong>只有 Excel</strong></td><td>是</td></tr><tr><td><code>OFDR238</code></td><td>每日銷售單位彙總表</td><td><code>IOFDR238_PO</code></td><td>SP</td><td><code>OFDR238RPS1</code>~<code>RPS4</code></td><td>是</td><td>綁定</td><td>Crystal · Excel</td><td>是</td></tr><tr><td><code>OFDR239</code></td><td>銷售預估明細表</td><td><code>IOFDR239_PO</code></td><td>SP</td><td><code>OFDR239RPS1</code>~<code>RPS3</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR281</code></td><td>收益分配名冊</td><td><code>IOFDR281_PO</code></td><td>SP</td><td><code>OFDR281RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR282</code></td><td>收益分配付款彙總表</td><td><code>IOFDR282_PO</code></td><td>SP</td><td><code>OFDR282RPS</code> <code>RPS1</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR286</code></td><td>收益分配扣繳憑單</td><td><code>IOFDR286_PO</code></td><td>SP</td><td><code>OFDR286RPS</code> <code>RPS1</code> <code>RPS2</code></td><td>是</td><td>綁定</td><td>Crystal · TXT</td><td>是</td></tr><tr><td><code>OFDR288</code></td><td>配息專戶明細表</td><td><strong>無基底無介面</strong></td><td>SP</td><td><code>OFDR288RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR452</code></td><td>服務費明細表</td><td><code>IOFDR452_PO</code></td><td>SP</td><td><code>OFDR452A2RPS</code> <code>A3</code> <code>A4</code></td><td>是</td><td>綁定</td><td>Crystal · Excel · TXT</td><td>是</td></tr><tr><td><code>OFDR453</code></td><td>(三張 Excel,無報表中文名)</td><td><code>IOFDR453_PO</code></td><td>SP</td><td><strong>無</strong></td><td>不適用</td><td>綁定</td><td><strong>只有 Excel</strong></td><td>是</td></tr><tr><td><code>OFDR455</code></td><td>銷售機構申購手續費請款總表</td><td><code>IOFDR455_PO</code></td><td>SP</td><td><code>OFDR455A1RPS</code> <code>A2</code> <code>A3</code></td><td>是</td><td>綁定</td><td>Crystal · Excel · TXT</td><td>是</td></tr><tr><td><code>OFDR457</code></td><td>銷售機構買回手續費請款總表</td><td><code>IOFDR457_PO</code></td><td>SP</td><td><code>OFDR457B1RPS</code> <code>B2</code> <code>B3</code></td><td>是</td><td>綁定</td><td>Crystal · Excel</td><td>是</td></tr><tr><td><code>OFDR495</code></td><td>基金合併確認單</td><td><code>IOFDR495_PO</code></td><td>SP</td><td><code>OFDR495RPS</code></td><td>是</td><td>綁定</td><td>Crystal · TXT</td><td>是</td></tr><tr><td><code>OFDR501</code></td><td>行銷身分群組明細表</td><td><code>Basic_PO</code></td><td>SP</td><td><code>OFDR501RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR511</code></td><td>基金清算名冊列印作業</td><td><code>IOFDR511_PO</code></td><td>SP</td><td><code>OFDR511RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR512</code></td><td>基金清算資料彙總表</td><td><code>IOFDR512_PO</code></td><td>SP</td><td><code>OFDR512RPS</code> <code>RPS1</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR513</code></td><td>基金清算發放通知書</td><td><code>IOFDR513_PO</code></td><td>SP</td><td><code>OFDR513RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR540</code></td><td>受益人會議開票結果(十種)</td><td><code>IOFDR540_PO</code></td><td>SP</td><td><code>OFDR540RPS</code> <code>RPS1</code> <code>RPS6</code>~<code>RPS9</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR563</code></td><td>境外集保核印費彙總表</td><td><code>Basic_PO</code></td><td>SP</td><td><code>OFDR563RPS1</code> <code>RPS2</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR564</code></td><td>境外核印失敗通知書</td><td><code>Basic_PO</code></td><td>SP</td><td><code>OFDR564RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR716</code></td><td>開放式受益憑證登錄資料報表-FUY</td><td><code>IOFDR716_PO</code></td><td>SP</td><td><code>OFDR716RPS</code> <code>RPS1</code> · <strong><code>RPS2</code> 懸空</strong></td><td><strong>否</strong></td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR731</code></td><td>結匯申報收檔查核表</td><td><code>Basic_PO</code></td><td>SP+SQL</td><td><code>OFDR731RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR733</code></td><td>(信託業、投信業)國內貨幣市場共同基金受益憑證持有者統計表(月報)</td><td><code>IOFDR733_PO</code></td><td>SP</td><td><code>OFDR733RPS1</code> <code>RPS2</code></td><td>是</td><td>綁定</td><td>Crystal · TXT</td><td>是</td></tr><tr><td><code>OFDR751</code></td><td>集保平台交易明細表</td><td><code>IOFDR751_PO</code></td><td>SP</td><td><code>OFDR751RPS</code> <code>RPS2</code> <code>RPS3</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr><tr><td><code>OFDR752</code></td><td>集保基金下單檢核表</td><td><code>IOFDR752_PO</code></td><td>SP</td><td><code>OFDR752RPS</code></td><td>是</td><td>綁定</td><td>Crystal</td><td>是</td></tr></tbody></table></div>
+<h3 id="3-5-從清冊讀出來的六件事">3.5 從清冊讀出來的六件事</h3>
+<ol><li><strong>在 csproj:40 支全過。</strong> 六層(UI / Pxy / Ctl / PO / Model.xsd / View.xsd)逐檔比對磁碟與對應 csproj,<strong>40 × 6 = 240 個檔全部同時在磁碟上且在專案內</strong>,沒有 <code>misc.md</code> 那種「檔案存在但不在 csproj」的漏網。 <strong>但比對時要注意大小寫</strong>:<code>Dev/ATLAS.OFD.Report/Source/FormProxy/ReportFormProxy/OFDR452_PXy.cs</code> 的 <code>PXy</code> 是<strong>大寫 X</strong>(csproj 第 134 行同樣寫 <code>OFDR452_PXy.cs</code>,所以編得過)。本專案內同型的檔名例外還有兩個,雖不在本片 40 支內但同資料夾會撞到:<ul><li><code>Dev/ATLAS.OFD.Report/Source/FormProxy/ReportFormProxy/OFDR461_PXy.cs</code>(同樣大寫 X)</li><li><code>Dev/ATLAS.OFD.Report/Source/Control/ReportControl.OFD/OFDR461_Ct.cs</code>(<strong>少一個 <code>l</code></strong>,不是 <code>_Ctl.cs</code>) <strong>這就是交辦裡提醒的「檔名可能不照規則」</strong>——<code>misc.md</code> 的 <code>TRP001_PO.cs</code> 是同一類。逐支 <code>ls</code> 是必要的,照代號硬推檔名在本專案會踩到三次。</li></ul></li></ol>
+<ol><li><strong><code>.rpt</code> 在版控:63 / 63 在,1 個引用懸空。</strong> 唯一的洞是 <code>OFDR716RPS2</code>(<a class="sec" href="#2-6-rpt-對應表-m-i-沒有這一節">§2.6</a>.2)。<strong>沒有 <code>misc.md</code> 那種「<code>.rpt</code> 躺在沒有 csproj 的資料夾」的情形</strong>——本專案只有一個 Crystal 資料夾,而且它有 csproj。</li></ol>
+<ol><li><strong>資料來源:SP 壓倒性。</strong> 36 支純 SP、4 支 SP 混自組 SQL(其中三支的自組 SQL 只是填下拉選單)、2 支純自組 SQL。<strong>沒有任何一支「讀既有表」</strong>——本片不存在那個分類。</li></ol>
+<ol><li><strong>條件參數化:38 / 40 綁定。</strong> 只有 <code>OFDR022</code> <code>OFDR023</code> 串接,而這兩支開畫面就壞(附錄 E),實務上等於 0 支在跑。</li></ol>
+<ol><li><strong>PO 基底兩派,分野乾淨。</strong> <code>Basic_PO</code> 13 支 + <code>I&lt;代號&gt;_PO</code> 26 支 + 完全裸的 1 支(<code>OFDR288</code>)。 <strong><code>Basic_PO</code> 派與「SP 名沒有 <code>TA_</code> 中綴」「UI 留著 <code>//@@@ 步驟2</code> 範本註解」三件事完全重合</strong>(<a class="sec" href="#2-2-sp-與-function-71-個-版控內-0-個">§2.2</a>),是同一個世代的產物。</li></ol>
+<ol><li><strong>匯出格式不是單選。</strong> 有 6 支同時出 Crystal 與 Excel、4 支同時出 Crystal 與 TXT、<code>OFDR452</code> <code>OFDR455</code> 三種都出。 <strong><code>OFDR237</code> <code>OFDR453</code> 掛在報表專案下卻完全不出報表</strong>,只出 Excel——它們的 UI 基底仍是 <code>xReportForm</code>,所以「預覽 / 列印」兩顆按鈕在畫面上,按下去沒有版型可用。 <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR237.cs:126</code> 的註解直說「此功能只開放Excel下載」——<strong>是刻意的,不是漏做</strong>。</li></ol>
+</div></section><section class="sec" data-sec="4-維護畫面-m-一支一節"><h2 id="4-維護畫面-m-一支一節"><button class="tg" aria-label="收合/展開" type="button"></button>4. 維護畫面(M)— 一支一節</h2><div class="sec-body">
+<p><strong>本片無 M 畫面。</strong> 原因:切片依據是專案資料夾 <code>Dev/ATLAS.OFD.Report</code>,該專案只收型別碼 <code>R</code> 的畫面;OFD 的 M 畫面全在 <code>Dev/ATLAS.OFD</code>,由 <code>ofd123.md</code> <code>ofd4.md</code> <code>ofd5.md</code> <code>ofd6.md</code> <code>ofd7.md</code> 五片涵蓋。</p>
+</div></section><section class="sec" data-sec="5-查詢畫面-i"><h2 id="5-查詢畫面-i"><button class="tg" aria-label="收合/展開" type="button"></button>5. 查詢畫面(I)</h2><div class="sec-body">
+<p><strong>本片無 I 畫面。</strong> 原因:OFD 的 I 畫面在獨立方案 <code>Dev/ATLAS.OFD.Query</code>,由 <code>ofdi1.md</code> 涵蓋。本文 <a class="sec" href="#0-2-m-i-r-三欄對照表-本篇最重要的一張表-後面-189-支報表靠它">§0.2</a> 對 I 的所有引用都取自該文,未重新掃描。</p>
+</div></section><section class="sec" data-sec="6-批次-b-與-windowsservice"><h2 id="6-批次-b-與-windowsservice"><button class="tg" aria-label="收合/展開" type="button"></button>6. 批次(B)與 WindowsService</h2><div class="sec-body">
+<p><strong>本片無 B 畫面,也沒有任何 WindowsService 入口。</strong> 原因:40 支全部由使用者在畫面上按按鈕觸發; <code>Dev/ATLAS.OFD.Report</code> 底下六個 csproj 全是 <code>Library</code> 或 <code>WinExe</code> 型別的 UI 相關組件,沒有 service host。 <strong>唯二帶「批次」字樣的是 <code>Sp_ForTa_Batch_Send</code></strong>(<code>OFDR022</code> <code>OFDR023</code> 呼叫),那是把簡訊丟進共用寄送佇列的 SP,<strong>寄送本身由別的系統跑</strong>,不在本 repo 內(<a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>)。 OFD 的批次在 <code>Dev/ATLAS.OFDB</code>,不在本片範圍。</p>
+</div></section><section class="sec" data-sec="7-報表-r"><h2 id="7-報表-r"><button class="tg" aria-label="收合/展開" type="button"></button>7. 報表(R)</h2><div class="sec-body"><figure><svg viewBox="0 0 1120 570" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OFDR452 服務費請款的完整路徑:條件檢核、八個 SP 取數、寫回 DB、三張 rpt 輸出"><defs><marker id="ah_ofdr1_452" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 使用者輸入條件 UI 先擋三關</text><g class="bx">
+<rect x="20" y="40" rx="10" ry="10" width="330" height="56"/>
+<text class="t1" x="185" y="62" text-anchor="middle">選計算年月 通路 基金</text>
+<text class="t2" x="185" y="82" text-anchor="middle">ubtnSearch_Click</text>
+</g><g class="bx accent">
+<rect x="380" y="40" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="550" y="62" text-anchor="middle">必填檢核 validatorManager1</text>
+<text class="t2" x="550" y="82" text-anchor="middle">不過 ValidateErrList.Show 阻擋</text>
+</g><g class="bx accent">
+<rect x="750" y="40" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="920" y="62" text-anchor="middle">輸出路徑存在檢核</text>
+<text class="t2" x="920" y="82" text-anchor="middle">Directory.Exists 不過就阻擋</text>
+</g><path class="ar" d="M 350 68 L 380 68" marker-end="url(#ah_ofdr1_452)"/><path class="ar" d="M 720 68 L 750 68" marker-end="url(#ah_ofdr1_452)"/><text class="lane" x="20" y="116">② 取數:同一支畫面呼叫八個不同的 SP,全部版控外</text><g class="bx ext">
+<rect x="20" y="130" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="152" text-anchor="middle">S_TA_OFDR452_GET</text>
+<text class="t2" x="145" y="172" text-anchor="middle">主查詢</text>
+</g><g class="bx ext">
+<rect x="290" y="130" rx="10" ry="10" width="420" height="56"/>
+<text class="t1" x="500" y="152" text-anchor="middle">S_TA_OFDR452_A0_Get 到 A5_Get</text>
+<text class="t2" x="500" y="172" text-anchor="middle">六個分頁各一個 SP</text>
+</g><g class="bx vend">
+<rect x="730" y="130" rx="10" ry="10" width="360" height="56"/>
+<text class="t1" x="910" y="152" text-anchor="middle">S_TA_OFDR452_DEL</text>
+<text class="t2" x="910" y="172" text-anchor="middle">刪除既有計算結果</text>
+</g><text class="lane" x="20" y="206">③ 副作用:報表畫面會寫 DB</text><g class="bx vend">
+<rect x="20" y="220" rx="10" ry="10" width="330" height="56"/>
+<text class="t1" x="185" y="242" text-anchor="middle">ExecuteNonQuery ×2</text>
+<text class="t2" x="185" y="262" text-anchor="middle">先 DEL 再重算寫回</text>
+</g><g class="bx vend">
+<rect x="380" y="220" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="550" y="242" text-anchor="middle">沒有四眼覆核</text>
+<text class="t2" x="550" y="262" text-anchor="middle">R 畫面沒有 EVA 一按就生效</text>
+</g><g class="bx vend">
+<rect x="750" y="220" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="920" y="242" text-anchor="middle">沒有交易包覆的保證</text>
+<text class="t2" x="920" y="262" text-anchor="middle">DEL 成功但重算失敗 資料就空了</text>
+</g><path class="ar" d="M 350 248 L 380 248" marker-end="url(#ah_ofdr1_452)"/><path class="ar" d="M 720 248 L 750 248" marker-end="url(#ah_ofdr1_452)"/><path class="ar" d="M 185 186 L 185 220" marker-end="url(#ah_ofdr1_452)"/><text class="lane" x="20" y="296">④ 輸出:三張 rpt 由使用者選的分頁決定</text><g class="bx accent">
+<rect x="20" y="310" rx="10" ry="10" width="330" height="56"/>
+<text class="t1" x="185" y="332" text-anchor="middle">OFDR452A2RPS 服務費明細表</text>
+<text class="t2" x="185" y="352" text-anchor="middle">SetQueryParameters 第三參是中文名</text>
+</g><g class="bx accent">
+<rect x="380" y="310" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="550" y="343" text-anchor="middle">OFDR452A3RPS 分支機構服務費總表</text>
+</g><g class="bx accent">
+<rect x="750" y="310" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="920" y="343" text-anchor="middle">OFDR452A4RPS 分支機構服務費明細表</text>
+</g><text class="lane" x="20" y="386">⑤ 綁 schema:唯一連接 C# 與 rpt 的一行,沒有編譯期檢查</text><g class="bx">
+<rect x="20" y="400" rx="10" ry="10" width="330" height="56"/>
+<text class="t1" x="185" y="422" text-anchor="middle">ReportLoad 事件</text>
+<text class="t2" x="185" y="442" text-anchor="middle">SetRptSchemaOnDoc()</text>
+</g><g class="bx vend">
+<rect x="380" y="400" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="550" y="422" text-anchor="middle">m_ReportDocument.SetParameterValue</text>
+<text class="t2" x="550" y="442" text-anchor="middle">補抬頭參數 名稱打錯執行期才知道</text>
+</g><g class="bx ext">
+<rect x="750" y="400" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="920" y="422" text-anchor="middle">rpt 內部欄位對不上就少印一欄</text>
+<text class="t2" x="920" y="442" text-anchor="middle">不會報錯 不會編譯失敗</text>
+</g><path class="ar" d="M 350 428 L 380 428" marker-end="url(#ah_ofdr1_452)"/><path class="ar" d="M 720 428 L 750 428" marker-end="url(#ah_ofdr1_452)"/><text class="lane" x="20" y="476">⑥ 注意:A0 A1 A5 三個 SP 有呼叫 但沒有對應的 rpt</text><g class="bx dash">
+<rect x="20" y="490" rx="10" ry="10" width="530" height="56"/>
+<text class="t1" x="285" y="512" text-anchor="middle">A0 A1 A5 的資料取了之後</text>
+<text class="t2" x="285" y="532" text-anchor="middle">只餵畫面 Grid 不出報表</text>
+</g><g class="bx">
+<rect x="570" y="490" rx="10" ry="10" width="520" height="56"/>
+<text class="t1" x="830" y="512" text-anchor="middle">A2 A3 A4 才有 rpt</text>
+<text class="t2" x="830" y="532" text-anchor="middle">六取三 另外三個查了給人看而已</text>
+</g></svg><figcaption>圖 4 本片最重的一支 OFDR452。六段由上到下依序執行。紫框=風險:寫 DB 卻沒有四眼、DEL 與重算之間沒有交易保證、rpt 綁定沒有編譯期檢查。黑框=版控外。這張圖的形狀在 OFDR453 OFDR455 OFDR457 三支幾乎一模一樣,差別只在 SP 後綴 A 換成 B、rpt 張數不同,以及 OFDR453 用 Excel 取代 Crystal。</figcaption></figure>
+<p><strong>本章是本片的主體。</strong> <a class="sec" href="#4-維護畫面-m-一支一節">§4</a> <a class="sec" href="#5-查詢畫面-i">§5</a> <a class="sec" href="#6-批次-b-與-windowsservice">§6</a> 都空,因為切片只含 R。排法是:先講 40 支共用的一套流程(<a class="sec" href="#7-1-通則-一支報表從按鈕到出紙的五段">§7.1</a>),再挑該深寫的支別(<a class="sec" href="#7-2-ofdr001a-ofdr002a-那個-a-是什麼">§7.2</a> ~ <a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>),最後把卡控收成一張總表(<a class="sec" href="#7-13-卡控總表">§7.13</a>),其餘分群帶過(<a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>)。</p>
+<h3 id="7-1-通則-一支報表從按鈕到出紙的五段">7.1 通則:一支報表從按鈕到出紙的五段</h3>
+<p>40 支共用同一套生命週期,由框架類別 <code>xReportForm</code> 驅動(<strong>無原始碼,從呼叫端反推</strong>)。五段如下,錨點用 <code>OFDR001A</code> 舉例,其餘 37 支 <code>xReportForm</code> 畫面同構:</p>
+<div class="tw"><table><thead><tr><th>段</th><th>事件 / 方法</th><th>誰寫的</th><th>做什麼</th><th>錨點</th></tr></thead><tbody><tr><td>1</td><td><code>&lt;代號&gt;_FormInitial</code></td><td>各支自己</td><td><code>ResultVDB</code> / <code>QueryVDB</code> 建空 VDB,<code>FormProxy</code> 指定</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:120-127</code></td></tr><tr><td>2</td><td><code>ubtnSearch_Click</code></td><td>各支自己</td><td>檢核 → 塞 <code>Util.Parameters</code> → <code>FormProxy.GetData</code> → 填畫面 → 把「預覽 / 列印」兩顆按鈕打開</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:152-236</code></td></tr><tr><td>3</td><td><code>&lt;代號&gt;_BeforePrintButtonClicked</code> / <code>_BeforePreviewButtonClicked</code></td><td>各支自己</td><td><strong>列印前再檢核一次</strong>;不過就 <code>e.Cancel = true</code>;過了才 <code>SetQueryParameters(報表類別, 報表類別, 中文名)</code></td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:248-280</code></td></tr><tr><td>4</td><td><code>&lt;代號&gt;_ReportLoad</code></td><td>各支自己</td><td><code>SetRptSchemaOnDoc()</code> 把 View 的 schema 綁上 <code>.rpt</code>,再 <code>m_ReportDocument.SetParameterValue(名, 值)</code> 補抬頭參數</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:288-296</code></td></tr><tr><td>5</td><td><code>Ctl.Get&lt;代號&gt;ReportObject</code></td><td>各支自己</td><td>從 <code>ClassData.Util.ReportParameters[0].ReportClass</code> 取版型名,<code>CRReportTransfer.TransferFileByte(rpt)</code> 把 <code>.rpt</code> 的位元組傳給客戶端</td><td><code>Dev/ATLAS.OFD.Report/Source/Control/ReportControl.OFD/OFDR013_Ctl.cs:29-33</code></td></tr></tbody></table></div>
+<p>第 5 段是前人手冊 <code>add-report.md</code> 的 <code>§7</code>(「版型是客戶端選的,伺服端只負責傳檔」)講過的機制,本文不重複。 <strong>本文補的是它沒講的那一半:第 3 段的檢核。</strong> <code>add-report.md</code> 的 <code>§0.3</code> 寫「報表是唯讀的,不走四眼流程」——這句話對四眼而言正確,但會讓人以為 R 沒有卡控。 <strong>實際上 R 的第 3 段是整個 ATLAS 裡除了 M 的存檔前檢核之外最密的一處</strong>:<code>OFDR751</code> 在這一段放了 16 條 <code>AddError</code>。</p>
+<h4 id="7-1-1-卡控五類在-r-的分佈">7.1.1 卡控五類在 R 的分佈</h4>
+<div class="tw"><table><thead><tr><th>結果類型</th><th>在 R 長什麼樣</th><th>支數</th></tr></thead><tbody><tr><td><strong>阻擋</strong></td><td><code>ValidateErrList.AddError(控件, 訊息)</code> + <code>if (ValidateErrList.Show()) { e.Cancel = true; return; }</code></td><td>38 支(除 <code>OFDR022</code> <code>OFDR023</code>)</td></tr><tr><td><strong>警示</strong></td><td><code>DialogWithNoStatusbar.ShowMessage(FunctionDialogStyle.Info01, 訊息)</code>,顯示後照跑</td><td>11 支</td></tr><tr><td><strong>詢問</strong></td><td>無。全片 40 支的 UI 找不到任何 <code>FunctionDialogStyle.Question</code> / <code>DialogResult.Yes</code></td><td><strong>0 支</strong></td></tr><tr><td><strong>過濾(無提示)</strong></td><td>條件寫死在 C# 或 SQL,畫面上看不到,少印的列使用者不會知道</td><td><strong>4 處,見 <a class="sec" href="#7-13-卡控總表">§7.13</a>.2</strong></td></tr><tr><td><strong>記錄不擋</strong></td><td>無</td><td>0 支</td></tr></tbody></table></div>
+<h3 id="7-2-ofdr001a-ofdr002a-那個-a-是什麼">7.2 <code>OFDR001A</code> / <code>OFDR002A</code>:那個 <code>A</code> 是什麼</h3>
+<h4 id="7-2-1-答案-境內外分身-但機制是-分兩個專案-不是-同一張表用欄位值分">7.2.1 答案:<strong>境內外分身,但機制是「分兩個專案」,不是「同一張表用欄位值分」</strong></h4>
+<p>交辦列的五種 <code>A</code> 後綴成因,本對屬於 <strong>(a) 境內外</strong>,<strong>但實現方式與 <code>ofd5</code> / <code>ofd7</code> 記的不同</strong>,要更正一筆。</p>
+<p><code>ofd5</code> / <code>ofd7</code> 記的是:同一支畫面用 <code>FUND_TYPE</code> 的 <code>'2'</code> / <code>'1'</code> 分境內外,值域在 <code>Dev/Common/Source/MappingCode/TA.MappingCode/CTL014.cs:291-301</code> 的 <code>SHORE_ID</code>。 <strong>本對不是那樣。</strong> 實測如下:</p>
+<div class="tw"><table><thead><tr><th>代號</th><th>所在專案</th><th>報表中文名(<code>SetQueryParameters</code> 第三參)</th><th>SP</th></tr></thead><tbody><tr><td><code>OFDR001A</code></td><td><code>Dev/ATLAS.OFD.Report</code></td><td><strong>基金結餘單位數查核表</strong></td><td><code>s_TA_OFDR001A_Get</code></td></tr><tr><td><code>OFDR001B</code></td><td><code>Dev/ATLAS.OTA.Report</code></td><td><strong>境外</strong>基金結餘單位數檢核表</td><td><code>S_OTA_OFDR001_GET</code></td></tr><tr><td><code>OFDR002A</code></td><td><code>Dev/ATLAS.OFD.Report</code></td><td><strong>基金結餘單位數查核清冊</strong></td><td><code>s_OFDR002A_Get</code></td></tr><tr><td><code>OFDR002</code></td><td><code>Dev/ATLAS.OTA.Report</code></td><td><strong>境外</strong>基金結餘單位數查核清冊</td><td><code>S_OTA_OFDR002_GET</code></td></tr></tbody></table></div>
+<p>錨點: <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:280</code> · <code>Dev/ATLAS.OTA.Report/Source/UI/ReportUI.OTA/OFDR001B.cs:124</code> · <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR002A.cs:82</code> · <code>Dev/ATLAS.OTA.Report/Source/UI/ReportUI.OTA/OFDR002.cs:137</code> · <code>Dev/ATLAS.OTA.Report/Source/PO/ReportPO.OTA/OFDR001B_PO.cs:65</code> · <code>Dev/ATLAS.OTA.Report/Source/PO/ReportPO.OTA/OFDR002_PO.cs:68</code>。</p>
+<p>所以:</p>
+<ol><li><strong>境內版住 <code>OFD</code> 專案、境外版住 <code>OTA</code> 專案</strong>(<code>OTA</code> <strong>假設</strong>為 Offshore TA,依據是該專案內所有報表中文名都帶「境外」)。</li><li><strong>兩邊呼叫完全不同的 SP</strong>,不是同一個 SP 加參數。</li><li><strong><code>A</code> / <code>B</code> 後綴不是境內外的標記</strong>——<code>OTA</code> 那邊 <code>OFDR001B</code> 帶 <code>B</code>、<code>OFDR002</code> 不帶。真正的標記是<strong>專案</strong>。<code>A</code> 的功能只是「在 <code>OFD</code> 專案裡把號碼讓開,避免與 <code>OTA</code> 的同號撞」。</li></ol>
+<h4 id="7-2-2-它讀的表帶不帶-a">7.2.2 它讀的表帶不帶 <code>A</code>?</h4>
+<p>帶。<code>OFDR002A</code> 的自組 SQL(填基金下拉)讀的是 <code>OFD081V</code>(不帶 <code>A</code>,<code>V</code> 結尾)與 <code>OFD038</code>(不帶 <code>A</code>), <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR002A_PO.cs:83-91</code>; <code>OFDR001A</code> 與 <code>OFDR002A</code> 檢核過帳日期讀 <code>OFD303A</code>(<strong>帶 <code>A</code></strong>), <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR001A_PO.cs:68-115</code>。</p>
+<p><strong>表名的 <code>A</code> 與畫面代號的 <code>A</code> 沒有關係。</strong> <code>OFD303A</code> 被 <code>OFDR001A</code> 與 <code>OFDR002A</code> 共用, 也被 <code>ofdi1.md</code> 記的 <code>OFDI072A</code> 讀——<strong>那是表自己的 <code>A</code>,<code>ofd123.md</code> 已證實那批來自 MSSQL→Oracle 遷移改名</strong>(成因 b)。</p>
+<h4 id="7-2-3-結論-五種成因要加第六種">7.2.3 結論:五種成因要加第六種</h4>
+<p>本對對不上交辦列的任何一種。<strong>要新增第六種:</strong></p>
+<blockquote><p><strong>(f) 同一份業務報表在兩個子系統各做一份,用後綴讓號。</strong> 判別法:<code>atlas_index.json</code> 查同號畫面,若落在不同 <code>project</code>,就是這一種。本片實證:<code>OFDR001A</code>(OFD)對 <code>OFDR001B</code>(OTA)、<code>OFDR002A</code>(OFD)對 <code>OFDR002</code>(OTA)。 <strong>與 (a) 境內外的差別</strong>:(a) 是同一支畫面內用欄位值分,(f) 是兩支不同畫面、兩支不同 SP、兩個不同專案。改 (a) 只要改一處,改 (f) 要記得改兩邊——這正是「成對報表只改一邊」的溫床。</p></blockquote>
+<h4 id="7-2-4-ofdr001a-與-ofdr002a-本身的差別">7.2.4 <code>OFDR001A</code> 與 <code>OFDR002A</code> 本身的差別</h4>
+<div class="tw"><table><thead><tr><th>面向</th><th><code>OFDR001A</code></th><th><code>OFDR002A</code></th></tr></thead><tbody><tr><td>報表形態</td><td><strong>單基金單筆</strong>,22 個單位數欄位攤在畫面上</td><td><strong>多基金清冊</strong>,勾一批基金逐筆列</td></tr><tr><td>PO 基底</td><td><code>IOFDR001A_PO</code>(後期)</td><td><code>Basic_PO</code>(<strong>早期,<code>m_db</code> 為 null</strong>,<a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>.2)</td></tr><tr><td>檢核</td><td>營業日 + 已過帳 + <strong>帳平不平</strong></td><td>至少勾一筆基金 + 逐筆檢查 <code>row.err</code></td></tr><tr><td>DB 型別</td><td><code>OracleDbType</code></td><td><strong><code>SqlDbType</code>,7 處,一個 <code>OracleDbType</code> 都沒有</strong></td></tr></tbody></table></div>
+<p><code>OFDR001A</code> 最值得抄的是<strong>帳平不平的檢核</strong>:</p>
+<pre class="code"><code>if (m_unit12 != m_unit21 || m_unit21 != m_unit22 || m_unit11 != m_unit19)
+{
+    this.ValidateErrList.AddError(this.custFUND_ID_0, "該基金帳未平");
+}</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:270-273</code>。 <strong>這是 R 唯一一處「算出來的結果不對就不准印」的卡控</strong>,結果類型 = 阻擋。其餘 39 支的檢核都只驗輸入,不驗輸出。</p>
+<p><code>OFDR001A</code> 的卡控總表:</p>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>查詢 / 列印前</td><td>資料日期必須是該基金的營業日(<code>ClientBizUtility.GetFundBusinessDay</code>)</td><td>擋下</td><td>阻擋</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:40-49</code></td></tr><tr><td>查詢 / 列印前</td><td>資料日期必須是該基金已過帳的日期(<code>GetCTL_DATEYN</code> 回 0)</td><td>擋下</td><td>阻擋</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:51-58</code></td></tr><tr><td>查詢 / 列印前</td><td><code>GetCTL_DATEYN</code> 回 <code>-1</code>(伺服端錯)</td><td>彈 <code>ServerSideError</code> 視窗<strong>但不擋</strong>(後面沒有 <code>AddError</code>)</td><td><strong>警示</strong></td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:59-62</code></td></tr><tr><td>選基金時</td><td>該基金無結帳日期</td><td>彈訊息,日期欄留空</td><td>警示</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:143</code></td></tr><tr><td>查詢後</td><td>SP 回傳的 <code>ERR_MSG</code> 非空</td><td>彈訊息</td><td>警示</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:229-232</code></td></tr><tr><td>列印前</td><td>SP 回傳的 <code>ERR_MSG</code> 非空</td><td>擋下</td><td>阻擋</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:266-269</code></td></tr><tr><td>列印前</td><td>帳未平</td><td>擋下</td><td>阻擋</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:270-273</code></td></tr></tbody></table></div>
+<p><strong>同一個 <code>ERR_MSG</code>,查詢時只警示、列印時才阻擋。</strong> 這是刻意的:讓使用者先看到數字,確認後才不准印。</p>
+<h3 id="7-3-連號群-ofdr021-ofdr024-不是同一個業務系列">7.3 連號群 <code>OFDR021</code>–<code>OFDR024</code>:<strong>不是同一個業務系列</strong></h3>
+<p>四支連號,直覺會以為是一組。<strong>實測不是。</strong></p>
+<div class="tw"><table><thead><tr><th>代號</th><th>中文名</th><th>UI 基底</th><th>查詢條件(UI 的 <code>AddParametersRow</code> key)</th><th>出報表</th></tr></thead><tbody><tr><td><code>OFDR021</code></td><td>受益人核對清冊作業</td><td><code>xReportForm</code></td><td><code>@striID_NO_ST/ED</code> <code>@deciBF_NO_ST/ED</code> <code>@dataOPEN_ACC_DATE_ST/ED</code> <code>@striBF_COUNTRY_X</code> <code>@striSort</code></td><td>是</td></tr><tr><td><code>OFDR022</code></td><td>(簡訊發送)</td><td><strong><code>xOneStepProcessForm</code></strong></td><td><code>Type</code> <code>BF_NO</code> <code>ID_NO</code> <code>ConfirmDate_ST/ED</code> <code>OPEN_ACC_DATE_ST/ED</code> <code>RECEIPT_DOC_ID</code></td><td><strong>否</strong></td></tr><tr><td><code>OFDR023</code></td><td>(簡訊發送)</td><td><strong><code>xOneStepProcessForm</code></strong></td><td><code>SEND_KIND</code> <code>BF_NO</code> <code>ID_NO</code> <code>INCLUDE_SEND</code></td><td><strong>否</strong></td></tr><tr><td><code>OFDR024</code></td><td>集保網路/語音密碼申請明細表</td><td><code>xReportForm</code></td><td>(在 <code>Customer_SetQueryParameters</code> 內組,不走 UI 的 <code>AddParametersRow</code>)</td><td>是</td></tr></tbody></table></div>
+<p><strong>相似度(查詢條件 key 的 Jaccard)</strong>:</p>
+<div class="tw"><table><thead><tr><th>配對</th><th>Jaccard</th><th>共同 key</th></tr></thead><tbody><tr><td><code>OFDR021</code> vs <code>OFDR022</code></td><td>0.00</td><td>無</td></tr><tr><td><code>OFDR021</code> vs <code>OFDR023</code></td><td>0.00</td><td>無</td></tr><tr><td><code>OFDR021</code> vs <code>OFDR024</code></td><td>—</td><td>兩支都不在 UI 層組條件,無從比</td></tr><tr><td><strong><code>OFDR022</code> vs <code>OFDR023</code></strong></td><td><strong>0.20</strong></td><td><code>BF_NO</code> <code>ID_NO</code></td></tr><tr><td><code>OFDR022</code> vs <code>OFDR024</code></td><td>0.00</td><td>無</td></tr><tr><td><code>OFDR023</code> vs <code>OFDR024</code></td><td>0.00</td><td>無</td></tr></tbody></table></div>
+<p><strong>結論:連號只是號碼相鄰,不是同一系列。</strong> 唯一真正成對的是 <code>OFDR022</code> / <code>OFDR023</code> ——它們 Jaccard 只有 0.20,但<strong>共用同一個 SP(<code>Sp_ForTa_Batch_Send</code>)、同一個 UI 基底、同一個 <code>m_db</code> 為 null 的缺陷、同一個 <code>trans.Rollback()</code> 在 <code>trans</code> 為 null 時的二次 NRE</strong>,結構上是雙胞胎(<a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>)。</p>
+<p><strong>業務上四支的共同點只有一個:都跟「受益人開戶後的後續處理」有關。</strong> 這是<strong>推測</strong>,依據是四支的條件裡都出現 <code>BF_NO</code>(戶號)或 <code>OPEN_ACC_DATE</code>(開戶日)。</p>
+<p><code>OFDR021</code> 值得記一筆的是它的 <code>CTL014</code> 用法:</p>
+<pre class="code"><code>sqlCommand += "   WHERE SourceType in ('415','085','087','138','143','413','146','064') "</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR021_PO.cs:130</code>。 <strong>八個 <code>SourceType</code> 寫死在 C# 裡</strong>,與 <code>ofdi1.md</code> 記的 <code>CTL014</code> <code>SourceType</code> 編號(<code>'000'</code> <code>'100'</code> <code>'149'</code> <code>'204'</code> <code>'232'</code> <code>'236'</code>)<strong>沒有一個重疊</strong>—— 兩片各自寫死各自的一批,<code>CTL014</code> 加代碼時沒有一處集中的地方可以改。〔客戶特定〕。</p>
+<h3 id="7-4-連號群-ofdr235-ofdr239-兩支一組-其餘各自獨立">7.4 連號群 <code>OFDR235</code>–<code>OFDR239</code>:<strong>兩支一組,其餘各自獨立</strong></h3>
+<div class="tw"><table><thead><tr><th>代號</th><th>中文名</th><th>條件 key 數</th><th>SP 參數前綴</th></tr></thead><tbody><tr><td><code>OFDR235</code></td><td>促銷活動明細表 / 彙總表</td><td>10</td><td><code>i</code></td></tr><tr><td><code>OFDR236</code></td><td>淨值月報表</td><td>4</td><td><code>i</code></td></tr><tr><td><code>OFDR237</code></td><td>退休財富管理月報</td><td>1</td><td><code>i</code></td></tr><tr><td><code>OFDR238</code></td><td>每日銷售單位彙總表(四張)</td><td>5</td><td><code>i</code></td></tr><tr><td><code>OFDR239</code></td><td>銷售預估明細表(三張)</td><td>10</td><td><strong><code>stri</code></strong></td></tr></tbody></table></div>
+<p><strong>相似度</strong>:</p>
+<div class="tw"><table><thead><tr><th>配對</th><th>Jaccard</th><th>共同 key</th></tr></thead><tbody><tr><td><strong><code>OFDR235</code> vs <code>OFDR236</code></strong></td><td><strong>0.40</strong></td><td><code>SDATE</code> <code>EDATE</code> <code>FUNDS</code> <code>RPT_KIND</code></td></tr><tr><td><code>OFDR238</code> vs <code>OFDR239</code></td><td>0.15</td><td><code>FUND_ID</code> <code>REPORT_TYPE</code></td></tr><tr><td>其餘七組配對</td><td>0.00</td><td>無</td></tr></tbody></table></div>
+<p><strong><code>OFDR235</code> / <code>OFDR236</code> 是真的成對</strong>:條件完全是「起訖日 + 基金多選 + 報表種類」這四件事,<code>OFDR235</code> 多六個通路與活動代碼欄。 <code>OFDR236</code> 可以看成 <code>OFDR235</code> 去掉通路維度的版本。改其中一支的日期語意要一起看另一支。</p>
+<p><strong><code>OFDR239</code> 是群內的異類</strong>:唯一用 <code>stri</code> 前綴、唯一在 SP 參數裡出現 <code>striALLOT_DATE_ST/ED</code> 與 <code>striUID_CODE</code> (UI 傳的是 <code>CTL_DATE_ST/END</code>,<strong>名字對不上</strong>——<code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR239.cs</code> 的 key 是 <code>CTL_DATE_ST</code>,PO 綁到 SP 的參數叫 <code>striALLOT_DATE_ST</code>)。 <strong>這不是 bug</strong>(PO 負責轉譯),但<strong>改 UI 欄名時搜 <code>ALLOT_DATE</code> 會搜不到 UI 端</strong>,是維護陷阱。</p>
+<p><code>OFDR237</code> 是群內唯一不出 Crystal 的(<a class="sec" href="#7-11-只出-excel-的兩支-ofdr237-ofdr453">§7.11</a>)。</p>
+<h3 id="7-5-連號群-ofdr511-ofdr513-同系列-但參數慣例三套">7.5 連號群 <code>OFDR511</code>–<code>OFDR513</code>:同系列,但參數慣例三套</h3>
+<p>三支都是「基金清算」:</p>
+<div class="tw"><table><thead><tr><th>代號</th><th>中文名</th><th><code>.rpt</code></th><th>條件 key</th></tr></thead><tbody><tr><td><code>OFDR511</code></td><td>基金清算名冊列印作業</td><td><code>OFDR511RPS</code></td><td><code>striFUND_ID</code> <code>striBASE_DATE</code></td></tr><tr><td><code>OFDR512</code></td><td>基金清算資料彙總表 / 明細表</td><td><code>OFDR512RPS</code> <code>RPS1</code></td><td><code>striFUND_ID</code> <code>datiBASE_DATE</code> <code>intISSUE_CODE</code> <code>striExec</code> <code>stripost</code> <code>stricheck</code> <code>stripostno</code> <code>stricheckno</code></td></tr><tr><td><code>OFDR513</code></td><td>基金清算發放通知書</td><td><code>OFDR513RPS</code></td><td><code>striFUND_ID</code> <code>striBASE_DATE</code> <code>striPROVIDE_DATE</code> <code>intISSUE_CODE</code> <code>striID_NO</code> <code>striBF_NO_0</code></td></tr></tbody></table></div>
+<p><strong>相似度</strong>:</p>
+<div class="tw"><table><thead><tr><th>配對</th><th>Jaccard</th><th>共同 key</th></tr></thead><tbody><tr><td><code>OFDR511</code> vs <code>OFDR512</code></td><td>0.11</td><td><code>striFUND_ID</code></td></tr><tr><td><strong><code>OFDR511</code> vs <code>OFDR513</code></strong></td><td><strong>0.33</strong></td><td><code>striFUND_ID</code> <code>striBASE_DATE</code></td></tr><tr><td><code>OFDR512</code> vs <code>OFDR513</code></td><td>0.17</td><td><code>striFUND_ID</code> <code>intISSUE_CODE</code></td></tr></tbody></table></div>
+<p><strong>這一群確實是同一業務系列</strong>(都讀 <code>OFD494A</code> <code>OFD496A</code>,<a class="sec" href="#2-7-c-裡看得見的表-只有-13-張">§2.7</a>), 但 <strong><code>OFDR512</code> 把基準日叫 <code>datiBASE_DATE</code>,另外兩支叫 <code>striBASE_DATE</code></strong>——同一個概念三支裡兩個名字。 Jaccard 因此被低估:實際業務相似度高於 0.11 / 0.33 這兩個數字。 <strong>照抄 <code>ofd7.md §4</code> 的 diff 手法時要注意這一點:key 名不同不等於語意不同。</strong></p>
+<p><code>OFDR512</code> 是群內最完整的一支,深寫如下。</p>
+<h4 id="7-5-1-ofdr512-深寫">7.5.1 <code>OFDR512</code> 深寫</h4>
+<p><strong>兩段取數,兩套參數慣例</strong>:</p>
+<div class="tw"><table><thead><tr><th>段</th><th>SP</th><th>參數名</th><th>錨點</th></tr></thead><tbody><tr><td>主查詢</td><td><code>s_TA_OFDR512_Get</code></td><td><code>intISSUE_CODE</code> <code>striFUND_ID</code> <code>datiBASE_DATE</code> <code>striExec</code> <code>stripost</code> <code>stricheck</code> <code>stripostno</code> <code>stricheckno</code>(8 個)</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR512_PO.cs:57-77</code></td></tr><tr><td>第二段</td><td>同 SP 另一次呼叫</td><td><strong><code>FUND_ID</code> <code>ISSUE_CODE</code>(裸欄名,無前綴)</strong></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR512_PO.cs:127-131</code></td></tr></tbody></table></div>
+<p><strong>同一支 PO 裡兩種參數命名。</strong> 這代表兩段是不同時期寫的(<a class="sec" href="#2-5-參數命名慣例-四套並存">§2.5</a>)。改 SP 簽名時<strong>必須兩段都改</strong>,而搜 <code>striFUND_ID</code> 只會找到第一段。</p>
+<p><code>OFDR513</code> 另有一個寫死的哨兵值:</p>
+<pre class="code"><code>QueryVDB.Util.Parameters.AddParametersRow("striBF_NO_0", SQLOperator.Equal,
+    this.custBF_NO_0.Value == "" ? "-1" : this.custBF_NO_0.Value);</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR513.cs:79</code>。 <strong>戶號空白時傳 <code>-1</code> 當「全部」</strong>。這是寫死常數,語意只存在 SP 內;<code>OFDR511</code> <code>OFDR512</code> 沒有這個約定。</p>
+<h3 id="7-6-連號群-ofdr751-ofdr752-不是同一系列">7.6 連號群 <code>OFDR751</code> / <code>OFDR752</code>:<strong>不是同一系列</strong></h3>
+<div class="tw"><table><thead><tr><th>代號</th><th>中文名</th><th>條件 key 數</th><th>共同 key</th></tr></thead><tbody><tr><td><code>OFDR751</code></td><td>集保平台交易明細表 / 短線交易明細表 / 交易彙總表</td><td>16</td><td>—</td></tr><tr><td><code>OFDR752</code></td><td>集保基金下單檢核表</td><td>6</td><td>—</td></tr></tbody></table></div>
+<p><strong>Jaccard = 0.00,一個共同 key 都沒有。</strong> <code>OFDR751</code> 查的是<strong>日期區間 + 通路 + 交易類型 + 基金多選</strong>;<code>OFDR752</code> 查的是<strong>戶號 + 身分證號 + 下單序號區間 + 日期</strong>。兩者都掛在「集保平台」下,<strong>但一支看交易、一支看下單檢核,不是同一份資料</strong>。與 <code>ofdi1.md</code> 記的 <code>OFDI751</code> / <code>OFDI752</code>(讀 <code>ORDR01</code> / <code>ORDR02</code>)<strong>號碼相同但那是查詢畫面,不要混</strong>。</p>
+<h4 id="7-6-1-ofdr751-深寫-全片卡控最密的一支">7.6.1 <code>OFDR751</code> 深寫:全片卡控最密的一支</h4>
+<p>16 條 <code>AddError</code>,全部集中在同一個檢核方法內。<strong>全部是阻擋型</strong>:</p>
+<div class="tw"><table><thead><tr><th>#</th><th>檢核</th><th>錨點</th></tr></thead><tbody><tr><td>1</td><td>下單日期與交易日期必須擇一輸入</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR751.cs:414</code></td></tr><tr><td>2</td><td>下單日期(起)不可大於(迄)</td><td><code>:421</code></td></tr><tr><td>3</td><td>下單日期(迄)為必填</td><td><code>:427</code></td></tr><tr><td>4</td><td>下單日期(起)為必填</td><td><code>:429</code></td></tr><tr><td>5</td><td>交易日期(起)不可大於(迄)</td><td><code>:436</code></td></tr><tr><td>6</td><td>交易日期(迄)為必填</td><td><code>:442</code></td></tr><tr><td>7</td><td>交易日期(起)為必填</td><td><code>:444</code></td></tr><tr><td>8</td><td>下單日期(起)為必填(彙總表分支)</td><td><code>:453</code></td></tr><tr><td>9</td><td>下單日期(迄)為必填(彙總表分支)</td><td><code>:457</code></td></tr><tr><td>10</td><td>銷售機構區別碼(起)(迄)必須同時(不)輸入</td><td><code>:466</code></td></tr><tr><td>11</td><td>銷售機構區別碼(起)不可大於(迄)</td><td><code>:473</code></td></tr><tr><td>12</td><td>銷售機構代碼(起)不可大於(迄)</td><td><code>:482</code></td></tr><tr><td>13</td><td>交易內容至少要勾選一個項目</td><td><code>:493</code></td></tr><tr><td>14</td><td>資料種類至少要勾選一個項目</td><td><code>:501</code></td></tr><tr><td>15</td><td>至少勾選一筆基金代碼</td><td><code>:509</code></td></tr><tr><td>16</td><td>(框架轉拋的自訂訊息)</td><td><code>:399</code></td></tr></tbody></table></div>
+<p><strong>這 16 條是全庫報表檢核的最佳範本</strong>,後續 189 支要抄就抄這支。特徵:</p>
+<ul><li><strong>日期區間三段式</strong>:擇一必填 → 起迄同時填 → 起不大於迄。三段缺一會有洞。</li><li><strong>成對欄位「同時填或同時不填」</strong>(第 10 條)是 R 特有的,M / I 很少見。</li><li><strong>多選清單「至少一筆」</strong>(第 13 ~ 15 條)——<strong>不擋的話 SP 會收到空字串,回傳全部或全不回,兩種都是錯的</strong>。</li></ul>
+<p><code>OFDR751</code> 的三個 SP 依 <code>TYPE</code> / <code>Order</code> / <code>Short</code> / <code>Index</code> 四個旗標分流, 錨點 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR751_PO.cs:60-74</code>:</p>
+<div class="tw"><table><thead><tr><th><code>TYPE</code></th><th><code>Order</code></th><th><code>Short</code></th><th><code>Index</code></th><th>SP</th><th><code>.rpt</code></th></tr></thead><tbody><tr><td><code>1</code></td><td><code>1</code></td><td>—</td><td><code>0</code> 或 <code>1</code></td><td><code>S_TA_OFDR751_GET</code></td><td><code>OFDR751RPS</code></td></tr><tr><td><code>1</code></td><td>—</td><td><code>1</code></td><td><code>0</code> 或 <code>2</code></td><td><code>S_TA_OFDR751_SHOET_GET</code></td><td><code>OFDR751RPS2</code></td></tr><tr><td><code>2</code></td><td>—</td><td>—</td><td>—</td><td><code>S_TA_OFDR751_SUM_GET</code></td><td><code>OFDR751RPS3</code></td></tr></tbody></table></div>
+<p><strong><code>Index</code> 的語意是「印兩張報表時這是第幾張」</strong>(<code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR751_PO.cs:74</code> 的註解原文)。 <code>0</code> 代表兩張都印。這是本片唯一一支<strong>一次列印動作產出兩份報表</strong>的畫面。</p>
+<p><code>S_TA_OFDR751_SHOET_GET</code> 的 <code>SHOET</code> <strong>疑為 <code>SHORT</code> 拼錯</strong>(短線交易)。 <strong>不要「順手改正」</strong>——SP 名在 DB 端,改 C# 這一行會直接讓畫面壞掉。</p>
+<h3 id="7-7-連號群-ofdr731-ofdr733-兩支毫無關係">7.7 連號群 <code>OFDR731</code> / <code>OFDR733</code>:<strong>兩支毫無關係</strong></h3>
+<div class="tw"><table><thead><tr><th>代號</th><th>中文名</th><th>條件 key</th></tr></thead><tbody><tr><td><code>OFDR731</code></td><td>結匯申報收檔查核表</td><td>(UI 不組,PO 內只有 <code>@striDECLARE_YM</code> 一個)</td></tr><tr><td><code>OFDR733</code></td><td>(信託業、投信業)國內貨幣市場共同基金受益憑證持有者統計表(月報 / 旬報)</td><td><code>TYPE</code> <code>FUND_ID</code> <code>REG_YM</code> <code>EXECTYPE</code></td></tr></tbody></table></div>
+<p><strong>Jaccard = 0.00。</strong> 一支是外匯結匯申報、一支是貨幣市場基金持有者申報,<strong>共同點只有「都是對主管機關的申報」</strong>(推測,依中文名)。 <code>OFDR732</code> 不存在,連號中間是斷的——<strong>這本身就是「連號不代表同系列」的證據</strong>。</p>
+<p><code>OFDR733</code> 有一處值得記:</p>
+<pre class="code"><code>this.EXECTYPE = "1";</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR733.cs:132</code>。 <strong>寫在報表版型分支之後、送出之前,無條件覆蓋。</strong> 畫面上另有 <code>uoptTYPE</code> 讓使用者選月報 / 旬報(<code>:124</code>), <code>EXECTYPE</code> 則完全不給選。<strong>〔假設〕<code>EXECTYPE = "1"</code> 代表「列印」、另有 <code>"2"</code> 代表別的用途(例如產檔)</strong>,依據是同名欄位在 <code>OFDR733</code> 的 SP 參數清單裡叫 <code>striEXECTYPE</code>,且 UI 有第二條路徑(TXT 匯出)。<strong>沒有讀到定義,不確定。</strong></p>
+<h3 id="7-8-請款四支-ofdr452-ofdr453-ofdr455-ofdr457-全片最重-也最會咬人">7.8 請款四支 <code>OFDR452</code> <code>OFDR453</code> <code>OFDR455</code> <code>OFDR457</code>:全片最重,也最會咬人</h3>
+<p>四支不是連號,但<strong>結構是同一個模子刻的</strong>,而且<strong>四支都會寫 DB</strong>。先看骨架(圖 4),再看四支哪裡不一樣。</p>
+<h4 id="7-8-1-共同骨架">7.8.1 共同骨架</h4>
+<div class="tw"><table><thead><tr><th>步</th><th>做什麼</th><th><code>OFDR452</code> 錨點</th></tr></thead><tbody><tr><td>1</td><td><code>tran = m_db.BeginTransaction()</code></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR452_PO.cs:53</code></td></tr><tr><td>2</td><td><code>strDATAID = Guid.NewGuid().ToString()</code> 產一個本次執行的識別碼</td><td><code>:57</code></td></tr><tr><td>3</td><td>呼叫主 SP <code>S_TA_OFDR452_GET</code>,把 <code>iDATAID</code> 一起傳進去,<strong><code>ExecuteNonQuery</code>——SP 在 DB 端把計算結果寫進暫存工作區</strong></td><td><code>:60-78</code></td></tr><tr><td>4</td><td>讀出參 <code>strMsg</code>;非 NULL 代表 SP 回報錯誤 → <code>tran.Rollback()</code>;NULL → <code>tran.Commit()</code></td><td><code>:84-97</code></td></tr><tr><td>5</td><td>逐一呼叫 <code>_A0_Get</code> ~ <code>_A5_Get</code> 六個 SP,各自 <code>LoadDataSet</code> 進不同結果集</td><td><code>:100-155</code></td></tr><tr><td>6</td><td>呼叫 <code>S_TA_OFDR452_DEL</code> 把暫存資料刪掉</td><td><code>:158-165</code></td></tr><tr><td>7</td><td><code>if (i &gt; 0)</code> 決定回「成功」還是「查無相關資料」</td><td><code>:175</code></td></tr></tbody></table></div>
+<p><strong>所以「報表會寫 DB」這件事的真相是</strong>:寫的是<strong>暫存工作區</strong>,不是業務表,而且步驟 6 會刪掉。這與 <code>OFDR022</code> <code>OFDR023</code> <code>OFDR564</code> 改業務旗標是<strong>兩種不同的寫入</strong>,做影響面評估時要分開看。</p>
+<h4 id="7-8-2-缺陷一-i-1-蓋掉-executenonquery-的回傳值-四支全中">7.8.2 缺陷一:<code>i = 1;</code> 蓋掉 <code>ExecuteNonQuery</code> 的回傳值(<strong>四支全中</strong>)</h4>
+<pre class="code"><code>i = m_db.ExecuteNonQuery(cmd, tran);       // 真正的影響筆數
+...
+else
+{
+    i = 1;                                  // 無條件蓋掉
+    tran.Commit();
+}
+...
+if (i &gt; 0)                                  // 於是永遠成立</code></pre>
+<p>四支的錨點:</p>
+<div class="tw"><table><thead><tr><th>畫面</th><th><code>ExecuteNonQuery</code> 取值</th><th><code>i = 1;</code> 覆蓋</th><th><code>if (i &gt; 0)</code> 判斷</th></tr></thead><tbody><tr><td><code>OFDR452</code></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR452_PO.cs:78</code></td><td><code>:96</code></td><td><code>:175</code></td></tr><tr><td><code>OFDR453</code></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR453_PO.cs:79</code></td><td><code>:96</code></td><td><code>:184</code></td></tr><tr><td><code>OFDR455</code></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR455_PO.cs:75</code></td><td><code>:91</code></td><td><code>:138</code></td></tr><tr><td><code>OFDR457</code></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR457_PO.cs:75</code></td><td><code>:91</code></td><td><code>:121</code></td></tr></tbody></table></div>
+<p><strong>這是 <code>ofdb5.md</code> 記過 12 處的同一型缺陷,在本片有 4 處。</strong> 影響:SP 一筆都沒寫進去時,<code>ExecuteNonQuery</code> 回 0,但 <code>i</code> 被改成 1, 所以<strong>畫面仍然報成功,只是報表是空的</strong>。使用者看到空白報表不會知道是「沒資料」還是「算錯了」。嚴重度:中(不會錯帳,但診斷時會被誤導)。</p>
+<h4 id="7-8-3-缺陷二-ofdr455-ofdr457-不刪暫存資料-成對只改一邊">7.8.3 缺陷二:<code>OFDR455</code> <code>OFDR457</code> <strong>不刪暫存資料</strong>(成對只改一邊)</h4>
+<div class="tw"><table><thead><tr><th>畫面</th><th>有沒有 <code>_DEL</code> SP</th><th>有沒有執行刪除</th></tr></thead><tbody><tr><td><code>OFDR452</code></td><td><code>S_TA_OFDR452_DEL</code></td><td>有,<code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR452_PO.cs:158-165</code></td></tr><tr><td><code>OFDR453</code></td><td><code>S_TA_OFDR453_DEL</code></td><td>有,<code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR453_PO.cs:179</code></td></tr><tr><td><strong><code>OFDR455</code></strong></td><td><strong>沒有</strong></td><td><strong>沒有</strong>——PO 內只有一次 <code>ExecuteNonQuery</code>(<code>:75</code>),之後沒有刪除呼叫</td></tr><tr><td><strong><code>OFDR457</code></strong></td><td><strong>沒有</strong></td><td><strong>沒有</strong>——同上(<code>:75</code>)</td></tr></tbody></table></div>
+<p>四支用同一個 <code>Guid.NewGuid()</code> 暫存機制,<strong>兩支會清、兩支不清</strong>。影響:<code>OFDR455</code> <code>OFDR457</code> 每跑一次就在暫存工作區留一批資料,<strong>沒有任何機制回收</strong>。 <strong>〔假設〕暫存表會無限成長</strong>,依據是 C# 端找不到任何清除路徑,而 <code>OFDR452</code> <code>OFDR453</code> 明確有; 無法確認 DB 端是否另有排程清理(SP 不在版控)。嚴重度:高(長期資料量問題,且四支明明同型)。</p>
+<h4 id="7-8-4-缺陷三-tran-rollback-在已-commit-之後-四支全中">7.8.4 缺陷三:<code>tran.Rollback()</code> 在已 Commit 之後(<strong>四支全中</strong>)</h4>
+<p><code>catch</code> 區一律:</p>
+<pre class="code"><code>catch (Exception ex)
+{
+    tran.Rollback();
+    model.Utility.Result.AddResultRow(false, 0, string.Empty);
+    CommonExceptionBlocker.HandleBusinessException(ex);
+}</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR452_PO.cs:185-190</code> (<code>OFDR453_PO.cs:196</code> · <code>OFDR455_PO.cs:150</code> · <code>OFDR457_PO.cs:133</code> 同型)。</p>
+<p>問題:<code>tran</code> 在步驟 4(<code>:97</code>)就已經 <code>Commit()</code> 了,步驟 5 ~ 7 全都在交易外。 <strong>若例外發生在步驟 5 之後,<code>tran.Rollback()</code> 會對一個已完成的交易呼叫,拋 <code>InvalidOperationException</code></strong>, 把原始例外 <code>ex</code> 蓋掉——<code>CommonExceptionBlocker.HandleBusinessException(ex)</code> 那一行根本執行不到。 <strong>真正的錯誤訊息永遠傳不出來。</strong> 加上 <code>AddResultRow(false, 0, string.Empty)</code> 給的是空訊息, 畫面上使用者只會看到一個沒有內容的失敗。嚴重度:高(診斷能力歸零)。</p>
+<h4 id="7-8-5-缺陷四-data-type-三支三種做法">7.8.5 缺陷四:<code>DATA_TYPE</code> 三支三種做法</h4>
+<div class="tw"><table><thead><tr><th>畫面</th><th>畫面上有沒有選項</th><th>送出的值</th><th>錨點</th></tr></thead><tbody><tr><td><code>OFDR452</code></td><td><strong>有</strong>(<code>uoptDATA_TYPE</code>,還掛了 <code>ValueChanged</code> 事件)</td><td>使用者選什麼送什麼</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR452.cs:192</code> · 事件在 <code>:1023-1025</code></td></tr><tr><td><code>OFDR455</code></td><td><strong>沒有</strong>(Designer 內查無 <code>uoptDATA_TYPE</code>)</td><td><strong>寫死 <code>"1"</code></strong></td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR455.cs:177</code></td></tr><tr><td><code>OFDR457</code></td><td><strong>沒有</strong></td><td><strong>寫死 <code>"1"</code></strong></td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR457.cs:174</code></td></tr><tr><td><code>OFDR453</code></td><td>沒有</td><td><strong>根本不送這個參數</strong></td><td>—</td></tr></tbody></table></div>
+<p><code>OFDR455.cs:62</code> <code>:155</code> 與 <code>OFDR457.cs:62</code> <code>:153</code> 都留著 <code>//this.uoptDATA_TYPE.Value = "1";</code> 的註解殘骸。</p>
+<p><strong>這不算「過濾(無提示)」</strong>——因為 <code>OFDR455</code> <code>OFDR457</code> 的畫面上本來就沒有那個選項,使用者不會以為自己能選。 <strong>但它是「成對報表只改一邊」的實證</strong>:同一組四支,對同一個概念做了四件不同的事。改 <code>DATA_TYPE</code> 的語意(例如新增 <code>'3'</code>)時,<strong>必須同時檢查這四支,而 grep <code>DATA_TYPE</code> 只會找到三支</strong>。嚴重度:中。</p>
+<h4 id="7-8-6-ofdr453-請款四支裡唯一不出-crystal-的">7.8.6 <code>OFDR453</code>:請款四支裡唯一不出 Crystal 的</h4>
+<p><code>OFDR453</code> 有 <code>IOFDR453_PO</code>、有七個 SP、有 <code>Model.xsd</code> / <code>View.xsd</code>,<strong>但一張 <code>.rpt</code> 都沒有</strong>。輸出全部走 <code>ExcelCreator.CreateExcelDocument(dt, sFileName)</code>, 錨點 <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR453.cs:287</code>。</p>
+<p>檔名由畫面上的控件文字串出來:</p>
+<pre class="code"><code>string sFileName = this.utxtPATH.Text + @"\" + m_CAL_DATE + "-"
+                 + uchkQUERY_TYPE_B1.Text + "-" + uchkCAL_TYPE1.Text + @".xlsx";</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR453.cs:284</code>。 <strong>用控件的顯示文字當檔名的一部分</strong>——改 UI 標題會連帶改輸出檔名,下游若有人照檔名收檔就會斷。嚴重度:低,但要記在<strong>改 UI 文字前的檢查清單</strong>上。</p>
+<p>它的輸出路徑檢核是全片唯一一支做目錄存在性驗證的:</p>
+<div class="tw"><table><thead><tr><th>檢核</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>需要輸入「輸出路徑」</td><td>阻擋</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR453.cs:121</code></td></tr><tr><td>輸出路徑不存在</td><td>阻擋</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR453.cs:125</code></td></tr></tbody></table></div>
+<p><strong>這兩條應該被後面 189 支抄走</strong>——其餘出檔的畫面(<code>OFDR235</code> <code>OFDR236</code> <code>OFDR237</code> <code>OFDR238</code>)是用 <code>SaveFileDialog</code> 讓使用者挑,由對話框保證路徑有效;<code>OFDR453</code> 是讓使用者打字,所以必須自己驗。</p>
+<h3 id="7-9-ofdr716-rpt-引用懸空-本片唯一的版控外版型">7.9 <code>OFDR716</code>:<code>.rpt</code> 引用懸空,本片唯一的版控外版型</h3>
+<pre class="code"><code>if (...)      this.SetQueryParameters("OFDR716RPS",  "OFDR716RPS",  "開放式受益憑證登錄資料報表-FUY");
+else if (...) this.SetQueryParameters("OFDR716RPS1", "OFDR716RPS1", "開放式受益憑證淨值傳檔資料報表-FUS");
+else          this.SetQueryParameters("OFDR716RPS2", "OFDR716RPS2", "");</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR716.cs:50-56</code>。</p>
+<p>第三個分支要的 <code>OFDR716RPS2</code>:</p>
+<div class="tw"><table><thead><tr><th>檢查</th><th>結果</th></tr></thead><tbody><tr><td><code>Report.OFD</code> 資料夾內有 <code>OFDR716RPS2</code> 的 <code>.rpt</code>?</td><td><strong>否</strong></td></tr><tr><td>伴生 <code>OFDR716RPS2.cs</code> 存在?</td><td><strong>否</strong></td></tr><tr><td><code>Report.OFD.csproj</code> 內有宣告?</td><td><strong>否</strong></td></tr><tr><td>報表中文名</td><td><strong>空字串</strong></td></tr></tbody></table></div>
+<p><strong>走到這個分支必定失敗。</strong> 失敗點在伺服端: <code>Ctl</code> 的 <code>CRReportTransfer.TransferFileByte(rpt)</code>(<code>Dev/ATLAS.OFD.Report/Source/Control/ReportControl.OFD/OFDR013_Ctl.cs:32</code> 是同型範例) 拿 <code>"OFDR716RPS2"</code> 去 <code>%PTPF%\CrystalReports\</code> 找檔案,找不到。</p>
+<p>三支 SP 對三個分支,而 <code>s_TA_OFDR716_2_Get</code> 是有的 (<code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR716_PO.cs</code>)—— <strong>資料端做完了,版型端沒做。〔假設〕這是做到一半的功能</strong>,依據是報表中文名留空(其餘 63 個引用都有中文名)。嚴重度:<strong>高</strong>——這是本片對「<code>.rpt</code> 不在版控」這個缺陷型的唯一實證,而且它不是「檔案掉了」,是<strong>從來沒有過</strong>。</p>
+<p><code>OFDR716</code> 的另外兩個版型 <code>FUY</code> / <code>FUS</code> 是集保平台的檔案類別代號〔客戶特定〕。</p>
+<h3 id="7-10-ofdr540-唯一動態組報表類別名的一支">7.10 <code>OFDR540</code>:唯一動態組報表類別名的一支</h3>
+<p>39 支都是把 <code>.rpt</code> 名字寫成字面常數。<code>OFDR540</code> 不是:</p>
+<pre class="code"><code>case "6": case "7": case "8": case "9":
+    sRpt = "OFDR540RPS" + this.uOptRptKind.Value.ToString();
+    break;
+default:
+    sRpt = "";
+    break;</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR540.cs:90-139</code>。</p>
+<p>十個選項對六個版型:</p>
+<div class="tw"><table><thead><tr><th><code>uOptRptKind</code></th><th>報表中文名</th><th>版型</th><th>版型存在</th></tr></thead><tbody><tr><td><code>0</code></td><td>受益人會議開票結果</td><td><code>OFDR540RPS</code></td><td>是</td></tr><tr><td><code>1</code></td><td>亞太基金受益人大會投票明細表(未出席)</td><td><code>OFDR540RPS1</code></td><td>是</td></tr><tr><td><code>2</code></td><td>…(無效票)</td><td><code>OFDR540RPS1</code></td><td>是</td></tr><tr><td><code>3</code></td><td>…(贊成票)</td><td><code>OFDR540RPS1</code></td><td>是</td></tr><tr><td><code>4</code></td><td>…(反對票)</td><td><code>OFDR540RPS1</code></td><td>是</td></tr><tr><td><code>5</code></td><td>…(棄權票)</td><td><code>OFDR540RPS1</code></td><td>是</td></tr><tr><td><code>6</code></td><td>…(有效票)</td><td><code>OFDR540RPS6</code></td><td>是</td></tr><tr><td><code>7</code></td><td>亞太基金受益人大會投票明細表</td><td><code>OFDR540RPS7</code></td><td>是</td></tr><tr><td><code>8</code></td><td>亞太基金受益人大會開票結果</td><td><code>OFDR540RPS8</code></td><td>是</td></tr><tr><td><code>9</code></td><td>亞太基金受益人大會開票結果</td><td><code>OFDR540RPS9</code></td><td>是</td></tr><tr><td>其他</td><td><strong>空字串</strong></td><td><strong>空字串</strong></td><td>—</td></tr></tbody></table></div>
+<p>六個版型全部在版控內,<strong>所以這支目前是安全的</strong>。 <strong>但它是全片唯一一支「加一個選項就會自動去找一個新 <code>.rpt</code>」的畫面</strong>—— 加第 10 個選項時若忘了加 <code>OFDR540RPS10.rpt</code>,會變成第二個 <code>OFDR716RPS2</code>,而且<strong>編譯不會報錯</strong>。 <code>default</code> 分支送空字串出去,一樣是執行期才爆。</p>
+<p>另外注意:<code>8</code> 與 <code>9</code> 兩個選項的<strong>報表中文名完全相同</strong>(「亞太基金受益人大會開票結果」), 版型卻不同(<code>RPS8</code> / <code>RPS9</code>),註解分別寫「Agent 統計表」與「EMP 目標達成率表」 (<code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR540.cs:133-136</code>)。 <strong>報表抬頭印出來會一樣,使用者分不出手上這張是哪一種。</strong> 嚴重度:低,但會造成誤用。</p>
+<p><code>OFDR540</code> 也是唯一走 Oracle package 的一支:六個 SP 全是 <code>BF_VOTE.OFDR540_xxx</code> (<code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR540_PO.cs:65-96</code>)。 <strong>其餘 39 支全是裸 procedure 名。</strong> 改 <code>BF_VOTE</code> package 時要知道只有這一支在用。</p>
+<h3 id="7-11-只出-excel-的兩支-ofdr237-ofdr453">7.11 只出 Excel 的兩支:<code>OFDR237</code> <code>OFDR453</code></h3>
+<p>兩支都是「掛在報表專案下、UI 基底是 <code>xReportForm</code>、但沒有 <code>.rpt</code>」。</p>
+<div class="tw"><table><thead><tr><th>面向</th><th><code>OFDR237</code></th><th><code>OFDR453</code></th></tr></thead><tbody><tr><td>Excel 產生方式</td><td><code>Microsoft.Office.Interop.Excel</code> + 自家 <code>ExcelHelper.GenExcelFile</code></td><td><code>ExcelCreator.CreateExcelDocument</code></td></tr><tr><td>檔名由誰決定</td><td><code>SaveFileDialog</code> 讓使用者挑</td><td>畫面上的路徑欄 + 控件文字串出來</td></tr><tr><td>產生幾個檔</td><td>1</td><td>最多 5 組 × 4 種 = 依勾選而定</td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR237.cs:210-244</code></td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR453.cs:277-340</code></td></tr></tbody></table></div>
+<p><code>OFDR237</code> 的 <code>// 此功能只開放Excel下載</code>(<code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR237.cs:126</code>) 證明<strong>沒有 <code>.rpt</code> 是刻意的,不是漏做</strong>——這一點與 <code>OFDR716RPS2</code>(漏做)要分清楚。</p>
+<p><strong>但兩支的 UI 基底仍是 <code>xReportForm</code></strong>,所以框架給的「預覽 / 列印」按鈕還在畫面上。 <strong>〔假設〕這兩支在 <code>FormInitial</code> 或 Designer 裡把兩顆按鈕關掉了</strong>,依據是 <code>OFDR237</code> <code>OFDR453</code> 的程式碼裡完全沒有 <code>ButtonPreviewEnable = true</code> 這種打開的動作, 而其餘 38 支查詢成功後都會打開。<strong>沒有讀 Designer,不確定按鈕是否真的隱藏。</strong></p>
+<p><code>OFDR237</code> 用 <code>Microsoft.Office.Interop.Excel</code>(<code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR237.cs:21</code>)—— <strong>全片唯一一支要求用戶端裝 Office 的畫面</strong>。其餘出 Excel 的走 <code>ExcelCreator</code> / <code>ExcelHelper</code>,不需要 Office。嚴重度:中(部署相依性隱藏在一支畫面的 <code>using</code> 裡)。</p>
+<h3 id="7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">7.12 <code>OFDR022</code> <code>OFDR023</code>:不是報表,而且開畫面就壞</h3>
+<h4 id="7-12-1-它們在做什麼">7.12.1 它們在做什麼</h4>
+<p>兩支的 UI 基底是 <code>xOneStepProcessForm</code>(<code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR023.cs:15</code>), 一頁一顆「執行」按鈕,沒有查詢 / 預覽 / 列印。 <code>BeforeExecuteButtonClicked</code> 把條件塞進 <code>ProcessVDB.Util.Parameters</code> (<code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR023.cs:41-62</code>),送到 PO。</p>
+<p>PO 做兩件事:</p>
+<ol><li>自組 SQL 撈出「該寄簡訊的受益人」;</li><li>逐筆呼叫 <code>Sp_ForTa_Batch_Send</code> 把簡訊丟進共用寄送佇列,再 <code>UPDATE BMS001</code> 把寄發旗標改 <code>'Y'</code>。</li></ol>
+<p><strong>這是批次作業,不是報表。</strong> 放在 <code>ATLAS.OFD.Report</code> 專案下是分類錯置。</p>
+<h4 id="7-12-2-缺陷一-m-db-永遠是-null-本片-13-支同型-這是最大的一條">7.12.2 缺陷一:<code>m_db</code> 永遠是 null(<strong>本片 13 支同型,這是最大的一條</strong>)</h4>
+<pre class="code"><code>private Database m_db = null;
+
+public OFDR022_PO()
+{
+    //SystemConfigurationSource config = new SystemConfigurationSource();
+    //DatabaseProviderFactory provider = new DatabaseProviderFactory(config);
+    //m_db = provider.Create("TA");
+}
+...
+DbConnection Dbcon = m_db.CreateConnection();   // ← NullReferenceException</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:17-24</code> 與 <code>:37</code>。</p>
+<p><strong>逐檔掃過 40 支,<code>m_db</code> 從未被賦值的有 13 支</strong>:</p>
+<div class="tw"><table><thead><tr><th>畫面</th><th><code>m_db</code> 宣告</th><th>首次解參考</th></tr></thead><tbody><tr><td><code>OFDR002A</code></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR002A_PO.cs:17</code></td><td><code>:33</code></td></tr><tr><td><code>OFDR013</code></td><td><code>OFDR013_PO.cs:17</code></td><td><code>:36</code></td></tr><tr><td><code>OFDR014</code></td><td><code>OFDR014_PO.cs:17</code></td><td><code>:35</code></td></tr><tr><td><code>OFDR015</code></td><td><code>OFDR015_PO.cs:17</code></td><td><code>:37</code></td></tr><tr><td><code>OFDR021</code></td><td><code>OFDR021_PO.cs:17</code></td><td><code>:36</code></td></tr><tr><td><code>OFDR022</code></td><td><code>OFDR022_PO.cs:17</code></td><td><code>:37</code></td></tr><tr><td><code>OFDR023</code></td><td><code>OFDR023_PO.cs:17</code></td><td><code>:38</code></td></tr><tr><td><code>OFDR024</code></td><td><code>OFDR024_PO.cs:17</code></td><td><code>:33</code></td></tr><tr><td><code>OFDR288</code></td><td><code>OFDR288_PO.cs:16</code>(初始化在 <code>/* */</code> 區塊內,<code>:20-23</code>)</td><td><code>:44</code></td></tr><tr><td><code>OFDR501</code></td><td><code>OFDR501_PO.cs:18</code>(連 <code>= null</code> 都沒寫,預設 null)</td><td><code>:47</code></td></tr><tr><td><code>OFDR563</code></td><td><code>OFDR563_PO.cs:18</code></td><td><code>:44</code></td></tr><tr><td><code>OFDR564</code></td><td><code>OFDR564_PO.cs:17</code></td><td><code>:44</code></td></tr><tr><td><code>OFDR731</code></td><td><code>OFDR731_PO.cs:17</code></td><td><code>:35</code></td></tr></tbody></table></div>
+<p>三項佐證這不是誤判:</p>
+<ol><li><strong>這 13 支同時是「沒有 <code>[PODbType(DbServerType.Oracle)]</code>」「沒有 <code>new Database("TA", DbServerType.Oracle)</code>」「用 <code>SqlDbType</code> 不用 <code>OracleDbType</code>」的那一批</strong>——三個特徵完全重合。</li><li><code>Ctl</code> 確實會 <code>new</code> 出 PO 並呼叫取數方法,沒有任何繞道: <code>Dev/ATLAS.OFD.Report/Source/Control/ReportControl.OFD/OFDR013_Ctl.cs:37-41</code>。</li><li><code>Dev/Common/</code> 底下找不到任何以反射注入私有欄位 <code>m_db</code> 的機制。</li></ol>
+<p><strong>〔假設〕這 13 支是 MSSQL 時代留下、Oracle 遷移時整批漏改的。</strong> 依據:同樣的 <code>private Database m_db = null;</code> 在全 repo 有 104 個檔, 而在 <code>Dev/ATLAS.EC.Query</code> / <code>Dev/ATLAS.EC.Report</code> 底下,它們<strong>住在 <code>MSSQL/</code> 子資料夾,旁邊有 <code>Oracle/</code> 覆寫版</strong> (<code>ofdi1.md §0</code> 記過這個「基底版 + Oracle 覆寫版」寫法)。 <strong><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD</code> 底下沒有任何子資料夾</strong>,所以這 13 支沒有覆寫版。</p>
+<p><strong>無法百分之百確認的部分</strong>:<code>Basic_PO</code> 是框架 DLL 類別(<strong>無原始碼,從呼叫端反推</strong>), 理論上它的建構子有可能透過某種機制設定衍生類別的私有欄位——但 C# 的私有欄位無法被基底類別直接寫入, 且這 13 支各自宣告自己的 <code>private Database m_db</code>(不是繼承來的),所以<strong>除非用反射,否則不可能</strong>;而反射機制在 repo 內找不到。</p>
+<p>嚴重度:<strong>最高</strong>。若判讀正確,本片 40 支有 13 支(32.5%)完全不能跑。 <strong>驗證方式</strong>:在測試環境開 <code>OFDR013</code>(受益人查詢記錄報表)按查詢,看是否 <code>NullReferenceException</code>。 <strong>這是本文最需要人工複驗的一條。</strong></p>
+<h4 id="7-12-3-缺陷二-catch-裡的二次-nre">7.12.3 缺陷二:<code>catch</code> 裡的二次 NRE</h4>
+<pre class="code"><code>catch (Exception ex)
+{
+    trans.Rollback();          // trans 在 NRE 發生時還是 null
+    ...
+}</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:177-183</code> (<code>OFDR023_PO.cs:133-139</code> 同型)。</p>
+<p><code>trans</code> 在 <code>Dbcon.Open()</code> 之後才 <code>BeginTransaction()</code>,而 NRE 發生在 <code>m_db.CreateConnection()</code>—— <strong><code>trans</code> 還是 null</strong>,<code>trans.Rollback()</code> 再 NRE 一次,把原始例外蓋掉。 <code>finally</code> 區的 <code>Dbcon.Close()</code> 也會 NRE(<code>Dbcon</code> 同樣沒建出來)。使用者看到的是一個與根因完全無關的錯誤。嚴重度:高(診斷能力歸零)。</p>
+<h4 id="7-12-4-缺陷三-inner-join-讓對不到的受益人無聲消失">7.12.4 缺陷三:<code>INNER JOIN</code> 讓對不到的受益人無聲消失</h4>
+<pre class="code"><code>strSQL += "FROM	BMS001 " + Environment.NewLine;
+strSQL += "INNER JOIN OFD132 ON OFD132.BF_NO=BMS001.BF_NO " + Environment.NewLine;
+strSQL += "	      AND OFD132.STATEMENT_CODE='00' " + Environment.NewLine;
+strSQL += "	      AND OFD132.SEND_CODE='Y' " + Environment.NewLine;
+strSQL += "	      AND SEND_NEW_FLASH='Y' " + Environment.NewLine;</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:212-216</code>。</p>
+<p><code>BMS001</code> 有資料但 <code>OFD132</code> 沒有對應列的受益人,<strong>整筆消失,沒有任何提示</strong>。這是 <code>ofd6.md</code> 記的 <code>OFDM123_PO.cs:250-251</code> 同一型。 <strong>在報表 / 寄送作業上更危險</strong>:少寄一封通知,使用者只會看到「執行成功,筆數:N 筆」,不會知道 N 應該更大。結果類型:<strong>過濾(無提示)</strong>。嚴重度:高。</p>
+<h4 id="7-12-5-缺陷四-cell-phone-在-oracle-上恆為-unknown">7.12.5 缺陷四:<code>CELL_PHONE &lt;&gt; ''</code> 在 Oracle 上恆為 UNKNOWN</h4>
+<pre class="code"><code>strSQL += "WHERE	CELL_PHONE &lt;&gt; ''  " + Environment.NewLine;</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:217</code>。</p>
+<p>Oracle 把空字串視為 NULL,所以 <code>CELL_PHONE &lt;&gt; ''</code> 對<strong>每一列</strong>都是 UNKNOWN, <code>WHERE</code> 只收 TRUE,<strong>結果是一列都不回</strong>。這是 <code>ofdb5.md</code> 記的 <code>OFDB305_PO.cs:229</code>(<code>REMIT_FAIL_CODE=''</code>)同一型,<strong>十個模組中過</strong>。正確寫法是 <code>CELL_PHONE IS NOT NULL</code>。</p>
+<p><strong>這一條與 <a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>.2 的 NRE 疊在一起</strong>:即使有人把 <code>m_db</code> 修好,這支仍然一筆都撈不到。結果類型:<strong>過濾(無提示)</strong>,而且是全濾掉。嚴重度:高。</p>
+<h4 id="7-12-6-缺陷五-重寄防護被註解掉">7.12.6 缺陷五:重寄防護被註解掉</h4>
+<pre class="code"><code>strUPD += "WHERE BF_NO=@BF_NO " + Environment.NewLine;
+//strUPD += "  AND RECEIPT_DOC_ID &lt;&gt; 'Y'";</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:156-157</code>。</p>
+<p>被註解掉的那一行原本是「已經是 <code>'Y'</code> 的就不再更新」。拿掉之後,同一個戶號重跑會再 <code>UPDATE</code> 一次。 <strong>更重要的是:簡訊發送(<code>Sp_ForTa_Batch_Send</code>)在 <code>UPDATE</code> 之前就跑了</strong>(<code>:121-132</code>), 所以<strong>重跑一次就重寄一次簡訊</strong>。註解本身也帶著 <a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>.5 的三值邏輯問題——就算解註解,<code>&lt;&gt; 'Y'</code> 遇到 <code>RECEIPT_DOC_ID</code> 為 NULL 的列一樣是 UNKNOWN。嚴重度:高(對外發送,不可回收)。</p>
+<h4 id="7-12-7-缺陷六-寫死的簡訊內容-且-a-b-兩支完全相同">7.12.7 缺陷六:寫死的簡訊內容,且 <code>A</code> / <code>B</code> 兩支完全相同</h4>
+<pre class="code"><code>case "A": strMessage = "親愛的客戶：已收到您的開戶文件…德盛安聯投信"; break;
+case "B": strMessage = "親愛的客戶：已收到您的開戶文件…德盛安聯投信"; break;   // 與 A 一字不差
+case "C": strMessage = "親愛的客戶：已收到您的境外開戶文件…德盛安聯投信"; break;</code></pre>
+<p>錨點 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:105-118</code>。</p>
+<p>三件事:</p>
+<ol><li><strong><code>A</code>(綜合版)與 <code>B</code>(境內版)的文字一字不差</strong>,分兩個 case 沒有意義。看註解 <code>//2013/03/27 Mod 境內版簡訊內容與綜合版一致</code>——是刻意改成一樣的,但沒有合併 case。</li><li><strong>公司名、客服電話寫死在 C# 裡</strong>〔客戶特定〕。換站台要改程式重新編譯。</li><li><code>case "A"</code> 的 SQL 判斷式(<code>:204-208</code>)把 <code>ELSE</code> 也導到 <code>'A'</code>,所以<strong>沒有任何一列會落到 <code>'B'</code> 之外的預期分支</strong>—— 實際上 <code>MsgType</code> 只會是 <code>'A'</code> 或 <code>'C'</code>。</li></ol>
+<p>嚴重度:中(維護性),但第 2 點在多站台佈署時是高。</p>
+<h4 id="7-12-8-缺陷七-整支還在-t-sql">7.12.8 缺陷七:整支還在 T-SQL</h4>
+<p><code>OFDR022_PO</code> / <code>OFDR023_PO</code> 用 <code>SqlDbType.NVarChar</code> 與 <code>@</code> 參數前綴 (<code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:124-131</code>), <code>Sp_ForTa_Batch_Send</code> 也是 T-SQL 的 <code>Sp_</code> 命名。 <strong>〔假設〕整支是 MSSQL 時代的遺物</strong>,與 <a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>.2 同源。</p>
+<p>同型的還有兩處<strong>語法層級</strong>不可能在 Oracle 跑的:</p>
+<div class="tw"><table><thead><tr><th>畫面</th><th>內容</th><th>錨點</th></tr></thead><tbody><tr><td><code>OFDR002A</code></td><td><code>LEFT JOIN [OFD038]</code> — <strong>T-SQL 中括號識別字</strong></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR002A_PO.cs:85</code></td></tr><tr><td><code>OFDR564</code></td><td><code>UpdateDate = GETDATE()</code> — <strong>T-SQL 函式</strong>,Oracle 是 <code>SYSDATE</code></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR564_PO.cs:126</code></td></tr></tbody></table></div>
+<p>這兩處<strong>不可能被任何參數對映層救回來</strong>,是語法錯誤。它們同時也都在 <a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>.2 那 13 支名單裡——<strong>互相佐證那 13 支確實沒在跑</strong>。</p>
+<h3 id="7-13-卡控總表">7.13 卡控總表</h3>
+<h4 id="7-13-1-阻擋型-38-支都有-列出各支的條數與最值得注意的一條">7.13.1 阻擋型(38 支都有,列出各支的條數與最值得注意的一條)</h4>
+<div class="tw"><table><thead><tr><th>畫面</th><th><code>AddError</code> 條數</th><th>最值得注意的一條</th></tr></thead><tbody><tr><td><code>OFDR751</code></td><td>16</td><td>「銷售機構區別碼(起)(迄) 必須同時(不)輸入」</td></tr><tr><td><code>OFDR238</code></td><td>10</td><td>(多條件組合)</td></tr><tr><td><code>OFDR041</code></td><td>9</td><td>(開戶缺件多條件)</td></tr><tr><td><code>OFDR021</code> <code>OFDR453</code></td><td>8</td><td><code>OFDR453</code>:「輸出路徑不存在!」</td></tr><tr><td><code>OFDR040</code> <code>OFDR452</code> <code>OFDR455</code> <code>OFDR457</code></td><td>7</td><td>請款群共用同一套</td></tr><tr><td><code>OFDR043</code> <code>OFDR235</code></td><td>6</td><td>—</td></tr><tr><td><code>OFDR001A</code> <code>OFDR015</code> <code>OFDR024</code> <code>OFDR239</code></td><td>5</td><td><code>OFDR001A</code>:「該基金帳未平」(唯一驗輸出的)</td></tr><tr><td><code>OFDR034</code> <code>OFDR236</code> <code>OFDR752</code> <code>OFDR286</code> <code>OFDR288</code></td><td>4</td><td>—</td></tr><tr><td><code>OFDR002A</code> <code>OFDR731</code> <code>OFDR733</code> <code>OFDR022</code></td><td>3</td><td>—</td></tr><tr><td><code>OFDR013</code> <code>OFDR014</code> <code>OFDR035</code> <code>OFDR501</code> <code>OFDR512</code> <code>OFDR563</code></td><td>2</td><td>—</td></tr><tr><td><code>OFDR237</code> <code>OFDR281</code> <code>OFDR282</code> <code>OFDR495</code> <code>OFDR511</code> <code>OFDR513</code> <code>OFDR540</code> <code>OFDR564</code> <code>OFDR716</code></td><td>1</td><td>—</td></tr><tr><td><code>OFDR023</code></td><td><strong>0</strong></td><td><strong>這支完全沒有輸入檢核</strong></td></tr></tbody></table></div>
+<p><code>OFDR023</code> 是唯一一支一條檢核都沒有的畫面(<code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR023.cs</code> 全檔無 <code>AddError</code>), 而它的動作是<strong>對外發簡訊</strong>。條件全部可空,空白就等於「全部受益人」。嚴重度:<strong>最高</strong>(若 <a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>.2 判讀錯誤、這支其實跑得動的話)。</p>
+<h4 id="7-13-2-過濾-無提示-型-報表最危險的一類">7.13.2 過濾(無提示)型 —— <strong>報表最危險的一類</strong></h4>
+<div class="tw"><table><thead><tr><th>#</th><th>畫面</th><th>內容</th><th>使用者看得到嗎</th><th>錨點</th><th>嚴重度</th></tr></thead><tbody><tr><td>1</td><td><code>OFDR022</code></td><td><code>INNER JOIN OFD132</code> 把沒有寄發設定的受益人整筆濾掉</td><td>看不到,只會看到「執行成功,筆數:N 筆」</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:213-216</code></td><td>高</td></tr><tr><td>2</td><td><code>OFDR022</code></td><td><code>CELL_PHONE &lt;&gt; ''</code> 在 Oracle 上全濾掉</td><td>看不到,顯示「無符合發送簡訊之資料」——<strong>與「真的沒有」無法區分</strong></td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:217</code></td><td>高</td></tr><tr><td>3</td><td><code>OFDR022</code></td><td><code>BMS001.BF_QT='N'</code> 寫死在 <code>WHERE</code> 裡,畫面上沒有這個條件</td><td>看不到</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:218</code></td><td>中</td></tr><tr><td>4</td><td><code>OFDR002A</code></td><td><code>OFD081V.FUND_ID &lt;&gt; 'ALL FUNDS'</code> 寫死排除一個特殊基金代碼</td><td>看不到;<strong>在 Oracle 上若 <code>FUND_ID</code> 為 NULL 亦一併排除</strong>(三值邏輯)</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR002A_PO.cs:90</code></td><td>中</td></tr><tr><td>5</td><td><code>OFDR013</code> <code>OFDR014</code> <code>OFDR015</code> <code>OFDR021</code> <code>OFDR024</code> <code>OFDR034</code> …(36 支)</td><td><strong>SP 內部的過濾條件完全看不到</strong></td><td>完全看不到</td><td>71 個版控外 SP</td><td><strong>無法評估</strong></td></tr></tbody></table></div>
+<p><strong>第 5 列才是真正的重點。</strong> 前四列是能在 C# 裡讀到的,加起來只有 4 處; <strong>36 支報表的過濾邏輯 100% 在版控外的 SP 裡</strong>,本文無法列舉。 <strong>所以「這張報表為什麼少印一列」這個問題,在 OFDR1 片區內,C# 層永遠給不出答案。</strong> 要回答只有兩條路:(a) 去 DB 撈 SP 原始碼;(b) 把 SP 納入版控。</p>
+<h4 id="7-13-3-詢問型-0-支">7.13.3 詢問型:<strong>0 支</strong></h4>
+<p>在 <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/</code> 底下搜 <code>FunctionDialogStyle.Question</code>、<code>ShowQuestion</code>、<code>DialogResult.Yes</code>,<strong>一個檔都沒有命中</strong>。</p>
+<p><strong>本片沒有任何一支在做不可逆動作前跟使用者確認。</strong> 包含:</p>
+<ul><li><code>OFDR022</code> <code>OFDR023</code> —— <strong>對外發簡訊</strong>,發出去收不回來;</li><li><code>OFDR564</code> —— 把 <code>OFD562</code> 的 <code>RECEIPT_DOC_ID2</code> 改成 <code>'Y'</code>;</li><li><code>OFDR452</code> <code>OFDR453</code> <code>OFDR455</code> <code>OFDR457</code> —— 重算請款資料。</li></ul>
+<p><code>OFDR023</code> 最極端:<strong>零檢核 + 零詢問 + 對外發簡訊</strong>(<a class="sec" href="#7-13-卡控總表">§7.13</a>.1)。</p>
+<p>注意:自動掃描時 <code>Confirm</code> 這個關鍵字會被 <code>ConfirmDate</code> 欄名誤中, <code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR022.cs:55-58</code> 就是誤中來源。逐條看過才確認是 0 支。</p>
+<h3 id="7-14-其餘各支-分群帶過">7.14 其餘各支(分群帶過)</h3>
+<p>深寫過的 18 支之外,其餘 22 支按業務線分群,只記「跟群內範本的差異」。</p>
+<h4 id="7-14-1-受益人與客服群">7.14.1 受益人與客服群</h4>
+<div class="tw"><table><thead><tr><th>畫面</th><th>中文名</th><th>跟範本(<code>OFDR013</code>)的差異</th></tr></thead><tbody><tr><td><code>OFDR013</code></td><td>受益人查詢記錄報表</td><td>群內範本;<code>Basic_PO</code> 派,<code>m_db</code> 為 null(<a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>.2)</td></tr><tr><td><code>OFDR014</code></td><td>客服通聯服務統計表</td><td>同型,SP 換成 <code>s_OFDR014_Get</code></td></tr><tr><td><code>OFDR015</code></td><td>資料需求統計表</td><td>多一組「建立日期起訖」,<strong>空白時傳 <code>1900/01/01</code> ~ <code>9998/12/31</code></strong>(<code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR015.cs:80-81</code>)——寫死常數,<code>9999</code> 年的資料會被漏掉</td></tr><tr><td><code>OFDR034</code></td><td>客戶補件通知書</td><td><code>I&lt;代號&gt;_PO</code> 派,正常</td></tr><tr><td><code>OFDR035</code></td><td>受益人姓名／ID異動確認通知信列印作業</td><td>同 <code>OFDR034</code></td></tr><tr><td><code>OFDR040</code></td><td>受益人退郵資料</td><td>多兩段自組 SQL 填代碼下拉(<code>COD006A</code> 的 <code>'E2'</code> / <code>'E3'</code>,<a class="sec" href="#2-3-資料來源三種分流-逐支歸類">§2.3</a>);另出 Excel</td></tr><tr><td><code>OFDR043</code></td><td>受益人變更資料查核表</td><td>同 <code>OFDR034</code>,6 條檢核</td></tr></tbody></table></div>
+<h4 id="7-14-2-集保群">7.14.2 集保群</h4>
+<div class="tw"><table><thead><tr><th>畫面</th><th>中文名</th><th>差異</th></tr></thead><tbody><tr><td><code>OFDR024</code></td><td>集保網路/語音密碼申請明細表</td><td>條件在 <code>Customer_SetQueryParameters()</code> 內組,不走 UI 的 <code>AddParametersRow</code>;5 條阻擋型檢核</td></tr><tr><td><code>OFDR563</code></td><td>境外集保核印費彙總表 / 明細表</td><td>兩個版型依選項切;<code>Basic_PO</code> 派</td></tr><tr><td><code>OFDR564</code></td><td>境外核印失敗通知書</td><td><strong>會寫 <code>OFD562.RECEIPT_DOC_ID2 = 'Y'</code></strong>,且 SQL 內有 <code>GETDATE()</code>(<a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>.8)</td></tr><tr><td><code>OFDR752</code></td><td>集保基金下單檢核表</td><td><code>I&lt;代號&gt;_PO</code> 派,6 個條件,單一版型</td></tr></tbody></table></div>
+<h4 id="7-14-3-單位數-淨值與配息群">7.14.3 單位數、淨值與配息群</h4>
+<div class="tw"><table><thead><tr><th>畫面</th><th>中文名</th><th>差異</th></tr></thead><tbody><tr><td><code>OFDR236</code></td><td>淨值月報表</td><td>與 <code>OFDR235</code> 成對(<a class="sec" href="#7-4-連號群-ofdr235-ofdr239-兩支一組-其餘各自獨立">§7.4</a>);另出 Excel</td></tr><tr><td><code>OFDR281</code></td><td>收益分配名冊</td><td>單版型,1 條檢核</td></tr><tr><td><code>OFDR282</code></td><td>收益分配付款彙總表 / 明細表</td><td>兩版型依選項切</td></tr><tr><td><code>OFDR286</code></td><td>收益分配扣繳憑單 / 扣繳清冊 / 海外所得</td><td><strong>三版型</strong>;另出 TXT;PO 有一處 <code>ExecuteScalar</code></td></tr><tr><td><code>OFDR288</code></td><td>配息專戶明細表</td><td><strong>全片唯一一支 PO 既無基底也無介面</strong>(<code>public class OFDR288_PO</code>),且 <code>m_db</code> 為 null</td></tr></tbody></table></div>
+<h4 id="7-14-4-銷售統計群">7.14.4 銷售統計群</h4>
+<div class="tw"><table><thead><tr><th>畫面</th><th>中文名</th><th>差異</th></tr></thead><tbody><tr><td><code>OFDR235</code></td><td>促銷活動明細表 / 彙總表</td><td>與 <code>OFDR236</code> 成對,多六個通路與活動代碼欄</td></tr><tr><td><code>OFDR238</code></td><td>每日銷售單位彙總表等四張</td><td><strong>四個版型</strong>,10 條檢核;另出 Excel</td></tr><tr><td><code>OFDR239</code></td><td>銷售預估明細表等三張</td><td>群內唯一用 <code>stri</code> 前綴;UI key 與 SP 參數名對不上(<a class="sec" href="#7-4-連號群-ofdr235-ofdr239-兩支一組-其餘各自獨立">§7.4</a>)</td></tr><tr><td><code>OFDR501</code></td><td>行銷身分群組明細表</td><td><code>Basic_PO</code> 派,最單純的一支</td></tr></tbody></table></div>
+<h4 id="7-14-5-清算-合併與申報群">7.14.5 清算、合併與申報群</h4>
+<div class="tw"><table><thead><tr><th>畫面</th><th>中文名</th><th>差異</th></tr></thead><tbody><tr><td><code>OFDR041</code></td><td>受益人開戶缺件查核表 / 交易缺件查核表</td><td>兩版型;9 條檢核;兩個 SP(<code>_GET</code> 與 <code>_GET_T</code>)</td></tr><tr><td><code>OFDR495</code></td><td>基金合併確認單</td><td>兩個 SP;另出 TXT</td></tr><tr><td><code>OFDR511</code></td><td>基金清算名冊列印作業</td><td>原始檔是 <strong>cp950 編碼</strong>(附錄 E)</td></tr><tr><td><code>OFDR513</code></td><td>基金清算發放通知書</td><td>原始檔是 <strong>cp950 編碼</strong>;戶號空白傳 <code>-1</code>(<a class="sec" href="#7-5-連號群-ofdr511-ofdr513-同系列-但參數慣例三套">§7.5</a>.1)</td></tr><tr><td><code>OFDR731</code></td><td>結匯申報收檔查核表</td><td><code>Basic_PO</code> 派;唯一參數 <code>@striDECLARE_YM</code></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="8-跨模組共用"><h2 id="8-跨模組共用"><button class="tg" aria-label="收合/展開" type="button"></button>8. 跨模組共用</h2><div class="sec-body"><figure><svg viewBox="0 0 1120 570" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OFDR1 讀的表分別由誰寫入,以及本片自己會寫回哪些表"><defs><marker id="ah_ofdr1_x" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">規則:報表讀的表都不是報表建的。左欄=表,中欄=誰寫,右欄=本片誰讀</text><g class="bx accent">
+<rect x="20" y="50" rx="10" ry="10" width="250" height="64"/>
+<text class="t1" x="145" y="76" text-anchor="middle">BMS001 受益人開戶主檔</text>
+<text class="t2" x="145" y="96" text-anchor="middle">含 RECEIPT_DOC_ID 寄發旗標</text>
+</g><g class="bx vend">
+<rect x="300" y="50" rx="10" ry="10" width="290" height="64"/>
+<text class="t1" x="445" y="76" text-anchor="middle">BMS 模組維護畫面</text>
+<text class="t2" x="445" y="96" text-anchor="middle">本片只讀 但 OFDR022 OFDR023 會改旗標</text>
+</g><g class="bx vend">
+<rect x="620" y="50" rx="10" ry="10" width="470" height="64"/>
+<text class="t1" x="855" y="76" text-anchor="middle">OFDR022 OFDR023</text>
+<text class="t2" x="855" y="96" text-anchor="middle">兩支都是壞的 m_db 為 null</text>
+</g><path class="ar dsh" d="M 300 82 L 280 82" marker-end="url(#ah_ofdr1_x)"/><path class="ar" d="M 590 82 L 620 82" marker-end="url(#ah_ofdr1_x)"/><g class="bx accent">
+<rect x="20" y="134" rx="10" ry="10" width="250" height="64"/>
+<text class="t1" x="145" y="160" text-anchor="middle">OFD081V 基金主檔檢視</text>
+<text class="t2" x="145" y="180" text-anchor="middle">OFD038 基金分群</text>
+</g><g class="bx dash">
+<rect x="300" y="134" rx="10" ry="10" width="290" height="64"/>
+<text class="t1" x="445" y="160" text-anchor="middle">OFD 模組維護畫面</text>
+<text class="t2" x="445" y="180" text-anchor="middle">基金資料的唯一寫入端</text>
+</g><g class="bx">
+<rect x="620" y="134" rx="10" ry="10" width="470" height="64"/>
+<text class="t1" x="855" y="160" text-anchor="middle">OFDR002A</text>
+<text class="t2" x="855" y="180" text-anchor="middle">唯一在 C# 裡看得到基金表的一支</text>
+</g><path class="ar dsh" d="M 300 166 L 280 166" marker-end="url(#ah_ofdr1_x)"/><path class="ar" d="M 590 166 L 620 166" marker-end="url(#ah_ofdr1_x)"/><g class="bx accent">
+<rect x="20" y="218" rx="10" ry="10" width="250" height="64"/>
+<text class="t1" x="145" y="244" text-anchor="middle">OFD303A 結帳控制</text>
+<text class="t2" x="145" y="264" text-anchor="middle">CTL_DATE 過帳日期</text>
+</g><g class="bx dash">
+<rect x="300" y="218" rx="10" ry="10" width="290" height="64"/>
+<text class="t1" x="445" y="244" text-anchor="middle">結帳批次 OFDB 群</text>
+<text class="t2" x="445" y="264" text-anchor="middle">每日過帳後更新</text>
+</g><g class="bx accent">
+<rect x="620" y="218" rx="10" ry="10" width="470" height="64"/>
+<text class="t1" x="855" y="244" text-anchor="middle">OFDR001A OFDR002A</text>
+<text class="t2" x="855" y="264" text-anchor="middle">列印前要先驗這張表 沒過帳就阻擋</text>
+</g><path class="ar dsh" d="M 300 250 L 280 250" marker-end="url(#ah_ofdr1_x)"/><path class="ar" d="M 590 250 L 620 250" marker-end="url(#ah_ofdr1_x)"/><g class="bx accent">
+<rect x="20" y="302" rx="10" ry="10" width="250" height="64"/>
+<text class="t1" x="145" y="328" text-anchor="middle">OFD281A 收益分配</text>
+<text class="t2" x="145" y="348" text-anchor="middle">OFD562 境外核印</text>
+</g><g class="bx vend">
+<rect x="300" y="302" rx="10" ry="10" width="290" height="64"/>
+<text class="t1" x="445" y="328" text-anchor="middle">配息與核印作業畫面</text>
+<text class="t2" x="445" y="348" text-anchor="middle">OFDR564 會回寫 RECEIPT_DOC_ID2</text>
+</g><g class="bx accent">
+<rect x="620" y="302" rx="10" ry="10" width="470" height="64"/>
+<text class="t1" x="855" y="328" text-anchor="middle">OFDR286 OFDR564</text>
+<text class="t2" x="855" y="348" text-anchor="middle">扣繳憑單 核印失敗通知</text>
+</g><path class="ar dsh" d="M 300 334 L 280 334" marker-end="url(#ah_ofdr1_x)"/><path class="ar" d="M 590 334 L 620 334" marker-end="url(#ah_ofdr1_x)"/><g class="bx accent">
+<rect x="20" y="386" rx="10" ry="10" width="250" height="64"/>
+<text class="t1" x="145" y="412" text-anchor="middle">OFD494A OFD496A 清算</text>
+<text class="t2" x="145" y="432" text-anchor="middle">COD006A 代碼 CTL014 代碼</text>
+</g><g class="bx dash">
+<rect x="300" y="386" rx="10" ry="10" width="290" height="64"/>
+<text class="t1" x="445" y="412" text-anchor="middle">CLS 清算模組 COD 代碼模組</text>
+<text class="t2" x="445" y="432" text-anchor="middle">本片只讀</text>
+</g><g class="bx">
+<rect x="620" y="386" rx="10" ry="10" width="470" height="64"/>
+<text class="t1" x="855" y="412" text-anchor="middle">OFDR512 OFDR513 OFDR040 OFDR021</text>
+<text class="t2" x="855" y="432" text-anchor="middle">清算與代碼轉中文</text>
+</g><path class="ar dsh" d="M 300 418 L 280 418" marker-end="url(#ah_ofdr1_x)"/><path class="ar" d="M 590 418 L 620 418" marker-end="url(#ah_ofdr1_x)"/><text class="lane" x="20" y="470">反向:本片寫出去的東西 — 跟 I 不同,R 有</text><g class="bx vend">
+<rect x="20" y="484" rx="10" ry="10" width="350" height="64"/>
+<text class="t1" x="195" y="510" text-anchor="middle">七支會寫 DB</text>
+<text class="t2" x="195" y="530" text-anchor="middle">OFDR022 023 452 453 455 457 564</text>
+</g><g class="bx vend">
+<rect x="390" y="484" rx="10" ry="10" width="340" height="64"/>
+<text class="t1" x="560" y="510" text-anchor="middle">兩類副作用</text>
+<text class="t2" x="560" y="530" text-anchor="middle">標記已寄送 與 請款計算結果寫回</text>
+</g><g class="bx accent">
+<rect x="750" y="484" rx="10" ry="10" width="340" height="64"/>
+<text class="t1" x="920" y="510" text-anchor="middle">影響面是雙向的</text>
+<text class="t2" x="920" y="530" text-anchor="middle">改共用表要回頭看這七支 這是 R 與 I 最大的差別</text>
+</g><path class="ar" d="M 370 516 L 390 516" marker-end="url(#ah_ofdr1_x)"/><path class="ar" d="M 730 516 L 750 516" marker-end="url(#ah_ofdr1_x)"/></svg><figcaption>圖 5 跨模組。左欄=被讀的表,中欄=寫入端,右欄=本片的報表入口。灰虛框=純上游、本片只讀;紫框=本片也會寫的地方。最下面一排是 R 與 I 的分水嶺:`ofdi1.md` 的結論是「影響面完全單向」,在 R 不成立——本片七支會回寫,改共用表時必須雙向盤點。</figcaption></figure>
+<h3 id="8-1-本片讀別人的-雙向-不是單向">8.1 本片讀別人的:雙向,不是單向</h3>
+<p><code>ofdi1.md §8</code> 的結論是「I 畫面的影響面完全單向:上游改欄位本片要跟著改,本片改動不影響任何人」。 <strong>這句話在 R 不成立。</strong> 本片 7 支會寫 DB(<a class="sec" href="#0-2-m-i-r-三欄對照表-本篇最重要的一張表-後面-189-支報表靠它">§0.2</a> 第 20 列),所以影響面是雙向的。</p>
+<div class="tw"><table><thead><tr><th>被讀的表</th><th>誰寫入(推測)</th><th>本片誰讀</th><th>本片誰<strong>也寫</strong></th></tr></thead><tbody><tr><td><code>BMS001</code></td><td>BMS 模組的維護畫面</td><td><code>OFDR022</code> <code>OFDR023</code></td><td><strong><code>OFDR022</code></strong>(<code>RECEIPT_DOC_ID</code> / <code>RECEIPT_DOC_ID2</code>)</td></tr><tr><td><code>OFD132</code></td><td>OFD 模組的文件寄發設定畫面</td><td><code>OFDR022</code></td><td>—</td></tr><tr><td><code>OFD081V</code> <code>OFD038</code></td><td>OFD 模組的基金維護畫面</td><td><code>OFDR002A</code></td><td>—</td></tr><tr><td><code>OFD303A</code></td><td>結帳批次(OFDB 群)</td><td><code>OFDR001A</code> <code>OFDR002A</code></td><td>—</td></tr><tr><td><code>COD006A</code></td><td>COD 代碼模組</td><td><code>OFDR040</code></td><td>—</td></tr><tr><td><code>CTL014</code></td><td>CTL 代碼模組(與 <code>ofdi1.md</code> 同一張)</td><td><code>OFDR021</code></td><td>—</td></tr><tr><td><code>OFD281A</code></td><td>收益分配作業</td><td><code>OFDR286</code></td><td>—</td></tr><tr><td><code>OFD494A</code> <code>OFD496A</code></td><td>CLS 清算模組</td><td><code>OFDR512</code> <code>OFDR513</code></td><td>—</td></tr><tr><td><code>OFD562</code></td><td>境外核印作業</td><td><code>OFDR564</code></td><td><strong><code>OFDR564</code></strong>(<code>RECEIPT_DOC_ID2</code>)</td></tr><tr><td><strong>(71 個 SP 內部讀的表)</strong></td><td>—</td><td>36 支</td><td><strong><code>OFDR452</code> <code>OFDR453</code> <code>OFDR455</code> <code>OFDR457</code></strong> 的暫存工作區</td></tr></tbody></table></div>
+<p><strong>最後一列是重點</strong>:36 支報表真正讀的表在版控外的 SP 裡,本表列不出來。所以「改 <code>OFDxxx</code> 這張表會影響哪些報表」這個問題,<strong>用 grep 在本 repo 內問不出完整答案</strong>。</p>
+<h3 id="8-2-本片的表被誰用-沒有自己的表">8.2 本片的表被誰用:沒有自己的表</h3>
+<p>本片沒有任何一張專屬表。寫入的三個欄位(<code>BMS001.RECEIPT_DOC_ID</code> / <code>RECEIPT_DOC_ID2</code>、<code>OFD562.RECEIPT_DOC_ID2</code>)都是別人的表上的旗標。</p>
+<h3 id="8-3-共用元件">8.3 共用元件</h3>
+<div class="tw"><table><thead><tr><th>元件</th><th>來源</th><th>誰用</th><th>備註</th></tr></thead><tbody><tr><td><code>xReportForm</code></td><td>框架 DLL,<strong>無原始碼,從呼叫端反推</strong></td><td>38 支</td><td>提供三顆按鈕、<code>m_ReportDocument</code>、<code>SetRptSchemaOnDoc()</code>、<code>SetQueryParameters()</code></td></tr><tr><td><code>xOneStepProcessForm</code></td><td>框架 DLL</td><td>2 支</td><td>與 <code>ofdi1.md</code> 的 35 支 I 畫面用的是同一個</td></tr><tr><td><code>Basic_PO</code></td><td>框架 DLL</td><td>13 支</td><td>提供 <code>LoadDataSet(db, cmd, ds, name)</code> 與 <code>ExecuteNonQuery(db, cmd, tran)</code> 兩個 <code>base.</code> 方法</td></tr><tr><td><code>BaseController</code></td><td>框架 DLL</td><td>26 支</td><td>—</td></tr><tr><td><code>CRReportTransfer.TransferFileByte</code></td><td><code>Vendor.Product.TA.ServerUtility</code></td><td>全部</td><td>把 <code>.rpt</code> 位元組傳給客戶端</td></tr><tr><td><code>TransferVDBHelper</code> / <code>BasicTableTransferSetter</code></td><td>框架</td><td>全部</td><td>Model ↔ View 整表搬</td></tr><tr><td><code>ClientBizUtility.GetFundBusinessDay</code></td><td><code>Vendor.Product.TA.ClientUtility</code></td><td><code>OFDR001A</code> 等</td><td>營業日檢核</td></tr><tr><td><code>DateTimeHelper</code> / <code>NumericHelper</code> / <code>SQLEVAHelper</code> / <code>EVAStringHelper</code></td><td>框架</td><td>多支</td><td>四個 helper 做的事高度重疊,不同世代各用一個</td></tr><tr><td><code>ExcelCreator</code> / <code>ExcelHelper</code></td><td>框架</td><td>6 支</td><td><code>OFDR237</code> 另外直接用 <code>Microsoft.Office.Interop.Excel</code></td></tr><tr><td><code>CommonExceptionBlocker.HandleBusinessException</code></td><td>框架</td><td>多支</td><td>與 <code>ofdi1.md</code> 記的同一個</td></tr></tbody></table></div>
+<p><strong><code>SQLEVAHelper.GetParamValue</code> 與 <code>EVAStringHelper.GetParamValue</code> 做同一件事</strong> (<code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR751_PO.cs:60</code> 對 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR452_PO.cs:63</code>), 外加 <code>OFDR001A_PO</code> 用的是不加前綴的 <code>GetParamValue(modelVDB, "FUND_ID")</code> (<code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR001A_PO.cs:46</code>),<code>OFDR512_PO</code> 用 <code>this.GetParamValue(...)</code>。 <strong>同一個動作四種寫法</strong>,改參數取值行為時要四個地方都找。</p>
+<h3 id="8-4-改動影響面速查">8.4 改動影響面速查</h3>
+<div class="tw"><table><thead><tr><th>改什麼</th><th>要回頭看誰</th></tr></thead><tbody><tr><td><code>BMS001</code> 的 <code>RECEIPT_DOC_ID</code> / <code>RECEIPT_DOC_ID2</code> 語意</td><td><code>OFDR022</code>(讀+寫)、<code>OFDR023</code>(讀+寫)</td></tr><tr><td><code>OFD562</code> 的 <code>RECEIPT_DOC_ID2</code> 語意</td><td><code>OFDR564</code>(讀+寫)</td></tr><tr><td><code>OFD303A</code> 的 <code>CTL_DATE</code></td><td><code>OFDR001A</code> <code>OFDR002A</code> 的列印前檢核會整個失效</td></tr><tr><td><code>CTL014</code> 加代碼</td><td><code>OFDR021_PO.cs:130</code> 的八個 <code>SourceType</code> 寫死清單</td></tr><tr><td><code>COD006A</code> 的 <code>CODE_SORT</code> <code>'E2'</code> / <code>'E3'</code></td><td><code>OFDR040_PO.cs:163</code> <code>:208</code></td></tr><tr><td>任何一個 <code>.rpt</code> 的欄位</td><td>對應的 <code>Model.xsd</code> 與 <code>View.xsd</code>,<strong>而且沒有編譯期檢查</strong></td></tr><tr><td>任何一個 SP 的簽名</td><td>對應 PO 的 <code>AddInParameter</code> 清單;<code>OFDR512</code> 要改<strong>兩段</strong></td></tr><tr><td><code>BF_VOTE</code> package</td><td>只有 <code>OFDR540</code> 在用</td></tr><tr><td><code>Sp_ForTa_Batch_Send</code></td><td><code>OFDR022</code> <code>OFDR023</code>,以及本 repo 外的簡訊寄送系統</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-a-資料表總表"><h2 id="附錄-a-資料表總表"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 A. 資料表總表</h2><div class="sec-body">
+<p><strong>本片無法產出完整資料表總表。</strong> 原因見 <a class="sec" href="#2-1-主表與明細-本片沒有">§2.1</a> / <a class="sec" href="#2-2-sp-與-function-71-個-版控內-0-個">§2.2</a>: 40 支 PO 沒有 <code>MasterTable</code> 宣告,36 支的取數表名在版控外的 SP 內。以下是<strong>在 C# 裡看得到的 13 張</strong>,不是全部。</p>
+<div class="tw"><table><thead><tr><th>表</th><th>出現在</th><th>用途(推測)</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMS001</code></td><td><code>OFDR022</code> <code>OFDR023</code></td><td>受益人開戶主檔</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:212</code></td></tr><tr><td><code>OFD132</code></td><td><code>OFDR022</code></td><td>文件寄發設定</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:213</code></td></tr><tr><td><code>OFD081V</code></td><td><code>OFDR002A</code></td><td>基金主檔檢視</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR002A_PO.cs:84</code></td></tr><tr><td><code>OFD038</code></td><td><code>OFDR002A</code></td><td>基金分群</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR002A_PO.cs:85</code></td></tr><tr><td><code>OFD303A</code></td><td><code>OFDR001A</code> <code>OFDR002A</code></td><td>結帳控制(過帳日期)</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR001A_PO.cs:74</code></td></tr><tr><td><code>COD006A</code></td><td><code>OFDR040</code></td><td>共用代碼(退郵項目 / 原因)</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR040_PO.cs:162</code></td></tr><tr><td><code>CTL014</code></td><td><code>OFDR021</code></td><td>全庫代碼對照</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR021_PO.cs:129</code></td></tr><tr><td><code>OFD281A</code></td><td><code>OFDR286</code></td><td>收益分配</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR286_PO.cs</code></td></tr><tr><td><code>OFD494A</code></td><td><code>OFDR512</code> <code>OFDR513</code></td><td>基金清算</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR512_PO.cs</code></td></tr><tr><td><code>OFD496A</code></td><td><code>OFDR512</code> <code>OFDR513</code></td><td>基金清算</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR512_PO.cs</code></td></tr><tr><td><code>OFD562</code></td><td><code>OFDR564</code></td><td>境外核印</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR564_PO.cs:123</code></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-b-sp-function-trigger-view"><h2 id="附錄-b-sp-function-trigger-view"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 B. SP / Function / Trigger / View</h2><div class="sec-body">
+<p>完整清單在 <a class="sec" href="#2-2-sp-與-function-71-個-版控內-0-個">§2.2</a>。摘要:</p>
+<div class="tw"><table><thead><tr><th>項目</th><th>數</th></tr></thead><tbody><tr><td>不同的 SP / package procedure</td><td><strong>71</strong></td></tr><tr><td>其中在 <code><repo>/DB/</code> 版控內的</td><td><strong>0</strong></td></tr><tr><td>Function</td><td>0(<code>F_TA_STRTODATE</code> 出現在 <code>OFDR512</code> <code>OFDR513</code> 的 SQL 字串內,但那是 SP 內部呼叫,C# 只是把它寫進註解)</td></tr><tr><td>Trigger</td><td>未見</td></tr><tr><td>View</td><td><code>OFD081V</code>(<strong>假設</strong>由 <code>V</code> 結尾判定,未核實)</td></tr></tbody></table></div>
+<p><strong>71 個 SP 全部進 meta <code>refcheck-ignore</code>。</strong></p>
+</div></section><section class="sec" data-sec="附錄-c-代碼對照"><h2 id="附錄-c-代碼對照"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 C. 代碼對照</h2><div class="sec-body">
+<p>只列在 C# 裡讀得到的。<strong>其餘代碼值在版控外的 SP 內。</strong></p>
+<div class="tw"><table><thead><tr><th>代碼</th><th>值</th><th>意義</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMS001.OPEN_BF_TYPE</code></td><td><code>'1'</code> / <code>'2'</code></td><td>境內開戶 / 境外開戶</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:204-208</code></td></tr><tr><td><code>MsgType</code>(<code>OFDR022</code> 內部計算欄)</td><td><code>'A'</code> / <code>'B'</code> / <code>'C'</code></td><td>綜合版 / 境內版 / 境外版簡訊</td><td>同上</td></tr><tr><td><code>BMS001.RECEIPT_DOC_ID</code> / <code>RECEIPT_DOC_ID2</code></td><td><code>'Y'</code> / <code>'N'</code></td><td>境內 / 境外開戶文件已寄發</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:137-157</code></td></tr><tr><td><code>OFD132.STATEMENT_CODE</code></td><td><code>'00'</code></td><td>開戶文件寄發碼</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:214</code></td></tr><tr><td><code>COD006A.CODE_SORT</code></td><td><code>'E2'</code> / <code>'E3'</code></td><td>退郵項目 / 退郵原因</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR040_PO.cs:163</code> <code>:208</code></td></tr><tr><td><code>CTL014.SourceType</code></td><td><code>'415'</code> <code>'085'</code> <code>'087'</code> <code>'138'</code> <code>'143'</code> <code>'413'</code> <code>'146'</code> <code>'064'</code></td><td><code>OFDR021</code> 用到的八類代碼〔客戶特定〕</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR021_PO.cs:130</code></td></tr><tr><td><code>OFDR540</code> 的 <code>uOptRptKind</code></td><td><code>'0'</code> ~ <code>'9'</code></td><td>十種票別報表〔客戶特定〕</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR540.cs:113-137</code></td></tr><tr><td><code>OFDR716</code> 的 <code>uoptTYPE</code></td><td><code>0</code> <code>1</code> <code>2</code></td><td><code>FUY</code> 登錄 / <code>FUS</code> 淨值傳檔 / <strong>無版型</strong>〔客戶特定〕</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR716.cs:50-56</code></td></tr><tr><td><code>OFDR751</code> 的 <code>TYPE</code> / <code>Order</code> / <code>Short</code> / <code>Index</code></td><td><code>'1'</code> <code>'2'</code> / <code>'1'</code> / <code>'1'</code> / <code>'0'</code> <code>'1'</code> <code>'2'</code></td><td>報表種類 / 下單資料 / 短線 / 第幾張</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR751_PO.cs:60-74</code></td></tr><tr><td><code>OFDR733</code> 的 <code>uoptTYPE</code></td><td><code>'1'</code> / <code>'2'</code></td><td>月報 / 旬報</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR733.cs:124-131</code></td></tr><tr><td><code>DATA_TYPE</code>(請款群)</td><td><code>'1'</code> / <code>'2'</code></td><td>計算資料來源,<code>'2'</code> 的語意只有 <code>OFDR452</code> 知道</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR452.cs:1023-1025</code></td></tr><tr><td><code>OFDR513</code> 的 <code>striBF_NO_0</code></td><td><code>'-1'</code></td><td>戶號空白時的「全部」哨兵值</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR513.cs:79</code></td></tr><tr><td><code>OFDR015</code> 的日期預設</td><td><code>'1900/01/01'</code> ~ <code>'9998/12/31'</code></td><td>未輸入時的「全部」區間</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR015.cs:80-81</code></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-d-掃描母體與覆蓋率"><h2 id="附錄-d-掃描母體與覆蓋率"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 D. 掃描母體與覆蓋率</h2><div class="sec-body">
+<p><strong>不跑 <code>atlas_scan.py --module OFD</code></strong>——那會拿 551 支 OFD 畫面來比,對一份只涵蓋 40 支的切片沒有意義。以下是本片自列的 40 支處置表。</p>
+<p>圖例:<strong>已寫</strong> = <a class="sec" href="#7-報表-r">§7</a> 有專屬小節;<strong>表格帶過</strong> = 只在 <a class="sec" href="#3-畫面清冊">§3</a> 清冊與 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a> 出現。</p>
+<div class="tw"><table><thead><tr><th>#</th><th>代號</th><th>處置</th><th>PO 基底</th><th>資料來源</th><th><code>.rpt</code> 在版控</th><th>在 csproj</th><th><code>m_db</code> 可用</th></tr></thead><tbody><tr><td>1</td><td><code>OFDR001A</code></td><td><strong>已寫</strong> <a class="sec" href="#7-2-ofdr001a-ofdr002a-那個-a-是什麼">§7.2</a></td><td><code>IOFDR001A_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>2</td><td><code>OFDR002A</code></td><td><strong>已寫</strong> <a class="sec" href="#7-2-ofdr001a-ofdr002a-那個-a-是什麼">§7.2</a></td><td><code>Basic_PO</code></td><td>SP+SQL</td><td>是</td><td>是</td><td><strong>否</strong></td></tr><tr><td>3</td><td><code>OFDR013</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.1</td><td><code>Basic_PO</code></td><td>SP</td><td>是</td><td>是</td><td><strong>否</strong></td></tr><tr><td>4</td><td><code>OFDR014</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.1</td><td><code>Basic_PO</code></td><td>SP</td><td>是</td><td>是</td><td><strong>否</strong></td></tr><tr><td>5</td><td><code>OFDR015</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.1</td><td><code>Basic_PO</code></td><td>SP</td><td>是</td><td>是</td><td><strong>否</strong></td></tr><tr><td>6</td><td><code>OFDR021</code></td><td><strong>已寫</strong> <a class="sec" href="#7-3-連號群-ofdr021-ofdr024-不是同一個業務系列">§7.3</a></td><td><code>Basic_PO</code></td><td>SP+SQL</td><td>是</td><td>是</td><td><strong>否</strong></td></tr><tr><td>7</td><td><code>OFDR022</code></td><td><strong>已寫</strong> <a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a></td><td><code>Basic_PO</code></td><td>SQL</td><td>不適用</td><td>是</td><td><strong>否</strong></td></tr><tr><td>8</td><td><code>OFDR023</code></td><td><strong>已寫</strong> <a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a></td><td><code>Basic_PO</code></td><td>SQL</td><td>不適用</td><td>是</td><td><strong>否</strong></td></tr><tr><td>9</td><td><code>OFDR024</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.2</td><td><code>Basic_PO</code></td><td>SP</td><td>是</td><td>是</td><td><strong>否</strong></td></tr><tr><td>10</td><td><code>OFDR034</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.1</td><td><code>IOFDR034_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>11</td><td><code>OFDR035</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.1</td><td><code>IOFDR035_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>12</td><td><code>OFDR040</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.1</td><td><code>IOFDR040_PO</code></td><td>SP+SQL</td><td>是</td><td>是</td><td>是</td></tr><tr><td>13</td><td><code>OFDR041</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.5</td><td><code>IOFDR041_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>14</td><td><code>OFDR043</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.1</td><td><code>IOFDR043_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>15</td><td><code>OFDR235</code></td><td><strong>已寫</strong> <a class="sec" href="#7-4-連號群-ofdr235-ofdr239-兩支一組-其餘各自獨立">§7.4</a></td><td><code>IOFDR235_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>16</td><td><code>OFDR236</code></td><td><strong>已寫</strong> <a class="sec" href="#7-4-連號群-ofdr235-ofdr239-兩支一組-其餘各自獨立">§7.4</a></td><td><code>IOFDR236_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>17</td><td><code>OFDR237</code></td><td><strong>已寫</strong> <a class="sec" href="#7-11-只出-excel-的兩支-ofdr237-ofdr453">§7.11</a></td><td><code>IOFDR237_PO</code></td><td>SP</td><td>不適用</td><td>是</td><td>是</td></tr><tr><td>18</td><td><code>OFDR238</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.4</td><td><code>IOFDR238_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>19</td><td><code>OFDR239</code></td><td><strong>已寫</strong> <a class="sec" href="#7-4-連號群-ofdr235-ofdr239-兩支一組-其餘各自獨立">§7.4</a></td><td><code>IOFDR239_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>20</td><td><code>OFDR281</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.3</td><td><code>IOFDR281_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>21</td><td><code>OFDR282</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.3</td><td><code>IOFDR282_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>22</td><td><code>OFDR286</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.3</td><td><code>IOFDR286_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>23</td><td><code>OFDR288</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.3</td><td><strong>無基底無介面</strong></td><td>SP</td><td>是</td><td>是</td><td><strong>否</strong></td></tr><tr><td>24</td><td><code>OFDR452</code></td><td><strong>已寫</strong> <a class="sec" href="#7-8-請款四支-ofdr452-ofdr453-ofdr455-ofdr457-全片最重-也最會咬人">§7.8</a></td><td><code>IOFDR452_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>25</td><td><code>OFDR453</code></td><td><strong>已寫</strong> <a class="sec" href="#7-8-請款四支-ofdr452-ofdr453-ofdr455-ofdr457-全片最重-也最會咬人">§7.8</a></td><td><code>IOFDR453_PO</code></td><td>SP</td><td>不適用</td><td>是</td><td>是</td></tr><tr><td>26</td><td><code>OFDR455</code></td><td><strong>已寫</strong> <a class="sec" href="#7-8-請款四支-ofdr452-ofdr453-ofdr455-ofdr457-全片最重-也最會咬人">§7.8</a></td><td><code>IOFDR455_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>27</td><td><code>OFDR457</code></td><td><strong>已寫</strong> <a class="sec" href="#7-8-請款四支-ofdr452-ofdr453-ofdr455-ofdr457-全片最重-也最會咬人">§7.8</a></td><td><code>IOFDR457_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>28</td><td><code>OFDR495</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.5</td><td><code>IOFDR495_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>29</td><td><code>OFDR501</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.4</td><td><code>Basic_PO</code></td><td>SP</td><td>是</td><td>是</td><td><strong>否</strong></td></tr><tr><td>30</td><td><code>OFDR511</code></td><td><strong>已寫</strong> <a class="sec" href="#7-5-連號群-ofdr511-ofdr513-同系列-但參數慣例三套">§7.5</a></td><td><code>IOFDR511_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>31</td><td><code>OFDR512</code></td><td><strong>已寫</strong> <a class="sec" href="#7-5-連號群-ofdr511-ofdr513-同系列-但參數慣例三套">§7.5</a></td><td><code>IOFDR512_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>32</td><td><code>OFDR513</code></td><td><strong>已寫</strong> <a class="sec" href="#7-5-連號群-ofdr511-ofdr513-同系列-但參數慣例三套">§7.5</a></td><td><code>IOFDR513_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>33</td><td><code>OFDR540</code></td><td><strong>已寫</strong> <a class="sec" href="#7-10-ofdr540-唯一動態組報表類別名的一支">§7.10</a></td><td><code>IOFDR540_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>34</td><td><code>OFDR563</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.2</td><td><code>Basic_PO</code></td><td>SP</td><td>是</td><td>是</td><td><strong>否</strong></td></tr><tr><td>35</td><td><code>OFDR564</code></td><td>表格帶過 <a class="sec" href="#7-14-其餘各支-分群帶過">§7.14</a>.2</td><td><code>Basic_PO</code></td><td>SP</td><td>是</td><td>是</td><td><strong>否</strong></td></tr><tr><td>36</td><td><code>OFDR716</code></td><td><strong>已寫</strong> <a class="sec" href="#7-9-ofdr716-rpt-引用懸空-本片唯一的版控外版型">§7.9</a></td><td><code>IOFDR716_PO</code></td><td>SP</td><td><strong>否</strong></td><td>是</td><td>是</td></tr><tr><td>37</td><td><code>OFDR731</code></td><td><strong>已寫</strong> <a class="sec" href="#7-7-連號群-ofdr731-ofdr733-兩支毫無關係">§7.7</a></td><td><code>Basic_PO</code></td><td>SP+SQL</td><td>是</td><td>是</td><td><strong>否</strong></td></tr><tr><td>38</td><td><code>OFDR733</code></td><td><strong>已寫</strong> <a class="sec" href="#7-7-連號群-ofdr731-ofdr733-兩支毫無關係">§7.7</a></td><td><code>IOFDR733_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>39</td><td><code>OFDR751</code></td><td><strong>已寫</strong> <a class="sec" href="#7-6-連號群-ofdr751-ofdr752-不是同一系列">§7.6</a></td><td><code>IOFDR751_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr><tr><td>40</td><td><code>OFDR752</code></td><td><strong>已寫</strong> <a class="sec" href="#7-6-連號群-ofdr751-ofdr752-不是同一系列">§7.6</a></td><td><code>IOFDR752_PO</code></td><td>SP</td><td>是</td><td>是</td><td>是</td></tr></tbody></table></div>
+<p><strong>統計</strong>:</p>
+<div class="tw"><table><thead><tr><th>項</th><th>數</th></tr></thead><tbody><tr><td>已寫專屬小節</td><td>22</td></tr><tr><td>表格帶過</td><td>18</td></tr><tr><td><code>.rpt</code> 在版控</td><td>36 / 36 有 <code>.rpt</code> 的畫面中 35 支全在;<code>OFDR716</code> 有一個懸空引用</td></tr><tr><td>不在 csproj</td><td><strong>0</strong></td></tr><tr><td><code>m_db</code> 為 null(<strong>推測不可執行</strong>)</td><td><strong>13</strong></td></tr></tbody></table></div>
+<h3 id="d-1-不在本片的-5-支-劃給下一片">D.1 不在本片的 5 支(劃給下一片)</h3>
+<p><code>OFDR285</code> <code>OFDR287</code> <code>OFDR461</code> <code>OFDR561</code> <code>OFDR562</code>。它們在同一個專案內,共用同樣的七層結構。快速標記,方便下一片接手:</p>
+<div class="tw"><table><thead><tr><th>代號</th><th>已知特徵</th></tr></thead><tbody><tr><td><code>OFDR285</code></td><td><strong>最大的一支 UI(近 1000 行)</strong>;PO 有 <code>INSERT</code> <code>DELETE</code> <code>ExecuteScalar</code>,是本專案唯一有 <code>INSERT INTO</code> 的 PO;UI 另有一個 <code>OFDR285p0.cs</code> 分部檔</td></tr><tr><td><code>OFDR287</code></td><td>兩個版型,中文名相同(「無配息帳號名冊」)</td></tr><tr><td><code>OFDR461</code></td><td><strong>檔名兩處例外</strong>:<code>OFDR461_PXy.cs</code>(大寫 X)、<code>OFDR461_Ct.cs</code>(少一個 <code>l</code>)</td></tr><tr><td><code>OFDR561</code></td><td><code>Basic_PO</code> 派,<code>SqlDbType</code>,推測同樣 <code>m_db</code> 為 null</td></tr><tr><td><code>OFDR562</code></td><td>同 <code>OFDR561</code></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-e-讀本文時要注意的地方"><h2 id="附錄-e-讀本文時要注意的地方"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 E. 讀本文時要注意的地方</h2><div class="sec-body">
+<p>依嚴重度排序。每條:缺陷 / 影響 / 錨點 / 嚴重度。 <strong>標「型」的欄位對應交辦的缺陷型錄</strong>,方便後面 189 支比對。</p>
+<div class="tw"><table><thead><tr><th>#</th><th>型</th><th>缺陷</th><th>影響</th><th>錨點</th><th>嚴重度</th></tr></thead><tbody><tr><td>E1</td><td><strong>繼承基底 → 連查詢都 NRE</strong></td><td><strong>13 支 PO 的 <code>m_db</code> 永遠是 null</strong>,初始化被註解掉,第一行就解參考</td><td>若判讀正確,本片 40 支有 13 支完全不能跑(32.5%)。清單與三項佐證見 <a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>.2</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:17-24</code> 與 <code>:37</code>(其餘 12 支同型,逐支行號見 <a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>.2)</td><td><strong>最高</strong></td></tr><tr><td>E2</td><td><strong><code>.rpt</code> 不在版控</strong>(報表獨有)</td><td><code>OFDR716</code> 第三分支要 <code>OFDR716RPS2</code>,<strong>檔案、伴生 <code>.cs</code>、csproj 宣告三者皆無</strong>,報表中文名也是空字串</td><td>走到該分支必定執行期失敗,編譯不報錯</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR716.cs:56</code></td><td><strong>高</strong></td></tr><tr><td>E3</td><td><strong><code>INNER JOIN</code> 讓對不到的資料無聲消失</strong></td><td><code>OFDR022</code> 的 <code>INNER JOIN OFD132</code>,沒有寄發設定的受益人整筆消失</td><td><strong>過濾(無提示)</strong>;少寄的簡訊使用者不會知道</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:213-216</code></td><td>高</td></tr><tr><td>E4</td><td><strong>Oracle 三值邏輯</strong></td><td><code>OFDR022</code> 的 <code>WHERE CELL_PHONE &lt;&gt; ''</code>;Oracle 把 <code>''</code> 當 NULL,整句恆為 UNKNOWN</td><td><strong>一列都不回</strong>,畫面顯示「無符合發送簡訊之資料」,與「真的沒有」無法區分</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:217</code></td><td>高</td></tr><tr><td>E5</td><td><strong>迴圈外的清理被漏做</strong>(成對只改一邊)</td><td><code>OFDR455</code> <code>OFDR457</code> 沒有 <code>_DEL</code> SP、沒有刪除呼叫;<code>OFDR452</code> <code>OFDR453</code> 有</td><td>暫存工作區每跑一次留一批,<strong>〔假設〕無限成長</strong>(DB 端是否另有清理無法確認)</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR455_PO.cs:75</code> · <code>OFDR457_PO.cs:75</code>(對照 <code>OFDR452_PO.cs:158-165</code>)</td><td>高</td></tr><tr><td>E6</td><td><strong><code>catch</code> fail-open / 例外被二次例外蓋掉</strong></td><td>請款四支的 <code>catch</code> 對已 <code>Commit</code> 的交易呼叫 <code>Rollback()</code>,拋 <code>InvalidOperationException</code> 蓋掉原例外;<code>AddResultRow(false, 0, string.Empty)</code> 給空訊息</td><td>真正的錯誤訊息永遠傳不出來</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR452_PO.cs:185-190</code>(<code>OFDR453_PO.cs:196</code> · <code>OFDR455_PO.cs:150</code> · <code>OFDR457_PO.cs:133</code>)</td><td>高</td></tr><tr><td>E7</td><td>同上</td><td><code>OFDR022</code> <code>OFDR023</code> 的 <code>catch</code> 對 null 的 <code>trans</code> 呼叫 <code>Rollback()</code>,<code>finally</code> 再對 null 的 <code>Dbcon</code> 呼叫 <code>Close()</code></td><td>使用者看到的錯誤與根因完全無關</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:177-183</code> · <code>OFDR023_PO.cs:133-139</code></td><td>高</td></tr><tr><td>E8</td><td><strong>被註解掉的檢核</strong></td><td><code>OFDR022</code> 的重寄防護 <code>AND RECEIPT_DOC_ID &lt;&gt; 'Y'</code> 被註解;簡訊在 <code>UPDATE</code> 之前就發了</td><td><strong>重跑一次就重寄一次簡訊</strong>,對外不可回收</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:157</code></td><td>高</td></tr><tr><td>E9</td><td><strong>零檢核</strong></td><td><code>OFDR023</code> 全檔沒有一條 <code>AddError</code>,也沒有確認對話框,動作是對外發簡訊</td><td>條件全可空,空白等於「全部受益人」</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR023.cs</code> 全檔</td><td>高</td></tr><tr><td>E10</td><td><strong><code>i = 1;</code> 蓋掉 <code>ExecuteNonQuery</code> 回傳值</strong></td><td>請款四支全中;<code>if (i &gt; 0)</code> 因此永遠成立</td><td>SP 零筆時仍報成功,報表空白;診斷時被誤導</td><td><code>OFDR452_PO.cs:78</code> → <code>:96</code> → <code>:175</code>(其餘三支見 <a class="sec" href="#7-8-請款四支-ofdr452-ofdr453-ofdr455-ofdr457-全片最重-也最會咬人">§7.8</a>.2)</td><td>中</td></tr><tr><td>E11</td><td><strong>T-SQL 殘留:語法層級</strong></td><td><code>OFDR002A</code> 的 <code>LEFT JOIN [OFD038]</code>(中括號識別字)、<code>OFDR564</code> 的 <code>GETDATE()</code></td><td>Oracle 上是語法錯誤,不可能被參數對映層救回;同時佐證 E1</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR002A_PO.cs:85</code> · <code>OFDR564_PO.cs:126</code></td><td>中(若 E1 成立則是死碼)</td></tr><tr><td>E12</td><td><strong>T-SQL 殘留:型別與參數前綴</strong></td><td>12 支 PO 只用 <code>SqlDbType</code>、一個 <code>OracleDbType</code> 都沒有,參數名帶 <code>@</code></td><td>與 E1 是同一批;未遷移的證據</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:124-131</code>(清單見 <a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>.8)</td><td>中</td></tr><tr><td>E13</td><td><strong>字串串接進 SQL</strong></td><td><code>OFDR022</code> <code>OFDR023</code> 把使用者輸入的 <code>ID_NO</code> <code>BF_NO</code> 日期直接串進 <code>WHERE</code></td><td>SQL 注入;<code>ofdi1.md</code> 同型在 I 有 13 支,在 R 只有這 2 支</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:250</code> <code>:253</code> <code>:256</code> <code>:259</code> <code>:263</code> 起</td><td>中(因 E1 目前跑不到)</td></tr><tr><td>E14</td><td><strong>成對報表只改一邊</strong></td><td>請款四支對 <code>DATA_TYPE</code> 做了四件不同的事:<code>OFDR452</code> 可選、<code>OFDR455</code> <code>OFDR457</code> 寫死 <code>'1'</code>、<code>OFDR453</code> 不送</td><td>grep <code>DATA_TYPE</code> 只會找到三支,漏掉 <code>OFDR453</code></td><td><code>OFDR452.cs:192</code> · <code>OFDR455.cs:177</code> · <code>OFDR457.cs:174</code></td><td>中</td></tr><tr><td>E15</td><td><strong>非 UTF-8 來源檔</strong></td><td><code>OFDR511.cs</code> 與 <code>OFDR513.cs</code> 是 <strong>cp950</strong>,其餘 38 支是 UTF-8</td><td>用 UTF-8 讀會得到亂碼(<code>����M��W�U�C�L�@�~</code>);任何 grep 中文的工具在這兩支上失準。<strong><code>atlas_scan.read_text</code> 會自動偵測,直接用 <code>open()</code> 會壞</strong></td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR511.cs:49</code> · <code>OFDR513.cs:71</code></td><td>中</td></tr><tr><td>E16</td><td><strong><code>.rpt</code> 與 <code>.cs</code> 的第三份 schema 沒有編譯期保護</strong></td><td><code>SetRptSchemaOnDoc()</code> 是唯一綁定點;<code>.rpt</code> 是二進位,欄位對不上不會編譯錯</td><td><strong>報表欄位與 xsd 不同步</strong>(報表獨有型)的結構性成因。本文無法檢出實例(不 Read <code>.rpt</code>)</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR001A.cs:290</code></td><td>中(結構性)</td></tr><tr><td>E17</td><td><strong>檔名不照規則</strong></td><td><code>OFDR452_PXy.cs</code> / <code>OFDR461_PXy.cs</code> 大寫 X;<code>OFDR461_Ct.cs</code> 少一個 <code>l</code></td><td>照代號硬推檔名的工具會漏;<code>misc.md</code> 的 <code>TRP001_PO.cs</code> 同型</td><td><code>Dev/ATLAS.OFD.Report/Source/FormProxy/ReportFormProxy/OFDR452_PXy.cs</code> · <code>Dev/ATLAS.OFD.Report/Source/Control/ReportControl.OFD/OFDR461_Ct.cs</code></td><td>中(工具面)</td></tr><tr><td>E18</td><td><strong>寫死常數</strong></td><td><code>OFDR022</code> 的簡訊全文、公司名、客服電話寫在 C# 裡;<code>A</code> / <code>B</code> 兩個 case 文字一字不差</td><td>換站台要改程式重新編譯〔客戶特定〕</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR022_PO.cs:105-118</code></td><td>中</td></tr><tr><td>E19</td><td><strong>寫死常數</strong></td><td><code>OFDR021</code> 把 <code>CTL014</code> 的八個 <code>SourceType</code> 寫死;與 <code>ofdi1.md</code> 記的六個完全不重疊</td><td><code>CTL014</code> 加代碼沒有集中的地方可改</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR021_PO.cs:130</code></td><td>中</td></tr><tr><td>E20</td><td><strong>動態組資源名</strong></td><td><code>OFDR540</code> 用 <code>"OFDR540RPS" + 選項值</code> 組版型名;<code>default</code> 送空字串</td><td>加選項忘了加 <code>.rpt</code> 會變成第二個 E2,編譯不報錯</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR540.cs:107</code> <code>:110</code></td><td>中</td></tr><tr><td>E21</td><td><strong>同一支內兩套參數慣例</strong></td><td><code>OFDR512_PO</code> 前段用 <code>stri</code> / <code>dati</code> / <code>int</code> 前綴,後段用裸欄名</td><td>改 SP 簽名時搜 <code>striFUND_ID</code> 只找到一半</td><td><code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR512_PO.cs:61-76</code> 對 <code>:127-131</code></td><td>中</td></tr><tr><td>E22</td><td><strong>UI key 與 SP 參數名對不上</strong></td><td><code>OFDR239</code> 的 UI 傳 <code>CTL_DATE_ST/END</code>,PO 綁到 SP 的 <code>striALLOT_DATE_ST/ED</code></td><td>搜 <code>ALLOT_DATE</code> 找不到 UI 端</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR239.cs</code> 對 <code>Dev/ATLAS.OFD.Report/Source/PO/ReportPO.OFD/OFDR239_PO.cs</code></td><td>低</td></tr><tr><td>E23</td><td><strong>寫死常數</strong></td><td><code>OFDR015</code> 未輸入日期時傳 <code>1900/01/01</code> ~ <code>9998/12/31</code></td><td><code>9999</code> 年資料會被漏掉;哨兵值語意只在 SP 內</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR015.cs:80-81</code></td><td>低</td></tr><tr><td>E24</td><td><strong>寫死常數</strong></td><td><code>OFDR513</code> 戶號空白時傳 <code>-1</code>;<code>OFDR511</code> <code>OFDR512</code> 沒有這個約定</td><td>同群三支對「全部」的表示法不一致</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR513.cs:79</code></td><td>低</td></tr><tr><td>E25</td><td><strong>兩個選項同一個報表抬頭</strong></td><td><code>OFDR540</code> 的 <code>8</code> 與 <code>9</code> 中文名完全相同,版型不同</td><td>印出來分不出是哪一種</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR540.cs:133-136</code></td><td>低</td></tr><tr><td>E26</td><td><strong>控件顯示文字被當檔名</strong></td><td><code>OFDR453</code> 用 <code>uchkQUERY_TYPE_B1.Text</code> 串輸出檔名</td><td>改 UI 標題會連帶改檔名,下游照檔名收檔會斷</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR453.cs:284</code></td><td>低</td></tr><tr><td>E27</td><td><strong>隱藏的部署相依</strong></td><td><code>OFDR237</code> 直接 <code>using Microsoft.Office.Interop.Excel</code></td><td>該支要求用戶端裝 Office;其餘出 Excel 的不用</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR237.cs:21</code></td><td>低</td></tr><tr><td>E28</td><td><strong>同功能四個 helper</strong></td><td><code>SQLEVAHelper.GetParamValue</code> / <code>EVAStringHelper.GetParamValue</code> / 裸 <code>GetParamValue</code> / <code>this.GetParamValue</code></td><td>改參數取值行為要四處找</td><td><a class="sec" href="#8-3-共用元件">§8.3</a></td><td>低</td></tr><tr><td>E29</td><td><strong>範本註解殘留</strong></td><td>13 支 <code>Basic_PO</code> 派的 UI 留著 <code>//@@@ 步驟2 :指定報表ClassName</code></td><td>無功能影響,但會干擾 grep</td><td><code>Dev/ATLAS.OFD.Report/Source/UI/ReportUI.OFD/OFDR014.cs:60</code></td><td>低</td></tr></tbody></table></div>
+<h3 id="e-30-交辦缺陷型錄的逐項核對">E.30 交辦缺陷型錄的逐項核對</h3>
+<div class="tw"><table><thead><tr><th>缺陷型</th><th>本片有沒有</th><th>條目</th></tr></thead><tbody><tr><td><code>INNER JOIN</code> 讓對不到的資料無聲消失</td><td><strong>有,1 處</strong></td><td>E3</td></tr><tr><td>字串串接進 SQL</td><td><strong>有,2 支</strong></td><td>E13</td></tr><tr><td>Oracle 三值邏輯</td><td><strong>有,2 處</strong>(<code>&lt;&gt; ''</code> 與 <code>&lt;&gt; 'ALL FUNDS'</code>)</td><td>E4、<a class="sec" href="#7-13-卡控總表">§7.13</a>.2 第 4 列</td></tr><tr><td><code>AND</code> / <code>OR</code> 缺括號</td><td><strong>未發現</strong></td><td>—</td></tr><tr><td><code>LIKE</code> 樣式餵給 <code>=</code></td><td><strong>未發現</strong></td><td>—</td></tr><tr><td>繼承 <code>BasicEVAPO</code> → 連查詢都 NRE</td><td><strong>本片沒有 <code>BasicEVAPO</code>,但有更嚴重的同型:<code>m_db</code> 為 null,13 支</strong></td><td>E1</td></tr><tr><td><code>catch</code> fail-open</td><td><strong>有,兩型</strong></td><td>E6、E7</td></tr><tr><td><code>i = 1;</code> 蓋掉 <code>ExecuteNonQuery</code> 回傳值</td><td><strong>有,4 處</strong></td><td>E10</td></tr><tr><td><code>catch (SqlException)</code> 在 Oracle 上是死碼</td><td><strong>未發現</strong>(本片一律 <code>catch (Exception)</code>)</td><td>—</td></tr><tr><td>成對報表只改一邊</td><td><strong>有,2 組</strong>(請款四支的 <code>DATA_TYPE</code>、<code>_DEL</code> 清理)</td><td>E14、E5</td></tr><tr><td>基底版與 Oracle 覆寫版讀不同表</td><td><strong>不適用</strong>——本專案沒有 <code>Oracle/</code> 覆寫資料夾</td><td><a class="sec" href="#7-12-ofdr022-ofdr023-不是報表-而且開畫面就壞">§7.12</a>.2</td></tr><tr><td>迴圈 <code>break</code> 吞掉後續資料列</td><td><strong>未發現</strong></td><td>—</td></tr><tr><td>寫死常數</td><td><strong>有,5 處</strong></td><td>E18、E19、E23、E24、<a class="sec" href="#7-8-請款四支-ofdr452-ofdr453-ofdr455-ofdr457-全片最重-也最會咬人">§7.8</a>.5</td></tr><tr><td>位置取參數</td><td><strong>未發現</strong>(全部具名)</td><td>—</td></tr><tr><td>非 UTF-8 來源檔</td><td><strong>有,2 支</strong></td><td>E15</td></tr><tr><td>檔案存在但不在 csproj</td><td><strong>0 支</strong>(240 個檔全在)</td><td><a class="sec" href="#3-5-從清冊讀出來的六件事">§3.5</a> 第 1 點</td></tr><tr><td><strong><code>.rpt</code> 不在版控</strong></td><td><strong>有,1 處懸空引用</strong></td><td>E2</td></tr><tr><td><strong>報表欄位與 xsd 不同步</strong></td><td><strong>無法檢出</strong>(不 Read <code>.rpt</code>);但記下結構性成因</td><td>E16</td></tr></tbody></table></div>
+<h3 id="e-31-最需要人工複驗的一條">E.31 最需要人工複驗的一條</h3>
+<p><strong>E1。</strong> 若 13 支真的全部 NRE,那是重大事故;若 <code>Basic_PO</code> 有本文沒找到的機制,那 E1 整條要撤。 <strong>驗證成本很低</strong>:在測試環境開 <code>OFDR013</code>(受益人查詢記錄報表)按查詢,看有沒有 <code>NullReferenceException</code>。在複驗之前,<strong>E11 E12 E13 這三條的嚴重度都依附在 E1 上</strong>——如果那 13 支根本沒在跑,它們就只是死碼。</p>
+</div></section><section class="sec" data-sec="附錄-f-版本紀錄"><h2 id="附錄-f-版本紀錄"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 F. 版本紀錄</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>版本</th><th>日期</th><th>變更</th></tr></thead><tbody><tr><td>v1</td><td>2026-09-15</td><td>初版。全庫第一篇報表(R)文件,建立 <a class="sec" href="#0-2-m-i-r-三欄對照表-本篇最重要的一張表-後面-189-支報表靠它">§0.2</a> 的 M / I / R 三欄對照表與 <a class="sec" href="#2-6-rpt-對應表-m-i-沒有這一節">§2.6</a> 的 <code>.rpt</code> 對應表兩個新章節型式,供後續 189 支報表沿用。</td></tr></tbody></table></div></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-15 20:44 產生 · 標題 96 · 圖 5 · 表格 61 · 程式錨點 176 · § 連結 126 · 引用檢查：畫面 51（缺 0） · Table 5（缺 0） · Report 66（缺 0） · 結果集 11（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

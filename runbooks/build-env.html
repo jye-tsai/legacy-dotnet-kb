@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-14">
+<title>ATLAS 維護手冊 — 建置環境</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-適用範圍與前提">0. 適用範圍與前提</a>
+<a class="l3" href="#0-1-先看這張-能不能編起來取決於三件事">0.1 先看這張:能不能編起來取決於三件事</a>
+<a class="l2" href="#1-環境總覽">1. 環境總覽</a>
+<a class="l2" href="#2-版本清單">2. 版本清單</a>
+<a class="l2" href="#3-ptpfblock-目前最大的缺口">3. PTPFBlock:目前最大的缺口</a>
+<a class="l3" href="#3-1-現況">3.1 現況</a>
+<a class="l3" href="#3-2-取得方式">3.2 取得方式</a>
+<a class="l3" href="#3-3-拿到之後先驗這件事">3.3 拿到之後先驗這件事</a>
+<a class="l2" href="#4-tfs-取檔">4. TFS 取檔</a>
+<a class="l2" href="#5-建置">5. 建置</a>
+<a class="l3" href="#5-1-建置產出直接寫進框架安裝目錄">5.1 ⚠ 建置產出直接寫進框架安裝目錄</a>
+<a class="l3" href="#5-2-建置順序">5.2 建置順序</a>
+<a class="l3" href="#5-3-報表專案會在-build-時複製-rpt">5.3 報表專案會在 build 時複製 .rpt</a>
+<a class="l2" href="#6-資料庫端的開發環境">6. 資料庫端的開發環境</a>
+<a class="l2" href="#7-驗證清單">7. 驗證清單</a>
+<a class="l2" href="#8-常見錯誤與症狀">8. 常見錯誤與症狀</a>
+<a class="l2" href="#附錄-a-本手冊引用的檔案清單">附錄 A 本手冊引用的檔案清單</a>
+<a class="l2" href="#附錄-b-待輸入回填">附錄 B 待輸入回填</a>
+<a class="l2" href="#附錄-c-本手冊未實測">附錄 C 本手冊未實測</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-14</span></div>
+<h1 id="atlas-維護手冊-建置環境">ATLAS 維護手冊 — 建置環境</h1>
+<blockquote><p>產出日期:2026-09-14(v1)。本手冊為<strong>純程式碼閱讀彙整 + 操作步驟</strong>,未修改任何 ATLAS 原始碼。每一步附程式錨點,行號為分析當下版本,動手前以最新程式為準。</p>
+<p>⚠ 標「<strong>〔假設〕缺:輸入</strong>」的段落是目前拿不到該輸入只能從結構推論,附錄 B 彙整。 ⚠ 標「<strong>〔客戶特定〕</strong>」的是本站台的值。</p>
+<p><strong>本手冊未實測。</strong>本機沒有 PTPFBlock DLL 所以整個方案編不起來(<code>architecture.md 附錄 C.1</code>), 以下全部從 <code>.sln</code> / <code>.csproj</code> / <code>App.config</code> 的設定反推。拿到 DLL 後照著跑一次,把實際輸出回填。</p></blockquote>
+<section class="sec" data-sec="0-適用範圍與前提"><h2 id="0-適用範圍與前提"><button class="tg" aria-label="收合/展開" type="button"></button>0. 適用範圍與前提</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>項目</th><th>內容</th></tr></thead><tbody><tr><td>適用情境</td><td>新人拿到 ATLAS 原始碼,要把它變成「編得起來、跑得動」的開發機</td></tr><tr><td>不適用</td><td>部署到測試 / 正式環境(見 <code>runbooks/deploy.md</code>)· 建置伺服器 / CI(repo 內沒有任何 CI 設定檔)</td></tr><tr><td>變數</td><td><code>%ATLAS_ROOT%</code> = <code><repo></code>〔客戶特定〕 · <code>%PTPF%</code> = <code>C:\Program Files\Vendor\PTPFBlock</code></td></tr><tr><td>主方案</td><td><code>Dev/Vendor.ATLAS.sln</code>,<strong>299 個 <code>.csproj</code></strong>(方案內掛 252 個)</td></tr></tbody></table></div>
+<h3 id="0-1-先看這張-能不能編起來取決於三件事">0.1 先看這張:能不能編起來取決於三件事</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>前提</th><th>沒有的後果</th><th>怎麼確認</th></tr></thead><tbody><tr><td>1</td><td><strong>PTPFBlock DLL 在 <code>%PTPF%</code></strong></td><td>1,347 筆參考全部解析失敗,<strong>整個方案編不起來</strong></td><td><code>dir "%PTPF%\Vendor.Product.*.dll"</code></td></tr><tr><td>2</td><td><strong>對 <code>C:\Program Files</code> 有寫入權</strong></td><td>275 / 299 個專案的輸出目錄就在那裡(<a class="sec" href="#5-1-建置產出直接寫進框架安裝目錄">§5.1</a>),沒權限 build 直接失敗</td><td>用系統管理員身分開 VS</td></tr><tr><td>3</td><td><strong>Devart dotConnect for Oracle</strong></td><td>編得起來,但 <strong>xsd 設計工具打不開</strong>、Designer.cs 重生不了(<code>runbooks/add-column.md §3.3</code>)</td><td>VS 的伺服器總管有沒有 dotConnect 資料來源</td></tr></tbody></table></div>
+<p><strong>這三件缺任何一件,後面都不用做。</strong>第 1 件目前就缺,見 <a class="sec" href="#3-ptpfblock-目前最大的缺口">§3</a>。</p>
+</div></section><section class="sec" data-sec="1-環境總覽"><h2 id="1-環境總覽"><button class="tg" aria-label="收合/展開" type="button"></button>1. 環境總覽</h2><div class="sec-body">
+<figure><svg viewBox="0 0 1010 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="建置環境:三個前提、原始碼組成、六層建置順序、產出落點;Debug 與 Release 組態落點不同"><defs><marker id="ah_buildenv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 三個前提,缺一不可</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="62" text-anchor="middle">Visual Studio 2022</text>
+<text class="t2" x="135" y="82" text-anchor="middle">17.5 · 要系統管理員身分</text>
+</g><g class="bx dash">
+<rect x="280" y="40" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="400" y="62" text-anchor="middle">PTPFBlock 118 支 DLL</text>
+<text class="t2" x="400" y="82" text-anchor="middle">目前缺,本機編不起來</text>
+</g><g class="bx accent">
+<rect x="550" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="665" y="62" text-anchor="middle">Devart dotConnect</text>
+<text class="t2" x="665" y="82" text-anchor="middle">10.1 · 開 xsd 設計檢視</text>
+</g><g class="bx dash">
+<rect x="810" y="40" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="900" y="62" text-anchor="middle">TFS workspace</text>
+<text class="t2" x="900" y="82" text-anchor="middle">位址待確認</text>
+</g><text class="lane" x="20" y="130">② 原始碼 299 個 csproj</text><g class="bx">
+<rect x="20" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="166" text-anchor="middle">Dev/Common</text>
+<text class="t2" x="135" y="186" text-anchor="middle">共用層 23 專案</text>
+</g><g class="bx">
+<rect x="280" y="144" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="400" y="166" text-anchor="middle">Dev/ATLAS.*</text>
+<text class="t2" x="400" y="186" text-anchor="middle">34 個業務模組資料夾</text>
+</g><g class="bx">
+<rect x="550" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="665" y="166" text-anchor="middle">Dev/Exceptions</text>
+<text class="t2" x="665" y="186" text-anchor="middle">例外政策鏈</text>
+</g><g class="bx vend">
+<rect x="810" y="144" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="900" y="166" text-anchor="middle">DB/</text>
+<text class="t2" x="900" y="186" text-anchor="middle">277 支腳本 · 混編碼</text>
+</g><path class="ar" d="M 135 96 L 135 144" marker-end="url(#ah_buildenv)"/><path class="ar" d="M 400 96 L 400 144" marker-end="url(#ah_buildenv)"/><path class="ar" d="M 665 96 L 665 144" marker-end="url(#ah_buildenv)"/><text class="lane" x="20" y="234">③ 建置(六層由下往上)</text><g class="bx accent">
+<rect x="20" y="248" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="270" text-anchor="middle">DataEntity · UIEntity</text>
+<text class="t2" x="135" y="290" text-anchor="middle">xsd 先重生 Designer.cs</text>
+</g><g class="bx">
+<rect x="280" y="248" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="400" y="281" text-anchor="middle">PO → Control → FormProxy</text>
+</g><g class="bx">
+<rect x="550" y="248" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="665" y="281" text-anchor="middle">UI</text>
+</g><g class="bx">
+<rect x="810" y="248" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="900" y="270" text-anchor="middle">Report.&lt;模組&gt; ×25</text>
+<text class="t2" x="900" y="290" text-anchor="middle">PostBuild 複製 .rpt</text>
+</g><path class="ar" d="M 250 276 L 280 276" marker-end="url(#ah_buildenv)"/><path class="ar" d="M 520 276 L 550 276" marker-end="url(#ah_buildenv)"/><path class="ar" d="M 400 200 L 400 248" marker-end="url(#ah_buildenv)"/><text class="lane" x="20" y="338">④ 產出落點 —— 最容易踩到的地方</text><g class="bx vend">
+<rect x="20" y="352" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="170" y="374" text-anchor="middle">Debug|AnyCPU → PTPFBlock</text>
+<text class="t2" x="170" y="394" text-anchor="middle">275/299 專案 · 與框架混放</text>
+</g><g class="bx dash">
+<rect x="350" y="352" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="500" y="374" text-anchor="middle">Release|AnyCPU → bin\Release</text>
+<text class="t2" x="500" y="394" text-anchor="middle">落點不同,改動不生效</text>
+</g><g class="bx">
+<rect x="680" y="352" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="800" y="374" text-anchor="middle">PTPFBlock\CrystalReports</text>
+<text class="t2" x="800" y="394" text-anchor="middle">609 支 .rpt</text>
+</g><path class="ar" d="M 135 304 L 135 352" marker-end="url(#ah_buildenv)"/><path class="ar dsh" d="M 400 304 L 400 338 L 400 352" marker-end="url(#ah_buildenv)"/><path class="ar" d="M 900 304 L 900 352" marker-end="url(#ah_buildenv)"/></svg><figcaption>圖 1 建置環境。灰虛框=目前缺的前提;橘虛框=產出直接寫進框架安裝目錄,且 Debug 與 Release 落點不同——選錯組態會出現「改了不生效」。</figcaption></figure>
+</div></section><section class="sec" data-sec="2-版本清單"><h2 id="2-版本清單"><button class="tg" aria-label="收合/展開" type="button"></button>2. 版本清單</h2><div class="sec-body">
+<p>全部從 repo 的設定檔抽出來,不是問來的:</p>
+<div class="tw"><table><thead><tr><th>項目</th><th>版本</th><th>出處</th></tr></thead><tbody><tr><td><strong>Visual Studio</strong></td><td><strong>2022</strong>(<code>17.5.33530.505</code>)</td><td><code>Dev/Vendor.ATLAS.sln:3-4</code></td></tr><tr><td>方案檔格式</td><td><code>Format Version 12.00</code></td><td><code>Dev/Vendor.ATLAS.sln:2</code></td></tr><tr><td>.NET Framework</td><td><strong>v4.8</strong>(268 支)· v4.5(5 支)· v2.0(1 支)</td><td>全庫 <code>&lt;TargetFrameworkVersion&gt;</code></td></tr><tr><td>Oracle(執行期)</td><td><code>Oracle.ManagedDataAccess</code> <strong>4.122.21.1</strong></td><td>全庫 csproj 參考</td></tr><tr><td>Oracle(設計期)</td><td><code>Devart.Data.Oracle</code> <strong>10.1.134.0</strong></td><td>同上,見 <code>architecture.md §8.2</code></td></tr><tr><td>Oracle(遺留)</td><td><code>System.Data.OracleClient</code></td><td>4 支 csproj,微軟已標為過時</td></tr><tr><td>UI 控件</td><td><strong>Infragistics WinForms v19.1</strong></td><td><code>%PTPF%\Infragistics4.*.v19.1.dll</code>,11 支</td></tr><tr><td>報表</td><td><strong>Crystal Reports 13.0.4000.0</strong>(121 筆)+ <strong>13.0.2000.0</strong>(16 筆)</td><td>全庫 <code>CrystalDecisions*</code> 參考</td></tr><tr><td>企業程式庫</td><td>Microsoft Enterprise Library <strong>5.1.0.0</strong></td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config:3-6</code></td></tr><tr><td>框架</td><td>Vendor Fusion <strong>1.12.20.85</strong></td><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config:10</code></td></tr><tr><td>版控</td><td><strong>TFS</strong>(不是 git),<code>.vspscc</code> 綁定</td><td><code>architecture.md §0</code></td></tr></tbody></table></div>
+<blockquote><p><strong>Crystal 有兩個版本並存</strong>(13.0.4000.0 與 13.0.2000.0)。安裝時裝新的那個(13.0.4000.0),舊版參考的 16 筆多半靠組件繫結解析。若某支報表專案編不過,先看它參考的是哪一版。</p></blockquote>
+<blockquote><p>計劃書原本從 <code>.v12.suo</code> 推測是 VS2013。<strong>那是舊殘留</strong>;方案檔本身寫的是 VS2022,以方案檔為準。</p></blockquote>
+</div></section><section class="sec" data-sec="3-ptpfblock-目前最大的缺口"><h2 id="3-ptpfblock-目前最大的缺口"><button class="tg" aria-label="收合/展開" type="button"></button>3. PTPFBlock:目前最大的缺口</h2><div class="sec-body">
+<h3 id="3-1-現況">3.1 現況</h3>
+<p><code>%PTPF%</code> 底下應該要有 <strong>118 個相異 DLL</strong>,全庫對它們有 <strong>1,347 筆 <code>&lt;HintPath&gt;</code> 參考</strong>(<code>architecture.md 附錄 C.1</code>)。其中 65 支是 Vendor 自家的、53 支是第三方(Infragistics、Enterprise Library、Crystal、NPOI、FileHelpers…)。</p>
+<p><strong>本機沒有這個目錄,所以本機編不起來。這不是設定問題,是缺件。</strong></p>
+<p>清單在 <code>architecture.md 附錄 C.3</code>(自家前 20 支)與 <code>附錄 C.4</code>(第三方擇要)。</p>
+<h3 id="3-2-取得方式">3.2 取得方式</h3>
+<blockquote><p><strong>〔假設〕缺:PTPFBlock DLL。</strong>repo 內沒有這些 DLL、沒有安裝程式、沒有還原腳本,也沒有任何文件說它從哪來。三條可能的路,依可行性排:</p>
+<ol><li><strong>從既有開發機或伺服器整包複製 <code>C:\Program Files\Vendor\PTPFBlock\</code>。</strong>最快,而且能確保版本與現行程式一致。</li><li>向 Vendor 原廠索取對應版本的安裝包。</li><li>從部署機的 GAC / 應用程式目錄逐支撿——<strong>不建議</strong>,容易撿到版本不一致的組合。</li></ol>
+<p>依據:所有 <code>&lt;HintPath&gt;</code> 都指向一個固定的絕對路徑,代表這是「裝在機器上」而非「隨 repo 帶走」的相依。<strong>待胖虎確認哪台機器有。</strong></p></blockquote>
+<h3 id="3-3-拿到之後先驗這件事">3.3 拿到之後先驗這件事</h3>
+<p><code>architecture.md 附錄 C.6</code> 列了 HintPath 本身的四個問題,其中兩個會讓你就算裝了 DLL 還是編不過:</p>
+<div class="tw"><table><thead><tr><th>問題</th><th>影響範圍</th><th>處理</th></tr></thead><tbody><tr><td><strong>7 支 csproj 把 <code>Program Files</code> 打成 <code>Program</code></strong></td><td><code>ATLAS.OTA</code> / <code>ATLAS.OTAB</code> 的 Control/FormProxy/PO,加 <code>ATLAS.CLS.Report</code> 的 UI</td><td>該筆參考必定解析失敗,要改 csproj 或建一個 <code>C:\Program\Vendor\PTPFBlock</code> 的目錄連結</td></tr><tr><td><strong>同一支 csproj 內相對路徑層數自相矛盾</strong></td><td><code>Dev/Common/Source/Base/TA.DataAccess/TA.DataAccess.csproj:82</code> 用 7 層 <code>..</code>、<code>:88</code> 用 10 層 <code>..</code>,指向同一個目錄</td><td><strong>不論 repo 放在哪個路徑都不可能同時成立</strong>;把相對改成絕對是最省事的解</td></tr></tbody></table></div>
+<p><strong>這兩件事沒解決,<code>OTA</code> / <code>OTAB</code> / <code>CLS.Report</code> / <code>TA.DataAccess</code> 這幾個專案編不過。</strong></p>
+</div></section><section class="sec" data-sec="4-tfs-取檔"><h2 id="4-tfs-取檔"><button class="tg" aria-label="收合/展開" type="button"></button>4. TFS 取檔</h2><div class="sec-body">
+<p>repo 內每個專案旁都有 <code>.vspscc</code>,代表綁定 TFS 來源控制。</p>
+<blockquote><p><strong>〔假設〕缺:TFS 位址與 workspace 設定。</strong><code>.vspscc</code> 只記錄綁定關係,不含伺服器位址;<code>.vssscc</code> 與 workspace 對應表不在 repo 內。<strong>待胖虎提供</strong> TFS 集合 URL 與應該對應到哪個 workspace。</p>
+<p>在那之前可以照現況(檔案系統上的一份複本)開發,但<strong>不能簽入</strong>,而且拿不到別人的變更。</p></blockquote>
+</div></section><section class="sec" data-sec="5-建置"><h2 id="5-建置"><button class="tg" aria-label="收合/展開" type="button"></button>5. 建置</h2><div class="sec-body">
+<h3 id="5-1-建置產出直接寫進框架安裝目錄">5.1 ⚠ 建置產出直接寫進框架安裝目錄</h3>
+<p><strong>這是本手冊最需要先知道的一件事。</strong></p>
+<p><code>299</code> 個 <code>.csproj</code> 裡有 <strong>275</strong> 支的 <code>&lt;OutputPath&gt;</code> 直接指向 <code>C:\Program Files\Vendor\PTPFBlock\</code>。以 <code>PO.CAS</code> 為例:</p>
+<div class="tw"><table><thead><tr><th>組態</th><th><code>OutputPath</code></th><th>錨點</th></tr></thead><tbody><tr><td><code>Debug|AnyCPU</code></td><td><code>C:\Program Files\Vendor\PTPFBlock\</code></td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/PO.CAS.csproj:25</code></td></tr><tr><td><code>Release|AnyCPU</code></td><td><code>bin\Release\</code></td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/PO.CAS.csproj:33</code></td></tr><tr><td><code>Debug|x86</code></td><td><code>C:\Program Files\Vendor\PTPFBlock\</code></td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/PO.CAS.csproj:40</code></td></tr><tr><td><code>Release|x86</code></td><td><code>C:\Program Files\Vendor\PTPFBlock\</code></td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/PO.CAS.csproj:49</code></td></tr></tbody></table></div>
+<p>三件後果,每一件都會咬人:</p>
+<ol><li><strong>要用系統管理員身分開 VS。</strong>寫入 <code>C:\Program Files</code> 需要提權,否則 build 會在寫檔那一步失敗。</li><li><strong>業務 DLL 與框架 DLL 混在同一個目錄。</strong>你分不出哪些是原廠的、哪些是自己編出來的。要重建乾淨環境時特別麻煩。</li><li><strong>這正是 <code>architecture.md 附錄 C.5</code> 那個陷阱在原開發機上看不出來的原因。</strong>那 25 個「repo 有原始碼卻被綁成預編 DLL」的組件,因為 build 產出就落在 <code>%PTPF%</code>,所以在原機器上「改了會生效」;<strong>換一台機器、或改用 <code>Release|AnyCPU</code> 組態,同樣的改動就不生效了</strong>。</li></ol>
+<p><strong>同一支專案四個組態落點不一致</strong>(<code>Release|AnyCPU</code> 是唯一輸出到 <code>bin\Release\</code> 的),所以<strong>你選哪個組態 build,決定 DLL 落在哪裡</strong>。要與原機器行為一致就用 <code>Debug|AnyCPU</code>。</p>
+<h3 id="5-2-建置順序">5.2 建置順序</h3>
+<p>方案內相依由 <code>ProjectReference</code> 決定,VS 會自己排。手動編單一模組時照六層順序(<code>architecture.md §2</code>):</p>
+<pre class="code"><code>DataEntity.&lt;MOD&gt;、UIEntity.&lt;MOD&gt;  →  PO.&lt;MOD&gt;  →  Control.&lt;MOD&gt;  →  FormProxy.&lt;MOD&gt;  →  UI.&lt;MOD&gt;</code></pre>
+<p><strong>改過 <code>.xsd</code> 的話,編之前要先重生 <code>Designer.cs</code></strong>(<code>runbooks/add-column.md §3.3</code>),否則編出來的是舊 schema。</p>
+<h3 id="5-3-報表專案會在-build-時複製-rpt">5.3 報表專案會在 build 時複製 <code>.rpt</code></h3>
+<p>25 支 <code>Report.&lt;模組&gt;</code> 專案帶了 PostBuild:</p>
+<pre class="code"><code>xcopy "$(ProjectDir)*.rpt" "C:\Program Files\Vendor\PTPFBlock\CrystalReports\." /d /r /y</code></pre>
+<p><code>Dev/ATLAS.BBS.Report/Source/CrystalReports/Report.BBS/Report.BBS.csproj</code></p>
+<p>所以 <strong>609 支報表範本是「build 出來的」不是「部署過去的」</strong>,落點 <code>%PTPF%\CrystalReports\</code>。同樣需要 <code>C:\Program Files</code> 的寫入權。</p>
+<p>另有 1 支 <code>ATLAS.BO/Source/BO.BMS/BO.BMS.csproj</code> 複製到 <code>C:\Program Files\Vendor\TABlock\</code>——<strong>另一個目錄</strong>,而且該專案只有 1 支 cs 檔(<code>architecture.md 附錄 E24</code>)。</p>
+</div></section><section class="sec" data-sec="6-資料庫端的開發環境"><h2 id="6-資料庫端的開發環境"><button class="tg" aria-label="收合/展開" type="button"></button>6. 資料庫端的開發環境</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>用途</th><th>需要什麼</th><th>出處</th></tr></thead><tbody><tr><td><strong>執行期</strong>連 Oracle</td><td>ODP.NET Managed 4.122.21.1(隨 <code>%PTPF%</code> 帶)</td><td><code>architecture.md §8.2</code></td></tr><tr><td><strong>設計期</strong>開 xsd</td><td><strong>Devart dotConnect for Oracle 10.1.134.0</strong> + 連得到設計庫</td><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/App.config:8</code></td></tr><tr><td>設計庫位址</td><td><code>Server=ora01.vendor.com.tw;Sid=ATLASDB</code>〔客戶特定〕</td><td>同上</td></tr></tbody></table></div>
+<p><strong>設計庫是 Vendor 的開發庫,不是客戶正式庫。</strong>沒有它就不能用 VS 的 xsd 設計工具重生 typed DataSet——這是加欄位、加畫面兩本手冊的必要條件。</p>
+<blockquote><p>設定檔裡另有多組 <code>System.Data.SqlClient</code> 的連線字串(<code>Dev/Common/Source/Base/TA.DataEntity/app.config:6</code> 等 15 筆),那是另一個客戶(AGI)產品線的設計期殘留,<strong>不要照著設</strong>,見 <code>architecture.md §8.2.1</code>。</p>
+<p>這些設定檔含明文密碼(<code>architecture.md 附錄 E3</code>)。本文不重製密碼值。</p></blockquote>
+</div></section><section class="sec" data-sec="7-驗證清單"><h2 id="7-驗證清單"><button class="tg" aria-label="收合/展開" type="button"></button>7. 驗證清單</h2><div class="sec-body">
+<p>照順序做,每一步過了才做下一步:</p>
+<div class="tw"><table><thead><tr><th>#</th><th>動作</th><th>過關標準</th></tr></thead><tbody><tr><td>1</td><td><code>dir "%PTPF%\*.dll"</code></td><td>檔案數接近 118</td></tr><tr><td>2</td><td>用系統管理員身分開 <code>Dev/Vendor.ATLAS.sln</code></td><td>方案載入無「專案無法載入」</td></tr><tr><td>3</td><td>單編 <code>Dev/Common/Source/Base/TA.DataAccess/TA.DataAccess.csproj</code></td><td>成功。<strong>這支是共用最底層,它過了才有意義往上編</strong></td></tr><tr><td>4</td><td>單編 <code>PO.CAS</code> → <code>Control.CAS</code> → <code>FormProxy.CAS</code> → <code>UI.CAS</code></td><td>依序成功</td></tr><tr><td>5</td><td>在 VS 開 <code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM001Model.xsd</code></td><td>設計檢視打得開(驗 Devart 裝好了)</td></tr><tr><td>6</td><td>對該 xsd 執行自訂工具</td><td><code>CASM001Model.Designer.cs</code> 時間戳有更新</td></tr><tr><td>7</td><td>全方案 Rebuild(<code>Debug|AnyCPU</code>)</td><td>0 errors</td></tr><tr><td>8</td><td>編 <code>ATLAS.OTA</code> 與 <code>ATLAS.CLS.Report</code></td><td>若失敗,回去做 <a class="sec" href="#3-3-拿到之後先驗這件事">§3.3</a> 的 HintPath 修正</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="8-常見錯誤與症狀"><h2 id="8-常見錯誤與症狀"><button class="tg" aria-label="收合/展開" type="button"></button>8. 常見錯誤與症狀</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>病因</th><th>回去做</th></tr></thead><tbody><tr><td><strong>幾百個「找不到型別或命名空間」</strong></td><td><code>%PTPF%</code> 不存在或不完整</td><td><a class="sec" href="#3-1-現況">§3.1</a> <a class="sec" href="#3-2-取得方式">§3.2</a></td></tr><tr><td><strong>「無法寫入檔案 … 存取被拒」</strong></td><td>沒有 <code>C:\Program Files</code> 寫入權</td><td><a class="sec" href="#5-1-建置產出直接寫進框架安裝目錄">§5.1</a>——用系統管理員開 VS</td></tr><tr><td><strong>只有 <code>OTA</code> / <code>OTAB</code> / <code>CLS.Report</code> 編不過</strong></td><td>那 7 支 csproj 的 <code>\Program\</code> 路徑打錯</td><td><a class="sec" href="#3-3-拿到之後先驗這件事">§3.3</a></td></tr><tr><td><strong><code>TA.DataAccess</code> 編不過,別的都好</strong></td><td>同一支 csproj 內 7 層 / 10 層 <code>..</code> 相對路徑矛盾</td><td><a class="sec" href="#3-3-拿到之後先驗這件事">§3.3</a></td></tr><tr><td><strong>xsd 用設計檢視打不開,只跳 XML 原始碼</strong></td><td>沒裝 Devart dotConnect</td><td><a class="sec" href="#6-資料庫端的開發環境">§6</a></td></tr><tr><td><strong>改了 xsd 但編出來還是舊欄位</strong></td><td>沒重生 <code>Designer.cs</code></td><td><code>runbooks/add-column.md §3.3</code></td></tr><tr><td><strong>改了共用層、重編了,執行起來還是舊行為</strong></td><td>用了 <code>Release|AnyCPU</code>,DLL 落在 <code>bin\Release\</code> 沒進 <code>%PTPF%</code></td><td><a class="sec" href="#5-1-建置產出直接寫進框架安裝目錄">§5.1</a></td></tr><tr><td><strong>報表範本沒更新</strong></td><td>沒編 <code>Report.&lt;模組&gt;</code> 專案(範本靠 PostBuild 複製)</td><td><a class="sec" href="#5-3-報表專案會在-build-時複製-rpt">§5.3</a></td></tr><tr><td><strong>簽入時說沒有繫結 / 找不到 workspace</strong></td><td>TFS 綁定資訊不全</td><td><a class="sec" href="#4-tfs-取檔">§4</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-a-本手冊引用的檔案清單"><h2 id="附錄-a-本手冊引用的檔案清單"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 A 本手冊引用的檔案清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>檔</th><th>錨點</th><th>用在</th></tr></thead><tbody><tr><td><code>Dev/Vendor.ATLAS.sln</code></td><td><code>:2</code> <code>:3-4</code></td><td><a class="sec" href="#2-版本清單">§2</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/PO.CAS.csproj</code></td><td><code>:25</code> <code>:33</code> <code>:40</code> <code>:49</code></td><td><a class="sec" href="#5-1-建置產出直接寫進框架安裝目錄">§5.1</a></td></tr><tr><td><code>Dev/ATLAS.BBS.Report/Source/CrystalReports/Report.BBS/Report.BBS.csproj</code></td><td><code>:1</code></td><td><a class="sec" href="#5-3-報表專案會在-build-時複製-rpt">§5.3</a></td></tr><tr><td><code>Dev/ATLAS.BO/Source/BO.BMS/BO.BMS.csproj</code></td><td><code>:1</code></td><td><a class="sec" href="#5-3-報表專案會在-build-時複製-rpt">§5.3</a></td></tr><tr><td><code>Dev/Common/Source/Base/TA.DataAccess/TA.DataAccess.csproj</code></td><td><code>:82</code> <code>:88</code></td><td><a class="sec" href="#3-3-拿到之後先驗這件事">§3.3</a> <a class="sec" href="#7-驗證清單">§7</a></td></tr><tr><td><code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/App.config</code></td><td><code>:3-6</code> <code>:10</code></td><td><a class="sec" href="#2-版本清單">§2</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/App.config</code></td><td><code>:8</code></td><td><a class="sec" href="#6-資料庫端的開發環境">§6</a></td></tr><tr><td><code>Dev/Common/Source/Base/TA.DataEntity/app.config</code></td><td><code>:6</code></td><td><a class="sec" href="#6-資料庫端的開發環境">§6</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM001Model.xsd</code></td><td><code>:1</code></td><td><a class="sec" href="#7-驗證清單">§7</a></td></tr><tr><td><code>Dev/ATLAS.OTA/Source/PO/PO.OTA/PO.OTA.csproj</code></td><td><code>:1</code></td><td><a class="sec" href="#3-3-拿到之後先驗這件事">§3.3</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-b-待輸入回填"><h2 id="附錄-b-待輸入回填"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 B 待輸入回填</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>缺什麼</th><th>影響哪幾段</th><th>補進來後要改什麼</th></tr></thead><tbody><tr><td><strong>PTPFBlock DLL(或哪台機器有)</strong></td><td><a class="sec" href="#0-1-先看這張-能不能編起來取決於三件事">§0.1</a> <a class="sec" href="#3-ptpfblock-目前最大的缺口">§3</a> <a class="sec" href="#5-建置">§5</a> <a class="sec" href="#7-驗證清單">§7</a> 全部</td><td>整本手冊都是推論。拿到後跑一次 <a class="sec" href="#7-驗證清單">§7</a> 的八步,把實際輸出、錯誤訊息、耗時貼進來</td></tr><tr><td><strong>TFS 集合 URL 與 workspace 對應</strong></td><td><a class="sec" href="#4-tfs-取檔">§4</a></td><td>寫出實際的取檔步驟</td></tr><tr><td><strong>設計庫帳密</strong></td><td><a class="sec" href="#6-資料庫端的開發環境">§6</a> <a class="sec" href="#7-驗證清單">§7</a> 第 5–6 步</td><td>驗證 xsd 設計工具真的打得開</td></tr><tr><td><strong>原開發機的 VS 擴充清單</strong></td><td><a class="sec" href="#2-版本清單">§2</a></td><td>目前只知道 VS2022 + Devart;Crystal 的 VS 整合套件版本、Infragistics 的設計期授權都還沒確認</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-c-本手冊未實測"><h2 id="附錄-c-本手冊未實測"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 C 本手冊未實測</h2><div class="sec-body">
+<p><code>runbooks/add-column.md 附錄 C</code> 有一份「計劃書假設 vs 實際」對照。本手冊沒有那種對照表,因為<strong>沒有任何一步實際跑過</strong>——缺 PTPFBlock,連第一步都做不了。</p>
+<p>所以本手冊的定位是:<strong>拿到 DLL 那天的檢查清單</strong>,不是已驗證的操作紀錄。照著跑第一次的人,請把每一步的實際結果回填,並把版本升成 v2。</p></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-14 14:23 產生 · 標題 20 · 圖 1 · 表格 10 · 程式錨點 26 · § 連結 32 · 引用檢查：<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

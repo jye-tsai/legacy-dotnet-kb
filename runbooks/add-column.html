@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-14">
+<title>ATLAS 維護手冊 — 加欄位</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-適用範圍與前提">0. 適用範圍與前提</a>
+<a class="l3" href="#0-1-動工前先分辨-你要加的是哪一種欄位">0.1 動工前先分辨:你要加的是哪一種欄位</a>
+<a class="l3" href="#0-2-八個步驟與該不該做">0.2 八個步驟與該不該做</a>
+<a class="l2" href="#1-改動點總覽">1. 改動點總覽</a>
+<a class="l2" href="#2-步驟一-oracle-加欄位">2. 步驟一:Oracle 加欄位</a>
+<a class="l3" href="#2-1-現況">2.1 現況</a>
+<a class="l3" href="#2-2-改法">2.2 改法</a>
+<a class="l3" href="#2-3-腳本放哪-怎麼存">2.3 腳本放哪、怎麼存</a>
+<a class="l3" href="#2-4-驗證">2.4 驗證</a>
+<a class="l2" href="#3-步驟二-dataentity-model-xsd">3. 步驟二:DataEntity(Model.xsd)</a>
+<a class="l3" href="#3-1-現況">3.1 現況</a>
+<a class="l3" href="#3-2-改法">3.2 改法</a>
+<a class="l3" href="#3-3-重生-designer-cs">3.3 重生 Designer.cs</a>
+<a class="l3" href="#3-4-modelvdb-cs-不用動">3.4 ModelVDB.cs 不用動</a>
+<a class="l3" href="#3-5-驗證">3.5 驗證</a>
+<a class="l2" href="#4-步驟三-uientity-view-xsd">4. 步驟三:UIEntity(View.xsd)</a>
+<a class="l3" href="#4-1-現況">4.1 現況</a>
+<a class="l3" href="#4-2-改法">4.2 改法</a>
+<a class="l3" href="#4-3-兩邊不同構怎麼辦">4.3 兩邊不同構怎麼辦</a>
+<a class="l3" href="#4-4-驗證">4.4 驗證</a>
+<a class="l2" href="#5-步驟四-po">5. 步驟四:PO</a>
+<a class="l3" href="#5-1-現況-查詢-sql-是手寫字串">5.1 現況:查詢 SQL 是手寫字串</a>
+<a class="l3" href="#5-2-關鍵-寫入端自動-讀取端不自動">5.2 關鍵:寫入端自動、讀取端不自動</a>
+<a class="l3" href="#5-3-改法">5.3 改法</a>
+<a class="l3" href="#5-4-isdatachanged-不會比到新欄位">5.4 IsDataChanged 不會比到新欄位</a>
+<a class="l3" href="#5-5-beforeadd-要不要給預設值">5.5 BeforeAdd 要不要給預設值</a>
+<a class="l3" href="#5-6-驗證">5.6 驗證</a>
+<a class="l2" href="#6-步驟五-control-不用改">6. 步驟五:Control —— 不用改</a>
+<a class="l3" href="#6-1-為什麼不用改">6.1 為什麼不用改</a>
+<a class="l3" href="#6-2-代價-只加一邊會靜默失敗">6.2 代價:只加一邊會靜默失敗</a>
+<a class="l3" href="#6-3-另一個代價-新的可空欄位拿不到-null">6.3 另一個代價:新的可空欄位拿不到 NULL</a>
+<a class="l3" href="#6-4-什麼時候才要改-control">6.4 什麼時候才要改 Control</a>
+<a class="l2" href="#7-步驟六-formproxy-不用改">7. 步驟六:FormProxy —— 不用改</a>
+<a class="l2" href="#8-步驟七-ui">8. 步驟七:UI</a>
+<a class="l3" href="#8-1-現況-明細走網格-顯示欄位由白名單決定">8.1 現況:明細走網格,顯示欄位由白名單決定</a>
+<a class="l3" href="#8-2-改法-明細欄">8.2 改法(明細欄)</a>
+<a class="l3" href="#8-3-改法-主表欄">8.3 改法(主表欄)</a>
+<a class="l3" href="#8-4-驗證">8.4 驗證</a>
+<a class="l2" href="#9-步驟八-編譯與部署">9. 步驟八:編譯與部署</a>
+<a class="l3" href="#9-1-重編順序">9.1 重編順序</a>
+<a class="l3" href="#9-2-部署到哪一台">9.2 部署到哪一台</a>
+<a class="l3" href="#9-3-檢查你動到的組件在不在-dll-覆寫名單裡">9.3 ⚠ 檢查你動到的組件在不在 DLL 覆寫名單裡</a>
+<a class="l3" href="#9-4-crystal-報表要不要改">9.4 Crystal 報表要不要改</a>
+<a class="l2" href="#10-驗證清單">10. 驗證清單</a>
+<a class="l2" href="#11-常見錯誤與症狀">11. 常見錯誤與症狀</a>
+<a class="l2" href="#12-明細表加欄位的差異">12. 明細表加欄位的差異</a>
+<a class="l3" href="#12-1-與主表的差別很小">12.1 與主表的差別很小</a>
+<a class="l3" href="#12-2-transferdetailtable-多做的事">12.2 TransferDetailTable 多做的事</a>
+<a class="l3" href="#12-3-不適用的畫面型別">12.3 不適用的畫面型別</a>
+<a class="l2" href="#附錄-a-本手冊引用的檔案清單">附錄 A 本手冊引用的檔案清單</a>
+<a class="l2" href="#附錄-b-待輸入回填">附錄 B 待輸入回填</a>
+<a class="l2" href="#附錄-c-計劃書假設的驗證結果">附錄 C 計劃書假設的驗證結果</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-14</span></div>
+<h1 id="atlas-維護手冊-加欄位">ATLAS 維護手冊 — 加欄位</h1>
+<blockquote><p>產出日期:2026-09-14(v1)。本手冊為<strong>純程式碼閱讀彙整 + 操作步驟</strong>,未修改任何 ATLAS 原始碼。每一步附程式錨點(<code>Dev/…/X.cs:行號</code>),行號為分析當下版本,動手前以最新程式為準。</p>
+<p>⚠ 標「<strong>〔假設〕缺:輸入</strong>」的段落是目前拿不到該輸入(DB 連線 / PTPFBlock DLL)只能從結構推論,附錄 B 彙整。 ⚠ 標「<strong>〔客戶特定〕</strong>」的是本站台的值。</p>
+<p>前提知識在 <code>architecture.md</code>:六層看 <code>architecture.md §2</code>、四眼看 <code>architecture.md §3</code>、 typed DataSet 看 <code>architecture.md §5</code>、部署邊界看 <code>architecture.md §8</code>。<strong>不要整份讀</strong>。</p></blockquote>
+<section class="sec" data-sec="0-適用範圍與前提"><h2 id="0-適用範圍與前提"><button class="tg" aria-label="收合/展開" type="button"></button>0. 適用範圍與前提</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>項目</th><th>內容</th></tr></thead><tbody><tr><td>適用情境</td><td>在一支既有的 <strong>M(維護)畫面</strong>上,替主表或明細表加一個欄位</td></tr><tr><td>範例畫面</td><td><code>CASM001</code>——六層齊全、主明細俱備、有四眼事件,是全庫最乾淨的樣本</td></tr><tr><td>範本欄</td><td><code>STAFF_POST</code>(職務,明細表 <code>CAS003A</code>,<code>xs:string</code>、<code>minOccurs="0"</code>)。每一步都先貼它的現況,新欄照抄</td></tr><tr><td>不適用</td><td>新建整張表 · 加欄到 <code>I</code>/<code>B</code>/<code>R</code> 畫面(見 <a class="sec" href="#12-3-不適用的畫面型別">§12.3</a>)· 改既有欄位的型別或長度 · 改四眼欄位本身</td></tr><tr><td>前提工具</td><td>Visual Studio(要用 xsd 設計工具)· <strong>Devart dotConnect for Oracle</strong>(重生 Designer.cs 用,見 <code>architecture.md §8.2</code>)· Oracle 客戶端 · PTPFBlock DLL · TFS workspace</td></tr><tr><td>變數</td><td><code>%ATLAS_ROOT%</code> = <code><repo></code>〔客戶特定〕 · <code>%PTPF%</code> = <code>C:\Program Files\Vendor\PTPFBlock</code></td></tr><tr><td>新欄佈位符</td><td>本文一律用 <code>&lt;NEW_COL&gt;</code> 代表你要加的欄位名</td></tr></tbody></table></div>
+<h3 id="0-1-動工前先分辨-你要加的是哪一種欄位">0.1 動工前先分辨:你要加的是哪一種欄位</h3>
+<p><strong>這是整本手冊的第一個岔路,走錯後面全錯。</strong>xsd 裡的 element 不是每一個都對應到實體表的欄位:</p>
+<div class="tw"><table><thead><tr><th>種類</th><th>特徵</th><th>要不要 <code>ALTER TABLE</code></th><th>例</th></tr></thead><tbody><tr><td><strong>實體欄</strong></td><td>直接存在主表或明細表裡,SQL 寫成 <code>&lt;表&gt;.&lt;欄&gt;</code></td><td><strong>要</strong></td><td><code>CAS003A.STAFF_POST</code>(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:301</code>)</td></tr><tr><td><strong>衍生欄(join 進來的)</strong></td><td>SQL 從別張表 join 後 <code>AS</code> 出來</td><td><strong>不要</strong></td><td><code>COD009.EMP_NAME AS EMP_NAME</code>(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:169</code>)</td></tr><tr><td><strong>說明欄</strong></td><td>代碼欄的中文說明,多半由畫面即時填,不落地</td><td><strong>不要</strong></td><td><code>STAFF_TYPE_DESCRP</code>(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM001.cs:227</code>)</td></tr></tbody></table></div>
+<p>判斷方法:先看你要的資料<strong>有沒有要存進資料庫</strong>。要存 → 實體欄,走完整八步。只是顯示別張表已有的值 → 衍生欄,<strong>跳過 <a class="sec" href="#2-步驟一-oracle-加欄位">§2</a></strong>,其餘照走。</p>
+<h3 id="0-2-八個步驟與該不該做">0.2 八個步驟與該不該做</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>步驟</th><th>實體欄</th><th>衍生欄</th><th>節</th></tr></thead><tbody><tr><td>1</td><td>Oracle <code>ALTER TABLE</code></td><td>✔</td><td>✘</td><td><a class="sec" href="#2-步驟一-oracle-加欄位">§2</a></td></tr><tr><td>2</td><td>DataEntity <code>Model.xsd</code></td><td>✔</td><td>✔</td><td><a class="sec" href="#3-步驟二-dataentity-model-xsd">§3</a></td></tr><tr><td>3</td><td>UIEntity <code>View.xsd</code></td><td>✔</td><td>✔</td><td><a class="sec" href="#4-步驟三-uientity-view-xsd">§4</a></td></tr><tr><td>4</td><td>PO 的查詢 SQL</td><td>✔</td><td>✔</td><td><a class="sec" href="#5-步驟四-po">§5</a></td></tr><tr><td>5</td><td>Control 轉換</td><td><strong>不用改</strong>(<a class="sec" href="#6-步驟五-control-不用改">§6</a> 說明為什麼)</td><td></td><td><a class="sec" href="#6-步驟五-control-不用改">§6</a></td></tr><tr><td>6</td><td>FormProxy</td><td><strong>不用改</strong></td><td></td><td><a class="sec" href="#7-步驟六-formproxy-不用改">§7</a></td></tr><tr><td>7</td><td>UI 顯示</td><td>✔</td><td>✔</td><td><a class="sec" href="#8-步驟七-ui">§8</a></td></tr><tr><td>8</td><td>編譯與部署</td><td>✔</td><td>✔</td><td><a class="sec" href="#9-步驟八-編譯與部署">§9</a></td></tr></tbody></table></div>
+<p><strong><a class="sec" href="#6-步驟五-control-不用改">§6</a> 與 <a class="sec" href="#7-步驟六-formproxy-不用改">§7</a> 不用改是有原始碼佐證的結論,不是省略。</strong>理由分別在該節。</p>
+</div></section><section class="sec" data-sec="1-改動點總覽"><h2 id="1-改動點總覽"><button class="tg" aria-label="收合/展開" type="button"></button>1. 改動點總覽</h2><div class="sec-body">
+<figure><svg viewBox="0 0 1010 530" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="加欄位的八個步驟:資料庫、兩份 xsd、Designer 重生、PO 讀取端、UI 白名單、重編部署;Control 與 FormProxy 不用改"><defs><marker id="ah_addcol" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 資料庫(先做)</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="62" text-anchor="middle">Oracle ALTER TABLE</text>
+<text class="t2" x="145" y="82" text-anchor="middle">衍生欄跳過此步</text>
+</g><text class="lane" x="20" y="130">② ③ Schema 真相——兩邊欄名必須一致</text><g class="bx accent">
+<rect x="20" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="166" text-anchor="middle">CASM001Model.xsd</text>
+<text class="t2" x="145" y="186" text-anchor="middle">DataEntity · 加 xs:element</text>
+</g><g class="bx accent">
+<rect x="300" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="166" text-anchor="middle">CASM001View.xsd</text>
+<text class="t2" x="425" y="186" text-anchor="middle">UIEntity · 貼同一行</text>
+</g><g class="bx accent">
+<rect x="580" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="166" text-anchor="middle">Designer.cs 重生</text>
+<text class="t2" x="695" y="186" text-anchor="middle">MSDataSetGenerator</text>
+</g><g class="bx dash">
+<rect x="840" y="144" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="166" text-anchor="middle">*VDB.cs</text>
+<text class="t2" x="915" y="186" text-anchor="middle">不用動</text>
+</g><path class="ar" d="M 270 172 L 300 172" marker-end="url(#ah_addcol)"/><path class="ar" d="M 550 172 L 580 172" marker-end="url(#ah_addcol)"/><path class="ar lnk" d="M 810 172 L 840 172"/><path class="ar" d="M 145 96 L 145 144" marker-end="url(#ah_addcol)"/><text class="lane" x="20" y="234">④ PO —— 只改讀取端</text><g class="bx accent">
+<rect x="20" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="270" text-anchor="middle">BuildMasterSQLString</text>
+<text class="t2" x="145" y="290" text-anchor="middle">主表 · 兩條分支都要加</text>
+</g><g class="bx accent">
+<rect x="300" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="270" text-anchor="middle">BuildDetailSQLString</text>
+<text class="t2" x="425" y="290" text-anchor="middle">明細 · 一條</text>
+</g><g class="bx dash">
+<rect x="580" y="248" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="270" text-anchor="middle">INSERT / UPDATE</text>
+<text class="t2" x="695" y="290" text-anchor="middle">自動,不用改</text>
+</g><g class="bx dash">
+<rect x="840" y="248" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="270" text-anchor="middle">IsDataChanged</text>
+<text class="t2" x="915" y="290" text-anchor="middle">不比業務欄</text>
+</g><path class="ar" d="M 145 200 L 145 248" marker-end="url(#ah_addcol)"/><text class="lane" x="20" y="338">⑤ ⑥ 不用改(有原始碼佐證)</text><g class="bx dash">
+<rect x="20" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="374" text-anchor="middle">Control 轉換</text>
+<text class="t2" x="145" y="394" text-anchor="middle">照欄名泛型複製</text>
+</g><g class="bx dash">
+<rect x="300" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="374" text-anchor="middle">FormProxy</text>
+<text class="t2" x="425" y="394" text-anchor="middle">收送整包型別</text>
+</g><g class="bx vend">
+<rect x="580" y="352" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="374" text-anchor="middle">⚠ 只加一邊 xsd</text>
+<text class="t2" x="695" y="394" text-anchor="middle">靜默失敗,不報錯</text>
+</g><g class="bx vend">
+<rect x="840" y="352" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="374" text-anchor="middle">⚠ NULL 變空值</text>
+<text class="t2" x="915" y="394" text-anchor="middle">空字串 / 0 / 1900</text>
+</g><path class="ar lnk" d="M 270 380 L 300 380"/><path class="ar dsh" d="M 405 200 L 405 338 L 405 352" marker-end="url(#ah_addcol)"/><text class="lane" x="20" y="442">⑦ ⑧ UI 與部署</text><g class="bx accent">
+<rect x="20" y="456" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="478" text-anchor="middle">UI 白名單陣列</text>
+<text class="t2" x="145" y="498" text-anchor="middle">不加就看不到</text>
+</g><g class="bx accent">
+<rect x="300" y="456" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="478" text-anchor="middle">重編:下→上</text>
+<text class="t2" x="425" y="498" text-anchor="middle">Entity→PO→Ctl→Pxy→UI</text>
+</g><g class="bx">
+<rect x="580" y="456" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="478" text-anchor="middle">伺服端五層</text>
+<text class="t2" x="695" y="498" text-anchor="middle">IIS ATLAS_TAService</text>
+</g><g class="bx accent">
+<rect x="840" y="456" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="478" text-anchor="middle">UIEntity 兩端都要</text>
+<text class="t2" x="915" y="498" text-anchor="middle">客戶端 + 伺服端</text>
+</g><path class="ar" d="M 145 408 L 145 456" marker-end="url(#ah_addcol)"/><path class="ar" d="M 270 484 L 300 484" marker-end="url(#ah_addcol)"/><path class="ar" d="M 550 484 L 580 484" marker-end="url(#ah_addcol)"/><path class="ar lnk" d="M 810 484 L 840 484"/></svg><figcaption>圖 1 改動點總覽。橘色實框=這一步要改;灰虛框=不用改(理由見對應節);橘色虛框=兩個靜默失敗的陷阱。由上往下做,反過來每一步都編不過。</figcaption></figure>
+<p>三件事先記住:</p>
+<ol><li><strong>順序是由下往上。</strong>先 DB、再 xsd、再 PO、最後 UI。反過來做,中間每一步都編不過。</li><li><strong>Model 與 View 兩邊都要加,而且欄名必須一模一樣。</strong>只加一邊不會報錯,資料會<strong>靜默消失</strong>(<a class="sec" href="#6-2-代價-只加一邊會靜默失敗">§6.2</a>)。</li><li><strong>加完 xsd 一定要重生 Designer.cs。</strong>不重生的話編譯會過,但執行期取不到那個欄位。</li></ol>
+</div></section><section class="sec" data-sec="2-步驟一-oracle-加欄位"><h2 id="2-步驟一-oracle-加欄位"><button class="tg" aria-label="收合/展開" type="button"></button>2. 步驟一:Oracle 加欄位</h2><div class="sec-body">
+<h3 id="2-1-現況">2.1 現況</h3>
+<p><code>CAS003A</code> 的欄位定義<strong>不在 repo 裡</strong>。<code>DB/Table/</code> 底下 158 支是票號變更腳本不是 DDL,且只涵蓋 52 張表;<code>CAS003A</code> 沒有 <code>CREATE TABLE</code> 腳本(見 <code>architecture.md 附錄 B.5</code>)。</p>
+<p>你能拿到的最接近定義,是 <code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM001Model.xsd:21</code> 的這一行:</p>
+<pre class="code lang-xml"><code>&lt;xs:element name="STAFF_POST" msdata:Caption="職務" ... type="xs:string" minOccurs="0" /&gt;</code></pre>
+<p><strong>它給你欄名、中文名、大概的型別、可不可空——但沒有長度。</strong></p>
+<h3 id="2-2-改法">2.2 改法</h3>
+<pre class="code lang-sql"><code>ALTER TABLE CAS003A ADD (&lt;NEW_COL&gt; VARCHAR2(&lt;長度&gt;));
+COMMENT ON COLUMN CAS003A.&lt;NEW_COL&gt; IS '&lt;中文名&gt;';</code></pre>
+<p>三條規則:</p>
+<ul><li><strong>一律加成可空</strong>(不寫 <code>NOT NULL</code>)。既有資料列在這一刻沒有值,加 <code>NOT NULL</code> 而不給 <code>DEFAULT</code> 會直接失敗;給了 <code>DEFAULT</code> 又會把「沒填」與「填了預設值」混在一起。</li><li><strong>不要動 <code>DATAFLAG</code>。</strong>它是 <code>msdata:ReadOnly="true"</code> 的 <code>xs:base64Binary</code> row-version 欄(<code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM001Model.xsd:50</code>),由資料庫維護,四眼引擎用它判斷資料有沒有被別人改過(<a class="sec" href="#5-4-isdatachanged-不會比到新欄位">§5.4</a>)。</li><li><strong>不要動四眼欄位。</strong><code>STATUS</code> / <code>CREATEID</code> / <code>CREATEDATE</code> / <code>UPDATEID</code> / <code>UPDATEDATE</code> / <code>ENTRYID</code> / <code>ENTRYDATE</code> / <code>VERIFYID</code> / <code>VERIFYDATE</code> / <code>APPROVEID</code> / <code>APPROVEDATE</code> / <code>REJECTID</code> / <code>REJECTDATE</code> / <code>DATAID</code> / <code>DATAFLAG</code> 這 15 個由四眼引擎維護,加業務欄跟它們無關(<code>architecture.md §3.5</code>)。</li><li><strong>先 DB 再程式。</strong>程式端的 INSERT / UPDATE 欄位清單是<strong>執行期跟資料庫要 schema</strong> 決定的(<a class="sec" href="#5-2-關鍵-寫入端自動-讀取端不自動">§5.2</a>),資料庫還沒有這個欄位,程式先上線就會炸。</li></ul>
+<h3 id="2-3-腳本放哪-怎麼存">2.3 腳本放哪、怎麼存</h3>
+<p>放 <code>DB/Table/</code>,檔名照現有票號慣例(<code>&lt;票號&gt;_&lt;動作&gt;&lt;表名&gt;.sql</code>)。<strong>編碼</strong>:該資料夾 cp950 與 UTF-8 BOM 混用,新檔用 <strong>UTF-8 BOM</strong>;不要用無 BOM 的 UTF-8 存,也不要用 <code>utf-8</code> 硬讀既有檔(<code>architecture.md 附錄 B.5</code>)。</p>
+<p>同時準備 rollback:<code>ALTER TABLE CAS003A DROP COLUMN &lt;NEW_COL&gt;;</code>。</p>
+<h3 id="2-4-驗證">2.4 驗證</h3>
+<pre class="code lang-sql"><code>SELECT column_name, data_type, data_length, nullable
+  FROM all_tab_columns
+ WHERE table_name = 'CAS003A' AND column_name = '&lt;NEW_COL&gt;';</code></pre>
+<p>回一列且 <code>nullable = 'Y'</code> 才算過。</p>
+<blockquote><p><strong>〔假設〕缺:DB 連線。</strong>本節的長度、精度、是否建索引無法從 repo 判斷。目前只能從 xsd 的 <code>type</code> 反推大類(<code>xs:string</code> → <code>VARCHAR2</code>、<code>xs:decimal</code> → <code>NUMBER</code>、<code>xs:dateTime</code> → <code>DATE</code>)。拿到唯讀帳號後,用 <code>ALL_TAB_COLUMNS</code> 對照相鄰欄位的實際長度再定。</p></blockquote>
+</div></section><section class="sec" data-sec="3-步驟二-dataentity-model-xsd"><h2 id="3-步驟二-dataentity-model-xsd"><button class="tg" aria-label="收合/展開" type="button"></button>3. 步驟二:DataEntity(<code>Model.xsd</code>)</h2><div class="sec-body">
+<h3 id="3-1-現況">3.1 現況</h3>
+<p><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM001Model.xsd</code> 共 142 行,結構三層(<code>architecture.md §5.1</code>):</p>
+<pre class="code"><code>CASM001Model            ← DataSet 根,= 畫面代號
+├─ CAS003A              ← element = 實體表名(明細)   :15-54
+└─ CRM003A              ← element = 實體表名(主檔)   :56-128</code></pre>
+<p>主表 <code>CRM003A</code> 與明細 <code>CAS003A</code> 合計 107 欄(<code>py -V:3.12 %ATLAS_ROOT%\docs\tools\atlas_scan.py --screen CASM001</code>)。</p>
+<p>範本欄原文(<code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM001Model.xsd:21</code>):</p>
+<pre class="code lang-xml"><code>&lt;xs:element name="STAFF_POST" msdata:Caption="職務"
+            msprop:Generator_ColumnVarNameInTable="columnSTAFF_POST"
+            msprop:Generator_ColumnPropNameInRow="STAFF_POST"
+            msprop:Generator_ColumnPropNameInTable="STAFF_POSTColumn"
+            msprop:Generator_UserColumnName="STAFF_POST"
+            type="xs:string" minOccurs="0" /&gt;</code></pre>
+<h3 id="3-2-改法">3.2 改法</h3>
+<p>在同一張表的 <code>&lt;xs:sequence&gt;</code> 內、<strong>四眼欄位區塊之前</strong>插一行(四眼欄位從 <code>:37</code> 的 <code>STATUS</code> 開始,業務欄位排在它前面):</p>
+<pre class="code lang-xml"><code>&lt;xs:element name="&lt;NEW_COL&gt;" msdata:Caption="&lt;中文名&gt;"
+            msprop:Generator_ColumnVarNameInTable="column&lt;NEW_COL&gt;"
+            msprop:Generator_ColumnPropNameInRow="&lt;NEW_COL&gt;"
+            msprop:Generator_ColumnPropNameInTable="&lt;NEW_COL&gt;Column"
+            msprop:Generator_UserColumnName="&lt;NEW_COL&gt;"
+            type="xs:string" minOccurs="0" /&gt;</code></pre>
+<p>四個 <code>msprop:Generator_*</code> 不是裝飾,它們決定產出的 C# 成員名稱。照範本套字即可,<strong>不要自己改命名規則</strong>。</p>
+<div class="tw"><table><thead><tr><th>屬性</th><th>填法</th></tr></thead><tbody><tr><td><code>msdata:Caption</code></td><td><strong>中文名</strong>。這是全 repo 唯一的欄位中文名來源(<code>architecture.md §5.1</code>),不要留空,也不要自己翻譯既有欄位</td></tr><tr><td><code>type</code></td><td><code>xs:string</code> / <code>xs:decimal</code> / <code>xs:dateTime</code> / <code>xs:int</code>。<strong>金額一律 <code>xs:decimal</code>,不可用 <code>xs:double</code></strong></td></tr><tr><td><code>minOccurs="0"</code></td><td>對應可空。<a class="sec" href="#2-2-改法">§2.2</a> 規定新欄一律可空,所以這個一定要寫</td></tr></tbody></table></div>
+<blockquote><p><code>STATUS</code> 的 <code>msdata:Caption</code> 在本檔寫成「資料識別碼」(<code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM001Model.xsd:37</code>),語意上應該是「狀態」。既有錯誤,不在本次改動範圍,但引用中文名時要知道。</p></blockquote>
+<h3 id="3-3-重生-designer-cs">3.3 重生 <code>Designer.cs</code></h3>
+<p><code>CASM001Model.Designer.cs</code> <strong>5,375 行,由工具產生,手改必被覆寫</strong>。證據在 csproj:</p>
+<ul><li><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/DataEntity.CAS.csproj:83-86</code> — <code>Designer.cs</code> 標 <code>&lt;AutoGen&gt;True&lt;/AutoGen&gt;</code> 且 <code>&lt;DependentUpon&gt;CASM001Model.xsd&lt;/DependentUpon&gt;</code></li><li><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/DataEntity.CAS.csproj:153-154</code> — xsd 掛 <code>&lt;Generator&gt;MSDataSetGenerator&lt;/Generator&gt;</code>、<code>&lt;LastGenOutput&gt;CASM001Model.Designer.cs&lt;/LastGenOutput&gt;</code></li></ul>
+<p><strong>路線 A(建議,VS 內)</strong>:方案總管選 <code>CASM001Model.xsd</code> → 右鍵 → <strong>執行自訂工具</strong>。存檔通常也會觸發,但不保證,所以手動執行一次。</p>
+<p><strong>路線 B(命令列)</strong>:</p>
+<pre class="code"><code>"%VS%\Common7\IDE\TextTransform.exe"</code></pre>
+<p>不適用——<code>MSDataSetGenerator</code> 是 VS 的自訂工具,沒有對應的獨立 exe。<code>xsd.exe /d /l:CS</code> 產出的類別結構與 <code>MSDataSetGenerator</code> <strong>不同</strong>(缺 <code>msprop:Generator_*</code> 指定的成員名),<strong>不要用它替代</strong>,會編不過。</p>
+<blockquote><p><strong>〔假設〕缺:PTPFBlock DLL。</strong>本機沒有框架 DLL 所以編不起來(<code>architecture.md 附錄 C.1</code>),上述兩條路線都未實測。路線 A 是 <code>MSDataSetGenerator</code> 的標準用法,路線 B 的排除理由來自兩個工具產出的成員命名差異。</p></blockquote>
+<h3 id="3-4-modelvdb-cs-不用動">3.4 <code>ModelVDB.cs</code> 不用動</h3>
+<p><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM001ModelVDB.cs</code> 只有 45 行,是包住 DataSet 的薄殼,<strong>沒有任何欄位級程式碼</strong>(<code>architecture.md §5.3</code>)。加欄位不用碰它。<strong>H1 成立。</strong></p>
+<h3 id="3-5-驗證">3.5 驗證</h3>
+<p>重生後 <code>CASM001Model.Designer.cs</code> 應多出:<code>&lt;NEW_COL&gt;Column</code> 屬性、<code>CAS003ARow.&lt;NEW_COL&gt;</code> 屬性、<code>Is&lt;NEW_COL&gt;Null()</code> / <code>Set&lt;NEW_COL&gt;Null()</code> 兩個方法。用 grep 確認,不要整份讀(5,375 行):</p>
+<pre class="code lang-bash"><code>grep -c "&lt;NEW_COL&gt;" "%ATLAS_ROOT%\Dev\ATLAS.CAS\Source\Entity\DataEntity.CAS\CASM001Model.Designer.cs"</code></pre>
+<p>數字為 0 = 沒重生成功,回去做 <a class="sec" href="#3-3-重生-designer-cs">§3.3</a>。</p>
+</div></section><section class="sec" data-sec="4-步驟三-uientity-view-xsd"><h2 id="4-步驟三-uientity-view-xsd"><button class="tg" aria-label="收合/展開" type="button"></button>4. 步驟三:UIEntity(<code>View.xsd</code>)</h2><div class="sec-body">
+<h3 id="4-1-現況">4.1 現況</h3>
+<p><code>CASM001</code> 的 Model 與 View <strong>完全同構</strong>:同 2 表、逐欄名稱 / 型別 / Caption / <code>minOccurs</code> 全同,兩份 xsd 都 142 行(<code>architecture.md §5.4</code>)。範本欄在 <code>Dev/ATLAS.CAS/Source/Entity/UIEntity.CAS/CASM001View.xsd:96</code>,與 Model 那行<strong>一字不差</strong>。</p>
+<p>全庫 1,072 對 xsd 裡 89.7% 完全同構(<code>architecture.md §5.4</code>),<code>CASM001</code> 屬於這一類。</p>
+<h3 id="4-2-改法">4.2 改法</h3>
+<p>把 <a class="sec" href="#3-2-改法">§3.2</a> 那段<strong>原封不動</strong>貼進 <code>CASM001View.xsd</code> 的同一張表內。欄名、型別、<code>minOccurs</code> 必須與 Model 完全一致——理由在 <a class="sec" href="#6-2-代價-只加一邊會靜默失敗">§6.2</a>。</p>
+<p>然後重生:<code>Dev/ATLAS.CAS/Source/Entity/UIEntity.CAS/UIEntity.CAS.csproj:86</code> 與 <code>:149</code> 是 Model 那邊完全對應的設定,做法同 <a class="sec" href="#3-3-重生-designer-cs">§3.3</a>。</p>
+<p><code>CASM001ViewVDB.cs</code>(42 行)同樣不用動。</p>
+<h3 id="4-3-兩邊不同構怎麼辦">4.3 兩邊不同構怎麼辦</h3>
+<p>如果你改的畫面 Model 與 View 本來就不同構(全庫 5.6% 表集合不同、2.8% 同表但欄位不同),<strong>先確認新欄要不要跨層傳</strong>:</p>
+<div class="tw"><table><thead><tr><th>情形</th><th>做法</th></tr></thead><tbody><tr><td>要存 DB 也要顯示</td><td>Model 與 View 都加,欄名相同</td></tr><tr><td>只顯示不存(畫面計算欄)</td><td><strong>只加 View</strong>。這正是那 30 對不同構的多數樣態——View 多 <code>*_NM</code> / <code>*_DESCRP</code> / <code>*_RATE0</code> 這類欄</td></tr><tr><td>只存不顯示</td><td>只加 Model</td></tr></tbody></table></div>
+<h3 id="4-4-驗證">4.4 驗證</h3>
+<pre class="code lang-bash"><code>grep -c "&lt;NEW_COL&gt;" "%ATLAS_ROOT%\Dev\ATLAS.CAS\Source\Entity\UIEntity.CAS\CASM001View.Designer.cs"</code></pre>
+<p>同 <a class="sec" href="#3-5-驗證">§3.5</a>,0 就是沒重生。</p>
+</div></section><section class="sec" data-sec="5-步驟四-po"><h2 id="5-步驟四-po"><button class="tg" aria-label="收合/展開" type="button"></button>5. 步驟四:PO</h2><div class="sec-body">
+<h3 id="5-1-現況-查詢-sql-是手寫字串">5.1 現況:查詢 SQL 是手寫字串</h3>
+<p><code>CASM001_PO</code> 繼承 <code>BaseEVADaoPO</code>,建構子宣告主明細(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:46-47</code>):</p>
+<pre class="code lang-csharp"><code>this.MasterTable = new xTableMapping("CRM003A", "CRM003A");//主檔資料
+this.DetailTable.Add(new xTableMapping("CAS003A", "CAS003A"));//明細資料</code></pre>
+<p>查詢 SQL 由兩支方法各自串字串:</p>
+<div class="tw"><table><thead><tr><th>方法</th><th>錨點</th><th>管哪張表</th></tr></thead><tbody><tr><td><code>BuildMasterSQLString</code></td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:164</code></td><td>主表 <code>CRM003A</code></td></tr><tr><td><code>BuildDetailSQLString</code></td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:290</code></td><td>明細 <code>CAS003A</code></td></tr></tbody></table></div>
+<p>範本欄在明細那支裡的原文(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:301</code>):</p>
+<pre class="code"><code>                                    ,CAS003A.STAFF_POST</code></pre>
+<h3 id="5-2-關鍵-寫入端自動-讀取端不自動">5.2 關鍵:寫入端自動、讀取端不自動</h3>
+<p><strong>這一節是整本手冊最容易漏的地方。</strong></p>
+<ul><li><strong>INSERT / UPDATE 的欄位清單是自動的。</strong>執行期由 <code>TableHelper.GetTableSchema</code> 對資料庫下 <code>SELECT * FROM &lt;table&gt; WHERE 1=2</code> 取回 schema,再據此列出全部欄位(<code>architecture.md §4.2</code>)。所以你<strong>不需要</strong>手動維護寫入欄位清單。</li><li><strong>SELECT 的欄位清單是手寫的。</strong>就是上面那兩支 <code>Build*SQLString</code>。<strong>你不加,查詢就撈不回來。</strong></li></ul>
+<p>漏改的症狀因此非常specific:<strong>存得進去、查不回來</strong>。新增一筆後畫面看不到那個欄位的值,但資料庫裡有。</p>
+<blockquote><p>計劃書原本假設(H3)欄位清單來自傳給 <code>Add()</code> / <code>Update()</code> 的 <code>string[] datacolumn</code> 陣列。<strong>H3 不成立</strong>:那個參數只有已成死碼的 <code>TA_PO</code> 在用(<code>architecture.md §3.1</code>),現行的 <code>BaseEVADaoPO</code> 路徑不看它。<strong>不要去找 <code>datacolumn</code> 陣列加欄位。</strong></p></blockquote>
+<h3 id="5-3-改法">5.3 改法</h3>
+<p>在對應那支 <code>Build*SQLString</code> 的欄位清單裡,<strong>照範本欄的縮排</strong>加一行:</p>
+<pre class="code"><code>                                    ,CAS003A.&lt;NEW_COL&gt;</code></pre>
+<p>位置放在業務欄位區塊的末尾、四眼欄位之前。加在 <code>STAFF_POST</code> 隔壁最省事。</p>
+<p><code>BuildMasterSQLString</code> 還有第二個參數 <code>isToDoString</code>(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:164</code>),同一支方法產兩種 SQL(一般查詢與待辦查詢)。<strong>確認兩條分支的欄位清單都加到</strong>,只加一邊會變成「維護畫面看得到、待辦清單看不到」。</p>
+<h3 id="5-4-isdatachanged-不會比到新欄位">5.4 <code>IsDataChanged</code> 不會比到新欄位</h3>
+<p>計劃書假設(H4)<code>IsDataChanged</code> 比對 xsd 全欄位減四眼欄位,所以新欄自動納入。<strong>H4 不成立。</strong></p>
+<p>實情是它產的 SQL 只比 <code>DataFlag</code> 這一個 row-version 欄加上主鍵,<strong>業務欄位一個都不比</strong>(<code>architecture.md §3.6</code>)。結論:</p>
+<ul><li>加欄位<strong>不需要</strong>、也不可能讓 <code>IsDataChanged</code> 自動比到。</li><li>但<strong>新表如果忘了建 <code>DataFlag</code>,一叫就 <code>ORA-00904</code></strong>。加欄位不會踩到這個,建新表會。</li></ul>
+<h3 id="5-5-beforeadd-要不要給預設值">5.5 <code>BeforeAdd</code> 要不要給預設值</h3>
+<p><code>CASM001_PO</code> 掛了 <code>BeforeAdd</code>(<code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs:77</code>)與七個 <code>After*</code> 事件(<code>:569-625</code>)。如果新欄位需要「新增時自動帶值」,寫在 <code>CASM001_PO_BeforeAdd</code> 裡。</p>
+<p><strong>不需要預設值就不要動這支。</strong>它是共用事件,改壞影響整支畫面的新增流程。</p>
+<h3 id="5-6-驗證">5.6 驗證</h3>
+<pre class="code lang-bash"><code>grep -n "&lt;NEW_COL&gt;" "%ATLAS_ROOT%\Dev\ATLAS.CAS\Source\PO\PO.CAS\CASM001_PO.cs"</code></pre>
+<p>明細欄應命中 1 次(<code>BuildDetailSQLString</code>);主表欄若兩條分支都加,應命中 2 次。</p>
+</div></section><section class="sec" data-sec="6-步驟五-control-不用改"><h2 id="6-步驟五-control-不用改"><button class="tg" aria-label="收合/展開" type="button"></button>6. 步驟五:Control —— 不用改</h2><div class="sec-body">
+<h3 id="6-1-為什麼不用改">6.1 為什麼不用改</h3>
+<p><code>CASM001_Ctl</code> 的兩對轉換方法(<code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM001_Ctl.cs:79</code> 與 <code>:105</code>)<strong>沒有逐欄列名</strong>,它們呼叫的是表級泛型複製:</p>
+<pre class="code lang-csharp"><code>TransferVDBHelper.TransferTable(view.UIView.CRM003A, model.DataEntity.CRM003A, base.TransferEVAColumn);
+TransferVDBHelper.TransferDetailTable(view.UIView.CAS003A, model.DataEntity.CAS003A, base.TransferEVAColumn);</code></pre>
+<p><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM001_Ctl.cs:86</code> 與 <code>:89</code></p>
+<p>而 <code>TransferVDBHelper</code> <strong>有原始碼</strong>,核心是照欄名逐欄複製(<code>Dev/Common/Source/Utility/TA.ServerUtility/TransferVDBHelper.cs:263-267</code>):</p>
+<pre class="code lang-csharp"><code>foreach (System.Data.DataColumn column in target.Table.Columns)
+{
+    if (source.Table.Columns.Contains(column.ColumnName) == false) continue;
+    target[column.ColumnName] = GetRowValue(source, column);
+}</code></pre>
+<p><strong>只要 Model 與 View 的欄名一致,新欄位自動被複製。H5 成立,而且比原假設更強——不是「同構欄由基底處理」,是完全按欄名比對,Control 根本不知道有哪些欄。</strong></p>
+<h3 id="6-2-代價-只加一邊會靜默失敗">6.2 代價:只加一邊會靜默失敗</h3>
+<p><code>if (source.Table.Columns.Contains(column.ColumnName) == false) continue;</code> 這一行沒有記錄、沒有例外。所以:</p>
+<div class="tw"><table><thead><tr><th>你做了什麼</th><th>會發生什麼</th><th>看起來像什麼</th></tr></thead><tbody><tr><td>只加 Model,沒加 View</td><td>畫面永遠拿不到值</td><td>「畫面上這欄一直空的」</td></tr><tr><td>只加 View,沒加 Model</td><td>使用者填的值到不了 DB</td><td>「存了沒反應,也不報錯」</td></tr><tr><td>兩邊欄名拼錯一個字</td><td>同上,而且更難找</td><td>同上</td></tr></tbody></table></div>
+<p><strong>沒有任何錯誤訊息。</strong>這是本手冊 <a class="sec" href="#11-常見錯誤與症狀">§11</a> 的第一條。</p>
+<h3 id="6-3-另一個代價-新的可空欄位拿不到-null">6.3 另一個代價:新的可空欄位拿不到 NULL</h3>
+<p><code>TransferDataRow</code> 在複製時會把 <code>DBNull</code> 轉成對應型別的「空值」(<code>Dev/Common/Source/Utility/TA.ServerUtility/TransferVDBHelper.cs:226-243</code>):</p>
+<div class="tw"><table><thead><tr><th>型別</th><th>NULL 會變成</th></tr></thead><tbody><tr><td><code>string</code></td><td><code>string.Empty</code></td></tr><tr><td><code>decimal</code> / <code>int</code> / <code>double</code></td><td><code>0</code></td></tr><tr><td><code>DateTime</code></td><td><code>1900/01/01</code></td></tr></tbody></table></div>
+<p>字串另外會被 <code>Trim()</code>(<code>Dev/Common/Source/Utility/TA.ServerUtility/TransferVDBHelper.cs:247</code>)。</p>
+<p><strong>後果:你加的可空欄位,在畫面端永遠分不出「沒填」與「填了空字串 / 0 / 1900-01-01」。</strong>如果業務上需要區分,不能靠 NULL,要另外加一個旗標欄,或改用特定的哨兵值並在 <a class="sec" href="#5-3-改法">§5.3</a> 的 SQL 裡處理。<strong>動工前先確認業務要不要區分。</strong></p>
+<h3 id="6-4-什麼時候才要改-control">6.4 什麼時候才要改 Control</h3>
+<p>只有兩種情況:</p>
+<ol><li>Model 與 View 的<strong>欄名不同</strong>(例:Model 叫 <code>EMP_NO1</code>、View 叫 <code>EMP_NO</code>)——要在 <code>CustomTransferOracleModelToView</code> / <code>CustomTransferViewToOracleModel</code> 裡手動搬。</li><li>新欄需要<strong>轉換</strong>(格式化、代碼轉中文)才能顯示。</li></ol>
+<p><code>CASM001</code> 兩者皆非,所以不用改。</p>
+</div></section><section class="sec" data-sec="7-步驟六-formproxy-不用改"><h2 id="7-步驟六-formproxy-不用改"><button class="tg" aria-label="收合/展開" type="button"></button>7. 步驟六:FormProxy —— 不用改</h2><div class="sec-body">
+<p><code>CASM001_Pxy</code>(<code>Dev/ATLAS.CAS/Source/FormProxy/FormProxy.CAS/CASM001_Pxy.cs:15</code>,164 行)繼承 <code>Basic_Pxy</code>(PTPFBlock,無原始碼)。它的方法簽名收送的是 <code>BasicViewVDB</code> 這種<strong>整包型別</strong>,不是欄位。加欄位不改型別,所以簽名不變。</p>
+<p><strong>但它與部署有關</strong>:Remoting 邊界在 UI 與 FormProxy 之間(<code>architecture.md §8.1</code>),<code>UIEntity</code> 是跨邊界傳輸的型別,所以 <a class="sec" href="#4-步驟三-uientity-view-xsd">§4</a> 改完的 <code>UIEntity.CAS.dll</code> <strong>兩端都要更新</strong>。詳見 <a class="sec" href="#9-步驟八-編譯與部署">§9</a>。</p>
+</div></section><section class="sec" data-sec="8-步驟七-ui"><h2 id="8-步驟七-ui"><button class="tg" aria-label="收合/展開" type="button"></button>8. 步驟七:UI</h2><div class="sec-body">
+<h3 id="8-1-現況-明細走網格-顯示欄位由白名單決定">8.1 現況:明細走網格,顯示欄位由白名單決定</h3>
+<p><code>CASM001</code> 的明細直接把 DataTable 綁給 Infragistics 網格(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM001.cs:264</code>):</p>
+<pre class="code lang-csharp"><code>this.ugrdCASM001.DataSource = ((CASM001ViewVDB)this.ProcessVDB).UIView.CAS003A;</code></pre>
+<p><strong>全 repo 的 <code>CASM001.Designer.cs</code> 裡沒有任何 <code>DataBindings</code></strong>——計劃書假設(H6)UI 用 <code>DataBindings</code> 綁欄名,<strong>H6 不成立</strong>。</p>
+<p>要顯示哪些欄、順序如何,由一個字串陣列決定(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM001.cs:577</code>):</p>
+<pre class="code lang-csharp"><code>UltraGridInitialHelper.SetupUltraGridShowColumns(e, new string[] {
+    "STAFF_NAME", "STAFF_POST", "STAFF_POSITION", "SEX", "MGR_NAME", ... });</code></pre>
+<p>這支 helper <strong>先把所有欄位藏起來,再依陣列逐一顯示</strong>(<code>Dev/Common/Source/Utility/TA.ClientUtility/UltraGridInitialHelper.cs:24-36</code>):</p>
+<pre class="code lang-csharp"><code>foreach (UltraGridColumn col in band.Columns) { col.Hidden = true; }
+foreach (string col in columns)
+{
+    if (band.Columns.Exists(col))
+    {
+        band.Columns[col].Hidden = false;
+        band.Columns[col].Header.VisiblePosition = i;
+        i++;
+    }
+}</code></pre>
+<p><strong>所以新欄位預設是隱藏的。</strong>而且 <code>if (band.Columns.Exists(col))</code> 表示陣列裡打錯的欄名會被靜默忽略。</p>
+<h3 id="8-2-改法-明細欄">8.2 改法(明細欄)</h3>
+<p>在 <code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM001.cs:577</code> 那個陣列裡,把 <code>"&lt;NEW_COL&gt;"</code> 加到你要的<strong>顯示位置</strong>——陣列順序就是欄位左右順序。</p>
+<p>需要特殊輸入方式的話,照範本欄在下一行設 Style(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM001.cs:584</code>):</p>
+<pre class="code lang-csharp"><code>this.ugrdCASM001.DisplayLayout.Bands[0].Columns["STAFF_POST"].Style
+    = Infragistics.Win.UltraWinGrid.ColumnStyle.EditButton;</code></pre>
+<p>要接代碼下拉,參考 <code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM001.cs:143</code> 的 <code>GridSearch</code> 用法與 <code>:195-197</code> 的 <code>utility.SetDataSource(..., new GetDropDownDataSrc("&lt;代碼類別&gt;"))</code>。代碼類別編號查 <code>TA.MappingCode</code>(<code>architecture.md §7.2</code>)。</p>
+<h3 id="8-3-改法-主表欄">8.3 改法(主表欄)</h3>
+<p>主表不走網格,是強型別列 + 具名控件(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM001.cs:45</code>):</p>
+<pre class="code lang-csharp"><code>CASM001View.CRM003ARow MasterRow = ((CASM001ViewVDB)this.ProcessVDB).UIView.CRM003A[0];</code></pre>
+<p>重生 Designer 後,<code>CRM003ARow</code> 會多出 <code>.&lt;NEW_COL&gt;</code> 屬性。你要:</p>
+<ol><li>在 <code>CASM001.Designer.cs</code> 加控件(照相鄰欄位的控件型別與命名慣例)。</li><li>在讀取處把值放進控件、在存檔處把控件的值寫回 <code>MasterRow.&lt;NEW_COL&gt;</code>,參考 <code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM001.cs:282</code> 起那段的寫法。</li></ol>
+<blockquote><p><code>CASM001.Designer.cs</code> 是 WinForms 設計工具產的,<strong>用 VS 的設計檢視拉控件,不要手打</strong>。它與 <a class="sec" href="#3-3-重生-designer-cs">§3.3</a> 的 <code>Model.Designer.cs</code> 不同——後者由 xsd 重生、絕對不能手改;前者可以透過設計工具改。</p></blockquote>
+<h3 id="8-4-驗證">8.4 驗證</h3>
+<pre class="code lang-bash"><code>grep -n "&lt;NEW_COL&gt;" "%ATLAS_ROOT%\Dev\ATLAS.CAS\Source\UI\UI.CAS\CASM001.cs"</code></pre>
+<p>明細欄至少命中 1 次(白名單陣列)。命中 0 = 欄位存在但<strong>畫面上看不到</strong>。</p>
+</div></section><section class="sec" data-sec="9-步驟八-編譯與部署"><h2 id="9-步驟八-編譯與部署"><button class="tg" aria-label="收合/展開" type="button"></button>9. 步驟八:編譯與部署</h2><div class="sec-body">
+<h3 id="9-1-重編順序">9.1 重編順序</h3>
+<p>由下往上,缺一不可(<code>architecture.md §2</code>):</p>
+<pre class="code"><code>1. DataEntity.CAS  ← 先重生 Designer.cs 再編
+2. UIEntity.CAS    ← 同上
+3. PO.CAS
+4. Control.CAS
+5. FormProxy.CAS
+6. UI.CAS</code></pre>
+<h3 id="9-2-部署到哪一台">9.2 部署到哪一台</h3>
+<p>Remoting 邊界在 UI 與 FormProxy 之間(<code>architecture.md §8.1</code>),所以:</p>
+<div class="tw"><table><thead><tr><th>組件</th><th>客戶端</th><th>伺服端</th></tr></thead><tbody><tr><td><code>UI.CAS.dll</code></td><td>✔</td><td></td></tr><tr><td><code>UIEntity.CAS.dll</code></td><td>✔</td><td>✔</td></tr><tr><td><code>FormProxy.CAS.dll</code> · <code>Control.CAS.dll</code> · <code>PO.CAS.dll</code> · <code>DataEntity.CAS.dll</code></td><td></td><td>✔</td></tr></tbody></table></div>
+<p><code>UIEntity</code> 兩端都要,因為它是跨 Remoting 序列化的型別,兩端版本不一致會在反序列化時出錯(此為推論,見 <code>architecture.md §8.1</code>)。</p>
+<p><strong>只佈一端是最常見的部署錯誤</strong>,症狀是「我這台好了,別人還是舊的」或反序列化例外。</p>
+<h3 id="9-3-檢查你動到的組件在不在-dll-覆寫名單裡">9.3 ⚠ 檢查你動到的組件在不在 DLL 覆寫名單裡</h3>
+<p><code>architecture.md 附錄 C.5</code> 列了 25 個「repo 有原始碼、卻被 143 筆 <code>&lt;HintPath&gt;</code> 綁成 PTPFBlock 預編 DLL」的組件。<strong>改了這類組件,重編不會傳到下游</strong>,必須把新 DLL 複製進 <code>%PTPF%</code>。</p>
+<p>以 <code>CASM001</code> 的六層而言,<code>DataEntity.CAS</code> / <code>UIEntity.CAS</code> / <code>PO.CAS</code> / <code>Control.CAS</code> / <code>FormProxy.CAS</code> / <code>UI.CAS</code> <strong>都不在那份名單裡</strong>,所以本手冊的標準流程不需要動 <code>%PTPF%</code>。</p>
+<p><strong>但你改的若是別的模組就要先查。</strong>特別是 <code>EC</code> 與 <code>OTA</code> 兩個模組,它們的六層有多支在名單內(例:<code>Dev/ATLAS.OTA/Source/PO/PO.OTA/PO.OTA.csproj</code> 以 DLL 方式參考隔壁的 <code>DataEntity.OTA</code>)。查法:在該層的 <code>.csproj</code> 裡搜 <code>PTPFBlock</code>,搜得到就是綁 DLL。</p>
+<h3 id="9-4-crystal-報表要不要改">9.4 Crystal 報表要不要改</h3>
+<p>如果有報表要印這個欄位,<code>.rpt</code> 要另外改——不在本手冊範圍,見 <code>runbooks/add-report.md</code>(尚未撰寫)。查哪些報表用到這張表:</p>
+<pre class="code lang-bash"><code>py -V:3.12 %ATLAS_ROOT%\docs\tools\atlas_scan.py --table CAS003A</code></pre>
+<blockquote><p><strong>〔假設〕缺:PTPFBlock DLL。</strong>本機沒有框架 DLL,整個 <a class="sec" href="#9-步驟八-編譯與部署">§9</a> 未實測(<code>architecture.md 附錄 C.1</code>)。重編順序來自六個 csproj 的 <code>ProjectReference</code> 相依,部署分工來自 Remoting 邊界的結論。</p></blockquote>
+</div></section><section class="sec" data-sec="10-驗證清單"><h2 id="10-驗證清單"><button class="tg" aria-label="收合/展開" type="button"></button>10. 驗證清單</h2><div class="sec-body">
+<p>改完跑一輪四眼,每一步查資料庫確認新欄位有跟著走(狀態語意見 <code>architecture.md §3</code>):</p>
+<div class="tw"><table><thead><tr><th>#</th><th>動作</th><th>查什麼</th></tr></thead><tbody><tr><td>1</td><td>新增一筆,填入新欄位,送出</td><td><code>SELECT &lt;NEW_COL&gt;, STATUS FROM CAS003A WHERE ...</code> — 值有進去,<code>STATUS</code> 進 <code>Entry*</code></td></tr><tr><td>2</td><td>重開畫面查詢同一筆</td><td>新欄位<strong>顯示得出來</strong>(這一步驗的是 <a class="sec" href="#5-3-改法">§5.3</a> 的 SELECT 有加到)</td></tr><tr><td>3</td><td>換一個帳號覆核</td><td><code>STATUS</code> 進 <code>Verify*</code>,<code>VERIFYID</code> 有值,新欄位值不變</td></tr><tr><td>4</td><td>主管核准</td><td><code>STATUS</code> 進 <code>Approve*</code>,新欄位值不變</td></tr><tr><td>5</td><td>修改該欄位再送一次</td><td>值有更新;<code>UPDATEID</code> / <code>UPDATEDATE</code> 有換</td></tr><tr><td>6</td><td>退回後重送</td><td><code>REJECTID</code> 有值;新欄位值不受影響</td></tr><tr><td>7</td><td>待辦清單</td><td>若改的是主表欄且 <code>BuildMasterSQLString</code> 有兩條分支,確認待辦查詢也看得到(<a class="sec" href="#5-3-改法">§5.3</a>)</td></tr></tbody></table></div>
+<p><strong>第 2 步是最容易失敗的一步</strong>,因為 <a class="sec" href="#5-2-關鍵-寫入端自動-讀取端不自動">§5.2</a> 的「寫入自動、讀取手寫」不對稱。</p>
+</div></section><section class="sec" data-sec="11-常見錯誤與症狀"><h2 id="11-常見錯誤與症狀"><button class="tg" aria-label="收合/展開" type="button"></button>11. 常見錯誤與症狀</h2><div class="sec-body">
+<p>依「症狀 → 病因」排,現場最快找到自己那一條:</p>
+<div class="tw"><table><thead><tr><th>症狀</th><th>病因</th><th>回去做</th></tr></thead><tbody><tr><td><strong>存得進去,查不回來</strong></td><td><code>Build*SQLString</code> 的 SELECT 沒加欄位</td><td><a class="sec" href="#5-3-改法">§5.3</a></td></tr><tr><td><strong>畫面完全看不到這一欄</strong></td><td>UI 白名單陣列沒加</td><td><a class="sec" href="#8-2-改法-明細欄">§8.2</a></td></tr><tr><td><strong>畫面上一直是空的,DB 也沒值,但不報錯</strong></td><td>只加了 Model 沒加 View(或欄名不一致)</td><td><a class="sec" href="#4-2-改法">§4.2</a>、<a class="sec" href="#6-2-代價-只加一邊會靜默失敗">§6.2</a></td></tr><tr><td><strong>使用者填了存不進去,也不報錯</strong></td><td>只加了 View 沒加 Model</td><td><a class="sec" href="#3-2-改法">§3.2</a>、<a class="sec" href="#6-2-代價-只加一邊會靜默失敗">§6.2</a></td></tr><tr><td><strong>編譯過,執行期取不到欄位 / 屬性不存在</strong></td><td>xsd 改了但沒重生 <code>Designer.cs</code></td><td><a class="sec" href="#3-3-重生-designer-cs">§3.3</a>、<a class="sec" href="#4-2-改法">§4.2</a></td></tr><tr><td><strong>重生後編譯一堆錯,成員名怪怪的</strong></td><td>用 <code>xsd.exe</code> 代替 <code>MSDataSetGenerator</code></td><td><a class="sec" href="#3-3-重生-designer-cs">§3.3</a> 路線 B 的說明</td></tr><tr><td><strong><code>ORA-00904</code> invalid identifier</strong></td><td>程式先上線、DB 還沒 <code>ALTER TABLE</code></td><td><a class="sec" href="#2-2-改法">§2.2</a> 的「先 DB 再程式」</td></tr><tr><td><strong><code>ORA-01008</code> not all variables bound</strong></td><td>DB 有欄位但 typed DataSet 沒有</td><td><a class="sec" href="#3-2-改法">§3.2</a></td></tr><tr><td><strong>既有資料列違反 NOT NULL</strong></td><td>加欄位時加了 <code>NOT NULL</code></td><td><a class="sec" href="#2-2-改法">§2.2</a></td></tr><tr><td><strong>新欄位永遠不是 NULL,是空字串 / 0 / 1900-01-01</strong></td><td><code>TransferDataRow</code> 的 NULL 轉空值,不是 bug</td><td><a class="sec" href="#6-3-另一個代價-新的可空欄位拿不到-null">§6.3</a>——業務要區分就別靠 NULL</td></tr><tr><td><strong>維護畫面看得到,待辦清單看不到</strong></td><td><code>BuildMasterSQLString</code> 只加了一條分支</td><td><a class="sec" href="#5-3-改法">§5.3</a></td></tr><tr><td><strong>DB 腳本打開變亂碼</strong></td><td><code>DB/Table/</code> cp950 與 UTF-8 BOM 混用,用錯編碼存</td><td><a class="sec" href="#2-3-腳本放哪-怎麼存">§2.3</a></td></tr><tr><td><strong>自己這台好了,別人還是舊的</strong></td><td><code>UIEntity</code> 只佈了一端</td><td><a class="sec" href="#9-2-部署到哪一台">§9.2</a></td></tr><tr><td><strong>改了共用層卻沒效果</strong></td><td>該組件在 <code>architecture.md 附錄 C.5</code> 的 DLL 覆寫名單裡</td><td><a class="sec" href="#9-3-檢查你動到的組件在不在-dll-覆寫名單裡">§9.3</a></td></tr></tbody></table></div>
+<p><strong>這張表裡有六條是靜默失敗</strong>(不報錯、不寫 log),所以 <a class="sec" href="#10-驗證清單">§10</a> 的驗證清單不能跳。</p>
+</div></section><section class="sec" data-sec="12-明細表加欄位的差異"><h2 id="12-明細表加欄位的差異"><button class="tg" aria-label="收合/展開" type="button"></button>12. 明細表加欄位的差異</h2><div class="sec-body">
+<h3 id="12-1-與主表的差別很小">12.1 與主表的差別很小</h3>
+<p><code>CASM001</code> 主明細都走同一套機制,差別只有三處:</p>
+<div class="tw"><table><thead><tr><th>面向</th><th>主表 <code>CRM003A</code></th><th>明細 <code>CAS003A</code></th></tr></thead><tbody><tr><td>PO 的 SQL</td><td><code>BuildMasterSQLString</code>,<strong>兩條分支</strong>(一般 / 待辦)</td><td><code>BuildDetailSQLString</code>,一條</td></tr><tr><td>Control 轉換</td><td><code>TransferVDBHelper.TransferTable</code></td><td><code>TransferVDBHelper.TransferDetailTable</code></td></tr><tr><td>UI</td><td>具名控件 + 強型別列(<a class="sec" href="#8-3-改法-主表欄">§8.3</a>)</td><td>網格 + 白名單陣列(<a class="sec" href="#8-2-改法-明細欄">§8.2</a>)</td></tr></tbody></table></div>
+<h3 id="12-2-transferdetailtable-多做的事">12.2 <code>TransferDetailTable</code> 多做的事</h3>
+<p>它會分別處理新增 / 修改 / 刪除三種 <code>RowState</code>(<code>Dev/Common/Source/Utility/TA.ServerUtility/TransferVDBHelper.cs:159</code>),因為明細是多筆、要保留每一列的狀態。但<strong>逐欄複製的核心仍是同一支 <code>TransferDataRow</code></strong>,所以 <a class="sec" href="#6-1-為什麼不用改">§6.1</a> 到 <a class="sec" href="#6-3-另一個代價-新的可空欄位拿不到-null">§6.3</a> 的結論對明細完全適用。</p>
+<h3 id="12-3-不適用的畫面型別">12.3 不適用的畫面型別</h3>
+<div class="tw"><table><thead><tr><th>型別</th><th>為什麼不適用</th></tr></thead><tbody><tr><td><code>I</code> 查詢</td><td>PO 繞過四眼基底、自建連線(<code>architecture.md §6</code>),沒有本手冊的六層路徑</td></tr><tr><td><code>B</code> 批次</td><td>多數沒有 <code>Model.xsd</code> / <code>View.xsd</code>(<code>architecture.md §6</code>),邏輯常在版控外的 SP 裡</td></tr><tr><td><code>R</code> 報表</td><td>七層不是六層,多一個 <code>Report.&lt;模組&gt;</code> 專案裝 <code>.rpt</code>(<code>architecture.md §6</code>)</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-a-本手冊引用的檔案清單"><h2 id="附錄-a-本手冊引用的檔案清單"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 A 本手冊引用的檔案清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>檔</th><th>錨點</th><th>用在</th></tr></thead><tbody><tr><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM001Model.xsd</code></td><td><code>:15</code> <code>:21</code> <code>:37</code> <code>:50</code> <code>:51</code> <code>:56</code></td><td><a class="sec" href="#3-1-現況">§3.1</a> <a class="sec" href="#3-2-改法">§3.2</a> <a class="sec" href="#2-2-改法">§2.2</a> <a class="sec" href="#0-1-動工前先分辨-你要加的是哪一種欄位">§0.1</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/UIEntity.CAS/CASM001View.xsd</code></td><td><code>:96</code></td><td><a class="sec" href="#4-1-現況">§4.1</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/DataEntity.CAS.csproj</code></td><td><code>:83-86</code> <code>:153-154</code></td><td><a class="sec" href="#3-3-重生-designer-cs">§3.3</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/UIEntity.CAS/UIEntity.CAS.csproj</code></td><td><code>:86</code> <code>:149</code></td><td><a class="sec" href="#4-2-改法">§4.2</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM001ModelVDB.cs</code></td><td><code>:1</code></td><td><a class="sec" href="#3-4-modelvdb-cs-不用動">§3.4</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Entity/UIEntity.CAS/CASM001ViewVDB.cs</code></td><td><code>:1</code></td><td><a class="sec" href="#4-2-改法">§4.2</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASM001_PO.cs</code></td><td><code>:46-47</code> <code>:77</code> <code>:164</code> <code>:169</code> <code>:290</code> <code>:301</code> <code>:569-625</code></td><td><a class="sec" href="#5-步驟四-po">§5</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/Control/Control.CAS/CASM001_Ctl.cs</code></td><td><code>:79</code> <code>:86</code> <code>:89</code> <code>:105</code> <code>:127</code> <code>:136</code></td><td><a class="sec" href="#6-1-為什麼不用改">§6.1</a> <a class="sec" href="#6-4-什麼時候才要改-control">§6.4</a></td></tr><tr><td><code>Dev/Common/Source/Utility/TA.ServerUtility/TransferVDBHelper.cs</code></td><td><code>:159</code> <code>:208</code> <code>:226-243</code> <code>:247</code> <code>:263-267</code></td><td><a class="sec" href="#6-1-為什麼不用改">§6.1</a> <a class="sec" href="#6-3-另一個代價-新的可空欄位拿不到-null">§6.3</a> <a class="sec" href="#12-2-transferdetailtable-多做的事">§12.2</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/FormProxy/FormProxy.CAS/CASM001_Pxy.cs</code></td><td><code>:15</code></td><td><a class="sec" href="#7-步驟六-formproxy-不用改">§7</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASM001.cs</code></td><td><code>:45</code> <code>:143</code> <code>:195-197</code> <code>:227</code> <code>:264</code> <code>:282</code> <code>:577</code> <code>:584</code></td><td><a class="sec" href="#8-步驟七-ui">§8</a> <a class="sec" href="#0-1-動工前先分辨-你要加的是哪一種欄位">§0.1</a></td></tr><tr><td><code>Dev/Common/Source/Utility/TA.ClientUtility/UltraGridInitialHelper.cs</code></td><td><code>:18</code> <code>:24-36</code></td><td><a class="sec" href="#8-1-現況-明細走網格-顯示欄位由白名單決定">§8.1</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-b-待輸入回填"><h2 id="附錄-b-待輸入回填"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 B 待輸入回填</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>缺什麼</th><th>影響哪幾段</th><th>補進來後要改什麼</th></tr></thead><tbody><tr><td><strong>Oracle 唯讀帳號 / <code>ALL_TAB_COLUMNS</code></strong></td><td><a class="sec" href="#2-2-改法">§2.2</a> <a class="sec" href="#2-4-驗證">§2.4</a></td><td>欄位長度與精度目前只能從 xsd 的 <code>type</code> 反推大類;補進來後可給「照相鄰欄位長度」的具體規則,並補主鍵 / 索引的判斷</td></tr><tr><td><strong>PTPFBlock DLL</strong></td><td><a class="sec" href="#3-3-重生-designer-cs">§3.3</a> <a class="sec" href="#9-步驟八-編譯與部署">§9</a></td><td>重生 Designer.cs 的兩條路線與整個編譯部署段都未實測;補進來後跑一次完整流程,把實際指令與輸出貼進去</td></tr><tr><td><strong>部署機的 <code>main.exe.config</code></strong></td><td><a class="sec" href="#9-2-部署到哪一台">§9.2</a></td><td>客戶端的 Remoting 設定不在版控(<code>architecture.md §8.1.1</code>),目前無法寫出「佈到哪個目錄」</td></tr><tr><td><strong>選單 / 權限表</strong></td><td><a class="sec" href="#0-適用範圍與前提">§0</a></td><td>無法寫「這支畫面叫什麼中文名、誰有權限測」</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-c-計劃書假設的驗證結果"><h2 id="附錄-c-計劃書假設的驗證結果"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 C 計劃書假設的驗證結果</h2><div class="sec-body">
+<p>計劃書 <a class="sec" href="#3-步驟二-dataentity-model-xsd">§3</a> 列了 H1–H8 八條待驗假設。逐條開檔驗證後:</p>
+<div class="tw"><table><thead><tr><th>#</th><th>假設</th><th>結論</th><th>依據</th></tr></thead><tbody><tr><td>H1</td><td><code>*ModelVDB.cs</code> 只包 DataSet,加欄不用動</td><td><strong>成立</strong></td><td>45 行薄殼無欄位級程式碼,<a class="sec" href="#3-4-modelvdb-cs-不用動">§3.4</a></td></tr><tr><td>H2</td><td>Designer.cs 由 <code>MSDataSetGenerator</code> 產,手改必被覆寫</td><td><strong>成立</strong></td><td>csproj <code>&lt;AutoGen&gt;</code> + <code>&lt;Generator&gt;</code>,<a class="sec" href="#3-3-重生-designer-cs">§3.3</a>;View 那邊同樣設定</td></tr><tr><td>H3</td><td>INSERT/UPDATE 欄位清單來自 SQL 字串<strong>加上</strong> <code>string[] datacolumn</code></td><td><strong>不成立</strong></td><td>清單來自執行期跟 DB 要的 schema;<code>datacolumn</code> 只有死碼 <code>TA_PO</code> 在用。<a class="sec" href="#5-2-關鍵-寫入端自動-讀取端不自動">§5.2</a></td></tr><tr><td>H4</td><td><code>IsDataChanged</code> 比 xsd 全欄減四眼欄,新欄自動納入</td><td><strong>不成立</strong></td><td>只比 <code>DataFlag</code> + 主鍵,業務欄一個都不比。<a class="sec" href="#5-4-isdatachanged-不會比到新欄位">§5.4</a></td></tr><tr><td>H5</td><td>Ctl 的 <code>CustomTransfer*</code> 只處理不同構欄,同構由基底泛型複製</td><td><strong>成立,且更強</strong></td><td><code>TransferDataRow</code> 完全按欄名逐欄複製,Ctl 不知道有哪些欄。<a class="sec" href="#6-1-為什麼不用改">§6.1</a></td></tr><tr><td>H6</td><td>UI 綁定用 <code>DataBindings</code> 綁 View 欄名</td><td><strong>不成立</strong></td><td>Designer 裡沒有任何 <code>DataBindings</code>;明細走網格 + 白名單陣列,主表走具名控件。<a class="sec" href="#8-1-現況-明細走網格-顯示欄位由白名單決定">§8.1</a> <a class="sec" href="#8-3-改法-主表欄">§8.3</a></td></tr><tr><td>H7</td><td>Remoting 邊界在 UI ↔ FormProxy,Control/PO/DataEntity 是伺服端</td><td><strong>成立</strong></td><td>三項證據,見 <code>architecture.md §8.1</code></td></tr><tr><td>H8</td><td>四眼欄位不在 xsd,由基底統一處理</td><td><strong>不成立</strong></td><td>15 個四眼 / 系統欄位都寫在 xsd 裡(<code>CASM001Model.xsd:37</code> 起);由引擎<strong>賦值</strong>但確實<strong>存在於</strong> DataSet。<a class="sec" href="#2-2-改法">§2.2</a></td></tr></tbody></table></div>
+<p><strong>四條不成立。</strong>其中 H3、H4、H6 若照原假設寫進手冊,會讓人去改不存在的東西、或漏掉真正要改的地方,所以本手冊在對應章節都直接寫了正確做法並標明推翻。</p></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-14 14:23 產生 · 標題 53 · 圖 1 · 表格 16 · 程式錨點 47 · § 連結 87 · 引用檢查：畫面 1（缺 0） · Table 2（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

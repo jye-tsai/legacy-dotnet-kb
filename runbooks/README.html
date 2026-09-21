@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-14">
+<title>ATLAS 維護手冊索引</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#1-我要做這件事-該看哪本">1. 我要做這件事,該看哪本</a>
+<a class="l2" href="#2-手冊清單">2. 手冊清單</a>
+<a class="l2" href="#3-讀之前先知道的四件事">3. 讀之前先知道的四件事</a>
+<a class="l2" href="#4-共同工具">4. 共同工具</a>
+<a class="l2" href="#5-每本手冊都標了什麼">5. 每本手冊都標了什麼</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-14</span></div>
+<h1 id="atlas-維護手冊索引">ATLAS 維護手冊索引</h1>
+<blockquote><p>共 <strong>9</strong> 本。每一本都是「純程式碼閱讀彙整 + 操作步驟」,附程式錨點,未修改任何 ATLAS 原始碼。</p>
+<p>共同前提在 <code>architecture.md</code>——<strong>不要整份讀</strong>,用它的目錄跳到你要的那一節。</p></blockquote>
+<section class="sec" data-sec="1-我要做這件事-該看哪本"><h2 id="1-我要做這件事-該看哪本"><button class="tg" aria-label="收合/展開" type="button"></button>1. 我要做這件事,該看哪本</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>我要…</th><th>看哪本</th><th>從哪節開始</th></tr></thead><tbody><tr><td>欄位要多一個</td><td>[<code>add-column.md</code>](add-column.md)</td><td><code>§2–§9</code></td></tr><tr><td>欄位改型別或長度</td><td>[<code>add-column.md</code>](add-column.md)</td><td><code>§0 不適用,先問</code></td></tr><tr><td>報表要多印一欄</td><td>[<code>add-report.md</code>](add-report.md)</td><td><code>§2 第一列</code></td></tr><tr><td>報表版面要調</td><td>[<code>add-report.md</code>](add-report.md)</td><td><code>§5</code></td></tr><tr><td>要一支全新的畫面</td><td>[<code>add-screen.md</code>](add-screen.md)</td><td><code>全篇</code></td></tr><tr><td>要一支新的查詢畫面</td><td>[<code>add-query-screen.md</code>](add-query-screen.md)</td><td><code>§1 差異表</code></td></tr><tr><td>要一支新的批次</td><td>[<code>add-batch.md</code>](add-batch.md)</td><td><code>全篇</code></td></tr><tr><td>覆核時要多一條檢核</td><td>[<code>change-eva-flow.md</code>](change-eva-flow.md)</td><td><code>§4.1</code></td></tr><tr><td>新增時要自動帶值 / 流水號</td><td>[<code>change-eva-flow.md</code>](change-eva-flow.md)</td><td><code>§4.2</code></td></tr><tr><td>要加稽核軌跡</td><td>[<code>change-eva-flow.md</code>](change-eva-flow.md)</td><td><code>§4.3</code></td></tr><tr><td>要改 SP / Function / Trigger</td><td>[<code>change-sp-fn-trigger.md</code>](change-sp-fn-trigger.md)</td><td><code>全篇</code></td></tr><tr><td>SP 在資料庫有、repo 沒有</td><td>[<code>change-sp-fn-trigger.md</code>](change-sp-fn-trigger.md)</td><td><code>§2</code></td></tr><tr><td>改完了要送測試 / 正式</td><td>[<code>deploy.md</code>](deploy.md)</td><td><code>§2 對照表</code></td></tr><tr><td>WindowsService 要重裝或改帳號</td><td>[<code>deploy.md</code>](deploy.md)</td><td><code>§5</code></td></tr><tr><td>新人要把環境架起來</td><td>[<code>build-env.md</code>](build-env.md)</td><td><code>§0.1 三個前提</code></td></tr><tr><td>編不過 / 改了沒效果</td><td>[<code>build-env.md</code>](build-env.md)</td><td><code>§8 症狀表</code></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="2-手冊清單"><h2 id="2-手冊清單"><button class="tg" aria-label="收合/展開" type="button"></button>2. 手冊清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>手冊</th><th>一句話</th><th>適用情境</th><th>行數</th><th>圖</th><th>錨點</th></tr></thead><tbody><tr><td>[<code>add-column.md</code>](add-column.md)</td><td>最常用。在既有畫面上加一個欄位</td><td>在一支既有的 <strong>M(維護)畫面</strong>上,替主表或明細表加一個欄位</td><td>591</td><td>—</td><td>—</td></tr><tr><td>[<code>add-screen.md</code>](add-screen.md)</td><td>從零建一支 M 維護畫面</td><td>在既有模組裡<strong>從零建一支新的 M(維護)畫面</strong>:主檔 + 明細、走四眼、六層全建</td><td>752</td><td>—</td><td>—</td></tr><tr><td>[<code>add-query-screen.md</code>](add-query-screen.md)</td><td>從零建一支 I 查詢畫面(M 的減法版)</td><td>在既有模組裡<strong>從零建一支 I(查詢)畫面</strong>:唯讀、不寫入、不走四眼</td><td>452</td><td>—</td><td>—</td></tr><tr><td>[<code>add-batch.md</code>](add-batch.md)</td><td>從零建一支 B 批次</td><td><strong>新建或維護一支 B(批次)畫面</strong>:按一顆執行鈕、跑一段伺服端作業、改 DB 或產檔</td><td>652</td><td>—</td><td>—</td></tr><tr><td>[<code>change-sp-fn-trigger.md</code>](change-sp-fn-trigger.md)</td><td>加 / 改 PL/SQL 物件</td><td>改一支既有的 Oracle Stored Procedure / Function / Trigger / View,或新增一支</td><td>499</td><td>—</td><td>—</td></tr><tr><td>[<code>add-report.md</code>](add-report.md)</td><td>加 / 改 Crystal 報表</td><td>在既有報表上加 / 改欄位;替既有 R 畫面加一個新報表版型</td><td>292</td><td>—</td><td>—</td></tr><tr><td>[<code>change-eva-flow.md</code>](change-eva-flow.md)</td><td>改四眼流程:加檢核、加稽核、改預設值</td><td>在四眼流程上加檢核、加稽核軌跡、改新增時的預設值、加自訂動作</td><td>272</td><td>—</td><td>—</td></tr><tr><td>[<code>deploy.md</code>](deploy.md)</td><td>部署:改了什麼要佈哪些</td><td>改完程式要送測試 / 正式環境;或新裝一台伺服器</td><td>354</td><td>—</td><td>—</td></tr><tr><td>[<code>build-env.md</code>](build-env.md)</td><td>建置環境:新人第一天</td><td>新人拿到 ATLAS 原始碼,要把它變成「編得起來、跑得動」的開發機</td><td>224</td><td>—</td><td>—</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="3-讀之前先知道的四件事"><h2 id="3-讀之前先知道的四件事"><button class="tg" aria-label="收合/展開" type="button"></button>3. 讀之前先知道的四件事</h2><div class="sec-body">
+<p>這四條在多本手冊裡重複出現,因為它們是「照直覺做就會錯」的地方:</p>
+<div class="tw"><table><thead><tr><th>#</th><th>事實</th><th>為什麼會咬人</th><th>在哪</th></tr></thead><tbody><tr><td>1</td><td>Remoting 邊界在 <strong>UI 與 FormProxy 之間</strong></td><td>決定改哪層佈哪台;搞錯的症狀是「我這台好了,別人還是舊的」</td><td><code>architecture.md §8.1</code></td></tr><tr><td>2</td><td><strong>25 個組件在 repo 有原始碼,卻被綁成預編 DLL</strong></td><td>重編不更新 <code>PTPFBlock</code> 就沒效果,而且開發機上看不出來</td><td><code>architecture.md 附錄 C.5</code></td></tr><tr><td>3</td><td><strong>程式呼叫 380 支 SP,repo 只有 61 支有腳本</strong></td><td>批次與報表的邏輯大量在版控外</td><td><code>architecture.md 附錄 B.0</code></td></tr><tr><td>4</td><td><strong><code>TA_PO</code> 與 <code>Basic4EyesPO</code> 共 6,363 行是死碼</strong></td><td>改了完全沒反應,也不會報錯</td><td><code>runbooks/change-eva-flow.md §0.1</code></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="4-共同工具"><h2 id="4-共同工具"><button class="tg" aria-label="收合/展開" type="button"></button>4. 共同工具</h2><div class="sec-body">
+<pre class="code lang-bash"><code>py -V:3.12 <repo>\docs\tools\atlas_scan.py --screen &lt;代號&gt;
+py -V:3.12 <repo>\docs\tools\atlas_scan.py --table &lt;表名&gt;</code></pre>
+<p>改過 ATLAS 原始碼後加 <code>--refresh</code> 重掃。<strong>不要 Read <code>*.Designer.cs</code></strong>(一支 5,375 行,全庫 2,190 支)。</p>
+</div></section><section class="sec" data-sec="5-每本手冊都標了什麼"><h2 id="5-每本手冊都標了什麼"><button class="tg" aria-label="收合/展開" type="button"></button>5. 每本手冊都標了什麼</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>標記</th><th>意思</th></tr></thead><tbody><tr><td><strong>〔假設〕缺:輸入</strong></td><td>拿不到該輸入(DB 連線 / PTPFBlock DLL / 選單表),只能從結構推論。各本附錄 B 彙整</td></tr><tr><td><strong>〔客戶特定〕</strong></td><td>本站台的值(主機名、路徑、機構代碼),其他站台不同</td></tr><tr><td>附錄 A</td><td>該本引用的檔案與錨點清單</td></tr><tr><td>附錄 B</td><td>待輸入回填:補進來之後要改哪幾段</td></tr></tbody></table></div></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-15 17:58 產生 · 標題 6 · 圖 0 · 表格 4 · 程式錨點 0 · § 連結 0 · 引用檢查：<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

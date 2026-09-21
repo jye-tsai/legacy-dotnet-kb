@@ -1,0 +1,985 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-21">
+<title>ATLAS 系統介紹:六條業務線的端到端</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-一頁摘要">0. 一頁摘要</a>
+<a class="l2" href="#1-系統在公司裡的位置">1. 系統在公司裡的位置</a>
+<a class="l2" href="#2-業務線總覽">2. 業務線總覽</a>
+<a class="l2" href="#3-端到端生命週期">3. 端到端生命週期</a>
+<a class="l3" href="#3-1-開戶與受益人資料變更">3.1 開戶與受益人資料變更</a>
+<a class="l3" href="#3-2-申購與定期定額">3.2 申購與定期定額</a>
+<a class="l3" href="#3-3-買回-轉換與受益憑證">3.3 買回、轉換與受益憑證</a>
+<a class="l3" href="#3-4-結帳-庫存與日終">3.4 結帳、庫存與日終</a>
+<a class="l3" href="#3-5-報表與對外">3.5 報表與對外</a>
+<a class="l2" href="#4-一日作業時序">4. 一日作業時序</a>
+<a class="l2" href="#5-角色與四眼">5. 角色與四眼</a>
+<a class="l2" href="#6-模組地圖">6. 模組地圖</a>
+<a class="l2" href="#7-接手第一週怎麼讀">7. 接手第一週怎麼讀</a>
+<a class="l2" href="#附錄-a-名詞表">附錄 A. 名詞表</a>
+<a class="l2" href="#附錄-b-本篇遇到的出處衝突">附錄 B. 本篇遇到的出處衝突</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-21</span></div>
+<h1 id="atlas-系統介紹-六條業務線的端到端">ATLAS 系統介紹:六條業務線的端到端</h1>
+<blockquote><p>給第一天接手 ATLAS、身邊沒有人可問的人。<strong>軸線是業務,不是技術也不是模組</strong>—— 開戶 → 申贖 → 結帳 → 庫存 → 報表,一條線讀到底。技術通則在 <code>architecture.md</code>、一模組一篇在 <code>modules/README.md</code>、操作步驟在 <code>runbooks/README.md</code>, 本篇<strong>只做抽取、整合與消歧</strong>,不重爬程式。內容是 2026-09-21 為止 29 篇模組文件與架構篇的彙整快照。 <strong>與現行程式不符一律以程式為準</strong>;標「假設」「推測」處代表 repo 內找不到權威來源。</p></blockquote>
+<section class="sec" data-sec="0-一頁摘要"><h2 id="0-一頁摘要"><button class="tg" aria-label="收合/展開" type="button"></button>0. 一頁摘要</h2><div class="sec-body">
+<p>素材:<code>architecture.md §0</code>、各模組篇 <a class="sec" href="#0-一頁摘要">§0</a>。</p>
+<p>ATLAS(<code>Vendor.Product.TA</code>)是本投信的<strong>基金事務 / 過戶代理(Transfer Agency)系統</strong>,管投資人與基金之間每一筆事務的一生:開戶、申購、買回、轉換、定期定額、收益分配、對帳單與各式法定報表(<code>architecture.md §0.1</code>)。規模一句話:<strong>911 支畫面、437 張實體表、608 支報表範本、252 個專案</strong>。技術一句話:<strong>.NET WinForms 六層 + .NET Remoting(邊界在 UI 與 FormProxy 之間)+ Oracle + Crystal Reports</strong>, 四眼(EVA)是業務表的標準配備而非特例(<code>architecture.md §0.4</code>、<code>architecture.md §0.5</code>)。</p>
+<blockquote><p><strong>四眼是什麼(白話)</strong>:一筆資料要<strong>經過兩個人以上看過才算數</strong>——經辦鍵入(Entry)→ 覆核看過(Verify)→ 主管核准(Approve)。沒核准前它躺在「待辦」裡,不算正式資料;核准或退回都會留下<strong>誰、什麼時候</strong>。程式上靠表裡那 13 個欄位(<code>CREATEID</code> <code>ENTRYID</code> <code>VERIFYID</code> <code>APPROVEID</code> <code>REJECTID</code> <code>STATUS</code>…)記這件事。 <strong>兩個要先知道的例外</strong>:(1) 受益人資料變更是「覆核完還沒生效」,要等 <code>OFDB003</code> 那支批次跑過(<code>bms.md §2.1</code>); (2) 全庫有 36 支畫面 / 批次繞過四眼直接改正式表(<a class="sec" href="#5-角色與四眼">§5</a> 有清單)。</p></blockquote>
+<div class="tw"><table><thead><tr><th>#</th><th>業務線</th><th>一句話</th></tr></thead><tbody><tr><td>①</td><td>開戶與受益人資料變更</td><td>開一個受益人戶號,之後所有欄位異動都走「變更申請單」再由批次生效</td></tr><tr><td>②</td><td>申購與定期定額</td><td>櫃台 / 網路 / 語音三個入口收單,截止後拋轉進核心交易檔</td></tr><tr><td>③</td><td>買回、轉換與受益憑證</td><td>贖回與轉換的兩腳、匯費,以及實體 / 無實體受益憑證的狀態機</td></tr><tr><td>④</td><td>結帳、庫存與日終</td><td>關帳 → 日結轉 → 淨值配息 → 生效 → 產檔寄送,幾乎全部人工按鈕</td></tr><tr><td>⑤</td><td>通路、業績與客戶關係</td><td>代銷 / 直銷 / 電訪三種通路的名單、拜訪、目標、分帳與客訴</td></tr><tr><td>⑥</td><td>報表、查詢與對外申報</td><td>對帳單、法遵月報、通路分帳、境外平台交換,只讀不寫</td></tr></tbody></table></div>
+<p>另有<strong>不是業務線的底座</strong>:參數與代碼主檔(<code>ofd123.md §0</code>、<code>ofd4.md §0</code>、<code>ofd5.md §0</code>、<code>ofd7.md §0</code>、<code>cod.md §0</code>),六條線全部掛在它上面。<strong>三條軌先記住</strong>:<code>ATLAS.OFD*</code>(舊名 <code>ATLAS.OFD*</code>)是境內分戶軌、<code>OTA*</code> / <code>OTAB</code> 是境外綜合帳戶軌、<code>EC*</code> 是電子交易軌(<code>ofdb5.md §0</code>、<code>misc.md §0</code>、<code>ofdi2.md §0</code>);<code>NFD</code> <strong>不是第四條軌</strong>,它是境內軌的<strong>純輸出層</strong>,沒有自己的表也沒有主專案(<code>nfdr1.md §0</code>、<code>nfdr2.md §0</code>)。</p>
+<p><strong>接手第一週讀什麼</strong>(細節見第 7 章):本篇 → <code>architecture.md §1</code>–<code>§3</code> → 自己負責模組的那一篇 → <code>runbooks/</code>。</p>
+</div></section><section class="sec" data-sec="1-系統在公司裡的位置"><h2 id="1-系統在公司裡的位置"><button class="tg" aria-label="收合/展開" type="button"></button>1. 系統在公司裡的位置</h2><div class="sec-body">
+<p>素材:各模組篇 <a class="sec" href="#0-一頁摘要">§0</a> 的上下游段、<code>ofdb.md §6</code>、<code>ofdb3.md §6</code>、<code>ofdb4.md §6</code>、<code>misc.md §0</code>。</p>
+<div class="tw"><table><thead><tr><th>外部端點</th><th>方向與內容</th><th>透過誰</th><th>依據</th></tr></thead><tbody><tr><td><strong>受益人</strong></td><td>進:開戶、申購、買回、資料變更</td><td><code>BMSM001</code> <code>BMSM004</code> <code>BMSM006</code>、<code>OFDM221A</code> <code>OFDM231A</code></td><td><code>bms.md §0</code>、<code>ofd8.md §0</code></td></tr><tr><td>受益人</td><td>出:對帳單、交易確認書、名條</td><td><code>NFDR073</code> <code>NFDR076</code>、<code>OFDB007</code></td><td><code>nfdr1.md §0</code>、<code>ofdb.md §6</code></td></tr><tr><td><strong>銷售通路</strong>(銀行、保經代)</td><td>進:通路人員與業績分配;出:手續費通知函</td><td><code>CASM001</code> <code>CASM004</code>、<code>OFDM068</code> <code>OFDM071</code>、<code>NFDR107B</code></td><td><code>cas.md §0</code>、<code>ofd5.md §0</code>、<code>nfdr1.md §0</code></td></tr><tr><td><strong>銀行</strong>(核印、扣款、匯款)</td><td>出:核印送件、扣款媒體檔</td><td><code>OFDB701</code> <code>OFDB703</code> <code>OFDB705</code>、<code>OFDB565</code></td><td><code>ofdb4.md §6</code>、<code>ofdb3.md §6</code></td></tr><tr><td>銀行</td><td>進:核印回覆、扣款回覆、入帳檔</td><td><code>OFDB702</code> <code>OFDB704</code> <code>OFDB566</code>、<code>BMSB901A</code>(星展 O 檔)〔客戶特定〕</td><td><code>ofdb4.md §6</code>、<code>bms.md §0</code></td></tr><tr><td><strong>集保(TDCC)</strong></td><td>出:受益權上傳、加減項轉檔</td><td><code>OFDB716</code> <code>OFDB717</code> <code>OFDB719</code> <code>OFDB722</code>、<code>TRPM001</code></td><td><code>ofdb4.md §6</code>、<code>misc.md §0</code></td></tr><tr><td>集保</td><td>進:回收檔、綜合帳戶戶號</td><td><code>OFDB718</code> <code>OFDB720</code> <code>OFDB721</code>、<code>TRPM101</code>、Trigger <code>BMS001A_TDCC_BF_NO</code></td><td><code>ofdb4.md §6</code>、<code>bms.md §0</code></td></tr><tr><td><strong>基金公司 / 總代理</strong></td><td>進:基金主檔、淨值、匯率</td><td><code>OFDM062</code> <code>OFDM066</code>、<code>OFDM081A</code> <code>OFDM081B</code>、<code>OFDM300</code> <code>OFDM302</code></td><td><code>ofd4.md §0</code>、<code>ofd5.md §0</code>、<code>ofd8.md §0</code></td></tr><tr><td><strong>境外基金平台</strong></td><td>雙向:申購 / 贖回 / 轉換 / 定額交換檔</td><td><code>OFDB600A</code> <code>OFDB601A</code> <code>OFDB602A</code> <code>OFDB603</code> <code>OFDB604A</code>、<code>OTAB901</code></td><td><code>ofdb3.md §0</code>、<code>ofdb5.md §6</code></td></tr><tr><td><strong>主管機關 / 公會</strong></td><td>出:法遵月報、申報檔、CRS XML、結匯申報</td><td><code>NFDR004</code> <code>NFDR006</code> <code>NFDR558</code>、<code>OFDB008</code> <code>OFDB019A</code> <code>OFDB871</code> <code>OFDB731</code></td><td><code>nfdr2.md §0</code>、<code>ofdb.md §6</code>、<code>ofdb4.md §6</code></td></tr><tr><td><strong>公司 LDAP / 官網</strong></td><td>出:帳號同步、基金資料上傳</td><td><code>OFDB003</code>(commit 之後)、<code>OFDB609</code>、<code>OTAB901</code></td><td><code>ofdb.md §6</code>、<code>ec.md §6</code>、<code>ofdb5.md §6</code></td></tr></tbody></table></div>
+<blockquote><p>⚠ 上下游幾乎全部是<strong>檔案交換</strong>(媒體檔、定長文字檔、Excel、XML),不是 API。全庫只有 <code>OTAB901</code> 一支會打外部 HTTP(<code>ofdb5.md §6</code>)。</p></blockquote>
+</div></section><section class="sec" data-sec="2-業務線總覽"><h2 id="2-業務線總覽"><button class="tg" aria-label="收合/展開" type="button"></button>2. 業務線總覽</h2><div class="sec-body"><figure><svg viewBox="0 0 1110 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ATLAS 六條業務線在外部端點、客戶端畫面、伺服端與四眼、批次與服務、資料庫與報表五道泳道上的位置"><defs><marker id="ah_ov_f1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">外部端點</text><text class="lane" x="240" y="26">客戶端畫面</text><text class="lane" x="460" y="26">伺服端與四眼</text><text class="lane" x="680" y="26">批次與服務</text><text class="lane" x="900" y="26">資料庫與報表</text><text class="lane" x="20" y="56">① 開戶與受益人資料變更</text><g class="bx">
+<rect x="20" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="86" text-anchor="middle">受益人 / 通路</text>
+<text class="t2" x="120" y="106" text-anchor="middle">臨櫃送件</text>
+</g><g class="bx accent">
+<rect x="240" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="86" text-anchor="middle">BMSM001 BMSM006</text>
+<text class="t2" x="340" y="106" text-anchor="middle">開戶 / 變更單</text>
+</g><g class="bx">
+<rect x="460" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="86" text-anchor="middle">四眼 三階段</text>
+<text class="t2" x="560" y="106" text-anchor="middle">Entry Verify Approve</text>
+</g><g class="bx dash">
+<rect x="680" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="86" text-anchor="middle">OFDB003</text>
+<text class="t2" x="780" y="106" text-anchor="middle">手動執行 無排程</text>
+</g><g class="bx">
+<rect x="900" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="86" text-anchor="middle">BMS001A BMS001ACHG</text>
+<text class="t2" x="1000" y="106" text-anchor="middle">本表 + 變更申請單</text>
+</g><path class="ar" d="M 220 92 L 240 92" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 440 92 L 460 92" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 660 92 L 680 92" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 880 92 L 900 92" marker-end="url(#ah_ov_f1)"/><text class="lane" x="20" y="150">② 申購與定期定額</text><g class="bx">
+<rect x="20" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="180" text-anchor="middle">受益人 / EC 通路</text>
+<text class="t2" x="120" y="200" text-anchor="middle">櫃台 網路 語音</text>
+</g><g class="bx accent">
+<rect x="240" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="180" text-anchor="middle">OFDM221A RSPM004</text>
+<text class="t2" x="340" y="200" text-anchor="middle">申購書 / 定額契約</text>
+</g><g class="bx vend">
+<rect x="460" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="180" text-anchor="middle">四眼只是軌跡</text>
+<text class="t2" x="560" y="200" text-anchor="middle">AfterAdd 就動帳</text>
+</g><g class="bx dash">
+<rect x="680" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="180" text-anchor="middle">OFDB600 OFDB605</text>
+<text class="t2" x="780" y="200" text-anchor="middle">截止時刻存 OFD606A</text>
+</g><g class="bx">
+<rect x="900" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="180" text-anchor="middle">OFD220A OFD221A</text>
+<text class="t2" x="1000" y="200" text-anchor="middle">申購主檔與明細</text>
+</g><path class="ar" d="M 220 186 L 240 186" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 440 186 L 460 186" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 660 186 L 680 186" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 880 186 L 900 186" marker-end="url(#ah_ov_f1)"/><text class="lane" x="20" y="244">③ 買回、轉換與受益憑證</text><g class="bx">
+<rect x="20" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="274" text-anchor="middle">受益人 / 銀行</text>
+<text class="t2" x="120" y="294" text-anchor="middle">贖回款匯出</text>
+</g><g class="bx accent">
+<rect x="240" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="274" text-anchor="middle">OFDM231A BBSM001</text>
+<text class="t2" x="340" y="294" text-anchor="middle">買回書 / 憑證換發</text>
+</g><g class="bx">
+<rect x="460" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="274" text-anchor="middle">四眼 + 匯費級距</text>
+<text class="t2" x="560" y="294" text-anchor="middle">OFDM035 OFDM036</text>
+</g><g class="bx dash">
+<rect x="680" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="274" text-anchor="middle">OFDB323</text>
+<text class="t2" x="780" y="294" text-anchor="middle">買回日結轉 手動</text>
+</g><g class="bx">
+<rect x="900" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="274" text-anchor="middle">OFD251A OFD721</text>
+<text class="t2" x="1000" y="294" text-anchor="middle">買回檔 / 憑證狀態</text>
+</g><path class="ar" d="M 220 280 L 240 280" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 440 280 L 460 280" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 660 280 L 680 280" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 880 280 L 900 280" marker-end="url(#ah_ov_f1)"/><text class="lane" x="20" y="338">④ 結帳、庫存與日終</text><g class="bx">
+<rect x="20" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="368" text-anchor="middle">銀行 / 集保</text>
+<text class="t2" x="120" y="388" text-anchor="middle">核印 扣款 媒體檔</text>
+</g><g class="bx accent">
+<rect x="240" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="368" text-anchor="middle">OFDB222 關帳</text>
+<text class="t2" x="340" y="388" text-anchor="middle">逐基金逐機構</text>
+</g><g class="bx">
+<rect x="460" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="368" text-anchor="middle">批次不走四眼</text>
+<text class="t2" x="560" y="388" text-anchor="middle">自組 SQL 自管交易</text>
+</g><g class="bx dash">
+<rect x="680" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="368" text-anchor="middle">OFDB305 OFDB281</text>
+<text class="t2" x="780" y="388" text-anchor="middle">日結轉 / 配息</text>
+</g><g class="bx">
+<rect x="900" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="368" text-anchor="middle">CTL022 OFD303A</text>
+<text class="t2" x="1000" y="388" text-anchor="middle">關帳與過帳控制檔</text>
+</g><path class="ar" d="M 220 374 L 240 374" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 440 374 L 460 374" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 660 374 L 680 374" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 880 374 L 900 374" marker-end="url(#ah_ov_f1)"/><text class="lane" x="20" y="432">⑤ 通路、業績與客戶關係</text><g class="bx">
+<rect x="20" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="462" text-anchor="middle">銷售機構 / 業務員</text>
+<text class="t2" x="120" y="482" text-anchor="middle">代銷 直銷 電訪</text>
+</g><g class="bx accent">
+<rect x="240" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="462" text-anchor="middle">CASM004 DSMM060 TMKM001</text>
+<text class="t2" x="340" y="482" text-anchor="middle">分帳 / 歸屬 / 名單</text>
+</g><g class="bx vend">
+<rect x="460" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="462" text-anchor="middle">四眼 或 裸 DAO</text>
+<text class="t2" x="560" y="482" text-anchor="middle">CRM007A 假四眼</text>
+</g><g class="bx dash">
+<rect x="680" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="462" text-anchor="middle">DSMB001 CRMB001</text>
+<text class="t2" x="780" y="482" text-anchor="middle">收入計算 / 指派</text>
+</g><g class="bx">
+<rect x="900" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="462" text-anchor="middle">CAS004A DSM006A</text>
+<text class="t2" x="1000" y="482" text-anchor="middle">分配比率 / 收入</text>
+</g><path class="ar" d="M 220 468 L 240 468" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 440 468 L 460 468" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 660 468 L 680 468" marker-end="url(#ah_ov_f1)"/><path class="ar" d="M 880 468 L 900 468" marker-end="url(#ah_ov_f1)"/><text class="lane" x="20" y="526">⑥ 報表、查詢與對外申報 ←反向:由庫產出往外送</text><g class="bx">
+<rect x="20" y="534" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="556" text-anchor="middle">主管機關 / 集保</text>
+<text class="t2" x="120" y="576" text-anchor="middle">申報檔 媒體 對帳單</text>
+</g><g class="bx accent">
+<rect x="240" y="534" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="556" text-anchor="middle">NFDR073 OFDR042</text>
+<text class="t2" x="340" y="576" text-anchor="middle">對帳單 / 作業報表</text>
+</g><g class="bx">
+<rect x="460" y="534" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="556" text-anchor="middle">Report 七層</text>
+<text class="t2" x="560" y="576" text-anchor="middle">Crystal rpt 608 張</text>
+</g><g class="bx dash">
+<rect x="680" y="534" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="556" text-anchor="middle">OFDB008 OFDB019A</text>
+<text class="t2" x="780" y="576" text-anchor="middle">申報檔 / CRS XML</text>
+</g><g class="bx ext">
+<rect x="900" y="534" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="556" text-anchor="middle">SP 幾乎全在版控外</text>
+<text class="t2" x="1000" y="576" text-anchor="middle">OFD 71 + NFD 160</text>
+</g><path class="ar dsh" d="M 900 562 L 880 562" marker-end="url(#ah_ov_f1)"/><path class="ar dsh" d="M 680 562 L 660 562" marker-end="url(#ah_ov_f1)"/><path class="ar dsh" d="M 460 562 L 440 562" marker-end="url(#ah_ov_f1)"/><path class="ar dsh" d="M 240 562 L 220 562" marker-end="url(#ah_ov_f1)"/><text class="lane" x="20" y="620">圖例:五種框 + 虛線反向箭頭(輸出流,由庫往外),F2–F7 沿用</text><g class="bx accent">
+<rect x="20" y="628" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="661" text-anchor="middle">橘框 主線入口</text>
+</g><g class="bx">
+<rect x="240" y="628" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="661" text-anchor="middle">白框 一般節點</text>
+</g><g class="bx dash">
+<rect x="460" y="628" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="661" text-anchor="middle">灰虛 手動無排程</text>
+</g><g class="bx vend">
+<rect x="680" y="628" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="661" text-anchor="middle">橘虛 繞過四眼</text>
+</g><g class="bx ext">
+<rect x="900" y="628" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="661" text-anchor="middle">黑框 死畫面 黑箱</text>
+</g></svg><figcaption>圖 F1 六條業務線總覽。五欄由左到右就是五道泳道,一列一條線。橘框=該條線的入口畫面;灰虛框=落地批次,全部是人工按鈕、沒有排程;橘虛框=該條線上已知繞過四眼或四眼只剩軌跡的地方;黑框=版控外或跑不起來的東西。第六列是虛線反向箭頭:報表線的資料由資料庫產出往外送,與前五條相反——它只讀不寫。各列列標前的〔時段〕對應 §4 的一日作業時序,先後順序看 F7。</figcaption></figure>
+<p>素材:各模組篇 <a class="sec" href="#0-一頁摘要">§0</a> 與 <a class="sec" href="#2-業務線總覽">§2</a>、<code>architecture.md §9</code>。<strong>六條線的命名取自模組篇 <a class="sec" href="#0-一頁摘要">§0</a> 的用語,沒有自創。</strong></p>
+<div class="tw"><table><thead><tr><th>#</th><th>業務線</th><th>主責模組篇</th><th>核心表</th><th>入口畫面</th><th>落地批次</th><th>主要報表</th></tr></thead><tbody><tr><td>①</td><td>開戶與受益人資料變更</td><td><code>bms.md</code> <code>ofd6.md</code> <code>ofdb.md</code> <code>ec.md</code></td><td><code>BMS001A</code> <code>BMS001ACHG</code> <code>OFD123A</code></td><td><code>BMSM001</code> <code>BMSM006</code> <code>OFDM123A</code></td><td><strong><code>OFDB003</code></strong></td><td><code>NFDR001</code> <code>NFDR003</code></td></tr><tr><td>②</td><td>申購與定期定額</td><td><code>ofd8.md</code> <code>rsp.md</code> <code>ec.md</code> <code>ofdb3.md</code></td><td><code>OFD220A</code> <code>OFD221A</code> <code>RSP005A</code> <code>RSP006A</code></td><td><code>OFDM221A</code> <code>RSPM004</code></td><td><strong><code>OFDB600</code></strong> <code>OFDB605</code> <code>RSPB009</code></td><td><code>NFDR101</code> <code>NFDR102</code></td></tr><tr><td>③</td><td>買回、轉換與受益憑證</td><td><code>ofd8.md</code> <code>ofd5.md</code> <code>bbs.md</code> <code>ofd9.md</code></td><td><code>OFD251A</code> <code>OFD721</code></td><td><code>OFDM231A</code> <code>BBSM001</code> <code>OFDM085A</code></td><td><strong><code>OFDB323</code></strong></td><td><code>NFDR150</code> <code>BBSR002</code></td></tr><tr><td>④</td><td>結帳、庫存與日終</td><td><code>ofdb.md</code> <code>ofdb4.md</code> <code>ofdb5.md</code></td><td><code>OFD303A</code> <code>CTL022</code> <code>OFD302A</code></td><td><code>OFDB222</code> <code>OFDM302</code></td><td><strong><code>OFDB305</code></strong> <code>OFDB281</code> <code>OFDB701</code></td><td><code>NFDR812</code></td></tr><tr><td>⑤</td><td>通路、業績與客戶關係</td><td><code>cas.md</code> <code>dsm.md</code> <code>crm.md</code> <code>cls.md</code> <code>tmk.md</code> <code>cpm.md</code></td><td><code>CAS004A</code> <code>DSM006A</code> <code>CRM003A</code> <code>CLS001</code> <code>TMK001A</code></td><td><code>CASM004</code> <code>DSMM060</code> <code>TMKM001</code> <code>CLSM001</code></td><td><code>DSMB001</code> <code>CRMB001</code> <code>CLSB001</code></td><td><code>DSMR010</code> <code>TMKR001</code></td></tr><tr><td>⑥</td><td>報表、查詢與對外申報</td><td><code>nfdr1.md</code> <code>nfdr2.md</code> <code>ofdr1.md</code> <code>ofdi1.md</code></td><td>(只讀境內軌的表)</td><td><code>OFDI199</code> <code>TRPM001</code></td><td><code>OFDB008</code> <code>OFDB019A</code></td><td><code>NFDR073</code> <code>OFDR042</code></td></tr></tbody></table></div>
+<p>底座(不是業務線):<strong>參數與代碼主檔</strong>——代碼字典、機構主檔、基金主檔、費率階梯、員工與親屬,六條線全部 join 它們取中文名(<code>ofd123.md §0</code>、<code>ofd4.md §0</code>、<code>ofd5.md §0</code>、<code>ofd7.md §0</code>、<code>ofd9.md §0</code>、<code>cod.md §0</code>)。</p>
+</div></section><section class="sec" data-sec="3-端到端生命週期"><h2 id="3-端到端生命週期"><button class="tg" aria-label="收合/展開" type="button"></button>3. 端到端生命週期</h2><div class="sec-body">
+<p>素材:<code>bms.md §2.1</code>、<code>ofd8.md §0</code>、<code>ec.md §6</code>、<code>rsp.md §0</code>、<code>bbs.md §2</code>、<code>ofdb.md §6</code>、<code>ofdb3.md §6</code>、<code>ofdb4.md §6</code>、<code>ofdb5.md §6</code>、<code>nfdr1.md §0</code>、<code>cas.md §0</code>。</p>
+<h3 id="3-1-開戶與受益人資料變更">3.1 開戶與受益人資料變更</h3><figure><svg viewBox="0 0 1110 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="開戶、身分審查、網路開戶、受益人資料變更申請單與整批搬遷五段的端到端路徑"><defs><marker id="ah_ov_f2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">外部端點</text><text class="lane" x="240" y="26">客戶端畫面</text><text class="lane" x="460" y="26">伺服端與四眼</text><text class="lane" x="680" y="26">批次與服務</text><text class="lane" x="900" y="26">資料庫與報表</text><text class="lane" x="20" y="56">〔日中〕① 臨櫃開戶:唯一會產生受益人戶號的入口</text><g class="bx">
+<rect x="20" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="86" text-anchor="middle">受益人 / 通路</text>
+<text class="t2" x="120" y="106" text-anchor="middle">臨櫃送件與證件</text>
+</g><g class="bx accent">
+<rect x="240" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="86" text-anchor="middle">BMSM001</text>
+<text class="t2" x="340" y="106" text-anchor="middle">新戶建檔</text>
+</g><g class="bx">
+<rect x="460" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="86" text-anchor="middle">四眼 三階段</text>
+<text class="t2" x="560" y="106" text-anchor="middle">ToDo 指派角色</text>
+</g><g class="bx">
+<rect x="680" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="86" text-anchor="middle">BMS001A_TDCC_BF_NO</text>
+<text class="t2" x="780" y="106" text-anchor="middle">Trigger 給集保戶號</text>
+</g><g class="bx">
+<rect x="900" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="86" text-anchor="middle">BMS001A BMS004A</text>
+<text class="t2" x="1000" y="106" text-anchor="middle">受益人主檔 + 明細</text>
+</g><path class="ar" d="M 220 92 L 240 92" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 440 92 L 460 92" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 660 92 L 680 92" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 880 92 L 900 92" marker-end="url(#ah_ov_f2)"/><text class="lane" x="20" y="150">〔日中〕② 身分審查:KYC 問卷、實質受益人、高風險國別</text><g class="bx ext">
+<rect x="20" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="180" text-anchor="middle">主管機關名單</text>
+<text class="t2" x="120" y="200" text-anchor="middle">無介面 人工維護</text>
+</g><g class="bx accent">
+<rect x="240" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="180" text-anchor="middle">OFDM123A OFDM122A</text>
+<text class="t2" x="340" y="200" text-anchor="middle">投資屬性 / 自主聲明</text>
+</g><g class="bx accent">
+<rect x="460" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="180" text-anchor="middle">OFDM157 OFDM125A</text>
+<text class="t2" x="560" y="200" text-anchor="middle">高風險國別 / 董監事</text>
+</g><g class="bx">
+<rect x="680" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="180" text-anchor="middle">BasicBMS_PO</text>
+<text class="t2" x="780" y="200" text-anchor="middle">開戶時讀不寫</text>
+</g><g class="bx">
+<rect x="900" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="180" text-anchor="middle">OFD123A OFD124A</text>
+<text class="t2" x="1000" y="200" text-anchor="middle">問卷 + 實質受益人</text>
+</g><path class="ar" d="M 220 186 L 240 186" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 440 186 L 460 186" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 660 186 L 680 186" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 880 186 L 900 186" marker-end="url(#ah_ov_f2)"/><text class="lane" x="20" y="244">〔日中→產檔〕③ 網路開戶:EC 軌自己收件,主檔卻掛在 BMS</text><g class="bx">
+<rect x="20" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="274" text-anchor="middle">EC 網站 / IVR</text>
+<text class="t2" x="120" y="294" text-anchor="middle">客戶自助申請</text>
+</g><g class="bx accent">
+<rect x="240" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="274" text-anchor="middle">OFDM602 OFDM607</text>
+<text class="t2" x="340" y="294" text-anchor="middle">EC 參數與開戶維護</text>
+</g><g class="bx">
+<rect x="460" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="274" text-anchor="middle">BMSM006 帶入 EC</text>
+<text class="t2" x="560" y="294" text-anchor="middle">覆核後寄歡迎信</text>
+</g><g class="bx dash">
+<rect x="680" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="274" text-anchor="middle">OFDB607 OFDB609</text>
+<text class="t2" x="780" y="294" text-anchor="middle">手動 + 服務 60 秒</text>
+</g><g class="bx">
+<rect x="900" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="274" text-anchor="middle">OFD601 OFD607A</text>
+<text class="t2" x="1000" y="294" text-anchor="middle">網路戶主檔</text>
+</g><path class="ar" d="M 220 280 L 240 280" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 440 280 L 460 280" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 660 280 L 680 280" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 880 280 L 900 280" marker-end="url(#ah_ov_f2)"/><text class="lane" x="20" y="338">〔日中→日終〕④ 資料變更申請單:覆核通過還沒生效,要等批次</text><g class="bx">
+<rect x="20" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="368" text-anchor="middle">受益人變更申請</text>
+<text class="t2" x="120" y="388" text-anchor="middle">臨櫃 / 網路</text>
+</g><g class="bx accent">
+<rect x="240" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="368" text-anchor="middle">BMSM004 BMSM006</text>
+<text class="t2" x="340" y="388" text-anchor="middle">開單並填變更後值</text>
+</g><g class="bx vend">
+<rect x="460" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="368" text-anchor="middle">四眼覆核完不生效</text>
+<text class="t2" x="560" y="388" text-anchor="middle">CHG_UPD_DTTM 仍空</text>
+</g><g class="bx dash">
+<rect x="680" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="368" text-anchor="middle">OFDB003</text>
+<text class="t2" x="780" y="388" text-anchor="middle">s_TA_OFDB003_Excute</text>
+</g><g class="bx">
+<rect x="900" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="368" text-anchor="middle">BMS001ACHG 回寫本表</text>
+<text class="t2" x="1000" y="388" text-anchor="middle">蓋上 CHG_UPD_DTTM</text>
+</g><path class="ar" d="M 220 374 L 240 374" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 440 374 L 460 374" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 660 374 L 680 374" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 880 374 L 900 374" marker-end="url(#ah_ov_f2)"/><text class="lane" x="20" y="432">〔臨時〕⑤ 整批搬遷:三支 B 畫面沒有四眼,按下去直接改正式表</text><g class="bx">
+<rect x="20" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="462" text-anchor="middle">星展銀行 O 檔</text>
+<text class="t2" x="120" y="482" text-anchor="middle">定長文字檔</text>
+</g><g class="bx vend">
+<rect x="240" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="462" text-anchor="middle">BMSB901 BMSB901A</text>
+<text class="t2" x="340" y="482" text-anchor="middle">匯款帳號整批換號</text>
+</g><g class="bx vend">
+<rect x="460" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="462" text-anchor="middle">無四眼 直接改正表</text>
+<text class="t2" x="560" y="482" text-anchor="middle">xOneStepProcessForm</text>
+</g><g class="bx vend">
+<rect x="680" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="462" text-anchor="middle">BMSB925</text>
+<text class="t2" x="780" y="482" text-anchor="middle">CRS 高資產名單</text>
+</g><g class="bx vend">
+<rect x="900" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="462" text-anchor="middle">BMS001A RSP006A</text>
+<text class="t2" x="1000" y="482" text-anchor="middle">跨模組直接 UPDATE</text>
+</g><path class="ar" d="M 220 468 L 240 468" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 440 468 L 460 468" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 660 468 L 680 468" marker-end="url(#ah_ov_f2)"/><path class="ar" d="M 880 468 L 900 468" marker-end="url(#ah_ov_f2)"/></svg><figcaption>圖 F2 開戶與受益人異動。這條線最要記住的是第 ④ 段:變更單覆核通過之後資料**還在 BMS001ACHG**,`OFDB003` 沒跑就沒生效,判準是 CHG_UPD_DTTM 為空。第 ⑤ 段的三支 B 畫面完全沒有四眼,而且會跨模組直接改 RSP 的表。</figcaption></figure>
+<p>一位受益人從臨櫃送件開始。<code>BMSM001</code>(新戶)建檔走四眼三階段,落在 <code>BMS001A</code> 與它的明細;綜合帳戶的集保戶號與檢核碼不是程式產的,是 Trigger 給的(<code>DB/Trigger/BMS001A_TDCC_BF_NO.SQL:230</code>)。同時要做身分審查:<code>OFDM123A</code> 收投資屬性問卷與實質受益人、<code>OFDM122A</code> 收自主聲明書、<code>OFDM157</code> 維護高風險國別(<code>ofd6.md §0</code>);<code>OFDM123A</code> 的 <code>SOURCE_CD</code> 分「線上 / 後台 / 郵局」,選「線上」的資料<strong>禁止刪除</strong> (<code>Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM123A.cs:39</code>)。網路開戶走 EC 軌收件,但主檔 <code>OFD601</code> / <code>OFD607A</code>的唯一 <code>xTableMapping</code> 宣告在 BMS 那邊,EC 自己是裸 <code>UPDATE</code>(<code>ec.md §0</code>)。</p>
+<p><strong>這條線最要記住的一件事在「變更」不在「開戶」。</strong>受益人任何欄位要改,不是直接改 <code>BMS001A</code>,而是由 <code>BMSM004</code> / <code>BMSM006</code> 開一張<strong>變更申請單</strong> <code>BMS001ACHG</code>,一列同時帶 <code>BEF_*</code> 與 <code>AFT_*</code>。四眼覆核通過之後<strong>資料還沒進本表</strong>——判準是 <code>TRIM(CHG_UPD_DTTM) IS NULL</code>;要等批次 <code>OFDB003</code>呼叫 SP <code>s_TA_OFDB003_Excute</code> 才回寫並蓋上時戳(<code>bms.md §2.1</code>、 <code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:64-78</code>)。<code>OFDB003</code> 沒跑,下游印鑑與扣款批次就一直看到舊值。<strong>失敗會停在哪</strong>:<code>OFDB003</code> 執行前只<strong>詢問</strong>「還有幾筆沒覆核」,不阻擋(<code>ofdb.md §6</code>)。確認生效看 <code>NFDR001</code>「基金受益人名冊」(<code>nfdr1.md §0</code>)。</p>
+<div class="tw"><table><thead><tr><th>經過的代號</th><th>角色</th></tr></thead><tbody><tr><td><code>BMSM001</code> <code>BMSM004</code> <code>BMSM006</code></td><td>開戶 / 開變更單 / 變更單全欄維護</td></tr><tr><td><code>OFDM122A</code> <code>OFDM123A</code> <code>OFDM125A</code> <code>OFDM157</code></td><td>自主聲明、投資屬性問卷、董監事、高風險國別</td></tr><tr><td><code>OFDB003</code> <code>OFDB607</code> <code>OFDB609</code></td><td>變更生效、網路開戶處理、開戶後續與 LDAP</td></tr><tr><td><code>BMS001A</code> <code>BMS001ACHG</code> <code>OFD123A</code> <code>OFD601</code></td><td>受益人主檔、變更申請單、問卷、網路戶</td></tr><tr><td><code>BMSB901</code> <code>BMSB901A</code> <code>BMSB925</code></td><td><strong>無四眼</strong>,按下去直接改正式表</td></tr></tbody></table></div>
+<h3 id="3-2-申購與定期定額">3.2 申購與定期定額</h3><figure><svg viewBox="0 0 1110 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="櫃台申購、網路語音下單、拋轉、定期定額與境外申購流水線五段的端到端路徑"><defs><marker id="ah_ov_f3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">外部端點</text><text class="lane" x="240" y="26">客戶端畫面</text><text class="lane" x="460" y="26">伺服端與四眼</text><text class="lane" x="680" y="26">批次與服務</text><text class="lane" x="900" y="26">資料庫與報表</text><text class="lane" x="20" y="56">〔日中〕① 櫃台申購:四眼還在,但帳在輸入的當下就動了</text><g class="bx">
+<rect x="20" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="86" text-anchor="middle">受益人 / 銷售機構</text>
+<text class="t2" x="120" y="106" text-anchor="middle">臨櫃申購書</text>
+</g><g class="bx accent">
+<rect x="240" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="86" text-anchor="middle">OFDM221A</text>
+<text class="t2" x="340" y="106" text-anchor="middle">開申購書</text>
+</g><g class="bx vend">
+<rect x="460" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="86" text-anchor="middle">AfterAdd 就寫帳</text>
+<text class="t2" x="560" y="106" text-anchor="middle">覆核只剩軌跡</text>
+</g><g class="bx">
+<rect x="680" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="86" text-anchor="middle">OFD303A CTL012</text>
+<text class="t2" x="780" y="106" text-anchor="middle">過帳與櫃台控制檔</text>
+</g><g class="bx">
+<rect x="900" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="86" text-anchor="middle">OFD220A OFD221A</text>
+<text class="t2" x="1000" y="106" text-anchor="middle">申購主檔 / 明細</text>
+</g><path class="ar" d="M 220 92 L 240 92" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 440 92 L 460 92" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 660 92 L 680 92" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 880 92 L 900 92" marker-end="url(#ah_ov_f3)"/><text class="lane" x="20" y="150">〔日中→截止〕② 網路與語音下單:截止時刻存在資料庫,不在排程器</text><g class="bx">
+<rect x="20" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="180" text-anchor="middle">EC 網站 / IVR</text>
+<text class="t2" x="120" y="200" text-anchor="middle">客戶自助下單</text>
+</g><g class="bx accent">
+<rect x="240" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="180" text-anchor="middle">OFDM600 OFDM601</text>
+<text class="t2" x="340" y="200" text-anchor="middle">限額與交易途徑</text>
+</g><g class="bx">
+<rect x="460" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="180" text-anchor="middle">ECAdapter</text>
+<text class="t2" x="560" y="200" text-anchor="middle">TA 與 EC 的介面</text>
+</g><g class="bx dash">
+<rect x="680" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="180" text-anchor="middle">OFDB600 服務</text>
+<text class="t2" x="780" y="200" text-anchor="middle">每 60 秒比 HHmm</text>
+</g><g class="bx">
+<rect x="900" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="180" text-anchor="middle">OFD600A OFD606A</text>
+<text class="t2" x="1000" y="200" text-anchor="middle">四個截止時間欄</text>
+</g><path class="ar" d="M 220 186 L 240 186" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 440 186 L 460 186" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 660 186 L 680 186" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 880 186 L 900 186" marker-end="url(#ah_ov_f3)"/><text class="lane" x="20" y="244">〔截止後〕③ 拋轉進核心:兩份複本打同一支 SP</text><g class="bx">
+<rect x="20" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="274" text-anchor="middle">語音下單</text>
+<text class="t2" x="120" y="294" text-anchor="middle">IPJB6xx 才給語音</text>
+</g><g class="bx accent">
+<rect x="240" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="274" text-anchor="middle">IPJB621 OFDB601</text>
+<text class="t2" x="340" y="294" text-anchor="middle">拋轉 / 拋轉回復</text>
+</g><g class="bx ext">
+<rect x="460" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="274" text-anchor="middle">S_EC_IPJB601_EXCUTE</text>
+<text class="t2" x="560" y="294" text-anchor="middle">兩支共用同一支 SP</text>
+</g><g class="bx dash">
+<rect x="680" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="274" text-anchor="middle">OFDB605</text>
+<text class="t2" x="780" y="294" text-anchor="middle">要求先跑 OFDB600</text>
+</g><g class="bx">
+<rect x="900" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="274" text-anchor="middle">OFD620A OFD621A</text>
+<text class="t2" x="1000" y="294" text-anchor="middle">網路申購與手續費</text>
+</g><path class="ar" d="M 220 280 L 240 280" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 440 280 L 460 280" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 660 280 L 680 280" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 880 280 L 900 280" marker-end="url(#ah_ov_f3)"/><text class="lane" x="20" y="338">〔日中→日終〕④ 定期定額:立約在畫面,扣款在批次,唯一有服務的是變更生效</text><g class="bx">
+<rect x="20" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="368" text-anchor="middle">扣款銀行 / 代理行</text>
+<text class="t2" x="120" y="388" text-anchor="middle">核印與扣款媒體檔</text>
+</g><g class="bx accent">
+<rect x="240" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="368" text-anchor="middle">RSPM004 RSPB020</text>
+<text class="t2" x="340" y="388" text-anchor="middle">契約與業務欄維護</text>
+</g><g class="bx accent">
+<rect x="460" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="368" text-anchor="middle">OFDM074 OFDM076</text>
+<text class="t2" x="560" y="388" text-anchor="middle">核印 / 代理扣款機構</text>
+</g><g class="bx dash">
+<rect x="680" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="368" text-anchor="middle">RSPB009 RSPB010 RSPB011</text>
+<text class="t2" x="780" y="388" text-anchor="middle">產檔 核印 回覆</text>
+</g><g class="bx">
+<rect x="900" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="368" text-anchor="middle">RSP005A RSP006A RSP008</text>
+<text class="t2" x="1000" y="388" text-anchor="middle">契約 + 扣款</text>
+</g><path class="ar" d="M 220 374 L 240 374" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 440 374 L 460 374" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 660 374 L 680 374" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 880 374 L 900 374" marker-end="url(#ah_ov_f3)"/><text class="lane" x="20" y="432">〔日中→截止後〕⑤ 境外申購流水線:同樣的業務,另一套表與另一套批次</text><g class="bx">
+<rect x="20" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="462" text-anchor="middle">境外基金公司 / 集保</text>
+<text class="t2" x="120" y="482" text-anchor="middle">交換檔往返</text>
+</g><g class="bx vend">
+<rect x="240" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="462" text-anchor="middle">OFDM221C</text>
+<text class="t2" x="340" y="482" text-anchor="middle">境外申購書維護</text>
+</g><g class="bx vend">
+<rect x="460" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="462" text-anchor="middle">繞過四眼寫 OFD113</text>
+<text class="t2" x="560" y="482" text-anchor="middle">存檔後同步另一表</text>
+</g><g class="bx dash">
+<rect x="680" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="462" text-anchor="middle">OFDB051 OFDB057 OFDB061</text>
+<text class="t2" x="780" y="482" text-anchor="middle">確認 回報 結帳</text>
+</g><g class="bx">
+<rect x="900" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="462" text-anchor="middle">OFD220 OFD221</text>
+<text class="t2" x="1000" y="482" text-anchor="middle">境外軌 表名去 A</text>
+</g><path class="ar" d="M 220 468 L 240 468" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 440 468 L 460 468" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 660 468 L 680 468" marker-end="url(#ah_ov_f3)"/><path class="ar" d="M 880 468 L 900 468" marker-end="url(#ah_ov_f3)"/></svg><figcaption>圖 F3 申購與定期定額。兩個一定要記住的點:截止時間不在 Windows 排程器,而是 OFD606A / OFD600A 的欄位,改欄位就改排程;境內與境外是兩套表(OFD220A 對 OFD220),同一件事做兩份。</figcaption></figure>
+<p>三個入口。<strong>櫃台</strong>由 <code>OFDM221A</code> 開申購書;「覆核才生效」在這裡不成立——真正的跨表副作用(更新過帳控制檔、櫃台控制檔、回寫贖回中單位數)掛在 <code>AfterAdd</code> / <code>BeforeAdd</code>,<strong>輸入按下去帳上就動了,四眼只是軌跡</strong> (<code>ofd8.md §0</code>)。<strong>網路與語音</strong>由 EC 軌收單,到截止時間由 <code>OFDB600</code> 整批截單;它的時刻不在 Windows 排程器,而是 <code>OFD606A</code> 的四個截止時間欄與 <code>OFD600A</code> 的受益人變更時限,服務每 60 秒拿 <code>HHmm</code> 去比 (<code>ofdb3.md §3</code>、<code>Dev/ATLAS.EC/Source/WindowsService/WindowsService.OFDB600/OFDB600_Service.cs:27-30</code>、<code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB600OracleDao.cs:268-292</code>)。截單後 <code>OFDB601</code> / <code>IPJB621</code> 拋轉, <code>OFDB605</code> 會<strong>要求先跑過 <code>OFDB600</code></strong>(<code>ofdb3.md §3</code>)。</p>
+<p><strong>定期定額</strong>是另一套契約:<code>RSPM004</code> 立約、<code>RSPB020</code> 改業務欄(代號是 B、其實是 M 畫面),扣款走<code>RSPB009</code> 產檔 → <code>RSPB010</code> 核印 → <code>RSPB011</code> 回覆 → <code>RSPB018</code> 結轉;扣款機構的簽約內容在 <code>OFDM074</code>(核印) 與 <code>OFDM076</code>(代理)(<code>rsp.md §0</code>、<code>ofd5.md §0</code>)。<strong>境外</strong>是鏡像的第二套:<code>OFDB051</code> 下單確認 →<code>OFDB052</code> 試算 → <code>OFDB057</code> 集保回報 → <code>OFDB061</code> 結帳,動的是不帶 <code>A</code> 的 <code>OFD220</code> / <code>OFD221</code>(<code>ofdb5.md §6</code>)。</p>
+<div class="tw"><table><thead><tr><th>經過的代號</th><th>角色</th></tr></thead><tbody><tr><td><code>OFDM221A</code> <code>OFDM221C</code> <code>OFDM600</code> <code>OFDM601</code></td><td>境內 / 境外申購書、EC 限額與交易途徑</td></tr><tr><td><code>OFDB600</code> <code>OFDB601</code> <code>OFDB605</code> <code>IPJB621</code></td><td>截止、產生、拋轉與拋轉回復</td></tr><tr><td><code>RSPM004</code> <code>RSPB020</code> <code>RSPB009</code> <code>RSPB010</code> <code>RSPB011</code> <code>RSPB018</code></td><td>定額立約與每期扣款</td></tr><tr><td><code>OFDM074</code> <code>OFDM076</code></td><td>核印 / 代理扣款機構</td></tr><tr><td><code>OFD220A</code> <code>OFD221A</code> <code>OFD600A</code> <code>OFD606A</code> <code>RSP005A</code> <code>RSP006A</code></td><td>申購檔、截止時刻、定額契約</td></tr></tbody></table></div>
+<h3 id="3-3-買回-轉換與受益憑證">3.3 買回、轉換與受益憑證</h3><figure><svg viewBox="0 0 1110 610" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="買回、匯費、轉換、受益憑證、憑證的 OFD 側入口與境外贖回流水線六段的端到端路徑"><defs><marker id="ah_ov_f4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">外部端點</text><text class="lane" x="240" y="26">客戶端畫面</text><text class="lane" x="460" y="26">伺服端與四眼</text><text class="lane" x="680" y="26">批次與服務</text><text class="lane" x="900" y="26">資料庫與報表</text><text class="lane" x="20" y="56">〔日中〕① 買回:開單當下就回寫申購明細的贖回中單位數</text><g class="bx">
+<rect x="20" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="86" text-anchor="middle">受益人 / 銀行</text>
+<text class="t2" x="120" y="106" text-anchor="middle">贖回款匯出</text>
+</g><g class="bx accent">
+<rect x="240" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="86" text-anchor="middle">OFDM231A</text>
+<text class="t2" x="340" y="106" text-anchor="middle">開買回書</text>
+</g><g class="bx vend">
+<rect x="460" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="86" text-anchor="middle">手寫 UPDATE</text>
+<text class="t2" x="560" y="106" text-anchor="middle">OFD221A 贖回中單位</text>
+</g><g class="bx dash">
+<rect x="680" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="86" text-anchor="middle">OFDB323</text>
+<text class="t2" x="780" y="106" text-anchor="middle">買回日結轉 11 道</text>
+</g><g class="bx">
+<rect x="900" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="86" text-anchor="middle">OFD251A</text>
+<text class="t2" x="1000" y="106" text-anchor="middle">買回主檔</text>
+</g><path class="ar" d="M 220 92 L 240 92" marker-end="url(#ah_ov_f4)"/><path class="ar" d="M 440 92 L 460 92" marker-end="url(#ah_ov_f4)"/><path class="ar" d="M 660 92 L 680 92" marker-end="url(#ah_ov_f4)"/><path class="ar" d="M 880 92 L 900 92" marker-end="url(#ah_ov_f4)"/><text class="lane" x="20" y="150">〔日中〕② 匯費與匯款帳戶:只維護級距,算費的程式在版控外</text><g class="bx">
+<rect x="20" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="180" text-anchor="middle">全行 vs 個別銀行</text>
+<text class="t2" x="120" y="200" text-anchor="middle">兩組匯費級距</text>
+</g><g class="bx accent">
+<rect x="240" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="180" text-anchor="middle">OFDM035 OFDM036</text>
+<text class="t2" x="340" y="200" text-anchor="middle">匯費維護</text>
+</g><g class="bx ext">
+<rect x="460" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="180" text-anchor="middle">算費在版控外</text>
+<text class="t2" x="560" y="200" text-anchor="middle">repo 內查不到</text>
+</g><g class="bx">
+<rect x="900" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="180" text-anchor="middle">OFD035A OFD036A</text>
+<text class="t2" x="1000" y="200" text-anchor="middle">匯費級距表</text>
+</g><path class="ar" d="M 220 186 L 240 186" marker-end="url(#ah_ov_f4)"/><path class="ar" d="M 440 186 L 460 186" marker-end="url(#ah_ov_f4)"/><path class="ar dsh" d="M 660 186 L 900 186" marker-end="url(#ah_ov_f4)"/><text class="lane" x="20" y="244">〔日中→日終〕③ 轉換:一筆轉換是「贖回 + 申購」兩腳,結轉有先後</text><g class="bx accent">
+<rect x="240" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="274" text-anchor="middle">OFDM085A OFDM085B OFDM086</text>
+<text class="t2" x="340" y="294" text-anchor="middle">可轉基金 / 再投資</text>
+</g><g class="bx">
+<rect x="460" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="274" text-anchor="middle">轉換三兄弟</text>
+<text class="t2" x="560" y="294" text-anchor="middle">FUND_ID SWITCH_FUND_ID</text>
+</g><g class="bx dash">
+<rect x="680" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="274" text-anchor="middle">OFDB305 第 12 道</text>
+<text class="t2" x="780" y="294" text-anchor="middle">贖回未結轉就擋</text>
+</g><g class="bx">
+<rect x="900" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="274" text-anchor="middle">OFD251A REDEM_PROC_CODE</text>
+<text class="t2" x="1000" y="294" text-anchor="middle">轉申購的贖回腳</text>
+</g><path class="ar" d="M 440 280 L 460 280" marker-end="url(#ah_ov_f4)"/><path class="ar" d="M 660 280 L 680 280" marker-end="url(#ah_ov_f4)"/><path class="ar" d="M 880 280 L 900 280" marker-end="url(#ah_ov_f4)"/><text class="lane" x="20" y="338">〔日中〕④ 受益憑證:實體一套、無實體一套,狀態都寫在 OFD721</text><g class="bx">
+<rect x="20" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="368" text-anchor="middle">受益人 / 質權人</text>
+<text class="t2" x="120" y="388" text-anchor="middle">憑證送件</text>
+</g><g class="bx accent">
+<rect x="240" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="368" text-anchor="middle">BBSM001 BBSM003 BBSM005</text>
+<text class="t2" x="340" y="388" text-anchor="middle">換發 掛失 補發</text>
+</g><g class="bx accent">
+<rect x="460" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="368" text-anchor="middle">BBSM009 BBSM013</text>
+<text class="t2" x="560" y="388" text-anchor="middle">質設 / 轉讓 1xx 無實體</text>
+</g><g class="bx">
+<rect x="680" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="368" text-anchor="middle">CalcBBSUnits</text>
+<text class="t2" x="780" y="388" text-anchor="middle">共用單位數計算</text>
+</g><g class="bx">
+<rect x="900" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="368" text-anchor="middle">OFD721 CER_STATUS</text>
+<text class="t2" x="1000" y="388" text-anchor="middle">九個值 中央狀態機</text>
+</g><path class="ar" d="M 220 374 L 240 374" marker-end="url(#ah_ov_f4)"/><path class="ar" d="M 440 374 L 460 374" marker-end="url(#ah_ov_f4)"/><path class="ar" d="M 660 374 L 680 374" marker-end="url(#ah_ov_f4)"/><path class="ar" d="M 880 374 L 900 374" marker-end="url(#ah_ov_f4)"/><text class="lane" x="20" y="432">〔日中〕⑤ 憑證的 OFD 側入口:四支自己下 SQL,不經四眼</text><g class="bx vend">
+<rect x="240" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="462" text-anchor="middle">OFDM721 OFDM723</text>
+<text class="t2" x="340" y="482" text-anchor="middle">實體憑證作業</text>
+</g><g class="bx vend">
+<rect x="460" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="462" text-anchor="middle">OFDM724 OFDM725</text>
+<text class="t2" x="560" y="482" text-anchor="middle">繞過四眼自下 SQL</text>
+</g><g class="bx ext">
+<rect x="680" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="462" text-anchor="middle">CER_STATUS 值 9</text>
+<text class="t2" x="780" y="482" text-anchor="middle">全庫查不到誰寫</text>
+</g><g class="bx">
+<rect x="900" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="462" text-anchor="middle">OFD722 OFD724</text>
+<text class="t2" x="1000" y="482" text-anchor="middle">憑證明細</text>
+</g><path class="ar" d="M 440 468 L 460 468" marker-end="url(#ah_ov_f4)"/><path class="ar" d="M 660 468 L 680 468" marker-end="url(#ah_ov_f4)"/><path class="ar" d="M 880 468 L 900 468" marker-end="url(#ah_ov_f4)"/><text class="lane" x="20" y="526">〔日中→截止後〕⑥ 境外贖回流水線:與申購線鏡像對稱</text><g class="bx">
+<rect x="20" y="534" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="556" text-anchor="middle">境外基金公司</text>
+<text class="t2" x="120" y="576" text-anchor="middle">付款確認</text>
+</g><g class="bx dash">
+<rect x="680" y="534" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="556" text-anchor="middle">OFDB081 OFDB086 OFDB091</text>
+<text class="t2" x="780" y="576" text-anchor="middle">確認 回報 結帳</text>
+</g><g class="bx">
+<rect x="900" y="534" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="556" text-anchor="middle">OFD251 OFD252</text>
+<text class="t2" x="1000" y="576" text-anchor="middle">境外軌 無 A</text>
+</g><path class="ar" d="M 220 562 L 680 562" marker-end="url(#ah_ov_f4)"/><path class="ar" d="M 880 562 L 900 562" marker-end="url(#ah_ov_f4)"/></svg><figcaption>圖 F4 買回、轉換與受益憑證。第 ② 段的虛線表示「維護到這裡就斷了」——repo 內只有維護匯費級距的畫面,沒有任何程式讀 OFD036A 去算一筆贖回要扣多少。第 ④ 與 ⑤ 段是同一張 OFD721 的兩個入口:BBS 那套走四眼,OFD 那套不走。</figcaption></figure>
+<p><code>OFDM231A</code> 開買回書,而且它是全庫唯一會寫 <code>OFD221A</code> 的 <code>RDMING_UNIT</code>(贖回中單位數)的地方,寫法是<strong>繞過四眼引擎的手寫 UPDATE</strong>(<code>ofd8.md §8</code>)。贖回款匯出的匯費有兩組級距:<code>OFDM035</code> 全行通用、 <code>OFDM036</code> 個別銀行(<code>ofd4.md §0</code>)。<strong>但 repo 內沒有任何程式讀 <code>OFD036A</code> 去算一筆贖回實際要扣多少</strong>——計價流程在版控外(<code>ofd4.md §0</code>)。轉換是「贖回一腳 + 申購一腳」:可轉對應與費率在 <code>OFDM085A</code> / <code>OFDM085B</code> / <code>OFDM086</code>(<code>ofd5.md §0</code>),而申購日結轉 <code>OFDB305</code> 的第 12 道檢核就是「轉申購對應的贖回還沒結轉就擋住」(<code>ofdb5.md §6</code>)。</p>
+<p>受益憑證是獨立的一套狀態機:<code>BBSM001</code> 換發、<code>BBSM003</code> 掛失、<code>BBSM004</code> 掛撤、<code>BBSM005</code> 補發、<code>BBSM009</code> 質設、<code>BBSM010</code> 質解、<code>BBSM013</code> 轉讓,每條線都有實體與無實體兩份(<code>1xx</code> 不是舊版,是無實體;<code>bbs.md §0</code>)。九個狀態值全部寫在 <code>OFD721</code> 的 <code>CER_STATUS</code>,值域在<code>Dev/Common/Source/MappingCode/TA.MappingCode/CTL014.cs:2334-2372</code>(<code>bbs.md §2</code>)。 <strong>同一張 <code>OFD721</code> 有兩組入口</strong>:BBS 那套走四眼,OFD 那套(<code>OFDM721</code> <code>OFDM723</code> <code>OFDM724</code> <code>OFDM725</code>)自己下 SQL 不走四眼(<code>ofd9.md §0</code>)。<code>CER_STATUS</code> 的 <code>'9'</code>(已贖回)<strong>全庫查不到誰寫</strong>, 〔假設〕由贖回批次寫入(<code>bbs.md §2</code>)。</p>
+<div class="tw"><table><thead><tr><th>經過的代號</th><th>角色</th></tr></thead><tbody><tr><td><code>OFDM231A</code> <code>OFDM035</code> <code>OFDM036</code></td><td>買回書、全行匯費、個別銀行匯費</td></tr><tr><td><code>OFDM085A</code> <code>OFDM085B</code> <code>OFDM086</code></td><td>可轉基金、費率、配息再投資</td></tr><tr><td><code>BBSM001</code> <code>BBSM003</code> <code>BBSM005</code> <code>BBSM009</code> <code>BBSM013</code></td><td>換發 / 掛失 / 補發 / 質設 / 轉讓</td></tr><tr><td><code>OFDM721</code> <code>OFDM723</code> <code>OFDM724</code> <code>OFDM725</code></td><td>OFD 側的實體憑證作業,<strong>繞過四眼</strong></td></tr><tr><td><code>OFDB323</code> <code>OFDB081</code> <code>OFDB086</code> <code>OFDB091</code></td><td>境內買回日結轉、境外贖回流水線</td></tr></tbody></table></div>
+<h3 id="3-4-結帳-庫存與日終">3.4 結帳、庫存與日終</h3><figure><svg viewBox="0 0 1110 610" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="交易截止、關帳、日結轉、淨值匯率配息、生效清理與產檔寄送六段的日終路徑"><defs><marker id="ah_ov_f5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">外部端點</text><text class="lane" x="240" y="26">客戶端畫面</text><text class="lane" x="460" y="26">伺服端與四眼</text><text class="lane" x="680" y="26">批次與服務</text><text class="lane" x="900" y="26">資料庫與報表</text><text class="lane" x="20" y="56">〔日中→截止〕① 日中到交易截止:唯一「時刻存在 DB」的一段</text><g class="bx">
+<rect x="20" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="86" text-anchor="middle">EC 網站 / IVR</text>
+<text class="t2" x="120" y="106" text-anchor="middle">委託進到截止時間</text>
+</g><g class="bx dash">
+<rect x="680" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="86" text-anchor="middle">OFDB600 服務</text>
+<text class="t2" x="780" y="106" text-anchor="middle">比 OFD606A 的 HHmm</text>
+</g><g class="bx">
+<rect x="900" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="86" text-anchor="middle">OFD620A OFD651A</text>
+<text class="t2" x="1000" y="106" text-anchor="middle">處理碼由 0 變 1</text>
+</g><path class="ar" d="M 220 92 L 680 92" marker-end="url(#ah_ov_f5)"/><path class="ar" d="M 880 92 L 900 92" marker-end="url(#ah_ov_f5)"/><text class="lane" x="20" y="150">〔日終〕② 關帳:逐基金逐銷售機構,有取消關帳</text><g class="bx accent">
+<rect x="240" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="180" text-anchor="middle">OFDB222</text>
+<text class="t2" x="340" y="200" text-anchor="middle">申購 / 贖回關帳</text>
+</g><g class="bx">
+<rect x="460" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="180" text-anchor="middle">批次不走四眼</text>
+<text class="t2" x="560" y="200" text-anchor="middle">自組 SQL 自管交易</text>
+</g><g class="bx">
+<rect x="900" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="180" text-anchor="middle">CTL022 OFD303A</text>
+<text class="t2" x="1000" y="200" text-anchor="middle">關帳與過帳控制檔</text>
+</g><path class="ar" d="M 440 186 L 460 186" marker-end="url(#ah_ov_f5)"/><path class="ar dsh" d="M 660 186 L 900 186" marker-end="url(#ah_ov_f5)"/><text class="lane" x="20" y="244">〔日終〕③ 日結轉:申購 12 道阻擋、買回 11 道,全部人工按</text><g class="bx accent">
+<rect x="240" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="274" text-anchor="middle">OFDB305 OFDB323</text>
+<text class="t2" x="340" y="294" text-anchor="middle">申購 / 買回日結轉</text>
+</g><g class="bx vend">
+<rect x="460" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="274" text-anchor="middle">第 7 道被註解</text>
+<text class="t2" x="560" y="294" text-anchor="middle">2009 起不擋暫停戶</text>
+</g><g class="bx dash">
+<rect x="680" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="274" text-anchor="middle">手動執行 無排程</text>
+<text class="t2" x="780" y="294" text-anchor="middle">順序靠人記得</text>
+</g><g class="bx">
+<rect x="900" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="274" text-anchor="middle">OFD221A OFD251A</text>
+<text class="t2" x="1000" y="294" text-anchor="middle">結轉狀態</text>
+</g><path class="ar" d="M 440 280 L 460 280" marker-end="url(#ah_ov_f5)"/><path class="ar" d="M 660 280 L 680 280" marker-end="url(#ah_ov_f5)"/><path class="ar" d="M 880 280 L 900 280" marker-end="url(#ah_ov_f5)"/><text class="lane" x="20" y="338">〔日終〕④ 淨值、匯率與配息</text><g class="bx">
+<rect x="20" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="368" text-anchor="middle">基金公司 / 境外平台</text>
+<text class="t2" x="120" y="388" text-anchor="middle">淨值與匯率來源</text>
+</g><g class="bx accent">
+<rect x="240" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="368" text-anchor="middle">OFDM300 OFDM301 OFDM302</text>
+<text class="t2" x="340" y="388" text-anchor="middle">匯率 交叉匯率 淨值</text>
+</g><g class="bx vend">
+<rect x="460" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="368" text-anchor="middle">OFDM302B</text>
+<text class="t2" x="560" y="388" text-anchor="middle">匯入即鎖定 繞四眼</text>
+</g><g class="bx dash">
+<rect x="680" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="368" text-anchor="middle">OFDB281 OFDB041</text>
+<text class="t2" x="780" y="388" text-anchor="middle">配息產生 / 淨值鎖定</text>
+</g><g class="bx">
+<rect x="900" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="368" text-anchor="middle">OFD302A OFD281A</text>
+<text class="t2" x="1000" y="388" text-anchor="middle">淨值 / 配息設定</text>
+</g><path class="ar" d="M 220 374 L 240 374" marker-end="url(#ah_ov_f5)"/><path class="ar" d="M 440 374 L 460 374" marker-end="url(#ah_ov_f5)"/><path class="ar" d="M 660 374 L 680 374" marker-end="url(#ah_ov_f5)"/><path class="ar" d="M 880 374 L 900 374" marker-end="url(#ah_ov_f5)"/><text class="lane" x="20" y="432">〔日終〕⑤ 生效與清理:資料變更單在這一步才真的進本表</text><g class="bx">
+<rect x="240" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="462" text-anchor="middle">BMSM006 已覆核的單</text>
+<text class="t2" x="340" y="482" text-anchor="middle">仍停在 CHG 表</text>
+</g><g class="bx dash">
+<rect x="680" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="462" text-anchor="middle">OFDB003</text>
+<text class="t2" x="780" y="482" text-anchor="middle">受益人異動生效</text>
+</g><g class="bx">
+<rect x="900" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="462" text-anchor="middle">BMS001A</text>
+<text class="t2" x="1000" y="482" text-anchor="middle">回寫並蓋時戳</text>
+</g><path class="ar" d="M 440 468 L 680 468" marker-end="url(#ah_ov_f5)"/><path class="ar" d="M 880 468 L 900 468" marker-end="url(#ah_ov_f5)"/><text class="lane" x="20" y="526">〔產檔〕⑥ 產檔、寄送與媒體交換:三支 WindowsService 都在這一段 ←反向:由庫產出往外送</text><g class="bx">
+<rect x="20" y="534" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="556" text-anchor="middle">銀行 / 集保 / 受益人</text>
+<text class="t2" x="120" y="576" text-anchor="middle">媒體檔與信件</text>
+</g><g class="bx accent">
+<rect x="240" y="534" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="556" text-anchor="middle">OFDB565 OFDB566</text>
+<text class="t2" x="340" y="576" text-anchor="middle">傳檔 / 收檔</text>
+</g><g class="bx accent">
+<rect x="460" y="534" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="556" text-anchor="middle">OFDB716 OFDB721</text>
+<text class="t2" x="560" y="576" text-anchor="middle">集保上傳 / 回收</text>
+</g><g class="bx dash">
+<rect x="680" y="534" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="556" text-anchor="middle">OFDB609 OFDB680</text>
+<text class="t2" x="780" y="576" text-anchor="middle">服務:LDAP 與到價</text>
+</g><g class="bx">
+<rect x="900" y="534" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="556" text-anchor="middle">OFD562 TRP801A</text>
+<text class="t2" x="1000" y="576" text-anchor="middle">核印與集保媒體</text>
+</g><path class="ar dsh" d="M 900 562 L 880 562" marker-end="url(#ah_ov_f5)"/><path class="ar dsh" d="M 680 562 L 660 562" marker-end="url(#ah_ov_f5)"/><path class="ar dsh" d="M 460 562 L 440 562" marker-end="url(#ah_ov_f5)"/><path class="ar dsh" d="M 240 562 L 220 562" marker-end="url(#ah_ov_f5)"/></svg><figcaption>圖 F5 結帳、庫存與日終。整條線只有三支 WindowsService 會自己醒來(OFDB600 / OFDB609 / OFDB680,另有 RSPB008),其餘每一支灰虛框都要人在選單裡點開來按。先後順序沒有任何程式強制,查不到資料時自然做不下去就是唯一的保護。</figcaption></figure>
+<p>一天的後半段:截止 → 關帳 → 日結轉 → 淨值配息 → 生效 → 產檔。<code>OFDB222</code> 逐基金逐銷售機構關帳,寫 <code>CTL022</code> 與 <code>OFD303A</code>(<code>ofdb.md §0</code>)。<code>OFDB305</code>(申購日結轉)有 12 道阻擋、<code>OFDB323</code>(買回)有 11 道, 全部寫在同一段 <code>CASE WHEN</code> 裡(<code>ofdb5.md §6</code>)。<strong>其中第 7 道「受益人暫停申購」自 2009 年起整段被註解</strong>(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB305_PO.cs:245-260</code>)——暫停申購的受益人擋不住日結轉。</p>
+<p>淨值與匯率由 <code>OFDM300</code> <code>OFDM301</code> <code>OFDM302</code> 維護;境外軌另有 <code>OFDM302B</code>,匯入即鎖定而且<strong>完全繞過四眼</strong>(<code>misc.md §0</code>、<code>Dev/ATLAS.OTA/Source/PO/PO.OTA/OFDM302B_PO.cs:208-209</code>)。配息由 <code>OFDB281</code> 產生受益人清冊, 退匯 / 重匯是 <code>OFDB286</code> / <code>OFDB287</code>(<code>ofdb.md §0</code>)。生效那一步就是 <a class="sec" href="#3-1-開戶與受益人資料變更">§3.1</a> 講的 <code>OFDB003</code>。最後是產檔與媒體交換:<code>OFDB565</code> 傳檔 / <code>OFDB566</code> 收檔、集保上傳回收 <code>OFDB716</code> ↔ <code>OFDB721</code>、核印扣款 <code>OFDB701</code> → <code>OFDB702</code> → <code>OFDB703</code> → <code>OFDB704</code>(<code>ofdb4.md §6</code>)。<strong>失敗會停在哪</strong>:核印扣款那條七支流水線<strong>沒有任何一支在程式裡強制順序</strong>,靠資料狀態接力, 查不到資料就是空清單(<code>ofdb4.md §6</code>)。</p>
+<div class="tw"><table><thead><tr><th>經過的代號</th><th>角色</th></tr></thead><tbody><tr><td><code>OFDB222</code> <code>OFDB305</code> <code>OFDB323</code></td><td>關帳、申購日結轉、買回日結轉</td></tr><tr><td><code>OFDM300</code> <code>OFDM301</code> <code>OFDM302</code> <code>OFDM302B</code></td><td>匯率、交叉匯率、淨值(境內 / 境外)</td></tr><tr><td><code>OFDB281</code> <code>OFDB286</code> <code>OFDB287</code> <code>OFDB041</code></td><td>配息產生、退匯、重匯、淨值鎖定</td></tr><tr><td><code>OFDB003</code> <code>OFDB565</code> <code>OFDB566</code> <code>OFDB716</code> <code>OFDB721</code></td><td>生效、傳收檔、集保上傳與回收</td></tr><tr><td><code>OFDB701</code> <code>OFDB702</code> <code>OFDB703</code> <code>OFDB704</code></td><td>核印送件 → 回報 → 扣款送件 → 扣款回覆</td></tr></tbody></table></div>
+<h3 id="3-5-報表與對外">3.5 報表與對外</h3><figure><svg viewBox="0 0 1110 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="對外文件、法遵申報、通路分帳、境外平台交換與報表自身的兩類系統性缺陷"><defs><marker id="ah_ov_f6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">外部端點</text><text class="lane" x="240" y="26">客戶端畫面</text><text class="lane" x="460" y="26">伺服端與四眼</text><text class="lane" x="680" y="26">批次與服務</text><text class="lane" x="900" y="26">資料庫與報表</text><text class="lane" x="20" y="56">〔隔日〕① 對外文件:寄給受益人的那一批 ←反向:由庫產出往外送</text><g class="bx">
+<rect x="900" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="86" text-anchor="middle">NFD 是純輸出層</text>
+<text class="t2" x="1000" y="106" text-anchor="middle">SHORE_ID 寫死 2</text>
+</g><g class="bx dash">
+<rect x="680" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="86" text-anchor="middle">OFDB007</text>
+<text class="t2" x="780" y="106" text-anchor="middle">受益人名條列印</text>
+</g><g class="bx">
+<rect x="460" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="86" text-anchor="middle">Report 七層</text>
+<text class="t2" x="560" y="106" text-anchor="middle">Crystal rpt 608 張</text>
+</g><g class="bx accent">
+<rect x="240" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="86" text-anchor="middle">NFDR073 NFDR076</text>
+<text class="t2" x="340" y="106" text-anchor="middle">對帳單 / 確認書</text>
+</g><g class="bx">
+<rect x="20" y="64" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="86" text-anchor="middle">受益人</text>
+<text class="t2" x="120" y="106" text-anchor="middle">收到紙本或郵簡</text>
+</g><path class="ar dsh" d="M 900 92 L 880 92" marker-end="url(#ah_ov_f6)"/><path class="ar dsh" d="M 680 92 L 660 92" marker-end="url(#ah_ov_f6)"/><path class="ar dsh" d="M 460 92 L 440 92" marker-end="url(#ah_ov_f6)"/><path class="ar dsh" d="M 240 92 L 220 92" marker-end="url(#ah_ov_f6)"/><text class="lane" x="20" y="150">〔隔日/月〕② 法遵與主管機關申報 ←反向:由庫產出往外送</text><g class="bx">
+<rect x="900" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="180" text-anchor="middle">CRSP001 OFD871</text>
+<text class="t2" x="1000" y="200" text-anchor="middle">申報中繼表</text>
+</g><g class="bx dash">
+<rect x="680" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="180" text-anchor="middle">OFDB008 OFDB019A OFDB871</text>
+<text class="t2" x="780" y="200" text-anchor="middle">申報檔 CRS CLB</text>
+</g><g class="bx accent">
+<rect x="460" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="180" text-anchor="middle">NFDR558 NFDR560</text>
+<text class="t2" x="560" y="200" text-anchor="middle">公會英文申報</text>
+</g><g class="bx accent">
+<rect x="240" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="180" text-anchor="middle">NFDR004 NFDR006</text>
+<text class="t2" x="340" y="200" text-anchor="middle">員工關係人 / 債券月報</text>
+</g><g class="bx">
+<rect x="20" y="158" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="180" text-anchor="middle">主管機關 / 公會</text>
+<text class="t2" x="120" y="200" text-anchor="middle">月報與申報檔</text>
+</g><path class="ar dsh" d="M 900 186 L 880 186" marker-end="url(#ah_ov_f6)"/><path class="ar dsh" d="M 680 186 L 660 186" marker-end="url(#ah_ov_f6)"/><path class="ar dsh" d="M 460 186 L 440 186" marker-end="url(#ah_ov_f6)"/><path class="ar dsh" d="M 240 186 L 220 186" marker-end="url(#ah_ov_f6)"/><text class="lane" x="20" y="244">〔隔日/月〕③ 通路分帳與手續費 ←反向:由庫產出往外送</text><g class="bx">
+<rect x="900" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="274" text-anchor="middle">CAS004A CAS005A</text>
+<text class="t2" x="1000" y="294" text-anchor="middle">業績分配比率</text>
+</g><g class="bx dash">
+<rect x="680" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="274" text-anchor="middle">OFDB612 OFDB434</text>
+<text class="t2" x="780" y="294" text-anchor="middle">扣款手續費 / 服務費</text>
+</g><g class="bx vend">
+<rect x="460" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="274" text-anchor="middle">CASB001</text>
+<text class="t2" x="560" y="294" text-anchor="middle">直接 UPDATE 繞四眼</text>
+</g><g class="bx accent">
+<rect x="240" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="274" text-anchor="middle">CASM004 CASM005</text>
+<text class="t2" x="340" y="294" text-anchor="middle">業績分配維護</text>
+</g><g class="bx">
+<rect x="20" y="252" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="274" text-anchor="middle">銷售機構 / 業務員</text>
+<text class="t2" x="120" y="294" text-anchor="middle">手續費通知函</text>
+</g><path class="ar dsh" d="M 900 280 L 880 280" marker-end="url(#ah_ov_f6)"/><path class="ar dsh" d="M 680 280 L 660 280" marker-end="url(#ah_ov_f6)"/><path class="ar dsh" d="M 460 280 L 440 280" marker-end="url(#ah_ov_f6)"/><path class="ar dsh" d="M 240 280 L 220 280" marker-end="url(#ah_ov_f6)"/><text class="lane" x="20" y="338">〔日終→隔日〕④ 境外平台交換 ←反向:由庫產出往外送</text><g class="bx">
+<rect x="900" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="368" text-anchor="middle">OFD611 OFD615</text>
+<text class="t2" x="1000" y="388" text-anchor="middle">境外參數主檔</text>
+</g><g class="bx dash">
+<rect x="680" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="368" text-anchor="middle">OFDB600A OFDB601A</text>
+<text class="t2" x="780" y="388" text-anchor="middle">平台申購 / 贖回資料</text>
+</g><g class="bx">
+<rect x="460" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="368" text-anchor="middle">OTAB901</text>
+<text class="t2" x="560" y="388" text-anchor="middle">唯一打外部 HTTP</text>
+</g><g class="bx accent">
+<rect x="240" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="368" text-anchor="middle">OFDR601A OFDR606A</text>
+<text class="t2" x="340" y="388" text-anchor="middle">境外網路交易檢核</text>
+</g><g class="bx">
+<rect x="20" y="346" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="368" text-anchor="middle">境外基金公司 / 官網</text>
+<text class="t2" x="120" y="388" text-anchor="middle">API 與交換檔</text>
+</g><path class="ar dsh" d="M 900 374 L 880 374" marker-end="url(#ah_ov_f6)"/><path class="ar dsh" d="M 680 374 L 660 374" marker-end="url(#ah_ov_f6)"/><path class="ar dsh" d="M 460 374 L 440 374" marker-end="url(#ah_ov_f6)"/><path class="ar dsh" d="M 240 374 L 220 374" marker-end="url(#ah_ov_f6)"/><text class="lane" x="20" y="432">⑤ 報表自己的兩顆雷:整群死掉,以及權限暫存表互蓋</text><g class="bx ext">
+<rect x="240" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="462" text-anchor="middle">NFDR501 NFDR701</text>
+<text class="t2" x="340" y="482" text-anchor="middle">兩群 22 支 一按 NRE</text>
+</g><g class="bx ext">
+<rect x="460" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="462" text-anchor="middle">OFDM242</text>
+<text class="t2" x="560" y="482" text-anchor="middle">兩條死碼線都中</text>
+</g><g class="bx ext">
+<rect x="680" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="462" text-anchor="middle">TRPM001 TRPM101</text>
+<text class="t2" x="780" y="482" text-anchor="middle">規則存在 TRP001 裡</text>
+</g><g class="bx vend">
+<rect x="900" y="440" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="1000" y="462" text-anchor="middle">S_OTA_OFDR042_GET</text>
+<text class="t2" x="1000" y="482" text-anchor="middle">全域暫存表互蓋</text>
+</g><path class="ar" d="M 440 468 L 460 468" marker-end="url(#ah_ov_f6)"/><path class="ar" d="M 660 468 L 680 468" marker-end="url(#ah_ov_f6)"/><path class="ar" d="M 880 468 L 900 468" marker-end="url(#ah_ov_f6)"/></svg><figcaption>圖 F6 報表與對外。前四列是虛線反向箭頭:報表線的資料是從資料庫流向外部端點,與 F2–F5 相反。第 ⑤ 列是這條線自己的體質問題——整群報表按下去就 NRE、兩人同時按同一張報表會互相蓋掉對方的權限暫存資料。</figcaption></figure>
+<p>報表線只讀不寫。對受益人的是 <code>NFDR073</code>「投資對帳單」與 <code>NFDR076</code>「申購交易確認書」(<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073.cs:49</code>);對主管機關的是 <code>NFDR004</code> 「員工及其關係人買賣本公司基金月報表」、<code>NFDR006</code>「債券型基金其他資訊揭露月報表」與公會英文申報<code>NFDR558</code>–<code>NFDR560</code>(<code>nfdr1.md §0</code>、<code>nfdr2.md §0</code>)。通路分帳由 <code>CASM004</code> / <code>CASM005</code> 設比率, 而 <code>CASB001</code> 會<strong>直接 UPDATE 繞過四眼</strong>(<code>cas.md §0</code>)。境外平台交換是 <code>OFDB600A</code> / <code>OFDB601A</code> 那一群加 <code>OTAB901</code>(<code>ofdb3.md §0</code>、<code>ofdb5.md §6</code>)。報表是<strong>七層</strong>不是六層,多一層 Crystal Reports 專案 <code>Report.&lt;MOD&gt;</code>(<code>ofdr1.md §0</code>)。</p>
+<p>這條線自己有兩顆系統性的雷:<strong><code>NFDR501</code>–<code>NFDR517</code> 與 <code>NFDR701</code>–<code>NFDR707</code> 共 22 支的 <code>m_db</code> 恆為 null,按「預覽」當下就 NRE</strong>(<code>nfdr2.md §0</code>);以及<strong>報表 SP 用全域暫存表做權限過濾,兩個人同時按同一張報表會互相蓋掉</strong>(<code>DB/SP/S_OTA_OFDR042_GET.SQL:514-515</code>、<code>ofdr2.md §7</code>)。版控狀況也要有心理準備:OFD 報表 71 個 SP、NFD 160 個 SP <strong>幾乎全在版控外</strong>(<code>ofdr1.md §2</code>、<code>nfdr2.md §2</code>)。</p>
+<div class="tw"><table><thead><tr><th>經過的代號</th><th>角色</th></tr></thead><tbody><tr><td><code>NFDR073</code> <code>NFDR076</code> <code>OFDB007</code></td><td>對帳單、確認書、名條列印</td></tr><tr><td><code>NFDR004</code> <code>NFDR006</code> <code>NFDR558</code> <code>OFDB008</code> <code>OFDB019A</code> <code>OFDB871</code></td><td>法遵月報、申報檔、CRS、CLB</td></tr><tr><td><code>CASM004</code> <code>CASM005</code> <code>CASB001</code> <code>OFDB612</code></td><td>通路分帳與手續費</td></tr><tr><td><code>OFDB600A</code> <code>OFDB601A</code> <code>OTAB901</code> <code>TRPM001</code> <code>TRPM101</code></td><td>境外平台與集保傳收檔</td></tr><tr><td><code>NFDR501</code> <code>NFDR701</code> <code>OFDM242</code> <code>OFDR042</code></td><td>死報表群、兩條死碼線都中的一支、權限暫存表</td></tr></tbody></table></div>
+<blockquote><p>第 ⑤ 條線(通路、業績與客戶關係)沒有專屬圖:入口畫面在 F1 第五列、分帳與報表出口在 F6 第三列。敘事見 <code>cas.md §0</code>、<code>dsm.md §0</code>、<code>crm.md §0</code>、<code>cls.md §0</code>、<code>tmk.md §0</code>、<code>cpm.md §0</code>。</p></blockquote>
+</div></section><section class="sec" data-sec="4-一日作業時序"><h2 id="4-一日作業時序"><button class="tg" aria-label="收合/展開" type="button"></button>4. 一日作業時序</h2><div class="sec-body"><figure><svg viewBox="0 0 1110 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="一日作業時序:申購、定期定額、買回轉換、結帳與生效四條線在日中、交易截止、截止後、日終、產檔、隔日六個時段的先後"><defs><marker id="ah_ov_f7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">日中</text><text class="lane" x="200" y="26">交易截止</text><text class="lane" x="380" y="26">截止後</text><text class="lane" x="560" y="26">日終</text><text class="lane" x="740" y="26">產檔</text><text class="lane" x="920" y="26">隔日</text><text class="lane" x="20" y="56">申購</text><g class="bx accent">
+<rect x="20" y="64" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="102.5" y="86" text-anchor="middle">OFDM221A</text>
+<text class="t2" x="102.5" y="106" text-anchor="middle">櫃台申購書</text>
+</g><g class="bx">
+<rect x="200" y="64" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="282.5" y="86" text-anchor="middle">OFDB600</text>
+<text class="t2" x="282.5" y="106" text-anchor="middle">服務 每 60 秒截單</text>
+</g><g class="bx dash">
+<rect x="380" y="64" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="462.5" y="86" text-anchor="middle">OFDB601 OFDB605</text>
+<text class="t2" x="462.5" y="106" text-anchor="middle">拋轉核心 手動</text>
+</g><g class="bx dash">
+<rect x="560" y="64" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="642.5" y="86" text-anchor="middle">OFDB305</text>
+<text class="t2" x="642.5" y="106" text-anchor="middle">申購日結轉 手動</text>
+</g><g class="bx dash">
+<rect x="740" y="64" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="822.5" y="86" text-anchor="middle">OFDB701</text>
+<text class="t2" x="822.5" y="106" text-anchor="middle">核印扣款檔 手動</text>
+</g><g class="bx">
+<rect x="920" y="64" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="1002.5" y="86" text-anchor="middle">NFDR101</text>
+<text class="t2" x="1002.5" y="106" text-anchor="middle">申購側報表</text>
+</g><path class="ar" d="M 185 92 L 200 92" marker-end="url(#ah_ov_f7)"/><path class="ar" d="M 365 92 L 380 92" marker-end="url(#ah_ov_f7)"/><path class="ar" d="M 545 92 L 560 92" marker-end="url(#ah_ov_f7)"/><path class="ar" d="M 725 92 L 740 92" marker-end="url(#ah_ov_f7)"/><path class="ar" d="M 905 92 L 920 92" marker-end="url(#ah_ov_f7)"/><text class="lane" x="20" y="150">定期定額</text><g class="bx accent">
+<rect x="20" y="158" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="102.5" y="180" text-anchor="middle">RSPM004</text>
+<text class="t2" x="102.5" y="200" text-anchor="middle">立約 / 變更</text>
+</g><g class="bx dash">
+<rect x="560" y="158" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="642.5" y="180" text-anchor="middle">RSPB008 RSPB009</text>
+<text class="t2" x="642.5" y="200" text-anchor="middle">生效(服務)/ 扣款</text>
+</g><g class="bx dash">
+<rect x="740" y="158" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="822.5" y="180" text-anchor="middle">OFDB716</text>
+<text class="t2" x="822.5" y="200" text-anchor="middle">集保上傳 手動</text>
+</g><g class="bx ext">
+<rect x="920" y="158" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="1002.5" y="180" text-anchor="middle">NFDR506</text>
+<text class="t2" x="1002.5" y="200" text-anchor="middle">定額報表 5 支已死</text>
+</g><path class="ar" d="M 185 186 L 560 186" marker-end="url(#ah_ov_f7)"/><path class="ar" d="M 725 186 L 740 186" marker-end="url(#ah_ov_f7)"/><path class="ar" d="M 905 186 L 920 186" marker-end="url(#ah_ov_f7)"/><text class="lane" x="20" y="244">買回與轉換</text><g class="bx accent">
+<rect x="20" y="252" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="102.5" y="274" text-anchor="middle">OFDM231A OFDM085A</text>
+<text class="t2" x="102.5" y="294" text-anchor="middle">買回書 / 轉換</text>
+</g><g class="bx">
+<rect x="200" y="252" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="282.5" y="274" text-anchor="middle">OFDB600</text>
+<text class="t2" x="282.5" y="294" text-anchor="middle">同一支截單</text>
+</g><g class="bx dash">
+<rect x="380" y="252" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="462.5" y="274" text-anchor="middle">OFDB602</text>
+<text class="t2" x="462.5" y="294" text-anchor="middle">拋轉核心 手動</text>
+</g><g class="bx dash">
+<rect x="560" y="252" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="642.5" y="274" text-anchor="middle">OFDB323</text>
+<text class="t2" x="642.5" y="294" text-anchor="middle">買回日結轉 手動</text>
+</g><g class="bx accent">
+<rect x="740" y="252" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="822.5" y="274" text-anchor="middle">TRPM001</text>
+<text class="t2" x="822.5" y="294" text-anchor="middle">集保申報傳檔</text>
+</g><g class="bx ext">
+<rect x="920" y="252" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="1002.5" y="274" text-anchor="middle">NFDR154</text>
+<text class="t2" x="1002.5" y="294" text-anchor="middle">贖回確認單 已死</text>
+</g><path class="ar" d="M 185 280 L 200 280" marker-end="url(#ah_ov_f7)"/><path class="ar" d="M 365 280 L 380 280" marker-end="url(#ah_ov_f7)"/><path class="ar" d="M 545 280 L 560 280" marker-end="url(#ah_ov_f7)"/><path class="ar" d="M 725 280 L 740 280" marker-end="url(#ah_ov_f7)"/><path class="ar" d="M 905 280 L 920 280" marker-end="url(#ah_ov_f7)"/><text class="lane" x="20" y="338">結帳與生效</text><g class="bx accent">
+<rect x="20" y="346" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="102.5" y="368" text-anchor="middle">OFDM302 OFDM302B</text>
+<text class="t2" x="102.5" y="388" text-anchor="middle">淨值維護 / 匯入</text>
+</g><g class="bx dash">
+<rect x="560" y="346" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="642.5" y="368" text-anchor="middle">OFDB222→OFDB003</text>
+<text class="t2" x="642.5" y="388" text-anchor="middle">關帳 → 異動生效 手動</text>
+</g><g class="bx dash">
+<rect x="740" y="346" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="822.5" y="368" text-anchor="middle">OFDB281</text>
+<text class="t2" x="822.5" y="388" text-anchor="middle">配息 手動</text>
+</g><g class="bx">
+<rect x="920" y="346" rx="10" ry="10" width="165" height="56"/>
+<text class="t1" x="1002.5" y="368" text-anchor="middle">OFDR042</text>
+<text class="t2" x="1002.5" y="388" text-anchor="middle">作業報表</text>
+</g><path class="ar" d="M 185 374 L 560 374" marker-end="url(#ah_ov_f7)"/><path class="ar" d="M 725 374 L 740 374" marker-end="url(#ah_ov_f7)"/><path class="ar" d="M 905 374 L 920 374" marker-end="url(#ah_ov_f7)"/></svg><figcaption>圖 F7 一日作業時序。橫軸是 §4 的六個時段,縱軸是四條交易線;一格只放代表代號。先後順序:日中開單 → OFDB600 截單 → 拋轉 → 日終日結轉(OFDB305 / OFDB323)→ OFDB003 生效 → 產檔 → 隔日報表。灰虛框全部要人按、沒有排程,程式也沒有強制先後——前一步沒跑,後一步只是查不到資料。黑框是報表那頭兩群已經跑不起來的(m_db 恆 null)。</figcaption></figure>
+<p>素材:<code>ofdb3.md §3</code>、<code>ofdb.md §6</code>、<code>ofdb4.md §6</code>、<code>ofdb5.md §6</code>、<code>ec.md §6</code>、<code>rsp.md §6</code>。</p>
+<p>上面那張圖 F7 把本節的表畫成時序:<strong>橫軸六個時段、縱軸四條交易線</strong>,申購 / 定期定額 / 買回轉換 / 結帳誰先誰後一眼看完; F2–F6 每列列標前的〔時段〕標籤也對著這六個時段。</p>
+<p><strong>先講結論:全系統只有四支批次會自己醒來</strong>(<code>OFDB600</code> / <code>OFDB609</code> / <code>OFDB680</code> / <code>RSPB008</code>,<code>architecture.md §8.4</code>),<strong>其餘每一支都要人在選單裡點開來按</strong>——<code>ofdb.md §0</code> 與 <code>ofdb4.md §0</code> 都實測「0 支排程」。</p>
+<div class="tw"><table><thead><tr><th>時段</th><th>做什麼</th><th>代號</th><th>觸發</th></tr></thead><tbody><tr><td>日中</td><td>櫃台開單、維護、覆核</td><td><code>BMSM001</code> <code>OFDM221A</code> <code>OFDM231A</code> <code>RSPM004</code></td><td>人</td></tr><tr><td>日中</td><td>網路 / 語音收單</td><td>EC 軌;<code>OFDM600</code> <code>OFDM601</code> 設限額</td><td>客戶</td></tr><tr><td>交易截止</td><td>比對 <code>HHmm</code> 截單</td><td><strong><code>OFDB600</code></strong></td><td><strong>服務,每 60 秒;時刻在 <code>OFD606A</code> / <code>OFD600A</code></strong></td></tr><tr><td>截止後</td><td>拋轉進核心交易檔</td><td><code>OFDB601</code> <code>OFDB602</code> <code>OFDB604</code> <code>OFDB605</code> <code>IPJB621</code></td><td><strong>手動無排程</strong></td></tr><tr><td>日終</td><td>關帳、日結轉</td><td><code>OFDB222</code>、<code>OFDB305</code> <code>OFDB323</code></td><td><strong>手動無排程</strong></td></tr><tr><td>日終</td><td>淨值、匯率、配息</td><td><code>OFDM302</code> <code>OFDM302B</code>、<code>OFDB281</code> <code>OFDB041</code></td><td>人 + <strong>手動無排程</strong></td></tr><tr><td>日終</td><td>受益人異動生效</td><td><strong><code>OFDB003</code></strong></td><td><strong>手動無排程</strong></td></tr><tr><td>日終</td><td>定額變更生效</td><td><code>RSPB008</code></td><td><strong>服務</strong>(<code>rsp.md §6</code>)</td></tr><tr><td>產檔</td><td>核印、扣款、集保、傳收檔</td><td><code>OFDB701</code>–<code>OFDB707</code>、<code>OFDB716</code> <code>OFDB721</code>、<code>OFDB565</code> <code>OFDB566</code></td><td><strong>手動無排程</strong></td></tr><tr><td>產檔</td><td>開戶後續與 LDAP、到價通知</td><td><code>OFDB609</code>、<code>OFDB680</code></td><td><strong>服務</strong>(時刻取自 <code>OFD600A</code> / <code>OFD680A</code>)</td></tr><tr><td>隔日</td><td>報表與對外文件</td><td><code>NFDR073</code> <code>NFDR076</code> <code>NFDR101</code>、<code>OFDB008</code></td><td>人</td></tr></tbody></table></div>
+<blockquote><p>⚠ 三顆排程雷,都在 <code>ofdb3.md §6</code>: (1) 改批次時間<strong>不用重編也不用碰排程器</strong>,改 <code>OFD606A</code> / <code>OFD600A</code> 的欄位就好——反過來說,排錯時間查不到是誰設的。 (2) 服務啟不啟動<strong>不看設定檔,看執行帳號</strong>;用非 <code>SYSTEM</code> 的帳號安裝,它會卡在 <code>Console.ReadLine()</code> 而且不報錯。 (3) 時刻欄若存成 <code>"930"</code> 這種三位數,換算會丟例外、被空 <code>catch</code> 吞掉,<strong>那個時刻當天整個消失</strong>。</p></blockquote>
+</div></section><section class="sec" data-sec="5-角色與四眼"><h2 id="5-角色與四眼"><button class="tg" aria-label="收合/展開" type="button"></button>5. 角色與四眼</h2><div class="sec-body">
+<p>素材:<code>architecture.md §0.4</code>、<code>architecture.md §3</code>、各模組篇 <a class="sec" href="#0-一頁摘要">§0</a> 與附錄 E。</p>
+<p><a class="sec" href="#0-一頁摘要">§0</a> 那個白話框講的「經辦 → 覆核 → 主管」三階段,程式上長這樣:</p>
+<div class="tw"><table><thead><tr><th>階段</th><th>角色</th><th>業務上的意思</th><th>留下的欄位</th></tr></thead><tbody><tr><td>Entry</td><td>經辦</td><td>我送出這筆異動</td><td><code>CREATEID</code> <code>ENTRYID</code> 及其 <code>*DATE</code></td></tr><tr><td>Verify</td><td>覆核</td><td>我看過經辦送的內容</td><td><code>VERIFYID</code> <code>VERIFYDATE</code></td></tr><tr><td>Approve</td><td>主管</td><td>我核准它生效,或退回</td><td><code>APPROVEID</code> / <code>REJECTID</code> 及其 <code>*DATE</code></td></tr></tbody></table></div>
+<p><strong>145 / 180 張有 xsd 欄位定義的實體表帶四眼欄位(81%)</strong>,另外 257 張沒有 xsd 就無從判斷(<code>architecture.md §0.4</code>)。但<strong>「有四眼欄位」不等於「走四眼流程」</strong>,三種例外都要認得:(1) <strong>四眼只是軌跡</strong>——<code>OFDM221A</code> / <code>OFDM231A</code> 的 <code>AfterVerify</code> / <code>AfterApprove</code> 沒有業務 SQL(<code>ofd8.md §0</code>);(2) <strong>覆核完還沒生效</strong>——BMS 的 12 張 <code>CHG</code> 表要等 <code>OFDB003</code>(<code>bms.md §2.1</code>);(3) <strong>一個人填滿三個欄位</strong>——整批匯入把 <code>ENTRYID</code> / <code>VERIFYID</code> / <code>APPROVEID</code> 塞同一人、<code>STATUS</code> 寫死 <code>'301'</code>(<code>ofd7.md §0</code>、<code>misc.md §2</code>)。</p>
+<p><strong>確定繞過四眼的畫面</strong>(從各篇 <a class="sec" href="#0-一頁摘要">§0</a> 與附錄 E 撈,同一支只列一次):</p>
+<div class="tw"><table><thead><tr><th>畫面</th><th>做什麼</th><th>出處</th></tr></thead><tbody><tr><td><code>OFDM082</code> <code>OFDM082B</code></td><td>「排序」鈕直接 <code>UPDATE REPORT_SEQ</code>;<code>OFDM082B</code> 改的是基金主檔本身</td><td><code>ofd5.md §0</code>、<code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM082B_PO.cs:66-70</code></td></tr><tr><td><code>OFDM302B</code></td><td>淨值匯入即鎖定,<code>STATUS</code> 寫死 <code>'301'</code></td><td><code>misc.md §0</code></td></tr><tr><td><code>OFDM221C</code></td><td>存檔後同步另一張主檔,繞過四眼</td><td><code>misc.md §8</code></td></tr><tr><td><code>OFDM252</code></td><td>代號是 M、行為是 B,直接改資料</td><td><code>ofdb5.md §0</code></td></tr><tr><td><code>OFDM197</code> <code>OFDM206</code></td><td>CSV / 整批匯入,<code>delete</code>+<code>insert</code> 狀態寫死</td><td><code>ofd7.md §0</code>、<code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM197_PO.cs:240-247</code></td></tr><tr><td><code>OFDM271</code></td><td>缺件到件結案,直接 UPDATE</td><td><code>ofd8.md §8</code></td></tr><tr><td><code>OFDM375</code> <code>OFDM377</code></td><td>業務歸屬整批移轉,直接 UPDATE</td><td><code>ofd9.md §8</code>、<code>ofd9.md 附錄 E</code></td></tr><tr><td><code>OFDM721</code> <code>OFDM723</code> <code>OFDM724</code> <code>OFDM725</code></td><td>實體憑證作業自己下 SQL</td><td><code>ofd9.md §0</code></td></tr><tr><td><code>OFDM913A</code> <code>OFDB913</code></td><td>匯入寫死 <code>'301'</code>;手寫 SQL 改 <code>Status</code> / <code>ApproveID</code> 且不檢查權限</td><td><code>ofd9.md 附錄 E</code>、<code>ofdb4.md §6</code></td></tr><tr><td><code>BMSB901</code> <code>BMSB901A</code> <code>BMSB925</code></td><td>三支 B 畫面沒有四眼,按「執行」直接改正式表</td><td><code>bms.md §0</code></td></tr><tr><td><code>DSMM906</code></td><td>唯一不走四眼的 DSM 維護畫面;<code>BMS906</code> 本來就沒有四眼欄</td><td><code>dsm.md §0</code></td></tr><tr><td><code>RSPM037</code> <code>RSPB052</code></td><td>員工費率改回一般、連續扣款失敗終止契約</td><td><code>rsp.md §6</code></td></tr><tr><td><code>CASB001</code> <code>CASM004</code></td><td>直接 UPDATE 別的模組的 <code>STATUS</code>;業務員複製走 SP</td><td><code>cas.md §0</code></td></tr><tr><td><code>CODB000</code> <code>CODB009</code> <code>CODB901</code> <code>CODB902</code> <code>CTLB014</code></td><td>四支 B 直接 DML;<code>CTL014</code> 連 <code>STATUS</code> 都沒有,一個人就能改掉全系統下拉選單</td><td><code>cod.md §0</code>、<code>cod.md §8</code></td></tr><tr><td><code>CPMB005</code> <code>CPMB006</code></td><td>客訴件兩關不繼承任何基底,手寫 <code>UPDATE</code></td><td><code>cpm.md §0</code></td></tr><tr><td><code>CRMB001</code> <code>CRMB005</code> <code>CRMI001</code></td><td><code>CRM007A</code> 從來不走四眼,13 欄一次填成同一個人</td><td><code>crm.md §2</code>、<code>crm.md §6</code></td></tr><tr><td><code>TRPM901</code></td><td><code>DELETE</code> + <code>INSERT</code>,<code>STATUS</code> 寫死</td><td><code>misc.md 附錄 E</code></td></tr></tbody></table></div>
+<blockquote><p>這張表是<strong>各篇已經寫下的</strong>,不是重新掃出來的;沒寫進模組篇的角落不代表沒有這種畫面。</p></blockquote>
+</div></section><section class="sec" data-sec="6-模組地圖"><h2 id="6-模組地圖"><button class="tg" aria-label="收合/展開" type="button"></button>6. 模組地圖</h2><div class="sec-body">
+<p>素材:<code>modules/README.md</code>、各模組篇 <a class="sec" href="#0-一頁摘要">§0</a> 與附錄 D、<code>architecture.md §9</code>、<code>architecture.md §0.4</code>。</p>
+<p>「疑似死區」欄只標各篇自己認定、且有錨點的。全系統背景值:缺陷 <strong>1,682 條(高 435)</strong>、兩條死碼線聯集 <strong>151 支畫面(17%)一按就 NRE</strong>(<code>architecture.md §0.4</code>、<code>architecture.md §3.1.1</code>)。</p>
+<div class="tw"><table><thead><tr><th>模組篇</th><th>管什麼</th><th>規模</th><th>生命週期段</th><th>疑似死區</th></tr></thead><tbody><tr><td><code>bms.md</code></td><td>受益人主檔與資料變更申請單</td><td>11 畫面 / 32 表</td><td>①</td><td>三支 B 無四眼</td></tr><tr><td><code>bbs.md</code></td><td>受益憑證換發掛失質設轉讓</td><td>17 畫面 / 20 表</td><td>③</td><td>—</td></tr><tr><td><code>cas.md</code></td><td>代銷通路人員、拜訪、目標、分帳</td><td>16 畫面 / 10 表</td><td>⑤</td><td><code>CASB001</code> 繞四眼</td></tr><tr><td><code>cls.md</code></td><td>直銷潛在客戶與拜訪</td><td>7 畫面 / 5 表</td><td>⑤</td><td>報表讀快照非現值</td></tr><tr><td><code>cod.md</code></td><td>代碼字典、員工與親屬、憑證流水號</td><td>12 畫面 / 7 表</td><td>底座</td><td>代碼常數全庫 0 引用</td></tr><tr><td><code>cpm.md</code></td><td>處理件與客訴件簽核</td><td>13 畫面 / 8 表</td><td>⑤</td><td>四支關卡的「執行」是空操作</td></tr><tr><td><code>crm.md</code></td><td>潛在客戶與直銷指派</td><td>18 畫面 / 9 表</td><td>⑤</td><td><code>CRMB001</code> 產名單整段註解</td></tr><tr><td><code>dsm.md</code></td><td>直銷組織、目標、歸屬、移轉、收入</td><td>29 畫面 / 17 表</td><td>⑤</td><td><code>DSMM906</code> 無四眼</td></tr><tr><td><code>ec.md</code></td><td>網路 / 語音下單、開戶、審核、拋轉</td><td>50 畫面</td><td>②⑥</td><td>8 支六層都在但不進編譯;<code>MSSQL/</code> 約 9,700 行死碼</td></tr><tr><td><code>misc.md</code></td><td>TRP 集保申報 / OTA / FSK / IJP</td><td>21 畫面</td><td>⑥</td><td><code>FSKM004</code> 連查詢都 NRE</td></tr><tr><td><code>nfdr1.md</code> <code>nfdr2.md</code></td><td>NFD 報表 126 支(純輸出層)</td><td>126 報表</td><td>⑥</td><td><code>NFDR501</code>–<code>NFDR517</code> <code>NFDR701</code>–<code>NFDR707</code> 共 22 支一按 NRE</td></tr><tr><td><code>ofd123.md</code></td><td>OFD 參數與代碼主檔</td><td>26 畫面</td><td>底座</td><td>多支 PO 九成是註解掉的舊 MSSQL</td></tr><tr><td><code>ofd4.md</code></td><td>匯款匯費、機構主檔、文件缺件、KYC 問項</td><td>18 畫面</td><td>底座③</td><td><code>OFDM045</code> <code>OFDM046</code> 執行期 NRE</td></tr><tr><td><code>ofd5.md</code></td><td>基金主檔、交易參數、轉換、通路、扣款機構</td><td>17 畫面</td><td>底座②③</td><td><code>OFDM082</code> <code>OFDM082B</code> 繞四眼</td></tr><tr><td><code>ofd6.md</code></td><td>AML / KYC、受益人與基金層例外</td><td>20 畫面</td><td>①</td><td><strong>20 支有 8 支連查詢都跑不起來</strong></td></tr><tr><td><code>ofd7.md</code></td><td>費率階梯、優惠、EC 促銷、匯費簡碼</td><td>15 畫面</td><td>底座</td><td><code>_UPD</code> 搬進正式表的程式 repo 內查不到</td></tr><tr><td><code>ofd8.md</code></td><td>申購買回主線、行情彙總、配息設定</td><td>24 畫面</td><td>②③④</td><td>6 支掛在舊世代基底</td></tr><tr><td><code>ofd9.md</code></td><td>編號 369 之後的十四條雜線(含實體憑證)</td><td>56 畫面</td><td>③⑤</td><td>四支憑證畫面繞四眼</td></tr><tr><td><code>ofdb.md</code></td><td>OFD 批次雜燴(生效、基金複製、配息、CRS)</td><td>18 批次</td><td>①④</td><td>4 支未移轉 SQL Server,跑不起來</td></tr><tr><td><code>ofdb3.md</code></td><td>電子交易截止拋轉、開戶密碼、境外交換、集保媒體</td><td>35 批次</td><td>②④⑥</td><td>4 支整組不在 csproj</td></tr><tr><td><code>ofdb4.md</code></td><td>核印扣款、集保上傳、結匯申報、對外轉檔</td><td>35 批次</td><td>④</td><td><code>OFDB731</code>–<code>OFDB734</code> 整組跑不起來</td></tr><tr><td><code>ofdb5.md</code></td><td>境內扣款日結轉、境外申購贖回配息流水線</td><td>58 批次</td><td>②③④</td><td>7 支必 NRE;50 個 fail-open 卡控</td></tr><tr><td><code>ofdi1.md</code> <code>ofdi2.md</code></td><td>OFD / OTA / EC 的查詢畫面</td><td>73 查詢</td><td>⑥</td><td><code>OFDI058B</code> <code>OFDI375</code> <code>OFDI719</code> 開畫面就 NRE</td></tr><tr><td><code>ofdr1.md</code> <code>ofdr2.md</code></td><td>OFD / OTA / EC 報表</td><td>90 報表</td><td>⑥</td><td>EC 那軌 14 支有 7 支是 MSSQL 遺骸</td></tr><tr><td><code>rsp.md</code></td><td>定期定額契約、扣款、168 循環、停利</td><td>56 畫面 / 23 表</td><td>②</td><td><code>RSPM037</code> 不走四眼</td></tr><tr><td><code>tmk.md</code></td><td>電話行銷名單、通聯、移轉</td><td>14 畫面 / 5 表</td><td>⑤</td><td>—</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="7-接手第一週怎麼讀"><h2 id="7-接手第一週怎麼讀"><button class="tg" aria-label="收合/展開" type="button"></button>7. 接手第一週怎麼讀</h2><div class="sec-body">
+<p>素材:<code>modules/README.md</code>、<code>architecture.md §0.2</code>、<code>runbooks/README.md</code>。</p>
+<div class="tw"><table><thead><tr><th>天</th><th>讀什麼</th><th>為什麼</th></tr></thead><tbody><tr><td>1</td><td><strong>本篇</strong> + 圖 F1,讀完把 <code>CHEATSHEET.md</code> 印出來</td><td>知道六條線是哪六條、誰接誰;速查卡是後面四天的隨身骨幹</td></tr><tr><td>2</td><td><code>architecture.md §1</code>、<code>architecture.md §2</code>、<code>architecture.md §3</code></td><td>六層、命名鐵律、四眼引擎——後面每一篇都預設你懂這三章</td></tr><tr><td>3</td><td><code>modules/README.md</code> + 自己負責模組那一篇的 <a class="sec" href="#0-一頁摘要">§0</a> 與 <a class="sec" href="#2-業務線總覽">§2</a></td><td>先知道邊界與資料模型,不要從逐支畫面讀起</td></tr><tr><td>4</td><td>同一篇的跨模組共用章與附錄 E</td><td>改這裡的表會影響誰、這一片已知會咬人的地方</td></tr><tr><td>5</td><td><code>runbooks/README.md</code> 挑一支做過一次</td><td>加欄位 / 加畫面 / 加批次,照步驟走一遍比讀十篇有用</td></tr></tbody></table></div>
+<p>三個求救情境,直接開網頁不要 grep:</p>
+<div class="tw"><table><thead><tr><th>情境</th><th>開哪一頁</th></tr></thead><tbody><tr><td>「這個代號是什麼、哪張表誰在用」</td><td><code>docs/query.html</code>(代號與表反查)</td></tr><tr><td>「畫面跳這句錯誤訊息,是哪一段程式」</td><td><code>docs/messages.html</code>(錯誤訊息反查)</td></tr><tr><td>「這支畫面已知有什麼問題」</td><td><code>docs/defects.html</code>(1,682 條缺陷總表,高 435)</td></tr></tbody></table></div>
+<blockquote><p>引用模組篇附錄 E 的錯誤訊息要小心:實測有 4 句是<strong>意譯不是原文</strong>,要原文請查 <code>messages.html</code>。</p>
+<p><strong>全站入口是 <code>docs/index.html</code></strong>(雙擊即開):首格就是本篇,底下分「我要查 / 我要改 / 我要懂」三塊, 手冊路由表與部署矩陣縮版都內嵌在裡面。另外兩份導覽: <code>CHEATSHEET.md</code>(一頁 A4 雙面的骨幹速查——代號規則、六層、主明細三處同名、四眼 13 欄、 PO 基底黑白名單、部署矩陣、常用指令;已知坑前十型在 <code>CHEATSHEET.md §9</code>)與 <code>TROUBLESHOOT.md</code>(「遇到 X → 先看哪份的哪節」;<code>TROUBLESHOOT.md §7</code> 另列<strong>文件裡還沒有答案</strong>的症狀,省得白找)。</p></blockquote>
+</div></section><section class="sec" data-sec="附錄-a-名詞表"><h2 id="附錄-a-名詞表"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 A. 名詞表</h2><div class="sec-body">
+<p>素材:<code>ofd7.md §4</code>、<code>ofd5.md §2</code>、<code>ofd123.md §2</code>、<code>ofdi1.md §0</code>、<code>ofdb5.md §6</code>、<code>ofdr1.md §7</code>、<code>nfdr1.md §7</code>、<code>bms.md §2.1</code>、<code>architecture.md §3</code>。</p>
+<div class="tw"><table><thead><tr><th>詞</th><th>意思</th><th>出處</th></tr></thead><tbody><tr><td><strong>三條軌</strong></td><td><code>ATLAS.OFD*</code>(舊名 <code>ATLAS.OFD*</code>)境內分戶軌 · <code>OTA*</code> / <code>OTAB</code> 境外綜合帳戶軌 · <code>EC*</code> 電子交易軌</td><td><code>ofdb5.md §0</code>、<code>misc.md §0</code>、<code>ofdi2.md §0</code></td></tr><tr><td><strong>NFD</strong></td><td>不是第四條軌,是境內軌的<strong>純輸出層</strong>;報表寫死 <code>SHORE_ID = '2'</code></td><td><code>nfdr1.md §0</code>、<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR159_PO.cs:107</code></td></tr><tr><td><strong>境內 / 境外</strong></td><td><code>FUND_TYPE</code> <code>'2'</code> = 境內、<code>'1'</code> = 境外;<code>SHORE_ID</code> 值域在 <code>CTL014</code> 的常數類別</td><td><code>ofd7.md §4</code>、<code>ofd5.md §2</code></td></tr><tr><td><strong><code>A</code> 後綴</strong></td><td><strong>至少七種成因</strong>:境內外 / MSSQL→Oracle 改名 / 第二張表 / 畫面代號的一部分 / 族名 / 兩子系統各做一份 / 同資料第二出口。<strong>看到必須逐張查,不能套規則</strong></td><td><code>ofd4.md §2</code>、<code>ofd5.md §2</code>、<code>ofd123.md §2</code>、<code>ofdi1.md §0</code>、<code>ofdb5.md §6</code>、<code>ofdr1.md §7</code>、<code>nfdr1.md §7</code></td></tr><tr><td><strong><code>B</code> 後綴</strong></td><td>通常是「同一件事的第二份畫面」(境外版或另一個入口),同樣要逐支查</td><td><code>ofd5.md §0</code>、<code>ofdr2.md §0</code></td></tr><tr><td><strong>CHG(變更申請單)</strong></td><td><code>BMS001ACHG</code> 這一族 12 張表,一列同時帶 <code>BEF_*</code> 與 <code>AFT_*</code>;覆核<strong>不等於</strong>生效,要等 <code>OFDB003</code>;判準 <code>TRIM(CHG_UPD_DTTM) IS NULL</code></td><td><code>bms.md §2.1</code>、<code>ofdb.md §6</code></td></tr><tr><td><strong>四眼(EVA)13 欄</strong></td><td><code>STATUS</code> <code>DATAID</code> <code>CREATEID</code> <code>ENTRYID</code> <code>VERIFYID</code> <code>APPROVEID</code> <code>REJECTID</code> <code>UPDATEID</code> 與各自日期欄</td><td><code>architecture.md §3</code></td></tr><tr><td><strong>ToDo</strong></td><td>平台的待辦佇列,四眼角色靠它指派;PO 只是把 <code>xTableHelper.AppendToDoString(...)</code> 接在查詢字串尾巴</td><td><code>architecture.md §3</code>、<code>ofd5.md §0</code></td></tr><tr><td><strong>VDB</strong></td><td><code>*ModelVDB.cs</code> / <code>*ViewVDB.cs</code>,typed DataSet 外面 45 行的薄包裝</td><td><code>architecture.md §5</code></td></tr><tr><td><strong>六層 / 七層</strong></td><td>M / I / B 是六層(UI → FormProxy → Control → PO → DataEntity / UIEntity);<strong>R 報表多一層 Crystal <code>Report.&lt;MOD&gt;</code></strong></td><td><code>architecture.md §2</code>、<code>ofdr1.md §0</code></td></tr><tr><td><strong><code>_UPD</code> 暫存表</strong></td><td><code>OFDM199</code> 那一套,覆核完仍停在 <code>_UPD</code>;搬進正式表的程式 repo 內查不到</td><td><code>ofd7.md §4</code></td></tr><tr><td><strong><code>1xx</code> 畫面</strong></td><td>BBS 的 <code>BBSM109</code> / <code>BBSM110</code> / <code>BBSM113</code> <strong>不是舊版,是無實體版</strong>,用型態欄切開</td><td><code>bbs.md §0</code></td></tr><tr><td><strong><code>'301'</code></strong></td><td>〔假設〕<code>EVAStatusCode.ApproveAdd</code> 的字面值;四個不同模組在繞過四眼時都寫它</td><td><code>misc.md §2</code></td></tr><tr><td><strong>IJP</strong></td><td>是 <code>IPJ</code> 的錯字,不是另一個模組</td><td><code>misc.md §0</code></td></tr><tr><td><strong>ATLAS / CAS / TRP / NFD / BBS / CLS / COD / CPM / CRM / DSM / RSP / TMK</strong></td><td>這些縮寫的官方展開<strong>在 repo 內找不到</strong>,各篇一律用業務描述代替,<strong>不要猜</strong></td><td><code>cas.md §0</code>、<code>nfdr1.md §0</code>、<code>misc.md §0</code></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-b-本篇遇到的出處衝突"><h2 id="附錄-b-本篇遇到的出處衝突"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 B. 本篇遇到的出處衝突</h2><div class="sec-body">
+<p>素材:29 篇模組篇互相引用處。<strong>規則:以後寫的那篇為準,不回頭改模組篇。</strong></p>
+<div class="tw"><table><thead><tr><th>衝突</th><th>兩邊說法</th><th>本篇採哪一邊</th></tr></thead><tbody><tr><td><code>plans/07-system-overview.md</code> 把 <code>cls.md</code> 當結帳素材</td><td><code>cls.md §0</code> 明寫 CLS 是直銷潛在客戶與拜訪,與結帳無關</td><td><strong>依模組篇</strong>;結帳改取 <code>ofdb5.md §6</code> 與 <code>ofdb.md §6</code></td></tr><tr><td>境內外要不要分開印</td><td><code>nfdr1.md §0</code> 的 <code>NFDR159</code> 寫死只印境內;<code>nfdr2.md §7</code> 的 <code>NFDR168</code> 註解「境內外一起印,不區分」</td><td><strong>兩種都是寫死、都存在</strong>,依後寫的 <code>nfdr2.md</code> 並陳</td></tr><tr><td><code>OFD221A</code> 有幾欄、有沒有四眼欄</td><td><code>bbs.md §8</code> 記 12 欄無四眼欄;<code>ofd8.md 附錄 E</code> 實測 13 欄</td><td><strong>依 <code>ofd8.md</code></strong>(後寫);「該 xsd 版本無四眼欄」兩邊一致</td></tr><tr><td><code>A</code> 後綴的成因有幾種</td><td><code>ofd7.md §2</code> 記三種;<code>nfdr1.md §7</code> 累積到七種</td><td><strong>依七種</strong>,見附錄 A</td></tr><tr><td>批次有沒有排程</td><td><code>ofdb.md §0</code> 與 <code>ofdb4.md §0</code> 說「0 支排程」;<code>ofdb3.md §3</code> 有 3 支「手動+服務」</td><td><strong>兩者都對</strong>,差在片別;全系統只有四支有服務</td></tr></tbody></table></div></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-21 13:56 產生 · 標題 16 · 圖 7 · 表格 16 · 程式錨點 11 · § 連結 13 · 引用檢查：畫面 172（缺 0） · Table 23（缺 0） · Trigger 1（缺 0） · 結果集 3（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

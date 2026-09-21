@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-15">
+<title>ATLAS NFDR1 模組 全流程商業邏輯</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-系統邊界與角色">0. 系統邊界與角色</a>
+<a class="l3" href="#0-1-nfd-是什麼-推測">0.1 NFD 是什麼(推測)</a>
+<a class="l3" href="#0-2-nfd-跟-ofd-是什麼關係">0.2 NFD 跟 OFD 是什麼關係</a>
+<a class="l3" href="#0-3-不管什麼">0.3 不管什麼</a>
+<a class="l3" href="#0-4-使用角色">0.4 使用角色</a>
+<a class="l3" href="#0-5-全域開關與前提">0.5 全域開關與前提</a>
+<a class="l3" href="#0-6-這模組最反直覺的三件事">0.6 這模組最反直覺的三件事</a>
+<a class="l2" href="#1-全景與各式流程圖">1. 全景與各式流程圖</a>
+<a class="l3" href="#1-1-全景圖">1.1 全景圖</a>
+<a class="l3" href="#1-2-資料表關係">1.2 資料表關係</a>
+<a class="l3" href="#1-3-報表的六層呼叫順序">1.3 報表的六層呼叫順序</a>
+<a class="l3" href="#1-4-報表輸出的三條出口">1.4 報表輸出的三條出口</a>
+<a class="l3" href="#1-5-一日作業泳道-推測">1.5 一日作業泳道(推測)</a>
+<a class="l3" href="#1-6-要改這個模組的報表之前">1.6 要改這個模組的報表之前</a>
+<a class="l2" href="#2-資料模型">2. 資料模型</a>
+<a class="l3" href="#2-1-nfd-讀誰的表-本文最重要的一節">2.1 NFD 讀誰的表(本文最重要的一節)</a>
+<a class="l3" href="#2-2-sp-60-支-版控裡只有-1-支">2.2 SP:60 支,版控裡只有 1 支</a>
+<a class="l3" href="#2-3-rpt-範本-全部在版控-而且全部在-csproj">2.3 .rpt 範本:全部在版控,而且全部在 csproj</a>
+<a class="l3" href="#2-4-nfdr073t-暫存表家族">2.4 NFDR073T* 暫存表家族</a>
+<a class="l3" href="#2-5-沒有狀態碼">2.5 沒有狀態碼</a>
+<a class="l3" href="#2-6-欄位中文名-msdata-caption-在這個模組不可信">2.6 欄位中文名:msdata:Caption 在這個模組不可信</a>
+<a class="l3" href="#2-7-欄位中文名總表-取自-model-xsd-的-msdata-caption-僅列中文者">2.7 欄位中文名總表(取自 Model.xsd 的 msdata:Caption,僅列中文者)</a>
+<a class="l3" href="#2-8-model-xsd-與-view-xsd-的關係">2.8 Model.xsd 與 View.xsd 的關係</a>
+<a class="l2" href="#3-報表清冊-44-支">3. 報表清冊(44 支)</a>
+<a class="l3" href="#3-1-第-001-007-群-受益人結構與法遵月報-7-支">3.1 第 001–007 群:受益人結構與法遵月報(7 支)</a>
+<a class="l3" href="#3-2-第-021-024-群-受益人排行與異常清冊-3-支">3.2 第 021–024 群:受益人排行與異常清冊(3 支)</a>
+<a class="l3" href="#3-3-第-071-077-群-對帳單-確認書與公告-對外文件-8-支">3.3 第 071–077 群:對帳單、確認書與公告(對外文件)(8 支)</a>
+<a class="l3" href="#3-4-第-101-123-群-申購側-扣款-手續費-稅-統計-16-支">3.4 第 101–123 群:申購側:扣款、手續費、稅、統計(16 支)</a>
+<a class="l3" href="#3-5-第-150-160-群-買回-贖回-轉申購側-10-支">3.5 第 150–160 群:買回／贖回／轉申購側(10 支)</a>
+<a class="l2" href="#4-維護畫面-m">4. 維護畫面(M)</a>
+<a class="l2" href="#5-查詢畫面-i">5. 查詢畫面(I)</a>
+<a class="l2" href="#6-批次-b-與-windowsservice">6. 批次(B)與 WindowsService</a>
+<a class="l2" href="#7-報表-r-主體">7. 報表(R)——主體</a>
+<a class="l3" href="#7-0-怎麼讀這一章">7.0 怎麼讀這一章</a>
+<a class="l3" href="#7-1-第-001-007-群-受益人結構與法遵月報">7.1 第 001–007 群:受益人結構與法遵月報</a>
+<a class="l3" href="#7-2-第-021-024-群-受益人排行與異常清冊">7.2 第 021–024 群:受益人排行與異常清冊</a>
+<a class="l3" href="#7-3-第-071-077-群-對帳單-確認書與公告-本模組的核心">7.3 第 071–077 群:對帳單、確認書與公告(本模組的核心)</a>
+<a class="l3" href="#7-4-第-101-123-群-申購側-16-支-本片最大的一群">7.4 第 101–123 群:申購側(16 支,本片最大的一群)</a>
+<a class="l3" href="#7-5-第-150-160-群-買回-贖回-轉申購側-10-支">7.5 第 150–160 群:買回 / 贖回 / 轉申購側(10 支)</a>
+<a class="l3" href="#7-6-跳號-nfdr106-nfdr110-nfdr152-到哪去了-必答問題-3-的附帶">7.6 跳號:NFDR106 / NFDR110 / NFDR152 到哪去了(必答問題 3 的附帶)</a>
+<a class="l2" href="#8-跨模組共用-本片最重的一節">8. 跨模組共用(本片最重的一節)</a>
+<a class="l3" href="#8-1-nfd-對外的依賴是單向的">8.1 NFD 對外的依賴是單向的</a>
+<a class="l3" href="#8-2-改哪些表要回歸-nfd">8.2 改哪些表要回歸 NFD</a>
+<a class="l3" href="#8-3-最危險的跨模組情境">8.3 最危險的跨模組情境</a>
+<a class="l3" href="#8-4-nfd-與-ofd-兩套報表專案的分工-必答問題-1-的收尾">8.4 NFD 與 OFD 兩套報表專案的分工(必答問題 1 的收尾)</a>
+<a class="l2" href="#附錄-a-資料表總表-僅限-po-內看得見的">附錄 A. 資料表總表(僅限 PO 內看得見的)</a>
+<a class="l2" href="#附錄-b-sp-function-trigger-view">附錄 B. SP / Function / Trigger / View</a>
+<a class="l3" href="#b-1-sp-總表-60-支-版控內-1-支">B.1 SP 總表(60 支,版控內 1 支)</a>
+<a class="l3" href="#b-2-function">B.2 Function</a>
+<a class="l3" href="#b-3-trigger-view">B.3 Trigger / View</a>
+<a class="l2" href="#附錄-c-代碼對照">附錄 C. 代碼對照</a>
+<a class="l2" href="#附錄-d-本片-44-支處置表">附錄 D. 本片 44 支處置表</a>
+<a class="l2" href="#附錄-e-讀本文時要注意的地方-缺陷與陷阱">附錄 E. 讀本文時要注意的地方(缺陷與陷阱)</a>
+<a class="l3" href="#e-01-60-支-sp-只有-1-支在版控-嚴重度-高">E-01 60 支 SP 只有 1 支在版控 —— 嚴重度 高</a>
+<a class="l3" href="#e-02-16-支的-m-db-永遠是-null-一呼叫就-nre-嚴重度-高">E-02 16 支的 m_db 永遠是 null,一呼叫就 NRE —— 嚴重度 高</a>
+<a class="l3" href="#e-03-nfdr073a-的-dataid-截斷到-22-碼-嚴重度-高">E-03 NFDR073A 的 dataID 截斷到 22 碼 —— 嚴重度 高</a>
+<a class="l3" href="#e-04-inner-join-讓法遵名單無聲少人-嚴重度-高">E-04 INNER JOIN 讓法遵名單無聲少人 —— 嚴重度 高</a>
+<a class="l3" href="#e-05-30-支沒有任何-查無資料-提示-嚴重度-中">E-05 30 支沒有任何「查無資料」提示 —— 嚴重度 中</a>
+<a class="l3" href="#e-06-oracle-三值邏輯-值-遇-null-靜默排除-嚴重度-中">E-06 Oracle 三值邏輯:&lt;&gt; '值' 遇 NULL 靜默排除 —— 嚴重度 中</a>
+<a class="l3" href="#e-07-customtransferoraclemodeltoview-是逐張手抄-嚴重度-中">E-07 CustomTransferOracleModelToView 是逐張手抄 —— 嚴重度 中</a>
+<a class="l3" href="#e-08-mssql-語法殘留在-oracle-連線上-嚴重度-中">E-08 MSSQL 語法殘留在 Oracle 連線上 —— 嚴重度 中</a>
+<a class="l3" href="#e-09-nfdr114-的日結檢核-sql-少一個空白-嚴重度-中">E-09 NFDR114 的日結檢核 SQL 少一個空白 —— 嚴重度 中</a>
+<a class="l3" href="#e-10-字串串接進-sql-嚴重度-中-現況不可觸發">E-10 字串串接進 SQL —— 嚴重度 中(現況不可觸發)</a>
+<a class="l3" href="#e-11-日結檢核例外時-return-1-嚴重度-中">E-11 日結檢核例外時 return -1 —— 嚴重度 中</a>
+<a class="l3" href="#e-12-catch-內-tran-rollback-可能自己-nre-嚴重度-中">E-12 catch 內 tran.Rollback() 可能自己 NRE —— 嚴重度 中</a>
+<a class="l3" href="#e-13-成對報表的條件各有複本-嚴重度-中">E-13 成對報表的條件各有複本 —— 嚴重度 中</a>
+<a class="l3" href="#e-14-四份-getfund-複本-四種基金清單-嚴重度-中">E-14 四份 GetFUND 複本,四種基金清單 —— 嚴重度 中</a>
+<a class="l3" href="#e-15-nfdr001-的選項落在列舉外就什麼都不做-嚴重度-中">E-15 NFDR001 的選項落在列舉外就什麼都不做 —— 嚴重度 中</a>
+<a class="l3" href="#e-16-rpt-一對多共用-嚴重度-中">E-16 .rpt 一對多共用 —— 嚴重度 中</a>
+<a class="l3" href="#e-17-恆真條件關掉整段篩選-嚴重度-低-但極易誤刪">E-17 恆真條件關掉整段篩選 —— 嚴重度 低(但極易誤刪)</a>
+<a class="l3" href="#e-18-非-utf-8-來源檔-嚴重度-低">E-18 非 UTF-8 來源檔 —— 嚴重度 低</a>
+<a class="l3" href="#e-19-sp-命名兩套並存-嚴重度-低">E-19 SP 命名兩套並存 —— 嚴重度 低</a>
+<a class="l3" href="#e-20-commandtimeout-0-遍布全片-嚴重度-低">E-20 CommandTimeout = 0 遍布全片 —— 嚴重度 低</a>
+<a class="l3" href="#e-21-寫死常數-嚴重度-低">E-21 寫死常數 —— 嚴重度 低</a>
+<a class="l3" href="#e-22-沒有任何-rpt-或-csproj-問題-本片的好消息">E-22 沒有任何 .rpt 或 csproj 問題 —— 本片的好消息</a>
+<a class="l2" href="#附錄-f-版本紀錄">附錄 F. 版本紀錄</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-15</span></div>
+<h1 id="atlas-nfdr1-模組-全流程商業邏輯">ATLAS NFDR1 模組 全流程商業邏輯</h1>
+<blockquote><p>產出日期:2026-09-15(v1)。本文為<strong>純程式碼閱讀彙整</strong>,未修改任何 ATLAS 原始碼。每條規則附程式錨點(<code>Dev/…/X.cs:行號</code>),行號為分析當下版本,動手前以最新程式為準。 <strong>範圍</strong>:<code>Dev/ATLAS.NFD.Report</code> 專案 127 支報表中的<strong>前 44 支</strong>(<code>NFDR001</code>–<code>NFDR160</code>)。<code>NFDR167</code> 以後的 83 支在別篇。 <strong>建議讀法</strong>:趕時間只讀三段——<a class="sec" href="#0-1-nfd-是什麼-推測">§0.1</a>(<code>NFD</code> 到底是什麼)、<a class="sec" href="#2-1-nfd-讀誰的表-本文最重要的一節">§2.1</a>(它讀誰的表)、附錄 E(踩雷)。要動某支報表再翻 <a class="sec" href="#7-報表-r-主體">§7</a> 對應小節。</p>
+<p>⚠ <strong>本模組的業務意義</strong>(<a class="sec" href="#0-系統邊界與角色">§0</a>)由<strong>報表中文名、Crystal 參數名、PO 讀到的表名</strong>三路反推。<code>NFD</code> 三個字母的展開在 repo 裡找不到任何定義,<strong>本文不造官方名稱</strong>。 ⚠ <strong>〔客戶特定〕</strong>:機構代碼、基金代碼、<code>CTL014</code> / <code>CTL018</code> 代碼值、寄件主旨與檔名格式為本站台的值。 ⚠ <strong>〔共用〕</strong>:本模組<strong>一張自有主檔都沒有</strong>,讀到的表全部屬於別的模組(見 <a class="sec" href="#2-資料模型">§2</a>、<a class="sec" href="#8-跨模組共用-本片最重的一節">§8</a>)。</p>
+<p>前提知識在 <code>architecture.md</code>:六層看 <code>architecture.md §2</code>、四眼看 <code>architecture.md §3</code>、typed DataSet 看 <code>architecture.md §5</code>、畫面型別看 <code>architecture.md §6</code>。<strong>不要整份讀</strong>。</p></blockquote>
+<section class="sec" data-sec="0-系統邊界與角色"><h2 id="0-系統邊界與角色"><button class="tg" aria-label="收合/展開" type="button"></button>0. 系統邊界與角色</h2><div class="sec-body">
+<h3 id="0-1-nfd-是什麼-推測">0.1 <code>NFD</code> 是什麼(推測)</h3>
+<p><strong>一句話:<code>NFD</code> 不是一條業務軌,是一個「純輸出層」——它是境內基金(<code>OFD</code> 軌)資料的報表與對外文件產生器,自己不維護任何資料。</strong></p>
+<p>這是全庫<strong>唯一只有 R、沒有任何 M / I / B 畫面的模組</strong>。127 支全部是報表,<code>Dev/ATLAS.NFD.Report</code> 之外<strong>沒有</strong> <code>Dev/ATLAS.NFD</code> 這個主專案——其他模組都是「主專案 + <code>.Report</code> 子專案」成對出現(<code>ATLAS.CAS</code> / <code>ATLAS.CAS.Report</code>、<code>ATLAS.CLS</code> / <code>ATLAS.CLS.Report</code>…),<code>NFD</code> 只有 <code>.Report</code> 一半。</p>
+<p>推測依據,逐條可查:</p>
+<div class="tw"><table><thead><tr><th>依據</th><th>內容</th><th>出處</th></tr></thead><tbody><tr><td>報表中文名</td><td>「基金受益人名冊」「資金來源分析表」「股權分散表」「員工及其關係人買賣本公司基金月報表」「債券型基金其他資訊揭露月報表」「各基金餘額比例表」</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR001.cs:47</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR002.cs:36</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR003.cs:43</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR004.cs:34</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR006.cs:87</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR007.cs:71</code></td></tr><tr><td>報表中文名(對外文件)</td><td>「投資對帳單」「貴 賓 理 財 對 帳 單」「申購交易確認書」「申購交易確認書(郵簡)」「買回轉申購交易確認書」</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073.cs:49</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073B.cs:123</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR076.cs:247</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR076.cs:252</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR077.cs:233</code></td></tr><tr><td>報表中文名(扣款與手續費)</td><td>「指定扣款-申購扣款彙總表」「指定扣款-申購扣款明細表」「指定扣款-申購扣款失敗明細表」「各銷售機構各基金手續費明細表」「各銷售機構手續費通知函」</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR101.cs:58</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR102.cs:52</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR103.cs:39</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR107B.cs:125</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR107B.cs:129</code></td></tr><tr><td>讀到的表</td><td>PO 內寫得出表名的地方,清一色是 <code>OFD*</code>:<code>OFD017A</code>、<code>OFD081A</code>、<code>OFD081V</code>、<code>OFD0811A</code>、<code>OFD123A</code>、<code>OFD132A</code>、<code>OFD221A</code>、<code>OFD251A</code>、<code>OFD303A</code>、<code>OFD306A</code>、<code>OFD126</code>、<code>OFD002</code></td><td>見 <a class="sec" href="#2-1-nfd-讀誰的表-本文最重要的一節">§2.1</a> 的逐支對照</td></tr><tr><td>專案不成對</td><td><code>Dev/</code> 下有 <code>ATLAS.OFD</code> + <code>ATLAS.OFD.Report</code>,但只有 <code>ATLAS.NFD.Report</code>,沒有 <code>ATLAS.NFD</code></td><td><code>Dev/ATLAS.NFD.Report/Source/Vendor.ATLAS.NFD.Report.sln</code></td></tr></tbody></table></div>
+<p><strong>所以 <code>NFD</code> 的業務範圍 =「境內基金 TA 的對外文件與法遵/營運報表」</strong>。本文一律用這個描述,不替 <code>N</code> 造字(「國內」「Non-offshore」「New」都查不到依據,<strong>不寫</strong>)。</p>
+<h3 id="0-2-nfd-跟-ofd-是什麼關係">0.2 <code>NFD</code> 跟 <code>OFD</code> 是什麼關係</h3>
+<p>已知的三條軌(前篇查證):<code>ATLAS.OFD*</code> = 境內分戶軌、<code>ATLAS.OTA*</code> = 境外綜合帳戶軌、<code>ATLAS.EC*</code> = 電子交易軌。</p>
+<p><strong><code>NFD</code> 不是第四條軌</strong>,依據是它沒有自己的表。切分維度是<strong>「報表歸屬」而不是「業務軌」</strong>:</p>
+<div class="tw"><table><thead><tr><th></th><th><code>ATLAS.OFD.Report</code></th><th><code>ATLAS.NFD.Report</code></th></tr></thead><tbody><tr><td>支數</td><td>40 支</td><td>127 支</td></tr><tr><td>讀的表</td><td><code>OFD*</code> 為主</td><td><code>OFD*</code> 為主(<strong>同一批表</strong>)</td></tr><tr><td>有無配對主專案</td><td>有(<code>ATLAS.OFD</code>)</td><td><strong>無</strong></td></tr><tr><td>內容性質(從報表名推測)</td><td>貼著 <code>OFD</code> 畫面的作業型清單</td><td>對外文件(對帳單、確認書)+ 法遵月報 + 手續費/扣款結算</td></tr></tbody></table></div>
+<p><strong>假設</strong>:兩套報表專案共用同一批 <code>OFD*</code> 表,差別在<strong>誰是讀者</strong>——<code>ATLAS.OFD.Report</code> 是給 <code>OFD</code> 畫面操作員看的作業清單,<code>ATLAS.NFD.Report</code> 是給受益人、銷售機構、主管機關看的對外文件。依據是報表名:<code>NFDR004</code>「員工及其關係人買賣本公司基金月報表」、<code>NFDR006</code>「債券型基金其他資訊揭露月報表」是主管機關格式;<code>NFDR073</code>「投資對帳單」、<code>NFDR076</code>「申購交易確認書」是寄給客戶的。<strong>這是推論,repo 內沒有文字說明兩套的分工。</strong></p>
+<p>另一條可查的線索:<code>NFD</code> 的 44 支裡有 11 支自己建暫存表(<code>NFDR073T0</code>~<code>NFDR073T34</code>、<code>NFDR104_T0</code>、<code>NFDR106_T1</code>、<code>NFDR188_T1</code>、<code>NFDR352T1</code>…,DDL 在 <code>DB/Table/</code>),也就是說它<strong>會為了印報表而寫入資料庫</strong>,但寫的都是以報表代號命名的 <code>*T*</code> 暫存表,不是業務主檔。這佐證「純輸出層」的定位:它可以落地中繼資料,但不擁有業務事實。</p>
+<h3 id="0-3-不管什麼">0.3 不管什麼</h3>
+<div class="tw"><table><thead><tr><th>不管</th><th>誰管</th><th>依據</th></tr></thead><tbody><tr><td>任何資料的新增 / 修改 / 刪除</td><td><code>ATLAS.OFD</code> 的 M 畫面</td><td>本專案 127 支全是 <code>xReportForm</code>,沒有 <code>xMaintainForm</code> / <code>xQueryForm</code> / <code>xBatchForm</code>;見 <a class="sec" href="#4-維護畫面-m">§4</a>–<a class="sec" href="#6-批次-b-與-windowsservice">§6</a></td></tr><tr><td>四眼覆核</td><td><code>ATLAS.OFD</code></td><td>本模組 Ctl 只有 <code>GetXxxReportData</code> / <code>GetXxxReportObject</code>,無 <code>Verify</code> / <code>Approve</code> / <code>Reject</code>,例:<code>Dev/ATLAS.NFD.Report/Source/Control/ReportControl.NFD/NFDR001_Ctl.cs:39-76</code></td></tr><tr><td>排程批次</td><td><code>ATLAS.OFDB</code> / WindowsService</td><td>本模組無 B 畫面</td></tr><tr><td>境外綜合帳戶資料</td><td><code>ATLAS.OTA*</code></td><td>本片 44 支未讀到任何 <code>OTA*</code> 表</td></tr></tbody></table></div>
+<h3 id="0-4-使用角色">0.4 使用角色</h3>
+<div class="tw"><table><thead><tr><th>角色</th><th>用哪些</th><th>依據</th></tr></thead><tbody><tr><td>主管機關申報窗口</td><td><code>NFDR003</code>(股權分散表)、<code>NFDR004</code>(員工及其關係人買賣月報)、<code>NFDR006</code>(債券型基金其他資訊揭露月報)</td><td>報表中文名,錨點見 <a class="sec" href="#0-1-nfd-是什麼-推測">§0.1</a></td></tr><tr><td>客戶服務 / 寄發作業</td><td><code>NFDR073</code>(投資對帳單)、<code>NFDR073A</code>、<code>NFDR073B</code>(貴賓理財對帳單)、<code>NFDR076</code>(申購交易確認書)、<code>NFDR077</code>(買回轉申購確認書)</td><td>報表中文名 + <code>NFDR073B</code> 有寄信 SP <code>S_TA_NFDR073B_EMAIL</code>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073B_PO.cs</code>)</td></tr><tr><td>通路 / 手續費結算</td><td><code>NFDR107A</code>、<code>NFDR107B</code>(各銷售機構各基金手續費明細/合計/通知函)</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR107B.cs:109-129</code></td></tr><tr><td>扣款作業</td><td><code>NFDR101</code>–<code>NFDR105</code>(指定扣款彙總/明細/失敗明細)</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR101.cs:58</code></td></tr></tbody></table></div>
+<h3 id="0-5-全域開關與前提">0.5 全域開關與前提</h3>
+<div class="tw"><table><thead><tr><th>開關</th><th>在哪</th><th>影響</th></tr></thead><tbody><tr><td>Oracle 連線 <code>Database("TA", DbServerType.Oracle)</code></td><td>每支 PO 建構子,例 <code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:25</code></td><td>全模組走 Oracle;PO 上的 <code>[PODbType(DbServerType.Oracle)]</code> 決定執行期選哪個 PO</td></tr><tr><td><code>Cmd.CommandTimeout = 0</code></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:56</code></td><td><strong>永不逾時</strong>。SP 卡住時 client 會無限等待,沒有取消機制</td></tr><tr><td><code>CRReportTransfer.TransferFileByte(rpt)</code></td><td>每支 Ctl 的 <code>GetXxxReportObject</code>,例 <code>Dev/ATLAS.NFD.Report/Source/Control/ReportControl.NFD/NFDR001_Ctl.cs:45</code></td><td>報表範本以<strong>檔名字串</strong>在執行期取得,不是強型別參考。範本檔不在部署路徑就是執行期錯誤,編譯期查不出來(見 <a class="sec" href="#2-3-rpt-範本-全部在版控-而且全部在-csproj">§2.3</a>)</td></tr></tbody></table></div>
+<h3 id="0-6-這模組最反直覺的三件事">0.6 這模組最反直覺的三件事</h3>
+<p><strong>一、它是一個「只有下半身」的模組。</strong> 其他模組都是 <code>ATLAS.XXX</code>(主專案)+ <code>ATLAS.XXX.Report</code>(報表子專案)成對存在。<code>NFD</code> 只有 <code>.Report</code>。所以在 <code>Dev/</code> 下找 <code>ATLAS.NFD</code> 找不到不是漏掉,是本來就沒有。同理,任何「<code>NFD</code> 的表」「<code>NFD</code> 的維護畫面」「<code>NFD</code> 的批次」都不存在(<a class="sec" href="#4-維護畫面-m">§4</a>、<a class="sec" href="#5-查詢畫面-i">§5</a>、<a class="sec" href="#6-批次-b-與-windowsservice">§6</a>)。</p>
+<p><strong>二、它的資料層有 36% 目前是壞的,而且是靜悄悄壞的。</strong> 44 支裡 16 支的 PO 繼承 <code>Basic_PO</code>,<code>m_db</code> 宣告成 <code>null</code> 且建構子裡唯一的指派被註解掉(附錄 E-02)。這 16 支在 Oracle 環境按下預覽會 <code>NullReferenceException</code>。其中包括 <code>NFDR073</code>(投資對帳單)與 <code>NFDR154</code>(贖回交易確認單)這種對外文件。<strong>選單上看不出差別</strong>——它們和能跑的 28 支長得一模一樣。</p>
+<p><strong>三、要查「這張報表讀哪些表」,三分之二的情況查不到。</strong> 44 支點名 60 個 stored procedure,版控裡只有 1 支(<a class="sec" href="#2-2-sp-60-支-版控裡只有-1-支">§2.2</a>)。29 支的 PO 除了 <code>AddInParameter</code> 之外一行 SQL 都沒有(<a class="sec" href="#2-1-nfd-讀誰的表-本文最重要的一節">§2.1</a>.2)。這代表<strong>任何 <code>OFD*</code> 表的影響面分析,在 <code>NFD</code> 這裡一定是不完整的</strong>,而且沒有辦法從 repo 補完。</p>
+<p>這三件事合起來解釋了為什麼本文的結構和其他模組的文件不一樣:<a class="sec" href="#4-維護畫面-m">§4</a> / <a class="sec" href="#5-查詢畫面-i">§5</a> / <a class="sec" href="#6-批次-b-與-windowsservice">§6</a> 是空的但要展開講「為什麼空」,<a class="sec" href="#2-資料模型">§2</a> 與 <a class="sec" href="#8-跨模組共用-本片最重的一節">§8</a> 特別厚,<a class="sec" href="#7-報表-r-主體">§7</a> 的重點不是「這張報表怎麼算」(算法在版控外)而是「這張報表怎麼取數、會在哪裡少印」。</p>
+</div></section><section class="sec" data-sec="1-全景與各式流程圖"><h2 id="1-全景與各式流程圖"><button class="tg" aria-label="收合/展開" type="button"></button>1. 全景與各式流程圖</h2><div class="sec-body">
+<h3 id="1-1-全景圖">1.1 全景圖</h3>
+<figure><svg viewBox="0 0 1170 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NFD 報表第 1 片全景：五群 44 支報表、取數路徑、讀到的別模組的表、三條輸出出口，以及本模組不存在的四件事"><defs><marker id="ah_nfdr1_all" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 五群報表（本片 44 支，全部是 R，沒有 M／I／B）</text><g class="bx">
+<rect x="20" y="40" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="130" y="62" text-anchor="middle">NFDR001–007</text>
+<text class="t2" x="130" y="82" text-anchor="middle">受益人結構+法遵月報 7 支</text>
+</g><g class="bx">
+<rect x="260" y="40" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="360" y="62" text-anchor="middle">NFDR021–024</text>
+<text class="t2" x="360" y="82" text-anchor="middle">排行+異常清冊 3 支</text>
+</g><g class="bx accent">
+<rect x="480" y="40" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="590" y="62" text-anchor="middle">NFDR071–077</text>
+<text class="t2" x="590" y="82" text-anchor="middle">對帳單／確認書 8 支</text>
+</g><g class="bx">
+<rect x="720" y="40" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="820" y="62" text-anchor="middle">NFDR101–123</text>
+<text class="t2" x="820" y="82" text-anchor="middle">申購側 16 支</text>
+</g><g class="bx">
+<rect x="940" y="40" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="1045" y="62" text-anchor="middle">NFDR150–160</text>
+<text class="t2" x="1045" y="82" text-anchor="middle">買回／贖回側 10 支</text>
+</g><text class="lane" x="20" y="156">② 取數：29 支完全看不到表名（SQL 在版控外的 SP 裡）</text><g class="bx ext">
+<rect x="20" y="170" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="130" y="192" text-anchor="middle">60 支 SP</text>
+<text class="t2" x="130" y="212" text-anchor="middle">版控內只有 1 支</text>
+</g><g class="bx">
+<rect x="260" y="170" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="360" y="192" text-anchor="middle">PO inline SQL</text>
+<text class="t2" x="360" y="212" text-anchor="middle">只有 15 支有</text>
+</g><g class="bx vend">
+<rect x="480" y="170" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="590" y="192" text-anchor="middle">NFDR073T0–T34</text>
+<text class="t2" x="590" y="212" text-anchor="middle">NFD 自建暫存 17 張</text>
+</g><g class="bx vend">
+<rect x="720" y="170" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="820" y="192" text-anchor="middle">Basic_PO 16 支</text>
+<text class="t2" x="820" y="212" text-anchor="middle">m_db 未初始化→NRE</text>
+</g><g class="bx">
+<rect x="940" y="170" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="1045" y="192" text-anchor="middle">INFDRxxx_PO 28 支</text>
+<text class="t2" x="1045" y="212" text-anchor="middle">已遷 Oracle</text>
+</g><path class="ar" d="M 130 96 L 130 170" marker-end="url(#ah_nfdr1_all)"/><path class="ar" d="M 360 96 L 360 170" marker-end="url(#ah_nfdr1_all)"/><path class="ar" d="M 590 96 L 590 170" marker-end="url(#ah_nfdr1_all)"/><path class="ar" d="M 820 96 L 820 170" marker-end="url(#ah_nfdr1_all)"/><path class="ar" d="M 1045 96 L 1045 170" marker-end="url(#ah_nfdr1_all)"/><text class="lane" x="20" y="286">③ 真正的業務資料：全部是別人的表</text><g class="bx dash">
+<rect x="20" y="300" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="160" y="322" text-anchor="middle">OFD 軌 14 張</text>
+<text class="t2" x="160" y="342" text-anchor="middle">OFD081V OFD303A OFD0811A…</text>
+</g><g class="bx dash">
+<rect x="320" y="300" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="410" y="322" text-anchor="middle">BMS001A</text>
+<text class="t2" x="410" y="342" text-anchor="middle">受益人主檔</text>
+</g><g class="bx dash">
+<rect x="520" y="300" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="660" y="322" text-anchor="middle">COD009 SAL051 FSK003</text>
+<text class="t2" x="660" y="342" text-anchor="middle">員工／業務員／風險屬性</text>
+</g><g class="bx ext">
+<rect x="820" y="300" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="935" y="322" text-anchor="middle">CTL014 CTL018</text>
+<text class="t2" x="935" y="342" text-anchor="middle">代碼表（內容在 DB）</text>
+</g><path class="ar lnk" d="M 130 226 L 130 300"/><path class="ar lnk" d="M 590 226 L 590 300"/><text class="lane" x="20" y="416">④ 三條出口</text><g class="bx">
+<rect x="20" y="430" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="150" y="452" text-anchor="middle">Crystal .rpt × 79</text>
+<text class="t2" x="150" y="472" text-anchor="middle">42 支；全在版控+csproj</text>
+</g><g class="bx">
+<rect x="300" y="430" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="415" y="452" text-anchor="middle">Excel</text>
+<text class="t2" x="415" y="472" text-anchor="middle">NFDR123 / 120 / 121</text>
+</g><g class="bx vend">
+<rect x="550" y="430" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="680" y="452" text-anchor="middle">文字檔 + ZIP 加密</text>
+<text class="t2" x="680" y="472" text-anchor="middle">NFDR073A（無 .rpt）</text>
+</g><g class="bx vend">
+<rect x="830" y="430" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="940" y="452" text-anchor="middle">Email 佇列</text>
+<text class="t2" x="940" y="472" text-anchor="middle">NFDR073B 寫 SP</text>
+</g><path class="ar dsh" d="M 150 226 L 150 430" marker-end="url(#ah_nfdr1_all)"/><path class="ar dsh" d="M 415 226 L 415 430" marker-end="url(#ah_nfdr1_all)"/><path class="ar dsh" d="M 680 226 L 680 430" marker-end="url(#ah_nfdr1_all)"/><text class="lane" x="20" y="546">⑤ 不存在的東西（這是 NFD 最大的特徵）</text><g class="bx dash">
+<rect x="20" y="560" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="125" y="582" text-anchor="middle">無 M 畫面</text>
+<text class="t2" x="125" y="602" text-anchor="middle">不維護任何資料</text>
+</g><g class="bx dash">
+<rect x="250" y="560" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="355" y="582" text-anchor="middle">無 I 畫面</text>
+<text class="t2" x="355" y="602" text-anchor="middle">不做查詢</text>
+</g><g class="bx dash">
+<rect x="480" y="560" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="585" y="582" text-anchor="middle">無 B／Service</text>
+<text class="t2" x="585" y="602" text-anchor="middle">沒有排程</text>
+</g><g class="bx dash">
+<rect x="710" y="560" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="850" y="582" text-anchor="middle">無 ATLAS.NFD 主專案</text>
+<text class="t2" x="850" y="602" text-anchor="middle">只有 .Report 一半</text>
+</g></svg><figcaption>圖 1 NFDR1 全景。橘框=本片深寫的重點；灰虛框=借用別模組的表或「不存在」的事實；黑框=無原始碼的黑箱（版控外 SP、代碼表內容）；橘虛框=行為含寫死值或已知風險〔客戶特定〕。實線=同一支報表內的呼叫；虛線=輸出方向。</figcaption></figure>
+<h3 id="1-2-資料表關係">1.2 資料表關係</h3>
+<p>本片 44 支報表<strong>沒有任何一張自有業務主檔</strong>。PO 裡寫得出表名的只有 15 支,其餘 29 支的 SQL 全部埋在版控外的 SP 裡(<a class="sec" href="#2-1-nfd-讀誰的表-本文最重要的一節">§2.1</a>)。圖見 <a class="sec" href="#2-資料模型">§2</a> 的扇入圖。</p>
+<h3 id="1-3-報表的六層呼叫順序">1.3 報表的六層呼叫順序</h3>
+<p>所有 44 支走同一條路,沒有例外:</p>
+<div class="tw"><table><thead><tr><th>步</th><th>在哪一層</th><th>做什麼</th><th>錨點範例</th></tr></thead><tbody><tr><td>1</td><td>UI <code>xReportForm</code></td><td><code>FormInitial</code> 設定 <code>ResultVDB</code> 與 <code>FormProxy</code></td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR001.cs:32-34</code></td></tr><tr><td>2</td><td>UI</td><td><code>BeforePreviewButtonClicked</code> 跑 <code>DoValidate()</code>,有錯就 <code>e.Cancel = true</code></td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR001.cs:75-80</code></td></tr><tr><td>3</td><td>UI</td><td>把畫面條件塞進 <code>Utility.Parameters</code>(Name / Operator / Value 三欄)</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073A.cs:151-163</code></td></tr><tr><td>4</td><td>FormProxy</td><td>轉呼叫遠端 Control</td><td><code>Dev/ATLAS.NFD.Report/Source/FormProxy/ReportFormProxy.NFD/NFDR001_Pxy.cs</code></td></tr><tr><td>5</td><td>Control</td><td><code>GetXxxReportData</code> → <code>ExecPOActionToViewVDB</code> 打 PO;<code>GetXxxReportObject</code> → <code>CRReportTransfer.TransferFileByte(rpt)</code> 把 <code>.rpt</code> 範本傳回 client</td><td><code>Dev/ATLAS.NFD.Report/Source/Control/ReportControl.NFD/NFDR001_Ctl.cs:45,59-62</code></td></tr><tr><td>6</td><td>PO</td><td><code>GetStoredProcCommand(...)</code> 或 <code>GetSqlStringCommand(strSQL)</code> 取數,填進 <code>ModelVDB</code></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:57</code></td></tr><tr><td>7</td><td>Control</td><td><code>CustomTransferOracleModelToView</code> 把 <code>ModelVDB</code> 每張 DataTable 搬到 <code>ViewVDB</code></td><td><code>Dev/ATLAS.NFD.Report/Source/Control/ReportControl.NFD/NFDR001_Ctl.cs:92-96</code></td></tr><tr><td>8</td><td>UI</td><td><code>ReportLoad</code> 用 <code>m_ReportDocument.SetParameterValue(...)</code> 把「顯示用」參數餵給 Crystal</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR001.cs:49-53</code></td></tr></tbody></table></div>
+<p><strong>第 7 步是本模組最常出錯的地方</strong>:<code>CustomTransferOracleModelToView</code> 是逐張 DataTable 手抄。SP 多回一張表、或 <code>Model.xsd</code> 加了一張表而 Ctl 沒加對應的 <code>TransferTable</code>,結果是<strong>該張表在報表上永遠空白,不會報錯</strong>(見附錄 E-07)。</p>
+<h3 id="1-4-報表輸出的三條出口">1.4 報表輸出的三條出口</h3>
+<div class="tw"><table><thead><tr><th>出口</th><th>怎麼做</th><th>哪些支</th></tr></thead><tbody><tr><td>Crystal 預覽 / 列印</td><td><code>SetQueryParameters(ReportClass, ReportID, ReportName)</code> + <code>.rpt</code> 範本</td><td>42 支</td></tr><tr><td>Excel 下載</td><td><code>ExcelCreator.CreateExcelDocument(dt, sFileName)</code> 直接存檔,<strong>不經 Crystal</strong></td><td><code>NFDR123</code>;<code>NFDR120</code> / <code>NFDR121</code> 為混合(有「下載」選項)</td></tr><tr><td>文字檔 / ZIP</td><td><code>CreateTxtFiles.CreateNFDR073AText(...)</code>,可加密碼壓縮</td><td><code>NFDR073A</code></td></tr></tbody></table></div>
+<h3 id="1-5-一日作業泳道-推測">1.5 一日作業泳道(推測)</h3>
+<p>repo 內沒有排程設定可讀,以下由報表名的期間參數推測,<strong>標「假設」</strong>:</p>
+<div class="tw"><table><thead><tr><th>時點</th><th>誰跑</th><th>跑什麼</th></tr></thead><tbody><tr><td>日終</td><td>扣款作業</td><td><code>NFDR101</code> / <code>NFDR102</code> / <code>NFDR103</code>(指定扣款彙總 / 明細 / 失敗明細)</td></tr><tr><td>日終</td><td>交易作業</td><td><code>NFDR105</code>(申購交易確認單)、<code>NFDR154</code>(贖回交易確認單)、<code>NFDR104</code>(申購明細表)</td></tr><tr><td>月底</td><td>客服</td><td><code>NFDR073</code> / <code>NFDR073A</code> / <code>NFDR073B</code>(對帳單,<code>NFDR073A</code> 有「月對帳單 / 季對帳單」選項,<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073A.Designer.cs:148-150</code>)</td></tr><tr><td>月底</td><td>財務</td><td><code>NFDR107A</code> / <code>NFDR107B</code>(扣帳費 / 手續費)、<code>NFDR115</code> / <code>NFDR158</code> / <code>NFDR159</code>(申購 / 贖回 / 轉申購統計月報)</td></tr><tr><td>月底</td><td>法遵</td><td><code>NFDR004</code>(員工及其關係人買賣月報)、<code>NFDR006</code>(債券型基金其他資訊揭露月報)</td></tr></tbody></table></div>
+<h3 id="1-6-要改這個模組的報表之前">1.6 要改這個模組的報表之前</h3>
+<p>操作步驟走 <code>add-report.md</code>(七層結構、Crystal 版本、<code>.rpt</code> 加進 csproj 的方式、部署路徑),<strong>本文不重複</strong>。以下只列 <code>NFD</code> 與該手冊的範例(<code>CASR001</code>,<code>Dev/ATLAS.CAS.Report</code>)不一樣的地方:</p>
+<div class="tw"><table><thead><tr><th>項目</th><th><code>add-report.md</code> 的 <code>CASR001</code></th><th><code>NFD</code> 本片 44 支</th></tr></thead><tbody><tr><td>七層結構</td><td>相同(六層加 <code>Report</code> 前綴 + <code>CrystalReports/Report.XXX</code>)</td><td><strong>相同</strong>,44 支全齊,無檔名例外</td></tr><tr><td>一支畫面掛多版型</td><td><code>CASR001</code> 掛 6 個</td><td><code>NFDR001</code> / <code>NFDR076</code> 掛 5 個,<code>NFDR073B</code> / <code>NFDR151</code> / <code>NFDR160</code> 掛 4 個;<strong>但版型與選項是多對一</strong>(<a class="sec" href="#7-1-第-001-007-群-受益人結構與法遵月報">§7.1</a>.1),改一張會影響多個組合</td></tr><tr><td>R 畫面沒有四眼</td><td>是</td><td><strong>是</strong>,44 支的 PO 都不宣告 <code>MasterTable</code> / <code>DetailTable</code>(<a class="sec" href="#4-維護畫面-m">§4</a>)</td></tr><tr><td>資料走 SP</td><td>是</td><td><strong>是,而且 SP 幾乎全在版控外</strong>(<a class="sec" href="#2-2-sp-60-支-版控裡只有-1-支">§2.2</a>)。改欄位時 repo 內改不到取數那一半</td></tr><tr><td>選版型在客戶端</td><td>是</td><td><strong>是</strong>,<code>SetQueryParameters(ReportClass, ReportID, ReportName)</code>;<code>NFDR151</code> 例外——<strong>分派寫在 PO</strong>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:70-98</code>),加版型要同時改 UI 與 PO</td></tr><tr><td>PO 基底</td><td>單一</td><td><strong>兩種並存</strong>:28 支 <code>INFDRxxx_PO</code>(Oracle)、16 支 <code>Basic_PO</code>(未遷移,附錄 E-02)。動到後者要先處理 <code>m_db</code></td></tr><tr><td>輸出一定是 <code>.rpt</code></td><td>是</td><td><strong>兩支不是</strong>:<code>NFDR073A</code>(文字檔)、<code>NFDR123</code>(Excel)</td></tr></tbody></table></div>
+<p><strong>加一張新版型的最小改動清單(本模組版)</strong>:</p>
+<ol><li>新增 <code>.rpt</code> 到 <code>Dev/ATLAS.NFD.Report/Source/CrystalReports/Report.NFD/</code>,並加進 <code>Report.NFD.csproj</code>(本片 79 張全都有加,照抄既有寫法)。</li><li>UI 加一個 <code>SetQueryParameters("NFDRxxxRPSn", "NFDRxxxRPSn", "報表中文名")</code> 分支——<strong>記得補 <code>else</code></strong>,否則落在列舉外就靜默什麼都不做(附錄 E-15)。</li><li>若新版型需要新的結果集:<code>Model.xsd</code> + <code>View.xsd</code> + Ctl 的 <code>TransferTable</code> <strong>三處一起改</strong>(附錄 E-07)。</li><li>若取數要改,<strong>SP 不在版控</strong>,要另外走資料庫變更流程,repo 內留不下痕跡。</li></ol>
+</div></section><section class="sec" data-sec="2-資料模型"><h2 id="2-資料模型"><button class="tg" aria-label="收合/展開" type="button"></button>2. 資料模型</h2><div class="sec-body"><figure><svg viewBox="0 0 1170 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NFD 讀誰的表：15 支可見報表扇入到 OFD 軌 14 張表與 4 張共用主檔，NFD 自己的業務表是零張"><defs><marker id="ah_nfdr1_fanin" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">本片 15 支「看得見表名」的報表 → 各模組的表（另 29 支在 SP 黑箱裡）</text><g class="bx accent">
+<rect x="20" y="44" rx="10" ry="10" width="200" height="52"/>
+<text class="t1" x="120" y="64" text-anchor="middle">NFDR073A</text>
+<text class="t2" x="120" y="84" text-anchor="middle">對帳單文字檔 讀 6 個模組</text>
+</g><g class="bx accent">
+<rect x="20" y="106" rx="10" ry="10" width="200" height="52"/>
+<text class="t1" x="120" y="126" text-anchor="middle">NFDR076 NFDR077</text>
+<text class="t2" x="120" y="146" text-anchor="middle">申購／買回轉申購確認書</text>
+</g><g class="bx accent">
+<rect x="20" y="168" rx="10" ry="10" width="200" height="52"/>
+<text class="t1" x="120" y="188" text-anchor="middle">NFDR123</text>
+<text class="t2" x="120" y="208" text-anchor="middle">KYC 到期名單</text>
+</g><g class="bx">
+<rect x="20" y="230" rx="10" ry="10" width="200" height="52"/>
+<text class="t1" x="120" y="250" text-anchor="middle">NFDR107A NFDR107B NFDR114</text>
+<text class="t2" x="120" y="270" text-anchor="middle">手續費／扣帳費／印花稅</text>
+</g><g class="bx">
+<rect x="20" y="292" rx="10" ry="10" width="200" height="52"/>
+<text class="t1" x="120" y="312" text-anchor="middle">NFDR115/154/158/159</text>
+<text class="t2" x="120" y="332" text-anchor="middle">統計月報＋確認單</text>
+</g><g class="bx">
+<rect x="20" y="354" rx="10" ry="10" width="200" height="52"/>
+<text class="t1" x="120" y="374" text-anchor="middle">NFDR001/073/073B/101</text>
+<text class="t2" x="120" y="394" text-anchor="middle">名冊／對帳單／扣款</text>
+</g><g class="bx dash">
+<rect x="330" y="30" rx="10" ry="10" width="230" height="50"/>
+<text class="t1" x="445" y="49" text-anchor="middle">OFD081V</text>
+<text class="t2" x="445" y="69" text-anchor="middle">4 支 · view，定義不在版控</text>
+</g><g class="bx dash">
+<rect x="330" y="90" rx="10" ry="10" width="230" height="50"/>
+<text class="t1" x="445" y="109" text-anchor="middle">OFD303A</text>
+<text class="t2" x="445" y="129" text-anchor="middle">5 支 · 日結檢核的來源</text>
+</g><g class="bx dash">
+<rect x="330" y="150" rx="10" ry="10" width="230" height="50"/>
+<text class="t1" x="445" y="169" text-anchor="middle">OFD0811A OFD081A</text>
+<text class="t2" x="445" y="189" text-anchor="middle">基金屬性 INV_AREA／PROF_TYPE2</text>
+</g><g class="bx dash">
+<rect x="330" y="210" rx="10" ry="10" width="230" height="50"/>
+<text class="t1" x="445" y="229" text-anchor="middle">OFD221A OFD251A OFD306A</text>
+<text class="t2" x="445" y="249" text-anchor="middle">申購／買回／異動</text>
+</g><g class="bx dash">
+<rect x="330" y="270" rx="10" ry="10" width="230" height="50"/>
+<text class="t1" x="445" y="289" text-anchor="middle">OFD002 017A 123A 126 132A</text>
+<text class="t2" x="445" y="309" text-anchor="middle">其餘 OFD 表各 1 支</text>
+</g><g class="bx dash">
+<rect x="330" y="330" rx="10" ry="10" width="230" height="50"/>
+<text class="t1" x="445" y="349" text-anchor="middle">BMS001A</text>
+<text class="t2" x="445" y="369" text-anchor="middle">4 支 · 受益人主檔</text>
+</g><g class="bx dash">
+<rect x="330" y="390" rx="10" ry="10" width="230" height="50"/>
+<text class="t1" x="445" y="409" text-anchor="middle">COD009 SAL051 FSK003</text>
+<text class="t2" x="445" y="429" text-anchor="middle">員工／業務員／風險屬性</text>
+</g><g class="bx ext">
+<rect x="330" y="450" rx="10" ry="10" width="230" height="50"/>
+<text class="t1" x="445" y="469" text-anchor="middle">CTL014 CTL018</text>
+<text class="t2" x="445" y="489" text-anchor="middle">代碼表</text>
+</g><g class="bx accent">
+<rect x="650" y="150" rx="10" ry="10" width="230" height="64"/>
+<text class="t1" x="765" y="176" text-anchor="middle">OFD 軌 14 張</text>
+<text class="t2" x="765" y="196" text-anchor="middle">境內分戶軌 = 真正的業務資料</text>
+</g><g class="bx">
+<rect x="650" y="250" rx="10" ry="10" width="230" height="64"/>
+<text class="t1" x="765" y="276" text-anchor="middle">BMS／COD／SAL／FSK 4 張</text>
+<text class="t2" x="765" y="296" text-anchor="middle">共用主檔</text>
+</g><g class="bx ext">
+<rect x="650" y="350" rx="10" ry="10" width="230" height="64"/>
+<text class="t1" x="765" y="376" text-anchor="middle">CTL 2 張</text>
+<text class="t2" x="765" y="396" text-anchor="middle">代碼</text>
+</g><g class="bx vend">
+<rect x="650" y="440" rx="10" ry="10" width="230" height="64"/>
+<text class="t1" x="765" y="466" text-anchor="middle">NFDR073T* 17 張</text>
+<text class="t2" x="765" y="486" text-anchor="middle">NFD 唯一自有：暫存</text>
+</g><g class="bx accent">
+<rect x="930" y="240" rx="10" ry="10" width="220" height="80"/>
+<text class="t1" x="1040" y="274" text-anchor="middle">NFD 自己的業務表：0 張</text>
+<text class="t2" x="1040" y="294" text-anchor="middle">這就是「純輸出層」的定義</text>
+</g><path class="ar" d="M 220 70 L 330 55" marker-end="url(#ah_nfdr1_fanin)"/><path class="ar" d="M 220 76 L 330 175" marker-end="url(#ah_nfdr1_fanin)"/><path class="ar" d="M 220 132 L 330 115" marker-end="url(#ah_nfdr1_fanin)"/><path class="ar" d="M 220 138 L 330 235" marker-end="url(#ah_nfdr1_fanin)"/><path class="ar" d="M 220 194 L 330 355" marker-end="url(#ah_nfdr1_fanin)"/><path class="ar" d="M 220 200 L 330 235" marker-end="url(#ah_nfdr1_fanin)"/><path class="ar" d="M 220 256 L 330 115" marker-end="url(#ah_nfdr1_fanin)"/><path class="ar" d="M 220 318 L 330 55" marker-end="url(#ah_nfdr1_fanin)"/><path class="ar" d="M 220 380 L 330 295" marker-end="url(#ah_nfdr1_fanin)"/><path class="ar" d="M 220 386 L 330 475" marker-end="url(#ah_nfdr1_fanin)"/><path class="ar lnk" d="M 560 175 L 650 182"/><path class="ar lnk" d="M 560 355 L 650 282"/><path class="ar lnk" d="M 560 475 L 650 382"/><path class="ar dsh" d="M 880 182 L 930 270" marker-end="url(#ah_nfdr1_fanin)"/><path class="ar dsh" d="M 880 472 L 930 300" marker-end="url(#ah_nfdr1_fanin)"/></svg><figcaption>圖 2 扇入圖（§2.1）。左=本片看得見表名的 15 支；中=被讀到的表；右=按模組彙總。灰虛框=別模組的表（NFD 只讀不寫）；黑框=無原始碼／內容在 DB；橘虛框=NFD 唯一自有的暫存表。另有 29 支的相依性藏在版控外的 SP 裡，這張圖畫不出來。</figcaption></figure>
+<h3 id="2-1-nfd-讀誰的表-本文最重要的一節">2.1 <code>NFD</code> 讀誰的表(本文最重要的一節)</h3>
+<p><strong>結論:44 支裡有 29 支(66%)完全看不到表名</strong>——SQL 在版控外的 SP 裡。剩下 15 支可以從 PO 的 inline SQL 讀出表,清一色是 <code>OFD*</code> 加少數共用代碼表。</p>
+<p><code>NFD</code> 沒有任何一張自己的業務表。它唯一「自己的」是以報表代號命名的暫存表(<code>NFDR073T*</code>),而且只有 <code>NFDR073</code> / <code>NFDR073A</code> 在用。</p>
+<h4 id="2-1-1-表的歸屬統計-僅計-po-內看得見的">2.1.1 表的歸屬統計(僅計 PO 內看得見的)</h4>
+<div class="tw"><table><thead><tr><th>表</th><th>歸屬模組</th><th>被本片幾支用</th><th>哪幾支</th><th>在 <code>atlas_index.json</code></th></tr></thead><tbody><tr><td><code>OFD081V</code></td><td>OFD</td><td>5</td><td><code>NFDR073A</code> <code>NFDR115</code> <code>NFDR154</code> <code>NFDR158</code> <code>NFDR159</code></td><td>否(view,索引未收)</td></tr><tr><td><code>OFD303A</code></td><td>OFD</td><td>5</td><td><code>NFDR076</code> <code>NFDR077</code> <code>NFDR107A</code> <code>NFDR107B</code> <code>NFDR114</code></td><td>否</td></tr><tr><td><code>BMS001A</code></td><td>BMS</td><td>4</td><td><code>NFDR073A</code> <code>NFDR076</code> <code>NFDR077</code> <code>NFDR123</code></td><td>是</td></tr><tr><td><code>CTL018</code></td><td>CTL(代碼)</td><td>3</td><td><code>NFDR073</code> <code>NFDR101</code> <code>NFDR107B</code></td><td>否</td></tr><tr><td><code>OFD0811A</code></td><td>OFD</td><td>3</td><td><code>NFDR073A</code> <code>NFDR076</code> <code>NFDR077</code></td><td>是</td></tr><tr><td><code>COD009</code></td><td>COD</td><td>2</td><td><code>NFDR073B</code> <code>NFDR123</code></td><td>是</td></tr><tr><td><code>OFD081A</code></td><td>OFD</td><td>2</td><td><code>NFDR073A</code> <code>NFDR077</code></td><td>是</td></tr><tr><td><code>OFD221A</code></td><td>OFD</td><td>2</td><td><code>NFDR076</code> <code>NFDR123</code></td><td>是</td></tr><tr><td><code>CTL014</code></td><td>CTL(代碼)</td><td>1</td><td><code>NFDR001</code></td><td>否</td></tr><tr><td><code>FSK003</code></td><td>FSK</td><td>1</td><td><code>NFDR073A</code></td><td>否</td></tr><tr><td><code>OFD002</code></td><td>OFD</td><td>1</td><td><code>NFDR073B</code></td><td>是</td></tr><tr><td><code>OFD017A</code></td><td>OFD</td><td>1</td><td><code>NFDR001</code></td><td>是</td></tr><tr><td><code>OFD123A</code> + <code>OFD123A_TMP</code></td><td>OFD</td><td>1</td><td><code>NFDR123</code></td><td><code>OFD123A</code> 是</td></tr><tr><td><code>OFD126</code></td><td>OFD</td><td>1</td><td><code>NFDR073</code></td><td>否</td></tr><tr><td><code>OFD132A</code></td><td>OFD</td><td>1</td><td><code>NFDR073A</code></td><td>是</td></tr><tr><td><code>OFD251A</code></td><td>OFD</td><td>1</td><td><code>NFDR077</code></td><td>是</td></tr><tr><td><code>OFD306A</code> + <code>OFD306_TMP</code></td><td>OFD</td><td>1</td><td><code>NFDR123</code></td><td>否</td></tr><tr><td><code>SAL051</code></td><td>SAL</td><td>1</td><td><code>NFDR073B</code></td><td>是</td></tr><tr><td><code>MYOFD303A</code></td><td>?(同義字 / 別名)</td><td>1</td><td><code>NFDR077</code></td><td>否</td></tr><tr><td><code>NFDR073T0</code> <code>T5</code>–<code>T12</code> <code>T16</code>–<code>T19</code> <code>T24</code> <code>T29</code> <code>T31</code> <code>T33</code> <code>T34</code></td><td><strong>NFD 自建暫存</strong></td><td>2</td><td><code>NFDR073</code> <code>NFDR073A</code></td><td>否(DDL 在 <code>DB/Table/</code>)</td></tr><tr><td><code>OCRMTMP</code></td><td>?(暫存)</td><td>1</td><td><code>NFDR073</code></td><td>否</td></tr></tbody></table></div>
+<p>按模組彙總(去重後 42 張表):</p>
+<div class="tw"><table><thead><tr><th>模組</th><th>張數</th><th>佔比</th><th>說明</th></tr></thead><tbody><tr><td><strong>NFD 自建暫存</strong> <code>NFDR073T*</code></td><td>17</td><td>40%</td><td>只為了印 <code>NFDR073</code> / <code>NFDR073A</code> 而存在</td></tr><tr><td><strong>OFD</strong>(境內分戶軌)</td><td>14</td><td>33%</td><td><strong>真正的業務資料全在這</strong></td></tr><tr><td>CTL(代碼)</td><td>2</td><td>5%</td><td><code>CTL014</code> <code>CTL018</code></td></tr><tr><td>BMS / COD / FSK / SAL</td><td>4</td><td>10%</td><td>受益人基本資料、代碼、風險屬性、業務員</td></tr><tr><td>不明(<code>MYOFD303A</code> / <code>OCRMTMP</code> / <code>F_FORMATSTRINGTOTABLE</code>)</td><td>3</td><td>7%</td><td>同義字、暫存表、Oracle function</td></tr><tr><td><code>OFD*_TMP</code></td><td>3</td><td>7%</td><td><code>OFD123A_TMP</code> <code>OFD221A_TMP</code> <code>OFD306_TMP</code></td></tr></tbody></table></div>
+<p><strong>這張表就是 <a class="sec" href="#0-1-nfd-是什麼-推測">§0.1</a> 結論的證據</strong>:去掉自己造的暫存表,<code>NFD</code> 看得見的業務表 100% 是 <code>OFD</code> 軌的。</p>
+<h4 id="2-1-2-29-支黑箱">2.1.2 29 支黑箱</h4>
+<p>以下 29 支的 PO <strong>完全沒有 inline SQL</strong>,只有 <code>GetStoredProcCommand</code> + <code>AddInParameter</code>,所以讀哪些表<strong>從 repo 讀不出來</strong>:</p>
+<p><code>NFDR002</code> <code>NFDR003</code> <code>NFDR004</code> <code>NFDR005</code> <code>NFDR006</code> <code>NFDR007</code> <code>NFDR021</code> <code>NFDR023</code> <code>NFDR024</code> <code>NFDR071</code> <code>NFDR072</code> <code>NFDR075</code> <code>NFDR102</code> <code>NFDR103</code> <code>NFDR104</code> <code>NFDR105</code> <code>NFDR108</code> <code>NFDR109</code> <code>NFDR111</code> <code>NFDR120</code> <code>NFDR121</code> <code>NFDR122</code> <code>NFDR150</code> <code>NFDR151</code> <code>NFDR153</code> <code>NFDR155</code> <code>NFDR156</code> <code>NFDR157</code> <code>NFDR160</code></p>
+<p>要查它們讀誰的表,只能到資料庫撈 SP 原始碼。<strong>這是本模組最大的維護風險</strong>(附錄 E-01)。</p>
+<h3 id="2-2-sp-60-支-版控裡只有-1-支">2.2 SP:60 支,版控裡只有 1 支</h3>
+<p>44 支報表一共點名 60 個 stored procedure。拿 <code>atlas_index.json</code> 的 <code>sps</code>(83 支)去比對,<strong>只有 <code>S_TA_NFDR073_1_GET</code> 一支在版控</strong>(<code>DB/SP/S_TA_NFDR073_1_GET.SQL</code>)。</p>
+<div class="tw"><table><thead><tr><th>命名樣式</th><th>支數</th><th>例</th></tr></thead><tbody><tr><td><code>s_TA_NFDRxxx_Get</code> / <code>S_TA_NFDRxxx_GET</code></td><td>30</td><td><code>s_TA_NFDR001_Get</code>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:57</code>)</td></tr><tr><td><code>s_NFDRxxx_Get</code>(<strong>少了 <code>TA_</code></strong>)</td><td>22</td><td><code>s_NFDR023_Get</code>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR023_PO.cs:64</code>)</td></tr><tr><td>帶序號 <code>_1_</code> / <code>_2_</code> / <code>_T2_</code></td><td>8</td><td><code>S_TA_NFDR151_GET_1</code>–<code>_5</code>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:81-116</code>)</td></tr></tbody></table></div>
+<p><strong>兩套命名並存</strong>且沒有規則可循:同一支 <code>NFDR073</code> 用 <code>s_NFDR073_Get</code>,而 <code>NFDR073A</code> 用 <code>S_TA_NFDR073_0_GET</code>~<code>_4_GET</code>。要找某支報表的 SP,<strong>不能用代號硬推名字</strong>,必須開 PO 看(見 <a class="sec" href="#7-報表-r-主體">§7</a> 逐支)。</p>
+<p>大小寫也混:<code>NFDR024</code> 寫 <code>S_TA_NFDR024_GET</code>,<code>NFDR001</code> 寫 <code>s_TA_NFDR001_Get</code>。Oracle 不分大小寫所以跑得動,但任何依檔名 / 字串比對的工具都會漏。</p>
+<h3 id="2-3-rpt-範本-全部在版控-而且全部在-csproj">2.3 <code>.rpt</code> 範本:全部在版控,而且全部在 csproj</h3>
+<p>好消息,這片沒有前幾篇踩過的洞:</p>
+<div class="tw"><table><thead><tr><th>檢查</th><th>結果</th></tr></thead><tbody><tr><td>44 支引用的 Crystal ReportClass 字串</td><td>共 79 個</td></tr><tr><td>對應的 <code>.rpt</code> 檔在 <code>Dev/ATLAS.NFD.Report/Source/CrystalReports/Report.NFD/</code></td><td><strong>79 / 79 都在</strong></td></tr><tr><td>這些 <code>.rpt</code> 有沒有進 <code>Report.NFD.csproj</code></td><td><strong>79 / 79 都在</strong></td></tr><tr><td>UI / Ctl / PO 三層 <code>.cs</code> 有沒有進各自 csproj</td><td><strong>44 / 44 × 3 都在</strong></td></tr><tr><td>六層(UI / Ctl / Pxy / PO / Model.xsd / View.xsd)齊不齊</td><td><strong>44 支全齊</strong>,沒有 <code>misc.md</code> 那種檔名少一個字母的情況</td></tr></tbody></table></div>
+<p>例外兩支,是設計如此不是缺陷:</p>
+<div class="tw"><table><thead><tr><th>支</th><th>為什麼沒有 <code>.rpt</code></th><th>錨點</th></tr></thead><tbody><tr><td><code>NFDR073A</code></td><td>產文字檔不產 Crystal 報表,走 <code>CreateTxtFiles.CreateNFDR073AText(...)</code></td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073A.cs:114</code></td></tr><tr><td><code>NFDR123</code></td><td>產 Excel 不產 Crystal,<code>ExcelCreator.CreateExcelDocument(dt, sFileName)</code>,檔名寫死「受益人KYC到期名單.xlsx」</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR123.cs:79,86</code></td></tr></tbody></table></div>
+<p><code>.rpt</code> 的取得方式仍然是<strong>字串比對</strong>:Ctl 拿前端傳來的 <code>ReportClass</code> 字串丟給 <code>CRReportTransfer.TransferFileByte(rpt)</code>(<code>Dev/ATLAS.NFD.Report/Source/Control/ReportControl.NFD/NFDR001_Ctl.cs:44-45</code>)。編譯器不檢查,改 <code>.rpt</code> 檔名不改 UI 字串 = 執行期才爆。</p>
+<h3 id="2-4-nfdr073t-暫存表家族">2.4 <code>NFDR073T*</code> 暫存表家族</h3>
+<p><code>NFDR073</code> / <code>NFDR073A</code> 這組對帳單自己建了 17 張以上的暫存表,DDL 在 <code>DB/Table/</code>(<code>NFDR073T16.sql</code>、<code>NFDR073T17.sql</code>、<code>NFDR073T18.sql</code>、<code>NFDR073BT1.sql</code>、<code>NFDR073BT2.sql</code>…)。</p>
+<p>用法是<strong>先 <code>DELETE</code> 再由 SP 重灌,以 <code>dataID</code> 分租</strong>:</p>
+<pre class="code"><code>DELETE FROM NFDR073T6 WHERE dataID = @dataID; DELETE FROM NFDR073T7 WHERE dataID = @dataID</code></pre>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073_PO.cs:385</code></p>
+<p><code>dataID</code> 由 client 端組出來後截斷到 22 碼(<code>strDATAID.Substring(0, 22).Trim()</code>,<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:102</code>)。<strong>兩個使用者同時跑、<code>dataID</code> 前 22 碼撞到,兩份對帳單的資料會混在一起</strong>(附錄 E-03)。</p>
+<h3 id="2-5-沒有狀態碼">2.5 沒有狀態碼</h3>
+<p>本模組不改任何資料的狀態,所以沒有狀態機。畫面上的「選項」值(<code>uoptRPT_TYPE</code> / <code>uoptPrint</code> / <code>uoptOrder</code> / <code>uoptPurpose</code>)只影響<strong>選哪支 SP、選哪張 <code>.rpt</code>、給 Crystal 什麼顯示字串</strong>,不寫回資料庫。唯一的例外是 <code>NFDR073</code> / <code>NFDR073A</code> 寫暫存表(<a class="sec" href="#2-4-nfdr073t-暫存表家族">§2.4</a>)與 <code>NFDR073B</code> 寄信留紀錄(<code>S_TA_NFDR073B_EMAIL</code>,<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073B_PO.cs:160</code>)。</p>
+<h3 id="2-6-欄位中文名-msdata-caption-在這個模組不可信">2.6 欄位中文名:<code>msdata:Caption</code> 在這個模組不可信</h3>
+<p>範本規定「欄位中文名以 <code>Model.xsd</code> 的 <code>msdata:Caption</code> 為準,不自己翻」。<strong>這條規則在 <code>NFD</code> 只有一半適用</strong>。</p>
+<p>44 個 <code>Model.xsd</code> 裡 27 個有 <code>msdata:Caption</code>,17 個一個都沒有。而且有 <code>Caption</code> 的那 27 個裡,<strong>有 9 個的 <code>Caption</code> 值根本不是中文名,是另一個欄位名</strong>:</p>
+<div class="tw"><table><thead><tr><th>支</th><th>欄位</th><th><code>Caption</code> 值</th><th>這是什麼</th></tr></thead><tbody><tr><td><code>NFDR002</code></td><td><code>PROF_TYPE</code></td><td><code>PROF_TYPE_NM_C</code></td><td>另一個欄位名</td></tr><tr><td><code>NFDR071</code> / <code>NFDR072</code></td><td><code>ANNOUNCE_AMT</code></td><td><code>TRAN_AMT1</code></td><td>另一個欄位名</td></tr><tr><td><code>NFDR073</code></td><td><code>NAV_DEC</code></td><td><code>DEC_LEN</code></td><td>另一個欄位名</td></tr><tr><td><code>NFDR073A</code> / <code>NFDR073B</code></td><td><code>FUND_SH_NM</code></td><td><code>FUND_SH_NM1</code></td><td>另一個欄位名</td></tr><tr><td><code>NFDR073A</code> / <code>NFDR073B</code></td><td><code>REDEM_COST</code></td><td><code>STK_COST</code></td><td>另一個欄位名</td></tr><tr><td><code>NFDR104</code></td><td><code>REMIT_ACC_TYPE</code></td><td><code>SYSTEM_ID</code></td><td>另一個欄位名</td></tr><tr><td><code>NFDR108</code></td><td><code>AGENT_ID_NM</code></td><td><code>AGENT_ID</code></td><td>另一個欄位名</td></tr><tr><td><code>NFDR151</code></td><td><code>SUM_PAID_AMT</code></td><td><code>SUM_RUNIT</code></td><td>另一個欄位名</td></tr></tbody></table></div>
+<p>錨點:<code>Dev/ATLAS.NFD.Report/Source/Entity/ReportDataEntity.NFD/NFDR002Model.xsd</code>、<code>Dev/ATLAS.NFD.Report/Source/Entity/ReportDataEntity.NFD/NFDR073AModel.xsd</code>、<code>Dev/ATLAS.NFD.Report/Source/Entity/ReportDataEntity.NFD/NFDR151Model.xsd</code>。</p>
+<p><strong>推測</strong>:<code>Caption</code> 在這裡被當成「SP 實際回傳的欄位名」在用——DataSet 的欄位叫 <code>ANNOUNCE_AMT</code>,SP 回的欄位叫 <code>TRAN_AMT1</code>,用 <code>Caption</code> 記下對照。<strong>這是 <code>Caption</code> 的誤用</strong>,但改掉會影響 <code>TransferVDBHelper.TransferTable</code> 的行為,不能隨手動。</p>
+<p><strong>所以在 <code>NFD</code> 查欄位中文名,要先看 <code>Caption</code> 值是不是中文</strong>;不是中文就當成欄位對照,真正的中文名去 <code>.rpt</code> 或 <code>Designer.cs</code> 的 label 找。</p>
+<h3 id="2-7-欄位中文名總表-取自-model-xsd-的-msdata-caption-僅列中文者">2.7 欄位中文名總表(取自 <code>Model.xsd</code> 的 <code>msdata:Caption</code>,僅列中文者)</h3>
+<p>只有 5 支的 xsd 提供了成規模的中文欄位名。</p>
+<div class="tw"><table><thead><tr><th>支</th><th>欄位 → 中文名</th></tr></thead><tbody><tr><td><code>NFDR109</code></td><td><code>FUND_ID</code> 基金代碼 · <code>FUND_SH_NM</code> 基金名稱 · <code>CRNCY_CD</code> 幣別 · <code>CRNCY_NM</code> 幣別名稱 · <code>AGENT_ID</code> 銷售機構別 · <code>AGENT_CODE</code> 銷售機構代碼 · <code>AGENT_SHNM</code> 銷售機構名稱 · <code>AGENT_SHNM_F</code> 完整銷售機構名稱(共 21 個)</td></tr><tr><td><code>NFDR120</code></td><td><code>BANK_HQ</code> 總行代碼 · <code>BANK_HQ_SHNM</code> 總行名稱 · <code>BANK_HQ_SHNM_F</code> 總行完整名稱 · <code>BANK_BRH</code> 分行代碼 · <code>BANK_BRH_SHNM</code> 分行名稱 · <code>BANK_BRH_SHNM_F</code> 分行完整名稱 · <code>FUND_ID</code> 基金代碼 · <code>FUND_SH_NM</code> 基金名稱(共 29 個)</td></tr><tr><td><code>NFDR121</code></td><td><code>AGENT_ID</code> 銷售機構別 · <code>AGENT_CODE</code> 部門代碼 · <code>AGENT_SHNM</code> 部門名稱 · <code>SPONSOR_CODE</code> 推薦人代碼 · <code>SPONSOR_NAME</code> 推薦人姓名 · <code>BF_NO</code> 受益人戶號 · <code>ID_NO</code> 統一編號 · <code>BF_NAME</code> 受益人戶名(共 38 個)</td></tr><tr><td><code>NFDR122</code></td><td><code>AGENT_CODE</code> 部門代碼 · <code>AGENT_SHNM</code> 部門名稱 · <code>SPONSOR_CODE</code> 推薦人代碼 · <code>SPONSOR_NAME</code> 推薦人姓名 · <code>BF_NO</code> 受益人戶號 · <code>ID_NO</code> 受益人編號 · <code>BF_NAME</code> 受益人戶名 · <code>FUND_ID</code> 基金代碼(共 23 個)</td></tr><tr><td><code>NFDR123</code></td><td><code>AGENT_ID</code> 銷售機構區別碼 · <code>AGENT_CODE</code> 銷售機構代碼 · <code>AGENT_NM</code> 銷售機構名稱 · <code>SPONSOR_CODE</code> 推薦人代碼 · <code>EMP_NO</code> 員工代碼 · <code>EMP_NAME</code> 員工姓名 · <code>BF_NAME</code> 客戶姓名 · <code>BF_NO</code> 戶號(共 12 個)</td></tr><tr><td><code>NFDR150</code></td><td><code>FUND_ID</code> 基金代碼 · <code>FUND_SH_NM</code> 基金名稱 · <code>CRNCY_CD</code> 幣別 · <code>CRNCY_NM</code> 幣別名稱 · <code>REDEM_DATE</code> 買回日期 · <code>AGENT_ID</code> 銷售機構別 · <code>AGENT_CODE</code> 銷售機構代碼 · <code>AGENT_SHNM</code> 銷售機構名稱(共 19 個)</td></tr></tbody></table></div>
+<p><strong>注意同一個欄位在不同支的中文名不一致</strong>:<code>AGENT_CODE</code> 在 <code>NFDR109</code> / <code>NFDR150</code> 是「銷售機構代碼」,在 <code>NFDR121</code> / <code>NFDR122</code> 是「部門代碼」;<code>ID_NO</code> 在 <code>NFDR121</code> 是「統一編號」,在 <code>NFDR122</code> 是「受益人編號」,在 <code>NFDR023</code> 是「受益人ID」。<strong>同一個欄位,三份報表三個中文名</strong>——這不是 bug,但客服拿兩張報表對帳時會以為是不同欄位。</p>
+<p>其餘 17 支完全沒有 <code>Caption</code>,欄位中文名只能從 <code>.rpt</code> 的欄位標題看,而 <code>.rpt</code> 是 Crystal 二進位,<strong>repo 內讀不出來</strong>。</p>
+<h3 id="2-8-model-xsd-與-view-xsd-的關係">2.8 <code>Model.xsd</code> 與 <code>View.xsd</code> 的關係</h3>
+<p>每支有兩個 xsd:</p>
+<div class="tw"><table><thead><tr><th>檔</th><th>角色</th><th>誰填</th></tr></thead><tbody><tr><td><code>Dev/ATLAS.NFD.Report/Source/Entity/ReportDataEntity.NFD/NFDR001Model.xsd</code></td><td><code>ModelVDB</code>——伺服器端,PO 直接 <code>LoadDataSet</code> 進去</td><td>PO</td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/Entity/ReportUIEntity.NFD/NFDR001View.xsd</code></td><td><code>ViewVDB</code>——傳回 client,Crystal 綁這一份</td><td>Ctl 的 <code>CustomTransferOracleModelToView</code> 逐張手抄</td></tr></tbody></table></div>
+<p><strong>兩份要長得一樣,但沒有任何東西強制</strong>。中間的 <code>TransferTable</code> 是一行一行寫的(<a class="sec" href="#1-3-報表的六層呼叫順序">§1.3</a> 第 7 步、附錄 E-07)。加一張結果集要改四個地方:<code>Model.xsd</code>、<code>View.xsd</code>、Ctl 的 <code>TransferTable</code>、<code>.rpt</code> 的資料來源。少改一個不會編譯失敗,只會在報表上少一塊。</p>
+</div></section><section class="sec" data-sec="3-報表清冊-44-支"><h2 id="3-報表清冊-44-支"><button class="tg" aria-label="收合/展開" type="button"></button>3. 報表清冊(44 支)</h2><div class="sec-body"><figure><svg viewBox="0 0 1160 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="44 支報表依 PO 基底、資料來源、輸出型態、有無查無資料提示四種切法的分群"><defs><marker id="ah_nfdr1_src" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 依 PO 基底：28 支已遷 Oracle vs 16 支停在 MSSQL</text><g class="bx">
+<rect x="20" y="40" rx="10" ry="10" width="420" height="60"/>
+<text class="t1" x="230" y="64" text-anchor="middle">INFDRxxx_PO（28 支）</text>
+<text class="t2" x="230" y="84" text-anchor="middle">[PODbType(Oracle)] + 介面 + DataAccessPool</text>
+</g><g class="bx vend">
+<rect x="470" y="40" rx="10" ry="10" width="420" height="60"/>
+<text class="t1" x="680" y="64" text-anchor="middle">Basic_PO（16 支）</text>
+<text class="t2" x="680" y="84" text-anchor="middle">m_db = null，建構子被註解掉 → 一呼叫就 NRE</text>
+</g><g class="bx ext">
+<rect x="920" y="40" rx="10" ry="10" width="210" height="60"/>
+<text class="t1" x="1025" y="64" text-anchor="middle">Ctl 直接 new PO</text>
+<text class="t2" x="1025" y="84" text-anchor="middle">沒有替換機會</text>
+</g><path class="ar" d="M 890 70 L 920 70" marker-end="url(#ah_nfdr1_src)"/><text class="lane" x="20" y="136">② 依資料來源：SP 黑箱是主流</text><g class="bx ext">
+<rect x="20" y="150" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="160" y="172" text-anchor="middle">純 SP（29 支）</text>
+<text class="t2" x="160" y="192" text-anchor="middle">讀哪些表查不出來</text>
+</g><g class="bx">
+<rect x="320" y="150" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="460" y="172" text-anchor="middle">SP + inline（14 支）</text>
+<text class="t2" x="460" y="192" text-anchor="middle">部分可見</text>
+</g><g class="bx accent">
+<rect x="620" y="150" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="745" y="172" text-anchor="middle">純 inline（1 支）</text>
+<text class="t2" x="745" y="192" text-anchor="middle">NFDR123 的 Oracle CTE</text>
+</g><g class="bx dash">
+<rect x="890" y="150" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="1010" y="172" text-anchor="middle">無 SP 無 inline</text>
+<text class="t2" x="1010" y="192" text-anchor="middle">（本片沒有）</text>
+</g><text class="lane" x="20" y="246">③ 依輸出：Crystal 為主，兩支例外</text><g class="bx">
+<rect x="20" y="260" rx="10" ry="10" width="400" height="56"/>
+<text class="t1" x="220" y="282" text-anchor="middle">Crystal 42 支 / 79 張 .rpt</text>
+<text class="t2" x="220" y="302" text-anchor="middle">全在版控+csproj（本片零缺）</text>
+</g><g class="bx accent">
+<rect x="450" y="260" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="575" y="282" text-anchor="middle">NFDR123 → Excel</text>
+<text class="t2" x="575" y="302" text-anchor="middle">檔名寫死</text>
+</g><g class="bx vend">
+<rect x="730" y="260" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="870" y="282" text-anchor="middle">NFDR073A → 文字檔+ZIP</text>
+<text class="t2" x="870" y="302" text-anchor="middle">密碼來自 config</text>
+</g><text class="lane" x="20" y="356">④ 依有沒有「查無資料」提示</text><g class="bx">
+<rect x="20" y="370" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="170" y="392" text-anchor="middle">有訊息 14 支</text>
+<text class="t2" x="170" y="412" text-anchor="middle">零筆會跳警示</text>
+</g><g class="bx vend">
+<rect x="350" y="370" rx="10" ry="10" width="330" height="56"/>
+<text class="t1" x="515" y="392" text-anchor="middle">完全沒有 30 支</text>
+<text class="t2" x="515" y="412" text-anchor="middle">印出只有表頭的空報表</text>
+</g><g class="bx vend">
+<rect x="710" y="370" rx="10" ry="10" width="340" height="56"/>
+<text class="t1" x="880" y="392" text-anchor="middle">有判斷但訊息是空字串</text>
+<text class="t2" x="880" y="412" text-anchor="middle">NFDR151 / NFDR159 / NFDR105</text>
+</g></svg><figcaption>圖 3 四種分群（§3）。橘框=需要留意的少數派；橘虛框=已知風險；黑框=無原始碼或查不到；灰虛框=空集合。第 ① 列是本模組最重要的一條：同一份選單上，有 16 支的資料層目前是壞的。</figcaption></figure>
+<p>欄位說明:<strong>PO 基底</strong>——<code>INFDRxxx_PO</code> 表示走介面 + <code>[PODbType(DbServerType.Oracle)]</code>,已完成 Oracle 遷移;<code>Basic_PO</code> 表示未遷移的舊版(見附錄 E-02,這 16 支的 <code>m_db</code> 永遠是 <code>null</code>)。<strong>資料來源</strong>——<code>SP</code> / <code>SP+inline</code> / <code>純 inline</code> / <code>無 DB</code>。<strong><code>.rpt</code></strong>——引用的 Crystal 範本數 / 在版控 / 在 csproj。</p>
+<h3 id="3-1-第-001-007-群-受益人結構與法遵月報-7-支">3.1 第 001–007 群:受益人結構與法遵月報(7 支)</h3>
+<div class="tw"><table><thead><tr><th>代號</th><th>報表中文名</th><th>名稱出處</th><th>PO 基底</th><th>資料來源</th><th>SP(版控外除非註明)</th><th>讀到的表</th><th><code>.rpt</code> 數</th></tr></thead><tbody><tr><td><code>NFDR001</code></td><td>基金受益人名冊</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR001.cs:47</code></td><td><code>INFDR001_PO</code></td><td>SP+inline</td><td><code>s_TA_NFDR001_Get</code></td><td><code>CTL014</code>、<code>OFD017A</code></td><td>5(全在版控+csproj)</td></tr><tr><td><code>NFDR002</code></td><td>資金來源分析表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR002.cs:36</code></td><td><code>INFDR002_PO</code></td><td>SP</td><td><code>s_TA_NFDR002_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR003</code></td><td>股權分散表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR003.cs:43</code></td><td><code>INFDR003_PO</code></td><td>SP</td><td><code>s_TA_NFDR003_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR004</code></td><td>員工及其關係人買賣本公司基金月報表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR004.cs:34</code></td><td><code>INFDR004_PO</code></td><td>SP</td><td><code>s_TA_NFDR004_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR005</code></td><td>基金受益憑證持有者統計表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR005.cs:79</code></td><td><code>INFDR005_PO</code></td><td>SP</td><td><code>s_TA_NFDR005_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR006</code></td><td>債券型基金其他資訊揭露月報表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR006.cs:60</code></td><td><code>INFDR006_PO</code></td><td>SP</td><td><code>s_TA_NFDR006_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR007</code></td><td>各基金餘額比例表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR007.cs:55</code></td><td><code>INFDR007_PO</code></td><td>SP</td><td><code>s_TA_NFDR007_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr></tbody></table></div>
+<h3 id="3-2-第-021-024-群-受益人排行與異常清冊-3-支">3.2 第 021–024 群:受益人排行與異常清冊(3 支)</h3>
+<div class="tw"><table><thead><tr><th>代號</th><th>報表中文名</th><th>名稱出處</th><th>PO 基底</th><th>資料來源</th><th>SP(版控外除非註明)</th><th>讀到的表</th><th><code>.rpt</code> 數</th></tr></thead><tbody><tr><td><code>NFDR021</code></td><td>受益人基金持有／申購／贖回單位數排行表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR021.cs:49-58</code></td><td><code>INFDR021_PO</code></td><td>SP</td><td><code>s_TA_NFDR021_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR023</code></td><td>受益人異動及定額異動重覆報表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR023.cs:73</code></td><td><code>Basic_PO</code></td><td>SP</td><td><code>s_NFDR023_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR024</code></td><td>受益人統編異常清冊</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR024.cs:60</code></td><td><code>INFDR024_PO</code></td><td>SP</td><td><code>S_TA_NFDR024_GET</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr></tbody></table></div>
+<h3 id="3-3-第-071-077-群-對帳單-確認書與公告-對外文件-8-支">3.3 第 071–077 群:對帳單、確認書與公告(對外文件)(8 支)</h3>
+<div class="tw"><table><thead><tr><th>代號</th><th>報表中文名</th><th>名稱出處</th><th>PO 基底</th><th>資料來源</th><th>SP(版控外除非註明)</th><th>讀到的表</th><th><code>.rpt</code> 數</th></tr></thead><tbody><tr><td><code>NFDR071</code></td><td>法人公告警示表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR071.cs:34</code></td><td><code>Basic_PO</code></td><td>SP</td><td><code>s_NFDR071_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR072</code></td><td>法人買回／贖回公告明細表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR072.cs:35-55</code></td><td><code>Basic_PO</code></td><td>SP</td><td><code>s_NFDR072_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR073</code></td><td>投資對帳單</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073.cs:49</code></td><td><code>Basic_PO</code></td><td>SP+inline</td><td><code>s_NFDR073_1_Get</code>、<code>s_NFDR073_Get</code>、<code>s_NFDR073_ChkRdm</code></td><td><code>CTL018</code>、<code>NFDR073T0</code>、<code>NFDR073T6</code>、<code>NFDR073T7</code>、<code>OCRMTMP</code>、<code>OFD126</code></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR073A</code></td><td>月／季對帳單文字檔產生</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073A.Designer.cs:148-150</code></td><td><code>INFDR073A_PO</code></td><td>SP+inline</td><td><code>S_TA_NFDR073_3_GET</code>、<code>S_TA_NFDR073_0_GET</code>、<code>S_TA_NFDR073_4_GET</code>、<code>S_TA_NFDR073_1_GET</code><strong>(在版控)</strong>、<code>S_TA_NFDR073_2_GET</code></td><td><code>BMS001A</code>、<code>FSK003</code>、<code>NFDR073T10</code>、<code>NFDR073T11</code>、<code>NFDR073T12</code>、<code>NFDR073T16</code> …共 23 張</td><td><strong>0</strong>(非 Crystal)</td></tr><tr><td><code>NFDR073B</code></td><td>貴賓理財對帳單</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073B.cs:123</code></td><td><code>INFDR073B_PO</code></td><td>SP+inline</td><td><code>S_TA_NFDR073B_GET</code>、<code>S_TA_NFDR073B_EMAIL</code></td><td><code>COD009</code>、<code>OFD002</code>、<code>SAL051</code></td><td>4(全在版控+csproj)</td></tr><tr><td><code>NFDR075</code></td><td>傳真委託申購／委扣－扣款失敗通知書</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR075.cs:44-58</code></td><td><code>INFDR075_PO</code></td><td>SP</td><td><code>s_TA_NFDR075_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR076</code></td><td>申購交易確認書（含郵簡、彙總）</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR076.cs:179</code></td><td><code>INFDR076_PO</code></td><td>SP+inline</td><td><code>S_TA_NFDR076_GET</code></td><td><code>BMS001A</code>、<code>OFD0811A</code>、<code>OFD221A</code>、<code>OFD303A</code></td><td>5(全在版控+csproj)</td></tr><tr><td><code>NFDR077</code></td><td>買回轉申購交易確認書（含郵簡、彙總）</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR077.cs:183</code></td><td><code>INFDR077_PO</code></td><td>SP+inline</td><td><code>S_TA_NFDR077_GET</code></td><td><code>BMS001A</code>、<code>MYOFD303A</code>、<code>OFD0811A</code>、<code>OFD081A</code>、<code>OFD251A</code>、<code>OFD303A</code></td><td>3(全在版控+csproj)</td></tr></tbody></table></div>
+<h3 id="3-4-第-101-123-群-申購側-扣款-手續費-稅-統計-16-支">3.4 第 101–123 群:申購側:扣款、手續費、稅、統計(16 支)</h3>
+<div class="tw"><table><thead><tr><th>代號</th><th>報表中文名</th><th>名稱出處</th><th>PO 基底</th><th>資料來源</th><th>SP(版控外除非註明)</th><th>讀到的表</th><th><code>.rpt</code> 數</th></tr></thead><tbody><tr><td><code>NFDR101</code></td><td>指定扣款／傳真委扣－申購扣款彙總表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR101.cs:58</code></td><td><code>INFDR101_PO</code></td><td>SP+inline</td><td><code>S_TA_NFDR101_GET</code></td><td><code>CTL018</code></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR102</code></td><td>指定扣款／傳真委扣－申購扣款明細表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR102.cs:52</code></td><td><code>INFDR102_PO</code></td><td>SP</td><td><code>S_TA_NFDR102_GET</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR103</code></td><td>指定扣款／傳真委扣－申購扣款失敗明細表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR103.cs:39</code></td><td><code>Basic_PO</code></td><td>SP</td><td><code>s_NFDR103_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR104</code></td><td>申購明細表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR104.cs:286</code></td><td><code>INFDR104_PO</code></td><td>SP</td><td><code>s_TA_NFDR104_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>3(全在版控+csproj)</td></tr><tr><td><code>NFDR105</code></td><td>申購交易確認單</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR105.cs:66</code></td><td><code>Basic_PO</code></td><td>SP</td><td><code>s_NFDR105_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR107A</code></td><td>各代理扣款機構扣帳費合計／明細、銀行單筆扣款彙總表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR107A.cs:175-183</code></td><td><code>INFDR107A_PO</code></td><td>SP+inline</td><td><code>s_TA_NFDR107A_Get</code></td><td><code>OFD303A</code></td><td>3(全在版控+csproj)</td></tr><tr><td><code>NFDR107B</code></td><td>各代理扣款機構／銷售機構各基金手續費合計、明細、通知函</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR107B.cs:109-129</code></td><td><code>Basic_PO</code></td><td>SP+inline</td><td><code>s_NFDR107B_Get</code>、<code>s_NFDR107B_T2_Get</code></td><td><code>CTL018</code>、<code>OFD303A</code></td><td>3(全在版控+csproj)</td></tr><tr><td><code>NFDR108</code></td><td>公司人員銷售彙總表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR108.cs:77</code></td><td><code>Basic_PO</code></td><td>SP</td><td><code>s_NFDR108_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR109</code></td><td>銷售彙總查核表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR109.cs:266</code></td><td><code>INFDR109_PO</code></td><td>SP</td><td><code>S_TA_NFDR109_GET</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR111</code></td><td>手續費彙總表／基金手續費彙總表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR111.cs:140-145</code></td><td><code>INFDR111_PO</code></td><td>SP</td><td><code>S_TA_NFDR111_GET</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR114</code></td><td>印花稅明細表／彙總表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR114.cs:49-53</code></td><td><code>Basic_PO</code></td><td>SP+inline</td><td><code>s_NFDR114_Get</code></td><td><code>F_FORMATSTRINGTOTABLE</code>、<code>OFD303A</code></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR115</code></td><td>申購統計月報表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR115.cs:120</code></td><td><code>Basic_PO</code></td><td>SP+inline</td><td><code>s_NFDR115_Get</code></td><td><code>OFD081V</code></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR120</code></td><td>代銷銀行單筆／定額申購明細表（列印＋下載）</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR120.Designer.cs:439-505</code></td><td><code>INFDR120_PO</code></td><td>SP</td><td><code>S_TA_NFDR120_GET</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR121</code></td><td>券商單筆／定額申購明細表、彙總表（列印＋下載）</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR121.Designer.cs:303-581</code></td><td><code>INFDR121_PO</code></td><td>SP</td><td><code>S_TA_NFDR121_GET_1</code>、<code>S_TA_NFDR121_GET_2</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR122</code></td><td>月平均成本餘額明細／彙總表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR122.cs:140-260</code></td><td><code>INFDR122_PO</code></td><td>SP</td><td><code>S_TA_NFDR122_GET</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR123</code></td><td>受益人 KYC 到期名單（Excel）</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR123.cs:79</code></td><td><code>INFDR123_PO</code></td><td>純 inline</td><td>(無)</td><td><code>BMS001A</code>、<code>COD009</code>、<code>OFD123A</code>、<code>OFD123A_TMP</code>、<code>OFD221A</code>、<code>OFD221A_TMP</code>、<code>OFD306A</code>、<code>OFD306_TMP</code></td><td><strong>0</strong>(非 Crystal)</td></tr></tbody></table></div>
+<h3 id="3-5-第-150-160-群-買回-贖回-轉申購側-10-支">3.5 第 150–160 群:買回／贖回／轉申購側(10 支)</h3>
+<div class="tw"><table><thead><tr><th>代號</th><th>報表中文名</th><th>名稱出處</th><th>PO 基底</th><th>資料來源</th><th>SP(版控外除非註明)</th><th>讀到的表</th><th><code>.rpt</code> 數</th></tr></thead><tbody><tr><td><code>NFDR150</code></td><td>買回彙總查核表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR150.cs:227</code></td><td><code>INFDR150_PO</code></td><td>SP</td><td><code>S_TA_NFDR150_GET</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR151</code></td><td>買回申請書資料查核表／買回費用查核表／買回轉申購明細表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR151.cs:156-186</code></td><td><code>INFDR151_PO</code></td><td>SP</td><td><code>S_TA_NFDR151_GET_Charge</code>、<code>S_TA_NFDR151_GET</code>、<code>S_TA_NFDR151_GET_1</code>、<code>S_TA_NFDR151_GET_2</code>、<code>S_TA_NFDR151_GET_3</code>、<code>S_TA_NFDR151_GET_5</code>、<code>S_TA_NFDR151_GET_4</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>4(全在版控+csproj)</td></tr><tr><td><code>NFDR153</code></td><td>贖回沖銷明細表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR153.cs:100</code></td><td><code>Basic_PO</code></td><td>SP</td><td><code>s_NFDR153_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR154</code></td><td>贖回交易確認單</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR154.cs:84</code></td><td><code>Basic_PO</code></td><td>SP+inline</td><td><code>s_NFDR154_Get</code></td><td><code>OFD081V</code></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR155</code></td><td>買回暫不付款通知書</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR155.cs:81</code></td><td><code>Basic_PO</code></td><td>SP</td><td><code>s_NFDR155_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR156</code></td><td>買回補件付款通知書</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR156.cs:36</code></td><td><code>Basic_PO</code></td><td>SP</td><td><code>s_NFDR156_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>1(全在版控+csproj)</td></tr><tr><td><code>NFDR157</code></td><td>公司支付郵匯費明細／彙總表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR157.cs:196-200</code></td><td><code>INFDR157_PO</code></td><td>SP</td><td><code>S_TA_NFDR157_GET</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR158</code></td><td>贖回統計月報表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR158.cs:136</code></td><td><code>Basic_PO</code></td><td>SP+inline</td><td><code>s_NFDR158_Get</code></td><td><code>OFD081V</code></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR159</code></td><td>轉申購統計月報表</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR159.cs:115</code></td><td><code>Basic_PO</code></td><td>SP+inline</td><td><code>s_NFDR159_Get</code>、<code>s_NFDR159_1_Get</code></td><td><code>OFD081V</code></td><td>2(全在版控+csproj)</td></tr><tr><td><code>NFDR160</code></td><td>轉申購明細／彙總表（轉出＋轉入）</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR160.cs:94-112</code></td><td><code>INFDR160_PO</code></td><td>SP</td><td><code>s_TA_NFDR160_Get</code>、<code>s_TA_NFDR160_1_Get</code></td><td><strong>看不到(SP 黑箱)</strong></td><td>4(全在版控+csproj)</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="4-維護畫面-m"><h2 id="4-維護畫面-m"><button class="tg" aria-label="收合/展開" type="button"></button>4. 維護畫面(M)</h2><div class="sec-body">
+<p><strong>本模組無 M 畫面。</strong></p>
+<p>原因:<code>NFD</code> 是純輸出層,不擁有任何業務表(<a class="sec" href="#0-1-nfd-是什麼-推測">§0.1</a>、<a class="sec" href="#2-1-nfd-讀誰的表-本文最重要的一節">§2.1</a>)。資料的新增 / 修改 / 刪除全部在 <code>ATLAS.OFD</code> 的 M 畫面完成,<code>NFD</code> 只負責把結果印出來。</p>
+<p>這件事在程式上是可驗證的,不是推測:</p>
+<div class="tw"><table><thead><tr><th>證據</th><th>內容</th></tr></thead><tbody><tr><td>沒有 <code>ATLAS.NFD</code> 主專案</td><td><code>Dev/</code> 下只有 <code>ATLAS.NFD.Report</code>,其他模組都是「主專案 + <code>.Report</code>」成對</td></tr><tr><td>127 支全部繼承 <code>xReportForm</code></td><td>例 <code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR001.cs:21</code>;沒有一支是 <code>xMaintainForm</code></td></tr><tr><td>Ctl 沒有四眼方法</td><td>每支 Ctl 只有 <code>GetXxxReportData</code> / <code>GetXxxReportObject</code>(+ 少數 <code>chkXxx</code>),沒有 <code>Verify</code> / <code>Approve</code> / <code>Reject</code>,例 <code>Dev/ATLAS.NFD.Report/Source/Control/ReportControl.NFD/NFDR001_Ctl.cs:39-76</code></td></tr><tr><td>PO 沒有繼承四眼基底</td><td>44 支的基底只有 <code>INFDRxxx_PO</code>(介面)或 <code>Basic_PO</code>,沒有 <code>Basic4EyesPO</code> / <code>BasicEVAPO</code> / <code>MultiRow4EyesPO</code></td></tr></tbody></table></div>
+<p><strong>這是 <code>NFD</code> 最大的特徵,也是讀這個模組時最容易誤判的地方</strong>:看到 <code>NFDR073</code> 在 <code>INSERT</code> / <code>DELETE</code> <code>NFDR073T*</code>,不要以為它在維護業務資料——那些是為了印一份對帳單而生的中繼表,列印完就沒有意義(<a class="sec" href="#2-4-nfdr073t-暫存表家族">§2.4</a>)。同理 <code>NFDR073B</code> 的 <code>S_TA_NFDR073B_EMAIL</code> 會寫寄信佇列,那是「輸出」的一部分,不是業務異動。</p>
+<p><strong>維護時的推論</strong>:任何「報表數字不對」的問題,<code>NFD</code> 這一層能做的只有三件事——條件傳錯、SP 拿錯、Transfer 漏搬。數字本身錯要回 <code>OFD</code> 或 SP 去找。</p>
+</div></section><section class="sec" data-sec="5-查詢畫面-i"><h2 id="5-查詢畫面-i"><button class="tg" aria-label="收合/展開" type="button"></button>5. 查詢畫面(I)</h2><div class="sec-body">
+<p><strong>本模組無 I 畫面。</strong></p>
+<p>原因同 <a class="sec" href="#4-維護畫面-m">§4</a>。不過報表畫面本身帶有<strong>查詢性質的副作用</strong>,讀的時候要當成查詢畫面看待:</p>
+<div class="tw"><table><thead><tr><th>支</th><th>查詢性質的副作用</th><th>錨點</th></tr></thead><tbody><tr><td><code>NFDR001</code></td><td>畫面上有 <code>ugrdClass</code> 類別選擇 grid,由 <code>GetClassData</code> 另外取數</td><td><code>Dev/ATLAS.NFD.Report/Source/Control/ReportControl.NFD/NFDR001_Ctl.cs:69-74</code></td></tr><tr><td><code>NFDR076</code> / <code>NFDR077</code></td><td>列印前先打 <code>chkOFD303A</code> / <code>chkOFD221A</code> 查「這段日期日結了沒」,結果用彈窗問使用者要不要繼續</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR076.cs:109-131</code></td></tr><tr><td><code>NFDR115</code> / <code>NFDR154</code> / <code>NFDR158</code> / <code>NFDR159</code></td><td>有 <code>GetFUND</code> 取基金下拉清單</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR115_PO.cs:96-104</code></td></tr><tr><td><code>NFDR120</code> / <code>NFDR121</code> / <code>NFDR123</code></td><td>有「下載 Excel」路徑,等同把查詢結果落地</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR123.cs:75-86</code></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="6-批次-b-與-windowsservice"><h2 id="6-批次-b-與-windowsservice"><button class="tg" aria-label="收合/展開" type="button"></button>6. 批次(B)與 WindowsService</h2><div class="sec-body">
+<p><strong>本模組無 B 畫面,也沒有任何 WindowsService。</strong></p>
+<p>但有兩支<strong>在行為上等同批次</strong>,不要因為它們掛在報表清單就當成「印一張紙」:</p>
+<div class="tw"><table><thead><tr><th>支</th><th>為什麼像批次</th><th>錨點</th></tr></thead><tbody><tr><td><code>NFDR073A</code></td><td>在一個 transaction 內連續跑 5 支 SP(<code>S_TA_NFDR073_3_GET</code> / <code>_0_GET</code> / <code>_4_GET</code> / <code>_1_GET</code> / <code>_2_GET</code>)灌 17 張暫存表,再產文字檔並可加密壓縮。可選「郵寄」或「E-mail」兩條發送途徑</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:105-150</code>、<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073A.cs:114</code></td></tr><tr><td><code>NFDR073B</code></td><td>「產生 Email 資料」按鈕跑 <code>S_TA_NFDR073B_EMAIL</code>,在 transaction 內寫寄信資料並回傳筆數</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073B_PO.cs:160-190</code></td></tr></tbody></table></div>
+<p>兩支都由<strong>人按按鈕觸發</strong>,沒有排程。所以「這個月對帳單有沒有寄出去」這件事,系統裡沒有任何自動保證——漏按就是漏寄,而且<strong>不會有任何告警</strong>。</p>
+</div></section><section class="sec" data-sec="7-報表-r-主體"><h2 id="7-報表-r-主體"><button class="tg" aria-label="收合/展開" type="button"></button>7. 報表(R)——主體</h2><div class="sec-body"><figure><svg viewBox="0 0 1170 570" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NFDR073A 的完整資料流：畫面條件、前置檢核、五支 SP、十七張暫存表、四個模組的表、文字檔與加密壓縮輸出"><defs><marker id="ah_nfdr1_073a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">NFDR073A 月／季對帳單文字檔：條件 → 取數 → 暫存表 → 輸出</text><g class="bx">
+<rect x="20" y="44" rx="10" ry="10" width="300" height="74"/>
+<text class="t1" x="170" y="75" text-anchor="middle">① 畫面條件</text>
+<text class="t2" x="170" y="95" text-anchor="middle">淨值日期起迄／戶號／ID／月or季／發送途徑／路徑</text>
+</g><g class="bx accent">
+<rect x="350" y="44" rx="10" ry="10" width="260" height="74"/>
+<text class="t1" x="480" y="75" text-anchor="middle">② 前置檢核</text>
+<text class="t2" x="480" y="95" text-anchor="middle">路徑必填+Directory.Exists；註銷戶→阻擋</text>
+</g><g class="bx vend">
+<rect x="640" y="44" rx="10" ry="10" width="260" height="74"/>
+<text class="t1" x="770" y="75" text-anchor="middle">③ dataID</text>
+<text class="t2" x="770" y="95" text-anchor="middle">Substring(0,22) 截斷 → 併發會撞</text>
+</g><path class="ar" d="M 320 81 L 350 81" marker-end="url(#ah_nfdr1_073a)"/><path class="ar" d="M 610 81 L 640 81" marker-end="url(#ah_nfdr1_073a)"/><text class="lane" x="20" y="148">④ 一個 transaction 內連跑 5 支 SP（全部在版控外，除 _1_GET）</text><g class="bx ext">
+<rect x="20" y="162" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="125" y="184" text-anchor="middle">S_TA_NFDR073_3_GET</text>
+<text class="t2" x="125" y="204" text-anchor="middle">SEND_TYPE 含 1（郵寄）</text>
+</g><g class="bx ext">
+<rect x="250" y="162" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="365" y="184" text-anchor="middle">S_TA_NFDR073_0_GET</text>
+<text class="t2" x="365" y="204" text-anchor="middle">SEND_TYPE 含 2（E-mail）OUT striMSG</text>
+</g><g class="bx ext">
+<rect x="500" y="162" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="610" y="184" text-anchor="middle">S_TA_NFDR073_4_GET</text>
+<text class="t2" x="610" y="204" text-anchor="middle">DATA_TYPE 非 1 時走這條</text>
+</g><g class="bx accent">
+<rect x="740" y="162" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="845" y="184" text-anchor="middle">S_TA_NFDR073_1_GET</text>
+<text class="t2" x="845" y="204" text-anchor="middle">**唯一在版控的 SP**</text>
+</g><g class="bx ext">
+<rect x="970" y="162" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="1060" y="184" text-anchor="middle">S_TA_NFDR073_2_GET</text>
+<text class="t2" x="1060" y="204" text-anchor="middle">最後一支</text>
+</g><path class="ar" d="M 170 118 L 170 162" marker-end="url(#ah_nfdr1_073a)"/><path class="ar" d="M 950 190 L 970 190" marker-end="url(#ah_nfdr1_073a)"/><text class="lane" x="20" y="258">⑤ 灌進 17 張自建暫存表（以 DATAID 分租）</text><g class="bx vend">
+<rect x="20" y="272" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="294" text-anchor="middle">NFDR073T5–T12</text>
+<text class="t2" x="145" y="314" text-anchor="middle">持股／交易明細</text>
+</g><g class="bx vend">
+<rect x="300" y="272" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="294" text-anchor="middle">NFDR073T16–T19</text>
+<text class="t2" x="425" y="314" text-anchor="middle">彙總</text>
+</g><g class="bx vend">
+<rect x="580" y="272" rx="10" ry="10" width="290" height="56"/>
+<text class="t1" x="725" y="294" text-anchor="middle">NFDR073T24 T29 T31 T33 T34</text>
+<text class="t2" x="725" y="314" text-anchor="middle">格式化後的列</text>
+</g><g class="bx vend">
+<rect x="900" y="272" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="1025" y="294" text-anchor="middle">NFDR073T6 T7</text>
+<text class="t2" x="1025" y="314" text-anchor="middle">與 NFDR073 共用</text>
+</g><path class="ar" d="M 500 218 L 500 272" marker-end="url(#ah_nfdr1_073a)"/><text class="lane" x="20" y="368">⑥ 再 SELECT 回來（此處才看得到別人的表）</text><g class="bx dash">
+<rect x="20" y="382" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="170" y="404" text-anchor="middle">OFD081A OFD081V OFD0811A</text>
+<text class="t2" x="170" y="424" text-anchor="middle">基金名稱／小數位／警語</text>
+</g><g class="bx dash">
+<rect x="350" y="382" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="440" y="404" text-anchor="middle">OFD132A</text>
+<text class="t2" x="440" y="424" text-anchor="middle">—</text>
+</g><g class="bx dash">
+<rect x="560" y="382" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="650" y="404" text-anchor="middle">BMS001A</text>
+<text class="t2" x="650" y="424" text-anchor="middle">受益人</text>
+</g><g class="bx dash">
+<rect x="770" y="382" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="860" y="404" text-anchor="middle">FSK003</text>
+<text class="t2" x="860" y="424" text-anchor="middle">風險屬性</text>
+</g><path class="ar" d="M 400 328 L 400 382" marker-end="url(#ah_nfdr1_073a)"/><text class="lane" x="20" y="478">⑦ 輸出：沒有 .rpt</text><g class="bx accent">
+<rect x="20" y="492" rx="10" ry="10" width="380" height="56"/>
+<text class="t1" x="210" y="514" text-anchor="middle">CreateTxtFiles.CreateNFDR073AText(...)</text>
+<text class="t2" x="210" y="534" text-anchor="middle">文字檔寫到 utxtPath</text>
+</g><g class="bx vend">
+<rect x="430" y="492" rx="10" ry="10" width="380" height="56"/>
+<text class="t1" x="620" y="514" text-anchor="middle">IsSetZip = Y → 加密壓縮</text>
+<text class="t2" x="620" y="534" text-anchor="middle">密碼 NFDR073A_PASSWORD 存在 config</text>
+</g><g class="bx vend">
+<rect x="840" y="492" rx="10" ry="10" width="290" height="56"/>
+<text class="t1" x="985" y="514" text-anchor="middle">失敗只說「產生檔案失敗」</text>
+<text class="t2" x="985" y="534" text-anchor="middle">五個字，無細節</text>
+</g><path class="ar" d="M 210 438 L 210 492" marker-end="url(#ah_nfdr1_073a)"/><path class="ar" d="M 400 520 L 430 520" marker-end="url(#ah_nfdr1_073a)"/><path class="ar dsh" d="M 810 520 L 840 520" marker-end="url(#ah_nfdr1_073a)"/></svg><figcaption>圖 4 NFDR073A 資料流（§7.3.3）。這是本片最複雜也最危險的一支：橘虛框=已知風險（dataID 截斷、密碼存 config、錯誤訊息無細節）；黑框=版控外的 SP；灰虛框=別模組的表；橘框=本文重點。注意它沒有任何 .rpt——輸出是文字檔，不是 Crystal 報表。</figcaption></figure>
+<h3 id="7-0-怎麼讀這一章">7.0 怎麼讀這一章</h3>
+<p>44 支共用同一套骨架(<a class="sec" href="#1-3-報表的六層呼叫順序">§1.3</a>),所以本章只對<strong>每群最具代表性的一支</strong>、<strong>兩對後綴</strong>、以及<strong>行為異常的那幾支</strong>展開;其餘在 <a class="sec" href="#3-報表清冊-44-支">§3</a> 的清冊已經帶過。每節固定四段:<strong>做什麼 / 條件與卡控 / 取數 / 輸出</strong>。</p>
+<p>卡控結果一律五類:<strong>阻擋</strong>(不讓印)/ <strong>警示</strong>(印但跳訊息)/ <strong>詢問</strong>(Yes-No 再決定)/ <strong>過濾(無提示)</strong>(悄悄少印)/ <strong>記錄不擋</strong>。</p>
+<h3 id="7-1-第-001-007-群-受益人結構與法遵月報">7.1 第 001–007 群:受益人結構與法遵月報</h3>
+<p>七支的共同形狀:<strong>單一 SP、參數走 <code>Utility.Parameters</code>、Crystal 出圖</strong>。<code>NFDR001</code> 是其中唯一有 grid 與 inline SQL 的,拿它當代表。</p>
+<h4 id="7-1-1-nfdr001-基金受益人名冊-本群最完整的一支">7.1.1 <code>NFDR001</code> 基金受益人名冊(本群最完整的一支)</h4>
+<p><strong>做什麼</strong>:依截止日與申購日期區間,印出某檔基金的受益人名冊,可依不同排序與用途切換版面。</p>
+<p><strong>條件</strong>(全部從 <code>Utility.Parameters</code> 傳,無字串串接):</p>
+<div class="tw"><table><thead><tr><th>參數</th><th>來源控件</th><th>傳給 SP 的名字</th><th>錨點</th></tr></thead><tbody><tr><td><code>BAL_DATE</code></td><td><code>udatBAL_DATE</code></td><td><code>datiBAL_DATE</code></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:66-70</code></td></tr><tr><td><code>ALLOT_DATE_ST</code> / <code>ALLOT_DATE_END</code></td><td><code>udatALLOT_DATE_ST</code> / <code>_END</code></td><td><code>datiALLOT_DATE_ST</code> / <code>_END</code></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:71-81</code></td></tr><tr><td><code>FUND_ID</code></td><td><code>custFUND_ID_0</code></td><td><code>striFUND_ID</code></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:83-87</code></td></tr><tr><td><code>Purpose</code> / <code>Class</code> / <code>Class_Code</code> / <code>BY_AGENT</code></td><td><code>uoptPurpose</code> / <code>uoptClass</code> / grid / <code>uoptBY_AGENT</code></td><td>同名加 <code>stri</code> 前綴</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:88-105</code></td></tr></tbody></table></div>
+<p><strong>卡控總表</strong>:</p>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>按預覽</td><td><code>DoValidate()</code> + <code>ValidateErrList.Show()</code></td><td>有必填未填</td><td><strong>阻擋</strong>(<code>e.Cancel = true</code>)</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR001.cs:75-80</code></td></tr><tr><td>按預覽</td><td><code>uoptOrder</code> 只認 <code>"0"</code>/<code>"1"</code>/<code>"2"</code>/<code>"3"</code>,<code>uoptPurpose</code> 只認 <code>"0"</code>/<code>"1"</code></td><td>值不在列舉內</td><td><strong>過濾(無提示)</strong>——整串 <code>if / else if</code> 掉出去,<strong><code>SetQueryParameters</code> 一次都沒呼叫</strong>,報表類別是空的</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR001.cs:88-131</code></td></tr><tr><td><code>ReportLoad</code></td><td><code>Purpose</code> 參數只在 <code>Purpose=="1"</code> <strong>且</strong> <code>Order</code> 是 <code>"0"</code> 或 <code>"3"</code> 時才 <code>SetParameterValue</code></td><td>其他組合</td><td><strong>過濾(無提示)</strong>——Crystal 沿用上一次的值</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR001.cs:64-68</code></td></tr><tr><td>PO</td><td><code>Cmd.CommandTimeout = 0</code></td><td>SP 跑很久</td><td><strong>記錄不擋</strong>——無限等待</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:56</code></td></tr></tbody></table></div>
+<p><strong>取數</strong>:<code>s_TA_NFDR001_Get</code>(<strong>版控外</strong>)。另有一段 inline SQL 取 grid 的類別清單,讀 <code>CTL014</code> 與 <code>OFD017A</code>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:173</code>)。</p>
+<p><strong>輸出</strong>:8 種「排序 × 用途」組合對應 5 個 <code>.rpt</code>,對應關係<strong>不是一對一</strong>:</p>
+<div class="tw"><table><thead><tr><th><code>uoptOrder</code></th><th><code>uoptPurpose</code></th><th><code>.rpt</code></th></tr></thead><tbody><tr><td><code>0</code></td><td><code>0</code></td><td><code>NFDR001RPS2</code></td></tr><tr><td><code>0</code></td><td><code>1</code></td><td><code>NFDR001RPS1</code></td></tr><tr><td><code>1</code></td><td><code>0</code></td><td><code>NFDR001RPS</code></td></tr><tr><td><code>1</code></td><td><code>1</code></td><td><code>NFDR001RPS3</code></td></tr><tr><td><code>2</code></td><td><code>0</code></td><td><code>NFDR001RPS</code></td></tr><tr><td><code>2</code></td><td><code>1</code></td><td><code>NFDR001RPS4</code></td></tr><tr><td><code>3</code></td><td><code>0</code></td><td><code>NFDR001RPS</code></td></tr><tr><td><code>3</code></td><td><code>1</code></td><td><code>NFDR001RPS1</code>(<strong>與 Order=0/Purpose=1 同一張</strong>)</td></tr></tbody></table></div>
+<p>錨點 <code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR001.cs:88-131</code>。<code>NFDR001RPS</code> 被三種排序共用、<code>NFDR001RPS1</code> 被兩種共用——<strong>改其中一張會同時影響多個選項組合</strong>,這是本模組改 <code>.rpt</code> 最容易踩到的坑。</p>
+<h4 id="7-1-2-其餘六支-表格帶過">7.1.2 其餘六支(表格帶過)</h4>
+<div class="tw"><table><thead><tr><th>支</th><th>SP</th><th><code>.rpt</code></th><th>值得注意</th></tr></thead><tbody><tr><td><code>NFDR002</code> 資金來源分析表</td><td><code>s_TA_NFDR002_Get</code></td><td>2</td><td>PO 只有 104 行,純參數轉發</td></tr><tr><td><code>NFDR003</code> 股權分散表</td><td><code>s_TA_NFDR003_Get</code></td><td>1</td><td>法遵用</td></tr><tr><td><code>NFDR004</code> 員工及其關係人買賣本公司基金月報表</td><td><code>s_TA_NFDR004_Get</code></td><td>1</td><td>法遵用,PO 96 行</td></tr><tr><td><code>NFDR005</code> 基金受益憑證持有者統計表</td><td><code>s_TA_NFDR005_Get</code></td><td>1</td><td>SP 名直接寫在 <code>GetStoredProcCommand("…")</code> 裡,不經變數</td></tr><tr><td><code>NFDR006</code> 債券型基金其他資訊揭露月報表</td><td><code>s_TA_NFDR006_Get</code></td><td>1</td><td>法遵用</td></tr><tr><td><code>NFDR007</code> 各基金餘額比例表</td><td><code>s_TA_NFDR007_Get</code></td><td>1</td><td>—</td></tr></tbody></table></div>
+<p>六支<strong>都沒有任何「查無資料」提示</strong>(§附錄 E-05)。SP 回空集合時,使用者看到的是一張只有表頭的 Crystal 報表,分不出「真的沒有」還是「條件打錯」。</p>
+<h3 id="7-2-第-021-024-群-受益人排行與異常清冊">7.2 第 021–024 群:受益人排行與異常清冊</h3>
+<p>三支,<code>NFDR022</code> 存在於專案內但<strong>不在本片名單</strong>(見 <a class="sec" href="#7-6-跳號-nfdr106-nfdr110-nfdr152-到哪去了-必答問題-3-的附帶">§7.6</a> 跳號說明)。</p>
+<div class="tw"><table><thead><tr><th>支</th><th>中文名</th><th>PO 基底</th><th>SP</th><th>特別的地方</th></tr></thead><tbody><tr><td><code>NFDR021</code></td><td>受益人基金持有 / 申購 / 贖回單位數排行表、持有餘額排序一覽表</td><td><code>INFDR021_PO</code></td><td><code>s_TA_NFDR021_Get</code></td><td><strong>一支 SP 服務四種報表名</strong>,由 UI 選項決定標題與 <code>.rpt</code>(<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR021.cs:49-58</code>)</td></tr><tr><td><code>NFDR023</code></td><td>受益人異動及定額異動重覆報表</td><td><strong><code>Basic_PO</code></strong></td><td><code>s_NFDR023_Get</code></td><td>未遷移,<code>m_db</code> 為 <code>null</code>(附錄 E-02)</td></tr><tr><td><code>NFDR024</code></td><td>受益人統編異常清冊</td><td><code>INFDR024_PO</code></td><td><code>S_TA_NFDR024_GET</code></td><td>SP 名全大寫,與同群 <code>s_NFDR023_Get</code> 的小寫風格不一致(<a class="sec" href="#2-2-sp-60-支-版控裡只有-1-支">§2.2</a>)</td></tr></tbody></table></div>
+<p><code>NFDR021</code> 的四個報表名共用同一支 SP,代表<strong>四種排行的差異全在 SP 裡的 <code>ORDER BY</code></strong>。想加第五種排行,要改的是版控外的 SP,repo 內只能改標題字串——<strong>這種改動在 code review 時完全看不出風險</strong>。</p>
+<h4 id="7-2-1-nfdr021-一支-sp-四個報表名的實際寫法">7.2.1 <code>NFDR021</code> 一支 SP 四個報表名的實際寫法</h4>
+<p><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR021.cs:49-58</code> 四個 <code>SetQueryParameters</code> 分支:</p>
+<div class="tw"><table><thead><tr><th>報表名</th><th>意義</th></tr></thead><tbody><tr><td>受益人基金持有單位數排行表</td><td>目前持有</td></tr><tr><td>受益人基金申購單位數的排行表</td><td>期間申購</td></tr><tr><td>受益人基金贖回單位數的排行表</td><td>期間贖回</td></tr><tr><td>受益人持有餘額排序一覽表</td><td>依金額排序</td></tr></tbody></table></div>
+<p>四者共用 <code>s_TA_NFDR021_Get</code>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR021_PO.cs:58</code>),差異全在 SP 內部。<strong>repo 內看不到「排行」是怎麼排的、取前幾名、同名次怎麼處理</strong>——這些全部在版控外。</p>
+<p><code>.rpt</code> 只有兩張(<code>NFDR021RPS</code>、<code>NFDR021RPS2</code>),四個報表名對兩張版型,又是一對多(附錄 E-16)。</p>
+<h4 id="7-2-2-nfdr024-受益人統編異常清冊">7.2.2 <code>NFDR024</code> 受益人統編異常清冊</h4>
+<p>唯一一支名字裡帶「異常」的報表。取數走 <code>S_TA_NFDR024_GET</code>(<strong>版控外</strong>,<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR024_PO.cs:59</code>),PO 只有 97 行、純參數轉發。</p>
+<p><strong>「統編異常」的判斷規則完全在 SP 裡</strong>——身分證檢查碼?統編檢核碼?重複?repo 內一個字都查不到。這支是「法遵規則藏在版控外」的典型:規則變了(例如新式統編),改的是資料庫,程式碼的 git log 上什麼都看不到。</p>
+<h4 id="7-2-3-nfdr023-受益人異動及定額異動重覆報表">7.2.3 <code>NFDR023</code> 受益人異動及定額異動重覆報表</h4>
+<p>本群唯一有欄位中文名的一支(<code>Dev/ATLAS.NFD.Report/Source/Entity/ReportDataEntity.NFD/NFDR023Model.xsd</code>):</p>
+<div class="tw"><table><thead><tr><th>欄位</th><th>中文名</th></tr></thead><tbody><tr><td><code>RCV_DATE</code> / <code>CHG_UPD_DTTM</code> / <code>CHG_EFFECT_DATE</code></td><td><strong>三個欄位的 <code>Caption</code> 都是「異動生效日期」</strong></td></tr><tr><td><code>DATA_TYPE</code></td><td>異動類別</td></tr><tr><td><code>ID_NO</code></td><td>受益人ID</td></tr><tr><td><code>BF_NO</code></td><td>戶號</td></tr><tr><td><code>BF_NAME</code></td><td>受益人姓名</td></tr><tr><td><code>RSP_CHG_NO</code></td><td>重覆異動交易單號</td></tr></tbody></table></div>
+<p><strong>三個不同的日期欄位掛同一個中文名</strong>,報表上並排出現時分不出誰是誰。<code>RCV_DATE</code>(受理日)、<code>CHG_UPD_DTTM</code>(異動寫入時間)、<code>CHG_EFFECT_DATE</code>(生效日)語意明顯不同,這是複製貼上 <code>Caption</code> 的結果。</p>
+<p>這支同時是 <code>Basic_PO</code>(附錄 E-02),所以目前跑不起來——<strong>中文名寫錯的問題還輪不到被發現</strong>。</p>
+<h3 id="7-3-第-071-077-群-對帳單-確認書與公告-本模組的核心">7.3 第 071–077 群:對帳單、確認書與公告(本模組的核心)</h3>
+<p>八支裡有五支是<strong>直接寄給客戶的正式文件</strong>,錯一個字就是客訴。本群也是全片唯一有 inline SQL 大量出現的地方。</p>
+<h4 id="7-3-1-nfdr073-投資對帳單-本群最複雜-674-行-po">7.3.1 <code>NFDR073</code> 投資對帳單(本群最複雜,674 行 PO)</h4>
+<p><strong>做什麼</strong>:產出受益人的投資對帳單,可單戶、可全戶。</p>
+<p><strong>取數</strong>:兩支 SP 二選一,判斷式在一行三元運算子裡:</p>
+<pre class="code"><code>cmd = string.IsNullOrEmpty(GetParamValue(model, "BF_NO")) &amp;&amp; string.IsNullOrEmpty(GetParamValue(model, "ID_NO"))
+    ? m_db.GetStoredProcCommand("s_NFDR073_1_Get") : m_db.GetStoredProcCommand("s_NFDR073_Get");</code></pre>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073_PO.cs:97</code></p>
+<p>只有 <code>IsSelected == "0"</code> 或 <code>"1"</code> 兩個分支;<strong>其他值時 <code>cmd</code> 保持 <code>null</code>,下一行 <code>cmd.CommandTimeout = 0</code> 直接 NRE</strong>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073_PO.cs:95-107</code>)。</p>
+<p><strong>暫存表</strong>:<code>NFDR073T0</code> / <code>T6</code> / <code>T7</code> 以 <code>dataID</code> / <code>SEND_NO</code> 分租,列印前先清:</p>
+<pre class="code"><code>DELETE FROM NFDR073T6 WHERE dataID = @dataID; DELETE FROM NFDR073T7 WHERE dataID = @dataID</code></pre>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073_PO.cs:385</code></p>
+<p><strong>這段 SQL 是 MSSQL 語法</strong>:<code>@dataID</code> 具名參數、一行兩個 statement 用 <code>;</code> 分隔。Oracle 兩者都不吃。同檔還有 <code>IF EXISTS(SELECT * FROM OCRMTMP WHERE SID = @SID) SELECT 1 ELSE SELECT 0</code>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073_PO.cs:539</code>)——純 T-SQL。配合 <code>NFDR073_PO</code> 是 <code>Basic_PO</code>(<code>m_db</code> 未初始化)的事實,<strong>這支的這幾條路徑目前跑不起來</strong>(附錄 E-02)。</p>
+<p><strong>輸出</strong>:1 張 <code>.rpt</code>(<code>NFDR073RPS</code>),報表名寫成 <code>const string ReportName = "投資對帳單"</code>(<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073.cs:49</code>)——全片唯一用 <code>const</code> 的,其他支都是字面字串散在各分支。</p>
+<h4 id="7-3-2-nfdr073a-nfdr073b-兩個後綴的成因-必答問題-4-之一">7.3.2 <code>NFDR073A</code> / <code>NFDR073B</code> 兩個後綴的成因(必答問題 4 之一)</h4>
+<p>先給結論表:</p>
+<div class="tw"><table><thead><tr><th></th><th><code>NFDR073</code></th><th><code>NFDR073A</code></th><th><code>NFDR073B</code></th></tr></thead><tbody><tr><td>有沒有不帶後綴的版本</td><td><strong>有</strong>(就是它自己)</td><td>—</td><td>—</td></tr><tr><td>中文名</td><td>投資對帳單</td><td>月 / 季對帳單(<strong>文字檔</strong>)</td><td>貴賓理財對帳單</td></tr><tr><td>用哪些 SP</td><td><code>s_NFDR073_Get</code> / <code>s_NFDR073_1_Get</code> / <code>s_NFDR073_ChkRdm</code></td><td><strong><code>S_TA_NFDR073_0_GET</code> ~ <code>_4_GET</code></strong></td><td><strong><code>S_TA_NFDR073B_GET</code></strong>、<code>S_TA_NFDR073B_EMAIL</code></td></tr><tr><td>輸出</td><td>Crystal <code>.rpt</code> × 1</td><td><strong>文字檔 + 可選 ZIP 加密</strong>,無 <code>.rpt</code></td><td>Crystal <code>.rpt</code> × 4</td></tr><tr><td>PO 基底</td><td><code>Basic_PO</code>(未遷移)</td><td><code>INFDR073A_PO</code>(Oracle)</td><td><code>INFDR073B_PO</code>(Oracle)</td></tr><tr><td>PO 行數</td><td>674</td><td>651</td><td>347</td></tr></tbody></table></div>
+<p><strong><code>A</code> 的成因</strong>:<code>NFDR073A</code> 的 SP <strong>叫 <code>S_TA_NFDR073_x_GET</code>,名字裡沒有 <code>A</code></strong>。也就是說 <code>A</code> 只存在於<strong>畫面代號</strong>,資料端仍屬 <code>NFDR073</code> 這一家。這對應前 24 篇的第 (d) 類——「<code>A</code> 是畫面代號的一部分、與表無關」(<code>ofdi1.md</code> 的 <code>OFDI075A</code> 查 <code>OFD304A</code> 是同一型)。<strong>但成因不完全一樣</strong>:<code>ofdi1.md</code> 那例是畫面代號與表代號各走各的;這裡是<strong>同一份對帳單的第二個出口</strong>(螢幕預覽 vs 文字檔批次產出),<code>A</code> 表示「同資料、不同交付方式」。這是前 24 篇沒出現過的第六種,本文記為 <strong>(f) 同資料的第二個出口</strong>。</p>
+<p><strong><code>B</code> 的成因</strong>:<code>NFDR073B</code> 有自己的 <code>S_TA_NFDR073B_GET</code>、自己的 4 張 <code>.rpt</code>、自己的暫存表(<code>DB/Table/NFDR073BT1.sql</code>、<code>DB/Table/NFDR073BT2.sql</code>),報表名也不同(貴賓理財對帳單)。這是標準的第 (c) 類——<strong>同概念的第二份產物</strong>,和 <code>ofd123.md</code> 的 <code>OFD017B</code> 同型。</p>
+<p><strong>不是境內外(第 (a) 類)</strong>:本組三支都沒有出現 <code>FUND_TYPE = '1'/'2'</code> 或 <code>SHORE_ID</code> 的分流;<code>NFDR073A</code> 的分流參數是 <code>RPT_TYPE</code>(月 / 季)與 <code>SEND_TYPE</code>(郵寄 / E-mail),不是境內外。<strong>不是 MSSQL→Oracle 改名(第 (b) 類)</strong>:三支同時存在且互不重複。</p>
+<h4 id="7-3-3-nfdr073a-為什麼是全片最危險的一支">7.3.3 <code>NFDR073A</code> 為什麼是全片最危險的一支</h4>
+<div class="tw"><table><thead><tr><th>風險</th><th>說明</th><th>錨點</th></tr></thead><tbody><tr><td><code>dataID</code> 截斷到 22 碼</td><td><code>strDATAID.Substring(0, 22).Trim()</code>。暫存表以 <code>dataID</code> 分租,<strong>兩人同時跑且前 22 碼相同時,兩份對帳單的資料會互相污染</strong></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:102</code></td></tr><tr><td>長度沒防呆</td><td><code>Substring(0, 22)</code> 在 <code>strDATAID</code> 短於 22 時直接丟 <code>ArgumentOutOfRangeException</code></td><td>同上</td></tr><tr><td>五支 SP 在同一個 transaction</td><td>任一支失敗整批 rollback,但 UI 只顯示「產生檔案失敗」五個字</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073A.cs:120</code></td></tr><tr><td>密碼來自 config</td><td><code>NFDR073A_PASSWORD</code> 從 <code>GetConfigSetting</code> 讀,明文存在設定檔〔客戶特定〕</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073A.cs:25</code></td></tr><tr><td>存檔路徑可自由輸入</td><td><code>utxtPath</code> 只檢查 <code>Directory.Exists</code>,沒有白名單;對帳單是個資</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073A.cs:60-67</code></td></tr><tr><td>註銷戶檢核</td><td>訊息「此 受益人 為註銷戶!」——<strong>阻擋</strong></td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073A.cs:185,196</code></td></tr><tr><td><code>NVL(REJ_POST,' ')&lt;&gt;'Y'</code></td><td>這一條寫得<strong>對</strong>:用 <code>NVL</code> 包起來,NULL 不會被三值邏輯吃掉。同檔的 <code>BF_SORT_CD &lt;&gt; '012'</code> <strong>沒包</strong>,<code>BF_SORT_CD</code> 為 NULL 的受益人會被靜默排除</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:195,425</code></td></tr></tbody></table></div>
+<h4 id="7-3-4-nfdr076-nfdr077-申購與買回轉申購交易確認書">7.3.4 <code>NFDR076</code> / <code>NFDR077</code> 申購與買回轉申購交易確認書</h4>
+<p>這兩支是<strong>全片卡控最完整的一對</strong>,也是唯一會在列印前主動檢查「日結了沒」的。</p>
+<p><strong><code>NFDR076</code> 的卡控總表</strong>:</p>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>按預覽</td><td><code>DoValidate()</code></td><td>必填未填</td><td><strong>阻擋</strong></td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR076.cs:179</code> 前的驗證區</td></tr><tr><td>按預覽</td><td><code>chkOFD303A</code>——查 <code>OFD303A</code> 在日期區間內有沒有 <code>POST_CTL_CODE = 'N'</code>(未過帳)的資料</td><td>有未日結</td><td><strong>詢問</strong>(<code>Info03</code> Yes/No,按 No 就 <code>e.Cancel</code>)</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR076.cs:109-117</code></td></tr><tr><td>按預覽</td><td><code>chkOFD221A</code></td><td>檢核不過</td><td><strong>警示</strong>;但若勾了 <code>uchkData</code> 則升級為<strong>阻擋</strong></td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR076.cs:121-133</code></td></tr><tr><td>取數後</td><td><code>無符合查詢條件的資料</code> 訊息</td><td>零筆</td><td><strong>警示</strong></td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR076.cs</code>(訊息字串,2 處)</td></tr></tbody></table></div>
+<p><strong><code>chkOFD303A</code> 的 SQL 有三個要注意的地方</strong>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:141-158</code>):</p>
+<ol><li><strong><code>JOIN</code> 是 INNER</strong>:<code>FROM OFD303A JOIN OFD0811A ON OFD303A.FUND_ID = OFD0811A.FUND_ID</code>。<code>OFD0811A</code> 沒有對應基金的交易,<strong>這筆未日結資料就查不到,檢核直接放行</strong>——這是「<code>INNER JOIN</code> 讓對不到的資料無聲消失」在檢核上的變形,比在報表上更危險(報表少印看得出來,檢核漏掉看不出來)。</li><li><strong><code>INV_AREA &lt;&gt; 'D'</code> 判海外</strong>:<code>INV_AREA</code> 為 NULL 時整條是 UNKNOWN,該基金被靜默排除。同一段的 <code>INV_AREA = 'D'</code>(判境內)沒有這個問題。</li><li><strong><code>OR (:striFUND_ID IS NOT NULL AND :striFUND_ID = :striFUND_ID)</code></strong>:恆真條件。使用者一旦指定了基金代碼,<strong>整段「基金類型」篩選就全部失效</strong>。看起來像是刻意寫的「指定基金時不看類型」,但寫成恆真式而不是註解說明,下一個維護者很容易當成 bug 刪掉。</li></ol>
+<p><strong><code>NFDR077</code> 與 <code>NFDR076</code> 的差異</strong>(必答問題 3 的「最相似的一組」):</p>
+<div class="tw"><table><thead><tr><th></th><th><code>NFDR076</code></th><th><code>NFDR077</code></th></tr></thead><tbody><tr><td>報表名</td><td>申購交易確認書 / (郵簡) / (彙總)</td><td>買回轉申購交易確認書 / (郵簡) / 申購交易確認書(彙總)</td></tr><tr><td>SP</td><td><code>S_TA_NFDR076_GET</code></td><td><code>S_TA_NFDR077_GET</code></td></tr><tr><td>讀的表</td><td><code>OFD303A</code> <code>OFD0811A</code> <code>OFD221A</code> <code>BMS001A</code></td><td><code>OFD303A</code> <code>OFD0811A</code> <code>OFD081A</code> <code>OFD251A</code> <code>BMS001A</code> <code>MYOFD303A</code></td></tr><tr><td><code>.rpt</code></td><td>5</td><td>3</td></tr><tr><td>日結檢核</td><td><code>chkOFD303A</code> + <code>chkOFD221A</code></td><td>檢 <code>OFD251A.REDEM_PROC_CODE&lt;&gt;'3'</code> 與 <code>A.REDEM_CTL_CODE &lt;&gt; '4'</code></td></tr><tr><td>PO 行數</td><td>316</td><td>428</td></tr></tbody></table></div>
+<p><strong>兩支共用同一段「基金類型」條件</strong>——連 <code>NOT IN ('7A','7B')</code> 排除兩檔基金的寫死值都一字不差(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:148-150</code> vs <code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR077_PO.cs:175-177</code>)。<strong>這是「成對報表只改一邊」的完美溫床</strong>:業務要調整基金分類時,兩支要一起改,而且 <code>NFDR076</code> 自己內部還有兩份複本(<code>:148</code> 和 <code>:238</code>)、<code>NFDR077</code> 也有兩份(<code>:175</code> 和 <code>:352</code>)——<strong>一次改動要同步四個地方</strong>。</p>
+<p><code>'7A'</code> / <code>'7B'</code> 是〔客戶特定〕的基金代碼,註解只寫「股票型(海外),排除 7A 及 7B」,沒說為什麼。</p>
+<h4 id="7-3-5-本群其餘三支">7.3.5 本群其餘三支</h4>
+<div class="tw"><table><thead><tr><th>支</th><th>中文名</th><th>PO 基底</th><th>SP</th><th>注意</th></tr></thead><tbody><tr><td><code>NFDR071</code></td><td>法人公告警示表</td><td><strong><code>Basic_PO</code></strong></td><td><code>s_NFDR071_Get</code></td><td>未遷移</td></tr><tr><td><code>NFDR072</code></td><td>法人買回公告明細表 / 法人贖回公告明細表</td><td><strong><code>Basic_PO</code></strong></td><td><code>s_NFDR072_Get</code></td><td>未遷移;同一支 SP 兩個報表名,「買回」與「贖回」在本系統是同義詞</td></tr><tr><td><code>NFDR075</code></td><td>傳真委託申購 / 傳真委扣－扣款失敗通知書</td><td><code>INFDR075_PO</code></td><td><code>s_TA_NFDR075_Get</code></td><td>已遷移;兩個名字差在「委託申購」vs「委扣」</td></tr></tbody></table></div>
+<p><code>NFDR073B</code> 的細節:</p>
+<div class="tw"><table><thead><tr><th>項目</th><th>內容</th><th>錨點</th></tr></thead><tbody><tr><td>報表名</td><td>「貴 賓 理 財 對 帳 單」(<strong>字間有全形空白</strong>,四處硬寫,改一處會不一致)</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073B.cs:123,134,145,157</code></td></tr><tr><td>零筆訊息</td><td><code>【{報表名}{子名}】無符合查詢條件的資料。</code>——<strong>警示</strong></td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073B.cs:232</code></td></tr><tr><td>Email 產生</td><td><code>S_TA_NFDR073B_EMAIL</code>,<code>OUT R_CNT</code> 回筆數,<code>&gt; 0</code> 才算成功</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073B_PO.cs:160-190</code></td></tr><tr><td><code>catch (OracleException) { … tran.Rollback(); }</code></td><td><strong><code>tran</code> 若在 <code>BeginTransaction</code> 之前就拋例外,這裡會 NRE,把真正的錯誤蓋掉</strong></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073B_PO.cs:193-199</code></td></tr><tr><td>讀的表</td><td><code>OFD002</code>、<code>COD009</code>、<code>SAL051</code>、<code>DUAL</code></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073B_PO.cs:258,323</code></td></tr></tbody></table></div>
+<h3 id="7-4-第-101-123-群-申購側-16-支-本片最大的一群">7.4 第 101–123 群:申購側(16 支,本片最大的一群)</h3>
+<p>這一群是「錢進來之後」的所有輸出:扣款、手續費、印花稅、統計月報、KYC 名單。也是 <code>Basic_PO</code> 未遷移比例最高的一群(16 支裡 6 支)。</p>
+<h4 id="7-4-1-群內分工">7.4.1 群內分工</h4>
+<div class="tw"><table><thead><tr><th>子題</th><th>支</th><th>共同點</th></tr></thead><tbody><tr><td>指定扣款 / 傳真委扣</td><td><code>NFDR101</code> <code>NFDR102</code> <code>NFDR103</code></td><td>三支是<strong>同一份資料的彙總 / 明細 / 失敗明細</strong>,各自有「指定扣款」與「傳真委扣」兩個報表名</td></tr><tr><td>交易確認與明細</td><td><code>NFDR104</code> <code>NFDR105</code></td><td><code>NFDR104</code> 申購明細表(PO 326 行,本群最長);<code>NFDR105</code> 申購交易確認單</td></tr><tr><td>手續費 / 扣帳費</td><td><code>NFDR107A</code> <code>NFDR107B</code> <code>NFDR111</code></td><td>見 <a class="sec" href="#7-4-第-101-123-群-申購側-16-支-本片最大的一群">§7.4</a>.3</td></tr><tr><td>銷售統計</td><td><code>NFDR108</code> <code>NFDR109</code> <code>NFDR115</code></td><td><code>NFDR108</code> 公司人員銷售彙總、<code>NFDR109</code> 銷售彙總查核、<code>NFDR115</code> 申購統計月報</td></tr><tr><td>稅</td><td><code>NFDR114</code></td><td>印花稅明細 / 彙總</td></tr><tr><td>通路明細(可下載)</td><td><code>NFDR120</code> <code>NFDR121</code></td><td>代銷銀行 / 券商;兩支都有「列印」與「下載 Excel」雙路徑</td></tr><tr><td>成本與 KYC</td><td><code>NFDR122</code> <code>NFDR123</code></td><td><code>NFDR122</code> 月平均成本餘額;<code>NFDR123</code> KYC 到期名單(純 Excel)</td></tr></tbody></table></div>
+<h4 id="7-4-2-nfdr123-受益人-kyc-到期名單-本群最完整的一支-也是全片唯一純-oracle-cte">7.4.2 <code>NFDR123</code> 受益人 KYC 到期名單(本群最完整的一支,也是全片唯一純 Oracle CTE)</h4>
+<p><strong>做什麼</strong>:列出到某個基準日為止、KYC 快到期或已到期、而且仍有持股的受益人,輸出成 Excel 給業務去催。</p>
+<p><strong>取數</strong>:全片唯一<strong>沒有 SP</strong> 的一支。整段 SQL 是一個 100 行的 Oracle <code>WITH</code> 查詢,直接寫在 PO 裡(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR123_PO.cs:60-93</code>)。四個 CTE:</p>
+<div class="tw"><table><thead><tr><th>CTE</th><th>讀什麼</th><th>作用</th></tr></thead><tbody><tr><td><code>OFD123A_TMP</code></td><td><code>OFD123A</code></td><td>KYC 主檔篩選</td></tr><tr><td><code>OFD306_TMP</code></td><td><code>OFD306A</code> + <code>TABLE(F_TA_GETFUNDNAV(...))</code></td><td>以 <code>HAVING SUM(CHG_UNIT) &gt; 0</code> 只留<strong>還有持股</strong>的人</td></tr><tr><td><code>OFD221A_TMP</code></td><td><code>OFD221A</code></td><td>取每人<strong>最後一筆申購</strong>(`MAX(ALLOT_DATE</td></tr><tr><td>主查詢</td><td><code>BMS001A</code> <code>COD009</code></td><td>受益人基本資料與員工姓名</td></tr></tbody></table></div>
+<p><strong>卡控總表</strong>:</p>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>主查詢</td><td><code>JOIN BMS001A ON T1.BF_NO = BMS001A.BF_NO</code>(<strong>INNER</strong>)</td><td>受益人主檔缺這筆</td><td><strong>過濾(無提示)</strong></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR123_PO.cs:87</code></td></tr><tr><td>主查詢</td><td><code>JOIN OFD306_TMP T2</code>(<strong>INNER</strong>)</td><td>目前沒有持股</td><td><strong>過濾(無提示)</strong>——設計如此</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR123_PO.cs:88</code></td></tr><tr><td>主查詢</td><td><code>JOIN OFD221A_TMP T3</code>(<strong>INNER</strong>)</td><td><strong>從來沒有申購紀錄</strong></td><td><strong>過濾(無提示)</strong>——⚠ 這條不見得是刻意的</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR123_PO.cs:89</code></td></tr><tr><td>主查詢</td><td><code>LEFT JOIN COD009</code></td><td>業務員代碼查不到姓名</td><td>保留該列,姓名為空(<code>NVL(..., ' ')</code>)</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR123_PO.cs:90</code></td></tr><tr><td>主查詢</td><td><code>NVL(TRIM(BMS001A.FREEZE_CD),'N') = 'N'</code></td><td>凍結戶</td><td><strong>過濾(無提示)</strong>——但 NULL 處理正確</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR123_PO.cs:92</code></td></tr><tr><td>輸出</td><td><code>saveFileDialog1.FileName = "受益人KYC到期名單.xlsx"</code></td><td>永遠</td><td>檔名寫死,不帶日期 / 條件</td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR123.cs:79</code></td></tr></tbody></table></div>
+<p><strong>第三條是本片最會咬人的一處</strong>:KYC 到期名單是<strong>法遵用途</strong>,少列一個人代表少催一個人。一位受益人如果持股是<strong>轉申購轉進來的</strong>(記在 <code>OFD306A</code>,不是 <code>OFD221A</code>),<code>JOIN OFD221A_TMP</code> 就對不到,他會從名單上<strong>無聲消失</strong>。畫面不會有任何提示,Excel 也不會少一行紅字——只是少一行。</p>
+<p><code>NFDR123</code> 的 NULL 處理本身寫得很好(<code>NVL</code> 用了 8 次),這反而說明作者知道 NULL 的問題;<code>INNER JOIN</code> 的取捨是<strong>取數設計</strong>的問題,不是疏忽型 bug——但效果一樣。</p>
+<h4 id="7-4-3-nfdr107a-nfdr107b-兩個後綴的成因-必答問題-4-之二">7.4.3 <code>NFDR107A</code> / <code>NFDR107B</code> 兩個後綴的成因(必答問題 4 之二)</h4>
+<div class="tw"><table><thead><tr><th></th><th><code>NFDR107A</code></th><th><code>NFDR107B</code></th></tr></thead><tbody><tr><td>有沒有 <code>NFDR107</code></td><td><strong>沒有</strong>。<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/</code> 與 <code>PO/ReportPO.NFD/</code> 都查無 <code>NFDR107</code></td><td>同左</td></tr><tr><td>中文名</td><td>各代理扣款機構<strong>扣帳費</strong>合計表 / 扣帳費用明細 / 銀行單筆扣款彙總表</td><td>各代理扣款機構 / 各銷售機構各基金<strong>手續費</strong>合計表 / 明細表 / 通知函</td></tr><tr><td>SP</td><td><code>s_TA_NFDR107A_Get</code></td><td><code>s_NFDR107B_Get</code>、<code>s_NFDR107B_T2_Get</code></td></tr><tr><td>PO 基底</td><td><code>INFDR107A_PO</code>(Oracle,已遷移)</td><td><strong><code>Basic_PO</code></strong>(未遷移)</td></tr><tr><td>參數風格</td><td>Oracle bind <code>:start</code> / <code>:end</code></td><td>MSSQL <code>@datiALLOT_DATE_ST</code> 等 17 個</td></tr><tr><td>讀的表</td><td><code>OFD303A</code></td><td><code>OFD303A</code>、<code>CTL018</code></td></tr><tr><td><code>.rpt</code></td><td><code>NFDR107ARPS1</code> ~ <code>RPS3</code></td><td><code>NFDR107BRPS1</code> ~ <code>RPS3</code></td></tr><tr><td>檔案編碼</td><td><strong>cp950</strong></td><td><strong>cp950</strong></td></tr></tbody></table></div>
+<p><strong>結論:這一對屬於前述五種成因的第 (e) 類「族名」</strong>——<code>A</code> 與 <code>B</code> 是同一個編號底下的兩個<strong>業務主題</strong>(扣帳費 vs 手續費),沒有不帶後綴的基準版,兩者資料來源與 SP 各自獨立,不是境內外、不是遷移改名、不是同概念的第二張表。</p>
+<p><strong>但有一個前 24 篇沒記錄過的佐證</strong>:兩支的 <code>.rpt</code> 都<strong>從 <code>RPS1</code> 起算,沒有 <code>RPS</code></strong>(對照 <code>NFDR001</code> 是 <code>RPS</code> / <code>RPS1</code> / … / <code>RPS4</code>)。這暗示原本存在一個 <code>NFDR107</code> + <code>NFDR107RPS</code>,後來被拆成 A / B 兩支而基準版被刪掉。<strong>這是推測,repo 內沒有 <code>NFDR107</code> 的任何殘跡可佐證</strong>——連 <code>.rpt</code> 都沒有 <code>NFDR107RPS.rpt</code>。</p>
+<p><strong>維護上要注意的是兩支的落差</strong>:<code>NFDR107A</code> 已經遷到 Oracle、用 bind 變數;<code>NFDR107B</code> 停在 MSSQL 且 <code>m_db</code> 未初始化。<strong>它們在選單上看起來是一對,實際上一支能跑一支不能</strong>。</p>
+<p><code>NFDR107A</code> 還有一處:日結檢核 <code>check()</code> 在例外時 <code>return -1</code>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR107A_PO.cs:186</code>)。<code>-1</code> 不是「0 筆未日結」也不是「有未日結」,呼叫端如果用 <code>&gt; 0</code> 判斷,<strong>查詢失敗會被當成「都日結了」放行</strong>——fail-open。</p>
+<h4 id="7-4-4-nfdr114-印花稅-一段跑不起來的-sql">7.4.4 <code>NFDR114</code> 印花稅:一段跑不起來的 SQL</h4>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR114_PO.cs:136-140</code> 把字串這樣接起來:</p>
+<pre class="code"><code>"SELECT COUNT(*) AS CNT FROM OFD303A "
++ " WHERE CTL_DATE &gt;= @ALLOT_DATE_ST AND CTL_DATE &lt;= @ALLOT_DATE_END"
++ "   AND ALLOT_CTL_CODE &lt;&gt; '3' "
++ "   AND FUND_ID IN (SELECT * FROM dbo.f_FormatStringToTable(@FUND_ID))"
++ "GROUP BY FUND_ID"</code></pre>
+<p>三個問題疊在一起:</p>
+<ol><li><strong>最後一段少一個空白</strong>,接出來是 <code>…f_FormatStringToTable(@FUND_ID))GROUP BY FUND_ID</code>,任何資料庫都是語法錯誤。</li><li><strong><code>dbo.f_FormatStringToTable</code> 是 MSSQL 的 table-valued function</strong>,Oracle 沒有 <code>dbo</code> schema 也沒有這支;<code>@</code> 具名參數同理。</li><li><strong><code>GROUP BY</code> + <code>ExecuteScalar</code></strong>:就算文法對了,<code>ExecuteScalar</code> 只取第一列第一欄,拿到的是<strong>第一檔基金的筆數</strong>,不是總筆數。</li></ol>
+<p>再加上 <code>NFDR114_PO</code> 是 <code>Basic_PO</code>、<code>m_db</code> 未初始化(附錄 E-02),這段實際上執行不到就先 NRE 了。<strong>三重失效互相掩蓋,是這個模組最典型的樣子</strong>:錯誤沒被發現,是因為程式根本沒跑到。</p>
+<h4 id="7-4-5-nfdr105-申購交易確認單-字串串接進-sql">7.4.5 <code>NFDR105</code> 申購交易確認單:字串串接進 SQL</h4>
+<pre class="code"><code>strWhereCode += " AND [OFD006]." + Row.Name + " = " + "'" + Row.Value + "'";
+…
+strWhereCode += " AND [OFD006]." + Row.Name + " Like " + "'" + Row.Value + "%'";</code></pre>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR105_PO.cs:180,185</code></p>
+<p><strong>欄位名與值都是直接串進去的</strong>,值連跳脫都沒有。<code>Row.Name</code> 來自 <code>Utility.Parameters</code>,由 UI 填;<code>Row.Value</code> 同理。這是本片唯一一處把使用者可控字串直接拼進 SQL 的地方(<code>ofdi1.md</code> 的 <code>OFDI481_PO.cs:142</code> 是同型)。</p>
+<p><code>[OFD006]</code> 用的是 MSSQL 的中括號識別字,這支同樣是 <code>Basic_PO</code>。所以現況是「有洞但打不開」——<strong>遷移這支時必須先修這段,不能照抄</strong>。</p>
+<h4 id="7-4-6-本群其餘支-表格帶過">7.4.6 本群其餘支(表格帶過)</h4>
+<div class="tw"><table><thead><tr><th>支</th><th>PO 基底</th><th>SP</th><th>值得一提</th></tr></thead><tbody><tr><td><code>NFDR101</code></td><td><code>INFDR101_PO</code></td><td><code>S_TA_NFDR101_GET</code></td><td>另有 inline SQL 讀 <code>CTL018</code> 取代碼</td></tr><tr><td><code>NFDR102</code></td><td><code>INFDR102_PO</code></td><td><code>S_TA_NFDR102_GET</code></td><td>純轉發</td></tr><tr><td><code>NFDR103</code></td><td><strong><code>Basic_PO</code></strong></td><td><code>s_NFDR103_Get</code></td><td>未遷移</td></tr><tr><td><code>NFDR104</code></td><td><code>INFDR104_PO</code></td><td><code>s_TA_NFDR104_Get</code></td><td>PO 326 行,本群最長;<code>DB/Table/Alter_NFDR104_T0.sql</code> 顯示它有自己的暫存表 <code>NFDR104_T0</code></td></tr><tr><td><code>NFDR108</code></td><td><strong><code>Basic_PO</code></strong></td><td><code>s_NFDR108_Get</code></td><td>未遷移 + <strong>cp950 編碼</strong>(Ctl / Pxy / PO 三層都是)</td></tr><tr><td><code>NFDR109</code></td><td><code>INFDR109_PO</code></td><td><code>S_TA_NFDR109_GET</code></td><td>—</td></tr><tr><td><code>NFDR111</code></td><td><code>INFDR111_PO</code></td><td><code>S_TA_NFDR111_GET</code></td><td>一支 SP 兩個報表名(手續費彙總 / 基金手續費彙總)</td></tr><tr><td><code>NFDR115</code></td><td><strong><code>Basic_PO</code></strong></td><td><code>s_NFDR115_Get</code></td><td>未遷移;<code>GetFUND</code> 的 inline SQL 讀 <code>OFD081V</code> + <code>[OFD038]</code>,<strong>MSSQL 中括號</strong></td></tr><tr><td><code>NFDR120</code></td><td><code>INFDR120_PO</code></td><td><code>S_TA_NFDR120_GET</code></td><td>「下載」選項另走 Excel</td></tr><tr><td><code>NFDR121</code></td><td><code>INFDR121_PO</code></td><td><code>S_TA_NFDR121_GET_1</code> / <code>_2</code></td><td>兩支 SP 分別對應單筆 / 定額</td></tr><tr><td><code>NFDR122</code></td><td><code>INFDR122_PO</code></td><td><code>S_TA_NFDR122_GET</code></td><td>UI 內有 <code>ReportName</code> 欄位的工作佇列結構,<strong>一次可連印多張</strong>(<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR122.cs:130-185</code>)</td></tr></tbody></table></div>
+<h3 id="7-5-第-150-160-群-買回-贖回-轉申購側-10-支">7.5 第 150–160 群:買回 / 贖回 / 轉申購側(10 支)</h3>
+<p>對稱於 <a class="sec" href="#7-4-第-101-123-群-申購側-16-支-本片最大的一群">§7.4</a>,這一群是「錢出去」的輸出。<code>Basic_PO</code> 比例最高:10 支裡 <strong>7 支</strong>(<code>NFDR153</code> <code>NFDR154</code> <code>NFDR155</code> <code>NFDR156</code> <code>NFDR158</code> <code>NFDR159</code>,加上群外相依的),只有 <code>NFDR150</code> <code>NFDR151</code> <code>NFDR157</code> <code>NFDR160</code> 已遷移。</p>
+<h4 id="7-5-1-nfdr151-買回申請書資料查核表-本群最完整的一支">7.5.1 <code>NFDR151</code> 買回申請書資料查核表(本群最完整的一支)</h4>
+<p><strong>做什麼</strong>:一支畫面產四種 Crystal 報表 + 兩種 Excel 附表,共六種輸出。</p>
+<p><strong>取數分派</strong>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:68-122</code>):</p>
+<div class="tw"><table><thead><tr><th>觸發</th><th>值</th><th>SP</th><th>結果集</th></tr></thead><tbody><tr><td>Crystal</td><td><code>NFDR151RPS</code></td><td><code>S_TA_NFDR151_GET</code></td><td><code>NFDR151</code> + <code>NFDR151_CER</code></td></tr><tr><td>Crystal</td><td><code>NFDR151RPS1</code></td><td><code>S_TA_NFDR151_GET_1</code></td><td><code>NFDR151_1</code></td></tr><tr><td>Crystal</td><td><code>NFDR151RPS2</code></td><td><code>S_TA_NFDR151_GET_2</code></td><td><code>NFDR151_2</code></td></tr><tr><td>Crystal</td><td><code>NFDR151RPS3</code></td><td><code>S_TA_NFDR151_GET_3</code></td><td><code>NFDR151_3</code></td></tr><tr><td>Excel</td><td><code>EXCEL01</code></td><td><code>S_TA_NFDR151_GET_5</code></td><td><code>NFDR151_5</code></td></tr><tr><td>Excel</td><td><code>EXCEL02</code></td><td><code>S_TA_NFDR151_GET_4</code></td><td><code>NFDR151_4</code></td></tr><tr><td>加選</td><td><code>IsPrintOffsetData == "Y"</code></td><td><code>S_TA_NFDR151_GET_Charge</code></td><td><code>NFDR151_Charge</code></td></tr></tbody></table></div>
+<p><strong>卡控總表</strong>:</p>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>PO 分派</td><td><code>reportClass</code> 不在四個值內</td><td>打錯 / 新增報表忘了加分支</td><td><strong>阻擋</strong>(<code>throw new Exception("未知的報表格式。")</code>)</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:98</code></td></tr><tr><td>PO 分派</td><td><code>excelClass</code> 不是 <code>EXCEL01</code> / <code>EXCEL02</code></td><td>同上</td><td><strong>過濾(無提示)</strong>——<code>switch</code> 沒有 <code>default</code>,<code>proc</code> 保持空字串後續才爆</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:105-118</code></td></tr><tr><td>取數後</td><td><code>i &gt; 0</code></td><td>零筆</td><td><strong>記錄不擋</strong>——<code>AddResultRow(false, 0, "")</code>,<strong>訊息是空字串</strong></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:165-170</code></td></tr><tr><td>例外</td><td><code>catch (Exception)</code></td><td>任何錯</td><td><strong>記錄不擋</strong>——<code>AddResultRow(false, 0, string.Empty)</code> 後交給 <code>CommonExceptionBlocker</code></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:197-201</code></td></tr></tbody></table></div>
+<p><strong>同一支 PO 裡兩種分派風格並存</strong>:Crystal 用 <code>if / else if</code> + <code>throw</code>(嚴),Excel 用 <code>switch</code> 無 <code>default</code>(鬆)。<strong>加第三種 Excel 附表時,忘了加 <code>case</code> 不會有任何錯誤訊息</strong>。</p>
+<h4 id="7-5-2-nfdr159-轉申購統計月報表-唯一寫死境內外的一支">7.5.2 <code>NFDR159</code> 轉申購統計月報表:唯一寫死境內外的一支</h4>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR159_PO.cs:107</code> 的基金清單查詢最後一行:</p>
+<pre class="code"><code>strSQL += "    AND SHORE_ID = '2'" + Environment.NewLine;</code></pre>
+<p><code>'2'</code> 在 <code>Dev/Common/Source/MappingCode/TA.MappingCode/CTL014.cs:296</code> 定義為 <code>SHORE_ID.OnShore</code> = <strong>境內基金</strong>。</p>
+<p>這一行是<strong>本文 <a class="sec" href="#0-1-nfd-是什麼-推測">§0.1</a>「<code>NFD</code> 是境內基金報表模組」最直接的程式證據</strong>——不是從表名推的,是寫死在條件裡的。同樣寫法也出現在不屬於本片的 <code>NFDR113</code>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR113_PO.cs:119</code>)。</p>
+<p>三個問題:</p>
+<div class="tw"><table><thead><tr><th>問題</th><th>說明</th></tr></thead><tbody><tr><td>寫死常數</td><td>已經有 <code>CTL014.SHORE_ID.OnShore</code> 可用,這裡寫字面 <code>'2'</code></td></tr><tr><td>只有兩支這樣寫</td><td>其餘 42 支沒有這條,代表<strong>境內限定是靠 SP 保證的</strong>,repo 內看不到</td></tr><tr><td>與 <code>[OFD038]</code> 中括號共存</td><td>同一段還是 MSSQL 語法(<a class="sec" href="#7-5-第-150-160-群-買回-贖回-轉申購側-10-支">§7.5</a>.3)</td></tr></tbody></table></div>
+<h4 id="7-5-3-nfdr115-nfdr154-nfdr158-nfdr159-四支複製貼上的-getfund">7.5.3 <code>NFDR115</code> / <code>NFDR154</code> / <code>NFDR158</code> / <code>NFDR159</code> 四支複製貼上的 <code>GetFUND</code></h4>
+<p>四支的基金清單查詢幾乎一字不差:</p>
+<div class="tw"><table><thead><tr><th>支</th><th>錨點</th><th>差異</th></tr></thead><tbody><tr><td><code>NFDR115</code></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR115_PO.cs:96-104</code></td><td>多 <code>AND OFD081V.FUND_ID &lt;&gt; 'ALL FUNDS'</code></td></tr><tr><td><code>NFDR154</code></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR154_PO.cs:100-106</code></td><td>沒有 <code>&lt;&gt; 'ALL FUNDS'</code>;參數叫 <code>@FUND_GRPCD</code> 不是 <code>@FUND_GROUP</code></td></tr><tr><td><code>NFDR158</code></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR158_PO.cs:96-104</code></td><td>與 <code>NFDR115</code> 同</td></tr><tr><td><code>NFDR159</code></td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR159_PO.cs:100-108</code></td><td>多 <code>AND SHORE_ID = '2'</code>,沒有 <code>&lt;&gt; 'ALL FUNDS'</code></td></tr></tbody></table></div>
+<p><strong>同一個下拉清單,四支看到的基金不一樣</strong>——<code>NFDR115</code> / <code>NFDR158</code> 會排除代碼為 <code>'ALL FUNDS'</code> 的那筆,另外兩支不會;<code>NFDR159</code> 只給境內。這不是刻意設計,是四份複本各自演化的結果。</p>
+<p>四支還共同踩到 <code>AND</code> / <code>OR</code> 括號問題:<code>NFDR154</code> 的 <code>WHERE (@FUNDCODE = '0') OR (…) OR (…)</code> <strong>整段沒有外層括號</strong>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR154_PO.cs:103-105</code>),而 <code>NFDR115</code> / <code>NFDR158</code> / <code>NFDR159</code> 有(<code>WHERE ((@FUNDCODE = '0') … ))</code>)。<code>NFDR154</code> 後面沒有再接 <code>AND</code>,所以目前不會出事——<strong>但只要有人加一條 <code>AND</code>,<code>NFDR154</code> 的行為會和另外三支不同</strong>。</p>
+<h4 id="7-5-4-本群其餘支-表格帶過">7.5.4 本群其餘支(表格帶過)</h4>
+<div class="tw"><table><thead><tr><th>支</th><th>中文名</th><th>PO 基底</th><th>SP</th><th>值得一提</th></tr></thead><tbody><tr><td><code>NFDR150</code></td><td>買回彙總查核表</td><td><code>INFDR150_PO</code></td><td><code>S_TA_NFDR150_GET</code></td><td>純轉發</td></tr><tr><td><code>NFDR153</code></td><td>贖回沖銷明細表</td><td><strong><code>Basic_PO</code></strong></td><td><code>s_NFDR153_Get</code></td><td>未遷移</td></tr><tr><td><code>NFDR154</code></td><td>贖回交易確認單</td><td><strong><code>Basic_PO</code></strong></td><td><code>s_NFDR154_Get</code></td><td>未遷移;另有 inline 讀 <code>[OFD126].ST_CD = '03'</code></td></tr><tr><td><code>NFDR155</code></td><td>買回暫不付款通知書</td><td><strong><code>Basic_PO</code></strong></td><td><code>s_NFDR155_Get</code></td><td>未遷移</td></tr><tr><td><code>NFDR156</code></td><td>買回補件付款通知書</td><td><strong><code>Basic_PO</code></strong></td><td><code>s_NFDR156_Get</code></td><td>未遷移;與 <code>NFDR155</code> 是一對(暫不付款 / 補件付款)</td></tr><tr><td><code>NFDR157</code></td><td>公司支付郵匯費明細 / 彙總表</td><td><code>INFDR157_PO</code></td><td><code>S_TA_NFDR157_GET</code></td><td>用 <code>DataTable.Select("REDEM_PROC_CODE&lt;&gt;'3'")</code> 在<strong>記憶體裡</strong>再過濾一次,<code>REDEM_PROC_CODE</code> 為 <code>null</code> 的列會被濾掉(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR157_PO.cs:88</code>)</td></tr><tr><td><code>NFDR158</code></td><td>贖回統計月報表</td><td><strong><code>Basic_PO</code></strong></td><td><code>s_NFDR158_Get</code></td><td>未遷移</td></tr><tr><td><code>NFDR160</code></td><td>轉申購明細 / 彙總表(轉出 + 轉入)</td><td><code>INFDR160_PO</code></td><td><code>s_TA_NFDR160_Get</code>、<code>s_TA_NFDR160_1_Get</code></td><td>四張 <code>.rpt</code> 對應「明細 / 彙總」×「轉出 / 轉入」,分派在 UI(<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR160.cs:94-112</code>)</td></tr></tbody></table></div>
+<h3 id="7-6-跳號-nfdr106-nfdr110-nfdr152-到哪去了-必答問題-3-的附帶">7.6 跳號:<code>NFDR106</code> / <code>NFDR110</code> / <code>NFDR152</code> 到哪去了(必答問題 3 的附帶)</h3>
+<p>本片名單有三個明顯的跳號。<strong>三支都存在,只是不在本片的 44 支裡</strong>:</p>
+<div class="tw"><table><thead><tr><th>代號</th><th>在不在 repo</th><th>六層</th><th><code>.rpt</code></th><th>判定</th></tr></thead><tbody><tr><td><code>NFDR106</code></td><td><strong>在</strong></td><td>UI / Ctl / Pxy / PO / Model / View 齊全</td><td><code>NFDR106RPS.rpt</code> 在</td><td>由別篇涵蓋,<strong>不是缺陷</strong></td></tr><tr><td><code>NFDR110</code></td><td><strong>在</strong></td><td>齊全</td><td><code>NFDR110RPS.rpt</code> 在</td><td>同上</td></tr><tr><td><code>NFDR152</code></td><td><strong>在</strong></td><td>齊全</td><td><code>NFDR152RPS2.rpt</code> / <code>NFDR152RPS4.rpt</code> 在</td><td>同上</td></tr></tbody></table></div>
+<p>同理,名單外還有 <code>NFDR022</code>(有 3 張 <code>.rpt</code>)、<code>NFDR074</code>(有 <code>NFDR074p0</code> 子視窗)、<code>NFDR113</code>(有 <code>SHORE_ID = '2'</code>)也都在專案裡。<strong>本片的 44 支是切片,不是「存在的全部」</strong>;寫任何「缺 XXX」之前先 <code>ls</code> 一次。</p>
+<p><code>NFDR152</code> 的 <code>.rpt</code> 只有 <code>RPS2</code> 與 <code>RPS4</code>,沒有 <code>RPS1</code> / <code>RPS3</code> — 這種「編號有洞」的情形在 <code>NFDR107A</code> 也出現過(<a class="sec" href="#7-4-第-101-123-群-申購側-16-支-本片最大的一群">§7.4</a>.3),可能是報表格式被砍過。<strong>不在本片範圍,只記一筆待查。</strong></p>
+</div></section><section class="sec" data-sec="8-跨模組共用-本片最重的一節"><h2 id="8-跨模組共用-本片最重的一節"><button class="tg" aria-label="收合/展開" type="button"></button>8. 跨模組共用(本片最重的一節)</h2><div class="sec-body"><figure><svg viewBox="0 0 1160 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NFD 的跨模組依賴：單向只讀、影響面最大的四張表、三種最危險的改動，以及分析為何天生不完整"><defs><marker id="ah_nfdr1_dep" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 依賴方向：單向，而且只有讀</text><g class="bx dash">
+<rect x="20" y="40" rx="10" ry="10" width="300" height="60"/>
+<text class="t1" x="170" y="64" text-anchor="middle">ATLAS.OFD（境內分戶軌）</text>
+<text class="t2" x="170" y="84" text-anchor="middle">M／I／B 畫面 + 表</text>
+</g><g class="bx accent">
+<rect x="370" y="40" rx="10" ry="10" width="300" height="60"/>
+<text class="t1" x="520" y="64" text-anchor="middle">ATLAS.NFD.Report</text>
+<text class="t2" x="520" y="84" text-anchor="middle">127 支全 R，無主專案</text>
+</g><g class="bx dash">
+<rect x="720" y="40" rx="10" ry="10" width="260" height="60"/>
+<text class="t1" x="850" y="64" text-anchor="middle">ATLAS.OFD.Report</text>
+<text class="t2" x="850" y="84" text-anchor="middle">40 支（另一篇）</text>
+</g><path class="ar" d="M 320 70 L 370 70" marker-end="url(#ah_nfdr1_dep)"/><path class="ar lnk" d="M 670 70 L 720 70"/><g class="bx ext">
+<rect x="1010" y="40" rx="10" ry="10" width="130" height="60"/>
+<text class="t1" x="1075" y="64" text-anchor="middle">沒有反向箭頭</text>
+<text class="t2" x="1075" y="84" text-anchor="middle">NFD 不被任何人依賴</text>
+</g><text class="lane" x="20" y="136">② 改哪些表要回歸 NFD（依受影響支數排序）</text><g class="bx vend">
+<rect x="20" y="150" rx="10" ry="10" width="280" height="60"/>
+<text class="t1" x="160" y="174" text-anchor="middle">OFD303A → 5 支</text>
+<text class="t2" x="160" y="194" text-anchor="middle">含 4 支日結檢核，不在報表清單上</text>
+</g><g class="bx vend">
+<rect x="330" y="150" rx="10" ry="10" width="280" height="60"/>
+<text class="t1" x="470" y="174" text-anchor="middle">OFD081V → 5 支</text>
+<text class="t2" x="470" y="194" text-anchor="middle">view，改底層表查不到誰在用</text>
+</g><g class="bx dash">
+<rect x="640" y="150" rx="10" ry="10" width="240" height="60"/>
+<text class="t1" x="760" y="174" text-anchor="middle">BMS001A → 4 支</text>
+<text class="t2" x="760" y="194" text-anchor="middle">對外文件全靠它</text>
+</g><g class="bx vend">
+<rect x="910" y="150" rx="10" ry="10" width="240" height="60"/>
+<text class="t1" x="1030" y="174" text-anchor="middle">OFD0811A → 3 支</text>
+<text class="t2" x="1030" y="194" text-anchor="middle">INV_AREA 決定境內／海外</text>
+</g><text class="lane" x="20" y="246">③ 最危險的三種改動</text><g class="bx vend">
+<rect x="20" y="260" rx="10" ry="10" width="350" height="60"/>
+<text class="t1" x="195" y="284" text-anchor="middle">INV_AREA 加第三種值或允許 NULL</text>
+<text class="t2" x="195" y="304" text-anchor="middle">NFDR076/077 的「海外」組靜默少基金</text>
+</g><g class="bx vend">
+<rect x="400" y="260" rx="10" ry="10" width="350" height="60"/>
+<text class="t1" x="575" y="284" text-anchor="middle">OFD221A 改 PK／ALLOT_NO 長度</text>
+<text class="t2" x="575" y="304" text-anchor="middle">NFDR123 取錯「最後一筆申購」，帶錯業務員</text>
+</g><g class="bx vend">
+<rect x="780" y="260" rx="10" ry="10" width="360" height="60"/>
+<text class="t1" x="960" y="284" text-anchor="middle">SP 回傳欄位少一欄</text>
+<text class="t2" x="960" y="304" text-anchor="middle">Model.xsd 與 Ctl 的 TransferTable 沒同步 → 該欄永遠空白</text>
+</g><text class="lane" x="20" y="356">④ 影響面分析天生不完整</text><g class="bx">
+<rect x="20" y="370" rx="10" ry="10" width="300" height="60"/>
+<text class="t1" x="170" y="394" text-anchor="middle">15 支可見</text>
+<text class="t2" x="170" y="414" text-anchor="middle">表名寫在 PO 的 inline SQL 裡</text>
+</g><g class="bx ext">
+<rect x="350" y="370" rx="10" ry="10" width="350" height="60"/>
+<text class="t1" x="525" y="394" text-anchor="middle">29 支不可見</text>
+<text class="t2" x="525" y="414" text-anchor="middle">SQL 在版控外的 SP，repo 內補不完</text>
+</g><g class="bx accent">
+<rect x="730" y="370" rx="10" ry="10" width="410" height="60"/>
+<text class="t1" x="935" y="394" text-anchor="middle">結論：改 OFD 表要另外撈 SP 原始碼</text>
+<text class="t2" x="935" y="414" text-anchor="middle">否則上線才在報表上爆</text>
+</g><path class="ar" d="M 700 400 L 730 400" marker-end="url(#ah_nfdr1_dep)"/><path class="ar dsh" d="M 320 400 L 350 400" marker-end="url(#ah_nfdr1_dep)"/></svg><figcaption>圖 5 跨模組依賴（§8）。橘虛框=改動後會靜默出錯的地方；灰虛框=別模組；黑框=查不到的黑箱；橘框=本文結論。「NFD 不被任何人依賴」是好消息；「NFD 依賴所有人而且一半查不到」是壞消息。</figcaption></figure>
+<h3 id="8-1-nfd-對外的依賴是單向的">8.1 <code>NFD</code> 對外的依賴是單向的</h3>
+<p><code>NFD</code> <strong>只讀不寫</strong>別的模組的表。本片 44 支沒有任何一行 <code>INSERT</code> / <code>UPDATE</code> / <code>DELETE</code> 打在別人的表上——寫入只發生在自己的 <code>NFDR073T*</code> 暫存表與 <code>OCRMTMP</code>(<a class="sec" href="#2-4-nfdr073t-暫存表家族">§2.4</a>)。</p>
+<div class="tw"><table><thead><tr><th>方向</th><th>有沒有</th><th>證據</th></tr></thead><tbody><tr><td><code>NFD</code> → 別模組的表(讀)</td><td><strong>有,而且是全部</strong></td><td><a class="sec" href="#2-1-nfd-讀誰的表-本文最重要的一節">§2.1</a> 的 42 張表</td></tr><tr><td><code>NFD</code> → 別模組的表(寫)</td><td><strong>沒有</strong></td><td>PO 內 <code>INSERT</code> / <code>UPDATE</code> / <code>DELETE</code> 的對象只有 <code>NFDR073T*</code> / <code>OCRMTMP</code></td></tr><tr><td>別模組 → <code>NFD</code> 的表</td><td><strong>沒有</strong></td><td><code>NFD</code> 沒有業務表可被讀</td></tr><tr><td><code>NFD</code> → 別模組的程式</td><td><strong>沒有</strong></td><td>各層 csproj 的 <code>ProjectReference</code> 只指向 <code>Common/Source/*</code> 與自己的六層</td></tr></tbody></table></div>
+<p><strong>所以「改 <code>NFD</code> 會不會影響別人」的答案是:不會。</strong> 反過來「改別人會不會影響 <code>NFD</code>」的答案是:<strong>幾乎一定會,而且看不出來</strong>。</p>
+<h3 id="8-2-改哪些表要回歸-nfd">8.2 改哪些表要回歸 <code>NFD</code></h3>
+<p>按「本片有幾支會受影響」排序:</p>
+<div class="tw"><table><thead><tr><th>表</th><th>歸屬</th><th>改它要重測</th><th>為什麼容易漏</th></tr></thead><tbody><tr><td><code>OFD303A</code></td><td>OFD</td><td><code>NFDR076</code> <code>NFDR077</code> <code>NFDR107A</code> <code>NFDR107B</code> <code>NFDR114</code></td><td>四支是日結檢核,不是報表本體,不在「報表清單」上</td></tr><tr><td><code>OFD081V</code></td><td>OFD(view)</td><td><code>NFDR073A</code> <code>NFDR115</code> <code>NFDR154</code> <code>NFDR158</code> <code>NFDR159</code></td><td>它是 <strong>view</strong>,改底層表時 view 定義不在版控,查不到誰在用</td></tr><tr><td><code>BMS001A</code></td><td>BMS</td><td><code>NFDR073A</code> <code>NFDR076</code> <code>NFDR077</code> <code>NFDR123</code></td><td>受益人主檔,幾乎所有對外文件都靠它</td></tr><tr><td><code>OFD0811A</code></td><td>OFD</td><td><code>NFDR073A</code> <code>NFDR076</code> <code>NFDR077</code></td><td>基金屬性(<code>INV_AREA</code> / <code>PROF_TYPE2</code> / <code>HIGH_RISK_CD</code>),決定「算不算海外」</td></tr><tr><td><code>CTL018</code> / <code>CTL014</code></td><td>CTL</td><td><code>NFDR073</code> <code>NFDR101</code> <code>NFDR107B</code> / <code>NFDR001</code></td><td>代碼表,改代碼值會讓報表分類錯而不報錯</td></tr><tr><td><code>OFD221A</code></td><td>OFD</td><td><code>NFDR076</code> <code>NFDR123</code></td><td>申購檔</td></tr><tr><td><code>COD009</code></td><td>COD</td><td><code>NFDR073B</code> <code>NFDR123</code></td><td>員工資料,只用來帶姓名</td></tr><tr><td><code>OFD081A</code> <code>OFD002</code> <code>OFD017A</code> <code>OFD123A</code> <code>OFD126</code> <code>OFD132A</code> <code>OFD251A</code> <code>OFD306A</code></td><td>OFD</td><td>各 1 支</td><td>—</td></tr><tr><td><code>FSK003</code></td><td>FSK</td><td><code>NFDR073A</code></td><td>風險屬性,對帳單上的警語靠它</td></tr><tr><td><code>SAL051</code></td><td>SAL</td><td><code>NFDR073B</code></td><td>—</td></tr></tbody></table></div>
+<p><strong>以上只涵蓋 15 支</strong>。另外 29 支的相依性在版控外的 SP 裡(<a class="sec" href="#2-1-nfd-讀誰的表-本文最重要的一節">§2.1</a>.2),<strong>這份影響面清單天生不完整,而且沒有辦法從 repo 補完</strong>。</p>
+<h3 id="8-3-最危險的跨模組情境">8.3 最危險的跨模組情境</h3>
+<div class="tw"><table><thead><tr><th>情境</th><th>後果</th><th>為什麼沒人會發現</th></tr></thead><tbody><tr><td><code>OFD0811A.INV_AREA</code> 新增第三種值(現在只有 <code>'D'</code> / 非 <code>'D'</code>)</td><td><code>NFDR076</code> / <code>NFDR077</code> 的「海外」判斷 <code>INV_AREA &lt;&gt; 'D'</code> 會把新值也算成海外</td><td>確認書照印,數字看起來合理</td></tr><tr><td><code>OFD0811A.INV_AREA</code> 允許 NULL</td><td><code>INV_AREA &lt;&gt; 'D'</code> 變 UNKNOWN,該基金從海外組<strong>消失</strong></td><td>同上</td></tr><tr><td>新增基金代碼但忘了同步 <code>'7A'</code> / <code>'7B'</code> 的排除清單</td><td><code>NFDR076</code> / <code>NFDR077</code> 共四處寫死值,改一處漏三處</td><td>只有比對兩份報表總數才看得出來</td></tr><tr><td><code>OFD221A</code> 改 PK 或 <code>ALLOT_NO</code> 長度</td><td><code>NFDR123</code> 的 <code>MAX(ALLOT_DATE || ALLOT_NO)</code> 排序邏輯失準,取到錯的「最後一筆申購」</td><td>通路 / 業務員欄位帶錯人,但名單筆數不變</td></tr><tr><td><code>BMS001A.FREEZE_CD</code> 語意改變</td><td><code>NFDR123</code> 的 KYC 名單範圍跟著變</td><td>法遵名單少人</td></tr><tr><td>任何 <code>OFD*</code> 表加欄位</td><td>對 <code>NFD</code> <strong>沒影響</strong>(它只 <code>SELECT</code> 指名欄位),但若同時改了 SP 的回傳欄位,<code>Model.xsd</code> 與 Ctl 的 <code>TransferTable</code> 要一起改</td><td>多回的欄位不會報錯,<strong>少回的欄位會讓報表該欄空白</strong></td></tr></tbody></table></div>
+<h3 id="8-4-nfd-與-ofd-兩套報表專案的分工-必答問題-1-的收尾">8.4 <code>NFD</code> 與 <code>OFD</code> 兩套報表專案的分工(必答問題 1 的收尾)</h3>
+<div class="tw"><table><thead><tr><th>判準</th><th>結論</th><th>依據</th></tr></thead><tbody><tr><td>是不是第四條業務軌</td><td><strong>不是</strong>。沒有自己的表、沒有 M/I/B、沒有主專案</td><td><a class="sec" href="#0-1-nfd-是什麼-推測">§0.1</a>、<a class="sec" href="#4-維護畫面-m">§4</a></td></tr><tr><td>是什麼</td><td><strong>境內基金軌(<code>OFD</code>)的對外文件與法遵 / 營運報表產生器</strong></td><td><code>SHORE_ID = '2'</code>(<a class="sec" href="#7-5-第-150-160-群-買回-贖回-轉申購側-10-支">§7.5</a>.2)、42 張表全屬 <code>OFD</code> 與共用模組(<a class="sec" href="#2-1-nfd-讀誰的表-本文最重要的一節">§2.1</a>)</td></tr><tr><td>為什麼不併進 <code>ATLAS.OFD.Report</code></td><td><strong>repo 內沒有答案。</strong> 可觀察到的差異只有「支數 127 vs 40」與「對外文件 vs 作業清單」</td><td><a class="sec" href="#0-2-nfd-跟-ofd-是什麼關係">§0.2</a>,標〔假設〕</td></tr><tr><td>切分維度</td><td><strong>讀者</strong>(受益人 / 主管機關 / 通路 vs 內部作業),不是業務軌</td><td>報表中文名,<a class="sec" href="#0-1-nfd-是什麼-推測">§0.1</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-a-資料表總表-僅限-po-內看得見的"><h2 id="附錄-a-資料表總表-僅限-po-內看得見的"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 A. 資料表總表(僅限 PO 內看得見的)</h2><div class="sec-body">
+<p>29 支的表名在版控外的 SP 裡,看不到(<a class="sec" href="#2-1-nfd-讀誰的表-本文最重要的一節">§2.1</a>.2)。以下 42 個名稱全部來自 15 支 PO 的 inline SQL。</p>
+<div class="tw"><table><thead><tr><th>名稱</th><th>歸屬</th><th>型態</th><th>被本片幾支用</th><th>用它的報表</th></tr></thead><tbody><tr><td><code>OFD081V</code></td><td>OFD</td><td>View(推測,尾碼 V)</td><td>5</td><td><code>NFDR073A</code>、<code>NFDR115</code>、<code>NFDR154</code>、<code>NFDR158</code>、<code>NFDR159</code></td></tr><tr><td><code>OFD303A</code></td><td>OFD</td><td>表</td><td>5</td><td><code>NFDR076</code>、<code>NFDR077</code>、<code>NFDR107A</code>、<code>NFDR107B</code>、<code>NFDR114</code></td></tr><tr><td><code>BMS001A</code></td><td>BMS</td><td>表</td><td>4</td><td><code>NFDR073A</code>、<code>NFDR076</code>、<code>NFDR077</code>、<code>NFDR123</code></td></tr><tr><td><code>CTL018</code></td><td>CTL</td><td>表</td><td>3</td><td><code>NFDR073</code>、<code>NFDR101</code>、<code>NFDR107B</code></td></tr><tr><td><code>OFD0811A</code></td><td>OFD</td><td>表</td><td>3</td><td><code>NFDR073A</code>、<code>NFDR076</code>、<code>NFDR077</code></td></tr><tr><td><code>COD009</code></td><td>COD</td><td>表</td><td>2</td><td><code>NFDR073B</code>、<code>NFDR123</code></td></tr><tr><td><code>NFDR073T6</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>2</td><td><code>NFDR073</code>、<code>NFDR073A</code></td></tr><tr><td><code>NFDR073T7</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>2</td><td><code>NFDR073</code>、<code>NFDR073A</code></td></tr><tr><td><code>OFD081A</code></td><td>OFD</td><td>表</td><td>2</td><td><code>NFDR073A</code>、<code>NFDR077</code></td></tr><tr><td><code>OFD221A</code></td><td>OFD</td><td>表</td><td>2</td><td><code>NFDR076</code>、<code>NFDR123</code></td></tr><tr><td><code>CTL014</code></td><td>CTL</td><td>表</td><td>1</td><td><code>NFDR001</code></td></tr><tr><td><code>FSK003</code></td><td>FSK</td><td>表</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>F_FORMATSTRINGTOTABLE</code></td><td>不明</td><td>Function</td><td>1</td><td><code>NFDR114</code></td></tr><tr><td><code>MYOFD303A</code></td><td>不明</td><td>同義字(推測)</td><td>1</td><td><code>NFDR077</code></td></tr><tr><td><code>NFDR073T0</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073</code></td></tr><tr><td><code>NFDR073T10</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T11</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T12</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T16</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T17</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T18</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T19</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T24</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T29</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T31</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T33</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T34</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T5</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T8</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>NFDR073T9</code></td><td><strong>NFD 自建</strong></td><td>暫存</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>OCRMTMP</code></td><td>不明</td><td>暫存</td><td>1</td><td><code>NFDR073</code></td></tr><tr><td><code>OFD002</code></td><td>OFD</td><td>表</td><td>1</td><td><code>NFDR073B</code></td></tr><tr><td><code>OFD017A</code></td><td>OFD</td><td>表</td><td>1</td><td><code>NFDR001</code></td></tr><tr><td><code>OFD123A</code></td><td>OFD</td><td>表</td><td>1</td><td><code>NFDR123</code></td></tr><tr><td><code>OFD123A_TMP</code></td><td>OFD</td><td>暫存</td><td>1</td><td><code>NFDR123</code></td></tr><tr><td><code>OFD126</code></td><td>OFD</td><td>表</td><td>1</td><td><code>NFDR073</code></td></tr><tr><td><code>OFD132A</code></td><td>OFD</td><td>表</td><td>1</td><td><code>NFDR073A</code></td></tr><tr><td><code>OFD221A_TMP</code></td><td>OFD</td><td>暫存</td><td>1</td><td><code>NFDR123</code></td></tr><tr><td><code>OFD251A</code></td><td>OFD</td><td>表</td><td>1</td><td><code>NFDR077</code></td></tr><tr><td><code>OFD306A</code></td><td>OFD</td><td>表</td><td>1</td><td><code>NFDR123</code></td></tr><tr><td><code>OFD306_TMP</code></td><td>OFD</td><td>暫存</td><td>1</td><td><code>NFDR123</code></td></tr><tr><td><code>SAL051</code></td><td>SAL</td><td>表</td><td>1</td><td><code>NFDR073B</code></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-b-sp-function-trigger-view"><h2 id="附錄-b-sp-function-trigger-view"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 B. SP / Function / Trigger / View</h2><div class="sec-body">
+<h3 id="b-1-sp-總表-60-支-版控內-1-支">B.1 SP 總表(60 支,版控內 1 支)</h3>
+<div class="tw"><table><thead><tr><th>SP</th><th>呼叫者</th><th>在版控</th><th>錨點</th></tr></thead><tbody><tr><td><code>s_NFDR023_Get</code></td><td><code>NFDR023</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR023_PO.cs:64</code></td></tr><tr><td><code>s_NFDR071_Get</code></td><td><code>NFDR071</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR071_PO.cs:55</code></td></tr><tr><td><code>s_NFDR072_Get</code></td><td><code>NFDR072</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR072_PO.cs:54</code></td></tr><tr><td><code>s_NFDR073_1_Get</code></td><td><code>NFDR073</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073_PO.cs:97</code></td></tr><tr><td><code>s_NFDR073_ChkRdm</code></td><td><code>NFDR073</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073_PO.cs:492</code></td></tr><tr><td><code>s_NFDR073_Get</code></td><td><code>NFDR073</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073_PO.cs:97</code></td></tr><tr><td><code>s_NFDR103_Get</code></td><td><code>NFDR103</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR103_PO.cs:48</code></td></tr><tr><td><code>s_NFDR105_Get</code></td><td><code>NFDR105</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR105_PO.cs:55</code></td></tr><tr><td><code>s_NFDR107B_Get</code></td><td><code>NFDR107B</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR107B_PO.cs:65</code></td></tr><tr><td><code>s_NFDR107B_T2_Get</code></td><td><code>NFDR107B</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR107B_PO.cs:67</code></td></tr><tr><td><code>s_NFDR108_Get</code></td><td><code>NFDR108</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR108_PO.cs:53</code></td></tr><tr><td><code>s_NFDR114_Get</code></td><td><code>NFDR114</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR114_PO.cs:53</code></td></tr><tr><td><code>s_NFDR115_Get</code></td><td><code>NFDR115</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR115_PO.cs:41</code></td></tr><tr><td><code>s_NFDR153_Get</code></td><td><code>NFDR153</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR153_PO.cs:51</code></td></tr><tr><td><code>s_NFDR154_Get</code></td><td><code>NFDR154</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR154_PO.cs:42</code></td></tr><tr><td><code>s_NFDR155_Get</code></td><td><code>NFDR155</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR155_PO.cs:53</code></td></tr><tr><td><code>s_NFDR156_Get</code></td><td><code>NFDR156</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR156_PO.cs:44</code></td></tr><tr><td><code>s_NFDR158_Get</code></td><td><code>NFDR158</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR158_PO.cs:41</code></td></tr><tr><td><code>s_NFDR159_1_Get</code></td><td><code>NFDR159</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR159_PO.cs:51</code></td></tr><tr><td><code>s_NFDR159_Get</code></td><td><code>NFDR159</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR159_PO.cs:47</code></td></tr><tr><td><code>s_TA_NFDR001_Get</code></td><td><code>NFDR001</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:57</code></td></tr><tr><td><code>s_TA_NFDR002_Get</code></td><td><code>NFDR002</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR002_PO.cs:59</code></td></tr><tr><td><code>s_TA_NFDR003_Get</code></td><td><code>NFDR003</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR003_PO.cs:59</code></td></tr><tr><td><code>s_TA_NFDR004_Get</code></td><td><code>NFDR004</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR004_PO.cs:59</code></td></tr><tr><td><code>s_TA_NFDR005_Get</code></td><td><code>NFDR005</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR005_PO.cs:60</code></td></tr><tr><td><code>s_TA_NFDR006_Get</code></td><td><code>NFDR006</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR006_PO.cs:61</code></td></tr><tr><td><code>s_TA_NFDR007_Get</code></td><td><code>NFDR007</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR007_PO.cs:58</code></td></tr><tr><td><code>s_TA_NFDR021_Get</code></td><td><code>NFDR021</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR021_PO.cs:58</code></td></tr><tr><td><code>S_TA_NFDR024_GET</code></td><td><code>NFDR024</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR024_PO.cs:59</code></td></tr><tr><td><code>S_TA_NFDR073B_EMAIL</code></td><td><code>NFDR073B</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073B_PO.cs:160</code></td></tr><tr><td><code>S_TA_NFDR073B_GET</code></td><td><code>NFDR073B</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073B_PO.cs:76</code></td></tr><tr><td><code>S_TA_NFDR073_0_GET</code></td><td><code>NFDR073A</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:119</code></td></tr><tr><td><code>S_TA_NFDR073_1_GET</code></td><td><code>NFDR073A</code></td><td><strong>是</strong>(<code>DB/SP/S_TA_NFDR073_1_GET.SQL</code>)</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:142</code></td></tr><tr><td><code>S_TA_NFDR073_2_GET</code></td><td><code>NFDR073A</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:147</code></td></tr><tr><td><code>S_TA_NFDR073_3_GET</code></td><td><code>NFDR073A</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:112</code></td></tr><tr><td><code>S_TA_NFDR073_4_GET</code></td><td><code>NFDR073A</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:137</code></td></tr><tr><td><code>s_TA_NFDR075_Get</code></td><td><code>NFDR075</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR075_PO.cs:53</code></td></tr><tr><td><code>S_TA_NFDR076_GET</code></td><td><code>NFDR076</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:64</code></td></tr><tr><td><code>S_TA_NFDR077_GET</code></td><td><code>NFDR077</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR077_PO.cs:65</code></td></tr><tr><td><code>S_TA_NFDR101_GET</code></td><td><code>NFDR101</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR101_PO.cs:72</code></td></tr><tr><td><code>S_TA_NFDR102_GET</code></td><td><code>NFDR102</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR102_PO.cs:65</code></td></tr><tr><td><code>s_TA_NFDR104_Get</code></td><td><code>NFDR104</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR104_PO.cs:73</code></td></tr><tr><td><code>s_TA_NFDR107A_Get</code></td><td><code>NFDR107A</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR107A_PO.cs:68</code></td></tr><tr><td><code>S_TA_NFDR109_GET</code></td><td><code>NFDR109</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR109_PO.cs:54</code></td></tr><tr><td><code>S_TA_NFDR111_GET</code></td><td><code>NFDR111</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR111_PO.cs:58</code></td></tr><tr><td><code>S_TA_NFDR120_GET</code></td><td><code>NFDR120</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR120_PO.cs:51</code></td></tr><tr><td><code>S_TA_NFDR121_GET_1</code></td><td><code>NFDR121</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR121_PO.cs:57</code></td></tr><tr><td><code>S_TA_NFDR121_GET_2</code></td><td><code>NFDR121</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR121_PO.cs:80</code></td></tr><tr><td><code>S_TA_NFDR122_GET</code></td><td><code>NFDR122</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR122_PO.cs:59</code></td></tr><tr><td><code>S_TA_NFDR150_GET</code></td><td><code>NFDR150</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR150_PO.cs:54</code></td></tr><tr><td><code>S_TA_NFDR151_GET</code></td><td><code>NFDR151</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:74</code></td></tr><tr><td><code>S_TA_NFDR151_GET_1</code></td><td><code>NFDR151</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:81</code></td></tr><tr><td><code>S_TA_NFDR151_GET_2</code></td><td><code>NFDR151</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:87</code></td></tr><tr><td><code>S_TA_NFDR151_GET_3</code></td><td><code>NFDR151</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:93</code></td></tr><tr><td><code>S_TA_NFDR151_GET_4</code></td><td><code>NFDR151</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:116</code></td></tr><tr><td><code>S_TA_NFDR151_GET_5</code></td><td><code>NFDR151</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:111</code></td></tr><tr><td><code>S_TA_NFDR151_GET_Charge</code></td><td><code>NFDR151</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:175</code></td></tr><tr><td><code>S_TA_NFDR157_GET</code></td><td><code>NFDR157</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR157_PO.cs:61</code></td></tr><tr><td><code>s_TA_NFDR160_1_Get</code></td><td><code>NFDR160</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR160_PO.cs:74</code></td></tr><tr><td><code>s_TA_NFDR160_Get</code></td><td><code>NFDR160</code></td><td>否</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR160_PO.cs:69</code></td></tr></tbody></table></div>
+<h3 id="b-2-function">B.2 Function</h3>
+<div class="tw"><table><thead><tr><th>名稱</th><th>方言</th><th>用在哪</th><th>狀態</th></tr></thead><tbody><tr><td><code>dbo.f_FormatStringToTable</code></td><td><strong>MSSQL</strong></td><td><code>NFDR114</code> 的日結檢核</td><td>Oracle 上不存在,見 <a class="sec" href="#7-4-第-101-123-群-申購側-16-支-本片最大的一群">§7.4</a>.4</td></tr><tr><td><code>F_TA_GETFUNDNAV</code></td><td>Oracle</td><td><code>NFDR123</code> 取淨值</td><td>不在版控</td></tr><tr><td><code>F_TA_STRTODATE</code></td><td>Oracle</td><td><code>NFDR123</code> 字串轉日期</td><td>不在版控</td></tr><tr><td><code>F_TA_GETAGENT</code></td><td>Oracle</td><td><code>NFDR123</code> 取通路簡稱</td><td>不在版控</td></tr></tbody></table></div>
+<h3 id="b-3-trigger-view">B.3 Trigger / View</h3>
+<p>本片未讀到任何 trigger。唯一疑似 view 的是 <code>OFD081V</code>(尾碼 <code>V</code>,被 4 支當基金清單來源),<strong>定義不在版控</strong>。</p>
+</div></section><section class="sec" data-sec="附錄-c-代碼對照"><h2 id="附錄-c-代碼對照"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 C. 代碼對照</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>代碼</th><th>值</th><th>意義</th><th>來源</th></tr></thead><tbody><tr><td><code>SHORE_ID</code></td><td><code>2</code></td><td>境內基金</td><td><code>Dev/Common/Source/MappingCode/TA.MappingCode/CTL014.cs:296</code></td></tr><tr><td><code>SHORE_ID</code></td><td><code>1</code></td><td>境外基金</td><td><code>Dev/Common/Source/MappingCode/TA.MappingCode/CTL014.cs:300</code></td></tr><tr><td><code>OFD0811A.INV_AREA</code></td><td><code>D</code> / 非 <code>D</code></td><td>境內 / 海外投資區域</td><td>從 <code>NFDR076</code> 的判斷式反推:<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:147-150</code>,<strong>無定義檔可佐證,標假設</strong></td></tr><tr><td><code>OFD0811A.PROF_TYPE2</code></td><td><code>1</code> / <code>2</code></td><td>基金屬性(從 <code>uchkFUND_TYPE1/2/3</code> 對應推測)</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:145-152</code>,標假設</td></tr><tr><td><code>OFD303A.POST_CTL_CODE</code></td><td><code>N</code></td><td>未過帳</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:154</code>、<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR107A_PO.cs:169</code></td></tr><tr><td><code>OFD303A.ALLOT_CTL_CODE</code></td><td><code>3</code></td><td>被排除的申購狀態(語意不明)</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:157</code>、<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR114_PO.cs:138</code></td></tr><tr><td><code>OFD251A.REDEM_PROC_CODE</code></td><td><code>3</code></td><td>被排除的買回處理狀態</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR077_PO.cs:339</code>、<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR157_PO.cs:88</code></td></tr><tr><td><code>REDEM_CTL_CODE</code></td><td><code>4</code></td><td>被排除的買回狀態</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR077_PO.cs:167</code></td></tr><tr><td><code>BF_SORT_CD</code></td><td><code>012</code></td><td>被排除的受益人分類</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:195</code></td></tr><tr><td><code>REJ_POST</code></td><td><code>Y</code></td><td>拒收紙本</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:195</code></td></tr><tr><td><code>BMS001A.FREEZE_CD</code></td><td><code>N</code></td><td>未凍結</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR123_PO.cs:92</code></td></tr><tr><td><code>OFD126.ST_CD</code></td><td><code>03</code></td><td>某種狀態(語意不明)</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR154_PO.cs:161</code></td></tr><tr><td>基金代碼 <code>7A</code> / <code>7B</code></td><td>—</td><td>被排除的兩檔股票型(海外)基金〔客戶特定〕</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:150</code></td></tr><tr><td><code>FUND_ID</code> <code>ALL FUNDS</code></td><td>—</td><td>基金清單的彙總列,<code>NFDR115</code> / <code>NFDR158</code> 會排除</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR115_PO.cs:103</code></td></tr></tbody></table></div>
+<p><strong>除 <code>SHORE_ID</code> 外,以上代碼值的意義全部是從判斷式反推的,repo 內沒有對照表可查。</strong><code>CTL014</code> / <code>CTL018</code> 是代碼表但內容在資料庫裡,不在版控。</p>
+</div></section><section class="sec" data-sec="附錄-d-本片-44-支處置表"><h2 id="附錄-d-本片-44-支處置表"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 D. 本片 44 支處置表</h2><div class="sec-body">
+<p>取代覆蓋率掃描(<code>--module NFD</code> 會拿 132 支來比,本片只寫 44 支)。</p>
+<div class="tw"><table><thead><tr><th>#</th><th>代號</th><th>本文處置</th><th>PO 基底</th><th>資料來源</th><th>引用 <code>.rpt</code> 數</th><th><code>.rpt</code> 在版控</th><th>在 csproj</th><th>SP 在版控</th></tr></thead><tbody><tr><td>1</td><td><code>NFDR001</code></td><td><strong>已深寫</strong></td><td><code>INFDR001_PO</code></td><td>SP+inline</td><td>5</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>2</td><td><code>NFDR002</code></td><td>表格帶過</td><td><code>INFDR002_PO</code></td><td>SP</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>3</td><td><code>NFDR003</code></td><td>表格帶過</td><td><code>INFDR003_PO</code></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>4</td><td><code>NFDR004</code></td><td>表格帶過</td><td><code>INFDR004_PO</code></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>5</td><td><code>NFDR005</code></td><td>表格帶過</td><td><code>INFDR005_PO</code></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>6</td><td><code>NFDR006</code></td><td>表格帶過</td><td><code>INFDR006_PO</code></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>7</td><td><code>NFDR007</code></td><td>表格帶過</td><td><code>INFDR007_PO</code></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>8</td><td><code>NFDR021</code></td><td>表格帶過</td><td><code>INFDR021_PO</code></td><td>SP</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>9</td><td><code>NFDR023</code></td><td>表格帶過</td><td><strong><code>Basic_PO</code></strong></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>10</td><td><code>NFDR024</code></td><td>表格帶過</td><td><code>INFDR024_PO</code></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>11</td><td><code>NFDR071</code></td><td>表格帶過</td><td><strong><code>Basic_PO</code></strong></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>12</td><td><code>NFDR072</code></td><td>表格帶過</td><td><strong><code>Basic_PO</code></strong></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>13</td><td><code>NFDR073</code></td><td><strong>已深寫</strong></td><td><strong><code>Basic_PO</code></strong></td><td>SP+inline</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/3 在</td></tr><tr><td>14</td><td><code>NFDR073A</code></td><td><strong>已深寫</strong></td><td><code>INFDR073A_PO</code></td><td>SP+inline</td><td>0</td><td>—(非 Crystal)</td><td>UI+Ctl+PO 全在</td><td><strong>1/5 在</strong></td></tr><tr><td>15</td><td><code>NFDR073B</code></td><td><strong>已深寫</strong></td><td><code>INFDR073B_PO</code></td><td>SP+inline</td><td>4</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/2 在</td></tr><tr><td>16</td><td><code>NFDR075</code></td><td>表格帶過</td><td><code>INFDR075_PO</code></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>17</td><td><code>NFDR076</code></td><td><strong>已深寫</strong></td><td><code>INFDR076_PO</code></td><td>SP+inline</td><td>5</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>18</td><td><code>NFDR077</code></td><td><strong>已深寫</strong></td><td><code>INFDR077_PO</code></td><td>SP+inline</td><td>3</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>19</td><td><code>NFDR101</code></td><td>表格帶過</td><td><code>INFDR101_PO</code></td><td>SP+inline</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>20</td><td><code>NFDR102</code></td><td>表格帶過</td><td><code>INFDR102_PO</code></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>21</td><td><code>NFDR103</code></td><td>表格帶過</td><td><strong><code>Basic_PO</code></strong></td><td>SP</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>22</td><td><code>NFDR104</code></td><td>表格帶過</td><td><code>INFDR104_PO</code></td><td>SP</td><td>3</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>23</td><td><code>NFDR105</code></td><td><strong>已深寫</strong></td><td><strong><code>Basic_PO</code></strong></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>24</td><td><code>NFDR107A</code></td><td><strong>已深寫</strong></td><td><code>INFDR107A_PO</code></td><td>SP+inline</td><td>3</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>25</td><td><code>NFDR107B</code></td><td><strong>已深寫</strong></td><td><strong><code>Basic_PO</code></strong></td><td>SP+inline</td><td>3</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/2 在</td></tr><tr><td>26</td><td><code>NFDR108</code></td><td>表格帶過</td><td><strong><code>Basic_PO</code></strong></td><td>SP</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>27</td><td><code>NFDR109</code></td><td>表格帶過</td><td><code>INFDR109_PO</code></td><td>SP</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>28</td><td><code>NFDR111</code></td><td>表格帶過</td><td><code>INFDR111_PO</code></td><td>SP</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>29</td><td><code>NFDR114</code></td><td><strong>已深寫</strong></td><td><strong><code>Basic_PO</code></strong></td><td>SP+inline</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>30</td><td><code>NFDR115</code></td><td><strong>已深寫</strong></td><td><strong><code>Basic_PO</code></strong></td><td>SP+inline</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>31</td><td><code>NFDR120</code></td><td>表格帶過</td><td><code>INFDR120_PO</code></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>32</td><td><code>NFDR121</code></td><td>表格帶過</td><td><code>INFDR121_PO</code></td><td>SP</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/2 在</td></tr><tr><td>33</td><td><code>NFDR122</code></td><td>表格帶過</td><td><code>INFDR122_PO</code></td><td>SP</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>34</td><td><code>NFDR123</code></td><td><strong>已深寫</strong></td><td><code>INFDR123_PO</code></td><td>純 inline</td><td>0</td><td>—(非 Crystal)</td><td>UI+Ctl+PO 全在</td><td>—</td></tr><tr><td>35</td><td><code>NFDR150</code></td><td>表格帶過</td><td><code>INFDR150_PO</code></td><td>SP</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>36</td><td><code>NFDR151</code></td><td><strong>已深寫</strong></td><td><code>INFDR151_PO</code></td><td>SP</td><td>4</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/7 在</td></tr><tr><td>37</td><td><code>NFDR153</code></td><td>表格帶過</td><td><strong><code>Basic_PO</code></strong></td><td>SP</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>38</td><td><code>NFDR154</code></td><td><strong>已深寫</strong></td><td><strong><code>Basic_PO</code></strong></td><td>SP+inline</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>39</td><td><code>NFDR155</code></td><td>表格帶過</td><td><strong><code>Basic_PO</code></strong></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>40</td><td><code>NFDR156</code></td><td>表格帶過</td><td><strong><code>Basic_PO</code></strong></td><td>SP</td><td>1</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>41</td><td><code>NFDR157</code></td><td><strong>已深寫</strong></td><td><code>INFDR157_PO</code></td><td>SP</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>42</td><td><code>NFDR158</code></td><td><strong>已深寫</strong></td><td><strong><code>Basic_PO</code></strong></td><td>SP+inline</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/1 在</td></tr><tr><td>43</td><td><code>NFDR159</code></td><td><strong>已深寫</strong></td><td><strong><code>Basic_PO</code></strong></td><td>SP+inline</td><td>2</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/2 在</td></tr><tr><td>44</td><td><code>NFDR160</code></td><td>表格帶過</td><td><code>INFDR160_PO</code></td><td>SP</td><td>4</td><td>全在</td><td>UI+Ctl+PO 全在</td><td>0/2 在</td></tr></tbody></table></div>
+<p>統計:<strong>深寫 17 支、表格帶過 27 支</strong>;<code>.rpt</code> <strong>0 支不在版控</strong>、<strong>0 支不在 csproj</strong>;SP <strong>59/60 不在版控</strong>;PO 未遷移(<code>Basic_PO</code>)<strong>16 支</strong>。</p>
+</div></section><section class="sec" data-sec="附錄-e-讀本文時要注意的地方-缺陷與陷阱"><h2 id="附錄-e-讀本文時要注意的地方-缺陷與陷阱"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 E. 讀本文時要注意的地方(缺陷與陷阱)</h2><div class="sec-body">
+<p>嚴重度:<strong>高</strong>=會產生錯誤的對外文件或法遵報表 / <strong>中</strong>=功能不可用或維護時必踩 / <strong>低</strong>=整潔性。</p>
+<h3 id="e-01-60-支-sp-只有-1-支在版控-嚴重度-高">E-01 60 支 SP 只有 1 支在版控 —— 嚴重度 <strong>高</strong></h3>
+<p><strong>缺陷</strong>:44 支報表點名 60 個 stored procedure,比對 <code>atlas_index.json</code> 的 83 支,只有 <code>S_TA_NFDR073_1_GET</code> 在 <code>DB/SP/</code>。</p>
+<p><strong>影響</strong>:29 支報表(66%)<strong>讀哪些表完全查不出來</strong>(<a class="sec" href="#2-1-nfd-讀誰的表-本文最重要的一節">§2.1</a>.2)。做任何 <code>OFD*</code> 表的異動分析時,<code>NFD</code> 這 29 支是黑洞——影響面評估天生不完整,而且沒有辦法從 repo 補完。改表上線後才在報表上爆,是這個模組最可能的故障模式。</p>
+<p><strong>錨點</strong>:<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:57</code>(代表)、附錄 B.1 全表。</p>
+<h3 id="e-02-16-支的-m-db-永遠是-null-一呼叫就-nre-嚴重度-高">E-02 16 支的 <code>m_db</code> 永遠是 <code>null</code>,一呼叫就 NRE —— 嚴重度 <strong>高</strong></h3>
+<p><strong>缺陷</strong>:繼承 <code>Basic_PO</code> 的 16 支,每支都在自己類別裡宣告 <code>private Database m_db = null;</code>,而建構子裡唯一的指派被註解掉:</p>
+<pre class="code"><code>private Database m_db = null;
+
+public NFDR115_PO()
+{
+    //SystemConfigurationSource config = new SystemConfigurationSource();
+    //DatabaseProviderFactory provider = new DatabaseProviderFactory(config);
+    //m_db = provider.Create("TA");
+}</code></pre>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR115_PO.cs:18-25</code></p>
+<p>下一個方法第一行就是 <code>DbConnection Dbcon = m_db.CreateConnection();</code>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR115_PO.cs:34</code>)。</p>
+<p><strong>為什麼不是誤判</strong>:</p>
+<ol><li><code>Basic_PO</code> 在 <code>Vendor.Product.DataAccess</code> DLL 裡(<strong>無原始碼,從呼叫端反推</strong>),就算它有自己的 <code>m_db</code>,子類別重新宣告的同名 private 欄位會<strong>遮蔽</strong>基底的;子類別內所有 <code>m_db</code> 都指到自己那個 <code>null</code>。</li><li>對照組:已遷移的 28 支寫的是 <code>private Database m_db = new Database("TA", DbServerType.Oracle);</code>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:25</code>),<strong>宣告時就給值</strong>。</li><li>這 16 支的 Ctl 是直接 <code>new NFDR115_PO()</code>(<code>Dev/ATLAS.NFD.Report/Source/Control/ReportControl.NFD/NFDR115_Ctl.cs:34</code>),不走 <code>DataAccessPool</code> / <code>GetDaoInstance&lt;T&gt;</code>,<strong>沒有任何機會被 Oracle 版替換掉</strong>。</li></ol>
+<p><strong>三支例外</strong>:<code>NFDR073</code> 用 <code>private readonly Database m_db;</code>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073_PO.cs:21</code>)、<code>NFDR108</code> / <code>NFDR155</code> 用 <code>private Database m_db;</code>——<strong>沒有初始值,也沒有指派</strong>,結果一樣是 <code>null</code>,只是編譯器警告不同。</p>
+<p><strong>受影響的 16 支</strong>:<code>NFDR023</code> <code>NFDR071</code> <code>NFDR072</code> <code>NFDR073</code> <code>NFDR103</code> <code>NFDR105</code> <code>NFDR107B</code> <code>NFDR108</code> <code>NFDR114</code> <code>NFDR115</code> <code>NFDR153</code> <code>NFDR154</code> <code>NFDR155</code> <code>NFDR156</code> <code>NFDR158</code> <code>NFDR159</code>。</p>
+<p><strong>影響</strong>:這 16 支在 Oracle 環境下<strong>一按預覽就 <code>NullReferenceException</code></strong>。其中 <code>NFDR073</code>(投資對帳單)是對外文件、<code>NFDR154</code>(贖回交易確認單)也是。</p>
+<p><strong>注意這是讀碼推論</strong>,沒有在執行環境驗證過。可能的反面解釋只有一個:<code>Basic_PO</code> 的建構子用反射或其他方式塞值進子類別的 private 欄位——極不可能,但 DLL 無原始碼,無法排除。<strong>動手修之前先在測試環境按一次</strong>。</p>
+<h3 id="e-03-nfdr073a-的-dataid-截斷到-22-碼-嚴重度-高">E-03 <code>NFDR073A</code> 的 <code>dataID</code> 截斷到 22 碼 —— 嚴重度 <strong>高</strong></h3>
+<p><strong>缺陷</strong>:<code>m_db.AddInParameter(Cmd1, "striDATAID", OracleDbType.Varchar2, strDATAID.Substring(0, 22).Trim());</code></p>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:102</code></p>
+<p><strong>影響</strong>:17 張 <code>NFDR073T*</code> 暫存表全部以 <code>DATAID</code> 分租。兩個使用者同時產對帳單、<code>DATAID</code> 前 22 碼相同時,<strong>兩份對帳單的資料會互相污染</strong>——甲的持股印到乙的對帳單上。另外 <code>strDATAID</code> 若短於 22 碼直接丟 <code>ArgumentOutOfRangeException</code>。</p>
+<h3 id="e-04-inner-join-讓法遵名單無聲少人-嚴重度-高">E-04 <code>INNER JOIN</code> 讓法遵名單無聲少人 —— 嚴重度 <strong>高</strong></h3>
+<div class="tw"><table><thead><tr><th>位置</th><th>JOIN</th><th>少掉誰</th></tr></thead><tbody><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR123_PO.cs:89</code></td><td><code>JOIN OFD221A_TMP T3 ON T1.BF_NO = T3.BF_NO</code></td><td><strong>從來沒有申購紀錄</strong>(例如持股全來自轉申購)的受益人,從 KYC 到期名單上消失</td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR123_PO.cs:87</code></td><td><code>JOIN BMS001A</code></td><td>受益人主檔缺這筆時消失</td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:143</code></td><td><code>FROM OFD303A JOIN OFD0811A ON OFD303A.FUND_ID = OFD0811A.FUND_ID</code></td><td><strong>日結檢核</strong>:<code>OFD0811A</code> 對不到的基金,未日結資料查不出來,檢核直接放行</td></tr></tbody></table></div>
+<p>第三條最惡劣:<strong>報表少印使用者還有機會發現,檢核漏掉是完全無聲的</strong>。</p>
+<h3 id="e-05-30-支沒有任何-查無資料-提示-嚴重度-中">E-05 30 支沒有任何「查無資料」提示 —— 嚴重度 <strong>中</strong></h3>
+<p>44 支裡只有 14 支的 UI 有「無符合查詢條件的資料 / 查無資料」之類的訊息。其餘 30 支在 SP 回空集合時,直接開一張<strong>只有表頭的 Crystal 報表</strong>。</p>
+<p>使用者分不出「真的沒有」與「條件打錯 / SP 掛了」。對 <code>NFDR004</code>(員工及其關係人買賣月報)這種法遵報表,「空的」與「沒跑到」的差別很重要。</p>
+<p><strong>有訊息的 14 支</strong>:<code>NFDR001</code> <code>NFDR073</code> <code>NFDR073B</code> <code>NFDR075</code> <code>NFDR076</code> <code>NFDR077</code> <code>NFDR101</code> <code>NFDR102</code> <code>NFDR105</code> <code>NFDR114</code> <code>NFDR115</code> <code>NFDR122</code> <code>NFDR123</code> <code>NFDR151</code>(部分只有 <code>Rows.Count == 0</code> 判斷而無訊息文字)。</p>
+<p><strong>更糟的是 <code>NFDR151</code> / <code>NFDR159</code> / <code>NFDR105</code></strong>:有判斷、有 <code>AddResultRow(false, 0, "")</code>,但<strong>訊息是空字串</strong>——UI 拿到 <code>ReturnCode = false</code> 卻沒有話可講(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:169</code>、<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR159_PO.cs:130</code>)。</p>
+<h3 id="e-06-oracle-三值邏輯-值-遇-null-靜默排除-嚴重度-中">E-06 Oracle 三值邏輯:<code>&lt;&gt; '值'</code> 遇 NULL 靜默排除 —— 嚴重度 <strong>中</strong></h3>
+<p>13 處 <code>&lt;&gt; '…'</code>,只有一處用 <code>NVL</code> 包起來:</p>
+<div class="tw"><table><thead><tr><th>錨點</th><th>條件</th><th>有沒有防 NULL</th></tr></thead><tbody><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:195</code></td><td><code>NVL(REJ_POST,' ')&lt;&gt;'Y'</code></td><td><strong>有</strong></td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:195</code></td><td><code>BF_SORT_CD &lt;&gt; '012'</code></td><td>沒有</td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:148</code></td><td><code>OFD0811A.INV_AREA &lt;&gt; 'D'</code></td><td>沒有</td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:155</code></td><td><code>OFD303A.ALLOT_CTL_CODE &lt;&gt; '3'</code></td><td>沒有</td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR077_PO.cs:167</code></td><td><code>A.REDEM_CTL_CODE &lt;&gt; '4'</code></td><td>沒有</td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR077_PO.cs:339</code></td><td><code>OFD251A.REDEM_PROC_CODE&lt;&gt;'3'</code></td><td>沒有</td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR115_PO.cs:103</code></td><td><code>OFD081V.FUND_ID &lt;&gt; 'ALL FUNDS'</code></td><td>沒有(<code>FUND_ID</code> 應為 NOT NULL,風險低)</td></tr></tbody></table></div>
+<p>另有 4 處 <code>NOT IN ('7A','7B')</code>(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:150,240</code>、<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR077_PO.cs:177,352</code>)——<code>FUND_ID</code> 為 NULL 時整條 UNKNOWN。</p>
+<p><strong>同一個作者在同一行裡一個包 <code>NVL</code> 一個不包</strong>(<code>NFDR073A_PO.cs:195</code>),說明這不是「不知道」,是「漏掉」。</p>
+<h3 id="e-07-customtransferoraclemodeltoview-是逐張手抄-嚴重度-中">E-07 <code>CustomTransferOracleModelToView</code> 是逐張手抄 —— 嚴重度 <strong>中</strong></h3>
+<pre class="code"><code>TransferVDBHelper.TransferTable(view.UIView.NFDR001, model.DataEntity.NFDR001, base.TransferEVAColumn);
+TransferVDBHelper.TransferTable(view.UIView.NFDR001_Detail, model.DataEntity.NFDR001_Detail, base.TransferEVAColumn);
+TransferVDBHelper.TransferTable(view.UIView.NFDR001_Grid, model.DataEntity.NFDR001_Grid, base.TransferEVAColumn);</code></pre>
+<p><code>Dev/ATLAS.NFD.Report/Source/Control/ReportControl.NFD/NFDR001_Ctl.cs:92-94</code></p>
+<p><strong>SP 多回一張表、或 <code>Model.xsd</code> 加了一張表而 Ctl 忘了加一行,該張表在報表上永遠空白,不會報錯。</strong> 改報表欄位時,<code>Model.xsd</code> / <code>View.xsd</code> / Ctl 的 <code>TransferTable</code> / <code>.rpt</code> 四者要同步,少一個就是「欄位與 xsd 不同步」。</p>
+<h3 id="e-08-mssql-語法殘留在-oracle-連線上-嚴重度-中">E-08 MSSQL 語法殘留在 Oracle 連線上 —— 嚴重度 <strong>中</strong></h3>
+<p>除了 E-02 的 16 支整體未遷移之外,還有幾處具體的方言殘留:</p>
+<div class="tw"><table><thead><tr><th>錨點</th><th>殘留</th></tr></thead><tbody><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073_PO.cs:385</code></td><td><code>DELETE …; DELETE …</code> 一行兩個 statement + <code>@dataID</code></td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073_PO.cs:539</code></td><td><code>IF EXISTS(…) SELECT 1 ELSE SELECT 0</code> —— 純 T-SQL</td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR114_PO.cs:139</code></td><td><code>dbo.f_FormatStringToTable(@FUND_ID)</code></td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR115_PO.cs:98</code></td><td><code>LEFT JOIN [OFD038]</code> —— 中括號識別字</td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR105_PO.cs:180</code></td><td><code>[OFD006]</code> + 字串串接</td></tr><tr><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR154_PO.cs:160</code></td><td><code>FROM [OFD126]</code></td></tr><tr><td>上述各支的 <code>AddInParameter</code></td><td><code>SqlDbType.NVarChar</code> / <code>SqlDbType.DateTime</code> 而非 <code>OracleDbType</code></td></tr></tbody></table></div>
+<h3 id="e-09-nfdr114-的日結檢核-sql-少一個空白-嚴重度-中">E-09 <code>NFDR114</code> 的日結檢核 SQL 少一個空白 —— 嚴重度 <strong>中</strong></h3>
+<pre class="code"><code>strSQL += "   AND FUND_ID IN (SELECT * FROM dbo.f_FormatStringToTable(@FUND_ID))";
+strSQL += "GROUP BY FUND_ID";</code></pre>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR114_PO.cs:139-140</code></p>
+<p>接出來是 <code>…(@FUND_ID))GROUP BY FUND_ID</code>,語法錯誤。再加上 <code>GROUP BY</code> 配 <code>ExecuteScalar</code> 只會拿到第一組的筆數。<strong>三個錯疊在一起,而且因為 E-02 根本執行不到。</strong></p>
+<h3 id="e-10-字串串接進-sql-嚴重度-中-現況不可觸發">E-10 字串串接進 SQL —— 嚴重度 <strong>中</strong>(現況不可觸發)</h3>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR105_PO.cs:180,185</code>:欄位名與值都直接串。值連單引號跳脫都沒有。目前因 E-02 執行不到,<strong>但遷移這支時必須先改寫成 bind 變數</strong>。</p>
+<h3 id="e-11-日結檢核例外時-return-1-嚴重度-中">E-11 日結檢核例外時 <code>return -1</code> —— 嚴重度 <strong>中</strong></h3>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR107A_PO.cs:186</code>:<code>check()</code> 在 <code>catch</code> 之後 <code>return -1</code>。呼叫端若以 <code>&gt; 0</code> 判斷「有未日結」,<strong>查詢失敗會被當成「都日結了」而放行</strong>——fail-open。</p>
+<h3 id="e-12-catch-內-tran-rollback-可能自己-nre-嚴重度-中">E-12 <code>catch</code> 內 <code>tran.Rollback()</code> 可能自己 NRE —— 嚴重度 <strong>中</strong></h3>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073B_PO.cs:193-199</code>:<code>catch (OracleException) { … tran.Rollback(); }</code>。<code>tran</code> 在 <code>try</code> 中段才 <code>BeginTransaction</code>,若之前就拋例外,<code>tran</code> 是 <code>null</code>,<strong><code>Rollback()</code> 自己 NRE,把原始錯誤蓋掉</strong>。</p>
+<h3 id="e-13-成對報表的條件各有複本-嚴重度-中">E-13 成對報表的條件各有複本 —— 嚴重度 <strong>中</strong></h3>
+<p><code>NFDR076</code> / <code>NFDR077</code> 的「基金類型 + 排除 <code>'7A'</code> <code>'7B'</code>」條件<strong>一共有四份複本</strong>:</p>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:145-152</code>、 <code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:235-242</code>、 <code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR077_PO.cs:172-179</code>、 <code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR077_PO.cs:347-354</code></p>
+<p>改一處漏三處,結果是<strong>申購確認書與買回轉申購確認書的基金範圍不一致</strong>,對帳時才會發現。</p>
+<h3 id="e-14-四份-getfund-複本-四種基金清單-嚴重度-中">E-14 四份 <code>GetFUND</code> 複本,四種基金清單 —— 嚴重度 <strong>中</strong></h3>
+<p>見 <a class="sec" href="#7-5-第-150-160-群-買回-贖回-轉申購側-10-支">§7.5</a>.3。<code>NFDR115</code> / <code>NFDR154</code> / <code>NFDR158</code> / <code>NFDR159</code> 的基金下拉清單各自演化:兩支排除 <code>'ALL FUNDS'</code>、一支限境內、參數名一支叫 <code>@FUND_GRPCD</code> 另三支叫 <code>@FUND_GROUP</code>。<code>NFDR154</code> 的 <code>WHERE</code> 還少一層外層括號(<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR154_PO.cs:103-105</code>)——目前無害,加一條 <code>AND</code> 就會出事。</p>
+<h3 id="e-15-nfdr001-的選項落在列舉外就什麼都不做-嚴重度-中">E-15 <code>NFDR001</code> 的選項落在列舉外就什麼都不做 —— 嚴重度 <strong>中</strong></h3>
+<p><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR001.cs:88-131</code> 是 4×2 的 <code>if / else if</code> 巢狀,<strong>沒有 <code>else</code></strong>。<code>uoptOrder</code> / <code>uoptPurpose</code> 的值只要不在列舉內,<code>SetQueryParameters</code> 一次都不會被呼叫,報表類別是空的。同一支的 <code>ReportLoad</code>(<code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR001.cs:64-68</code>)只在特定組合下 <code>SetParameterValue("Purpose", …)</code>,其他組合 Crystal 沿用上一次的值。</p>
+<p><code>NFDR151</code> 的 Excel 分派也一樣(<code>switch</code> 無 <code>default</code>,<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR151_PO.cs:105-118</code>)。</p>
+<h3 id="e-16-rpt-一對多共用-嚴重度-中">E-16 <code>.rpt</code> 一對多共用 —— 嚴重度 <strong>中</strong></h3>
+<p><code>NFDR001</code> 的 8 種選項組合對應 5 張 <code>.rpt</code>,<code>NFDR001RPS</code> 被三種排序共用、<code>NFDR001RPS1</code> 被兩種共用(<a class="sec" href="#7-1-第-001-007-群-受益人結構與法遵月報">§7.1</a>.1 的對照表)。<strong>改一張 <code>.rpt</code> 會同時影響多個選項組合</strong>,而 UI 上看起來是不同的功能。</p>
+<h3 id="e-17-恆真條件關掉整段篩選-嚴重度-低-但極易誤刪">E-17 恆真條件關掉整段篩選 —— 嚴重度 <strong>低</strong>(但極易誤刪)</h3>
+<p><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR076_PO.cs:152</code>:</p>
+<pre class="code"><code>OR (:striFUND_ID IS NOT NULL AND :striFUND_ID=:striFUND_ID)</code></pre>
+<p>指定基金代碼時整段「基金類型」篩選失效。可能是刻意的(指定基金就不看類型),但寫成恆真式而非註解,<strong>下一個維護者會當成 bug 刪掉,刪掉之後行為就變了</strong>。</p>
+<h3 id="e-18-非-utf-8-來源檔-嚴重度-低">E-18 非 UTF-8 來源檔 —— 嚴重度 <strong>低</strong></h3>
+<p>9 個檔是 <strong>cp950</strong>(Big5),中文註解在 UTF-8 工具下是亂碼:</p>
+<p><code>NFDR107A</code> 的 Ctl / Pxy / PO、<code>NFDR107B</code> 的 Ctl / Pxy / PO、<code>NFDR108</code> 的 Ctl / Pxy / PO。</p>
+<p>例:<code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR107A_PO.cs:157</code> 的區段標題在 UTF-8 下讀作亂碼。其餘 123 個檔是 <code>utf-8-sig</code>。</p>
+<h3 id="e-19-sp-命名兩套並存-嚴重度-低">E-19 SP 命名兩套並存 —— 嚴重度 <strong>低</strong></h3>
+<p><code>s_TA_NFDRxxx_Get</code> 與 <code>s_NFDRxxx_Get</code> 兩套命名並存且沒有規則(<a class="sec" href="#2-2-sp-60-支-版控裡只有-1-支">§2.2</a>);大小寫也混(<code>S_TA_NFDR024_GET</code> vs <code>s_TA_NFDR001_Get</code>)。Oracle 不分大小寫所以跑得動,但<strong>任何依名字比對的工具都會漏</strong>。</p>
+<p><code>NFDR073A</code> 用的是 <code>S_TA_NFDR073_x_GET</code>(名字裡沒有 <code>A</code>),<strong>照代號推 SP 名一定推錯</strong>。</p>
+<h3 id="e-20-commandtimeout-0-遍布全片-嚴重度-低">E-20 <code>CommandTimeout = 0</code> 遍布全片 —— 嚴重度 <strong>低</strong></h3>
+<p>幾乎每支 PO 都有 <code>Cmd.CommandTimeout = 0; //此程式讓它永久跑</code>(例 <code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR001_PO.cs:56</code>)。SP 卡住時 client 無限等待,使用者只能砍行程。</p>
+<h3 id="e-21-寫死常數-嚴重度-低">E-21 寫死常數 —— 嚴重度 <strong>低</strong></h3>
+<div class="tw"><table><thead><tr><th>值</th><th>位置</th><th>應該用</th></tr></thead><tbody><tr><td><code>'2'</code>(境內)</td><td><code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR159_PO.cs:107</code></td><td><code>CTL014.SHORE_ID.OnShore</code></td></tr><tr><td><code>'7A'</code> <code>'7B'</code></td><td><code>NFDR076</code> / <code>NFDR077</code> 四處</td><td>設定或代碼表</td></tr><tr><td><code>受益人KYC到期名單.xlsx</code></td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR123.cs:79</code></td><td>帶日期 / 條件</td></tr><tr><td><code>貴 賓 理 財 對 帳 單</code></td><td><code>Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR073B.cs:123,134,145,157</code> 四處</td><td>常數(對照 <code>NFDR073</code> 的 <code>const string ReportName</code>)</td></tr></tbody></table></div>
+<h3 id="e-22-沒有任何-rpt-或-csproj-問題-本片的好消息">E-22 沒有任何 <code>.rpt</code> 或 csproj 問題 —— <strong>本片的好消息</strong></h3>
+<p>前幾篇踩過的「<code>.rpt</code> 不在版控」「檔案存在但不在 csproj」「六層檔名少一個字母」,<strong>本片 44 支一件都沒有</strong>(<a class="sec" href="#2-3-rpt-範本-全部在版控-而且全部在-csproj">§2.3</a>)。79 張 <code>.rpt</code> 全在版控且全在 <code>Report.NFD.csproj</code>;UI / Ctl / PO 三層 132 個檔全在各自 csproj;六層全齊。</p>
+</div></section><section class="sec" data-sec="附錄-f-版本紀錄"><h2 id="附錄-f-版本紀錄"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 F. 版本紀錄</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>版本</th><th>日期</th><th>變更</th></tr></thead><tbody><tr><td>v1</td><td>2026-09-15</td><td>初版。涵蓋 <code>ATLAS.NFD.Report</code> 前 44 支(<code>NFDR001</code>–<code>NFDR160</code>)。</td></tr></tbody></table></div></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-15 21:01 產生 · 標題 99 · 圖 5 · 表格 63 · 程式錨點 280 · § 連結 60 · 引用檢查：畫面 53（缺 0） · Table 12（缺 0） · SP 1（缺 0） · Report 14（缺 0） · 結果集 14（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

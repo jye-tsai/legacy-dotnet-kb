@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-15">
+<title>ATLAS 維護手冊 — 新增一支 I 查詢畫面</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-適用範圍與前提">0. 適用範圍與前提</a>
+<a class="l3" href="#0-1-一句話版本">0.1 一句話版本</a>
+<a class="l2" href="#1-m-與-i-的差異總表-圖">1. M 與 I 的差異總表(圖)</a>
+<a class="l2" href="#2-步驟一-代號與專案">2. 步驟一:代號與專案</a>
+<a class="l3" href="#2-1-現況-i-畫面住在-query-專案">2.1 現況:I 畫面住在 .Query 專案</a>
+<a class="l3" href="#2-2-改法與驗證">2.2 改法與驗證</a>
+<a class="l2" href="#3-步驟二-兩份-xsd-要建-但不放四眼欄位">3. 步驟二:兩份 xsd —— 要建,但不放四眼欄位</a>
+<a class="l3" href="#3-1-現況-xsd-一份都不能省">3.1 現況:xsd 一份都不能省</a>
+<a class="l3" href="#3-2-改法-四眼那組欄位不要放">3.2 改法:四眼那組欄位不要放</a>
+<a class="l2" href="#4-步驟三-po-基底選哪一個-實查-43-支">4. 步驟三:PO 基底選哪一個(實查 43 支)</a>
+<a class="l3" href="#4-1-現況-三種並存-第三種是地雷">4.1 現況:三種並存,第三種是地雷</a>
+<a class="l3" href="#4-2-改法-二選一-怎麼選">4.2 改法:二選一,怎麼選</a>
+<a class="l3" href="#4-3-query-專案的-po-命名有兩種">4.3 ⚠ .Query 專案的 PO 命名有兩種</a>
+<a class="l2" href="#5-步驟四-沒有-mastertable-宣告-那-xtablemapping-那一步變成什麼">5. 步驟四:沒有 MasterTable 宣告,那 xTableMapping 那一步變成什麼</a>
+<a class="l3" href="#5-1-現況-43-支裡只有-2-支宣告">5.1 現況:43 支裡只有 2 支宣告</a>
+<a class="l3" href="#5-2-改法-那一步被拆成三處具名字串">5.2 改法:那一步被拆成三處具名字串</a>
+<a class="l2" href="#6-步驟五-查詢條件怎麼組-參數化-禁字串串接">6. 步驟五:查詢條件怎麼組 —— 參數化,禁字串串接</a>
+<a class="l3" href="#6-1-現況-兩種寫法並存-舊的那種是全庫最常見的缺陷型">6.1 現況:兩種寫法並存,舊的那種是全庫最常見的缺陷型</a>
+<a class="l3" href="#6-2-改法-四條規則">6.2 改法:四條規則</a>
+<a class="l3" href="#6-3-條件不存在時會靜默放大查詢範圍">6.3 ⚠ 條件不存在時會靜默放大查詢範圍</a>
+<a class="l3" href="#6-4-現況-五種會靜默濾掉資料的寫法-都不要抄">6.4 現況:五種會靜默濾掉資料的寫法,都不要抄</a>
+<a class="l3" href="#6-5-改法-查無資料要回得明確">6.5 改法:查無資料要回得明確</a>
+<a class="l3" href="#6-6-驗證">6.6 驗證</a>
+<a class="l2" href="#7-步驟六-control-與-formproxy">7. 步驟六:Control 與 FormProxy</a>
+<a class="l3" href="#7-1-control-比-m-少一個覆寫-多兩個-notimplementedexception">7.1 Control:比 M 少一個覆寫,多兩個 NotImplementedException</a>
+<a class="l3" href="#7-2-formproxy-覆寫的是-query-不是-initializecontrol">7.2 FormProxy:覆寫的是 Query,不是 InitializeControl</a>
+<a class="l2" href="#8-步驟七-ui">8. 步驟七:UI</a>
+<a class="l3" href="#8-1-現況-基底有兩種-執行鈕要自己關掉">8.1 現況:基底有兩種,執行鈕要自己關掉</a>
+<a class="l3" href="#8-2-改法-分頁-條件頁-結果頁">8.2 改法:分頁 = 條件頁 + 結果頁</a>
+<a class="l3" href="#8-3-改法-匯出只要一行">8.3 改法:匯出只要一行</a>
+<a class="l3" href="#8-4-改法-ui-端的驗證">8.4 改法:UI 端的驗證</a>
+<a class="l2" href="#9-編譯與部署">9. 編譯與部署</a>
+<a class="l2" href="#10-驗證清單">10. 驗證清單</a>
+<a class="l2" href="#11-常見錯誤與症狀">11. 常見錯誤與症狀</a>
+<a class="l2" href="#附錄-a-本手冊引用的檔案清單">附錄 A 本手冊引用的檔案清單</a>
+<a class="l2" href="#附錄-b-待輸入回填">附錄 B 待輸入回填</a>
+<a class="l2" href="#附錄-c-版本紀錄">附錄 C 版本紀錄</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-15</span></div>
+<h1 id="atlas-維護手冊-新增一支-i-查詢畫面">ATLAS 維護手冊 — 新增一支 I 查詢畫面</h1>
+<blockquote><p>產出日期:2026-09-15(v1)。本手冊為<strong>純程式碼閱讀彙整 + 操作步驟</strong>,未修改任何 ATLAS 原始碼。每一步附程式錨點(<code>Dev/…/X.cs:行號</code>),行號為分析當下版本,動手前以最新程式為準。 ⚠ 標「<strong>〔假設〕缺:輸入</strong>」的是拿不到輸入(DB 連線 / PTPFBlock DLL / 選單表)只能推論的部分,附錄 B 彙整;標「<strong>〔客戶特定〕</strong>」的是本站台的值。</p>
+<p><strong>本手冊是 <code>runbooks/add-screen.md</code> 的差異版。</strong>凡是與 M 畫面相同的步驟一律引用,不重抄: 代號規則 <code>add-screen.md §2</code>、xsd 三層結構與 10 個 <code>msprop</code> <code>add-screen.md §3</code>、View 抄 Model <code>add-screen.md §4</code>、Control 樣板 <code>add-screen.md §6</code>、FormProxy <code>add-screen.md §7</code>、UI 控件命名 <code>add-screen.md §8.3</code>、選單註冊 <code>add-screen.md §9</code>、csproj 與重編 <code>add-screen.md §10</code>。前提知識在 <code>architecture.md §6.3</code>(I 型的退化)與 <code>architecture.md §6.7</code>(I 為什麼沒有四眼)。本篇的實測母體:<code>Dev/ATLAS.OFD.Query/</code> 的 <strong>43 支 PO、43 支 Control、58 支 UI 檔</strong>,外加 <code>modules/cas.md §5</code> 已寫深的 <code>CASI001</code>。</p></blockquote>
+<section class="sec" data-sec="0-適用範圍與前提"><h2 id="0-適用範圍與前提"><button class="tg" aria-label="收合/展開" type="button"></button>0. 適用範圍與前提</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>項目</th><th>內容</th></tr></thead><tbody><tr><td>適用情境</td><td>在既有模組裡<strong>從零建一支 I(查詢)畫面</strong>:唯讀、不寫入、不走四眼</td></tr><tr><td>主要範本</td><td><code>OFDI716</code>(<code>BaseEVADaoPO</code> + 參數化 SQL + 主明細 + 匯出,本篇最推薦照抄的一支)</td></tr><tr><td>對照範本</td><td><code>OFDI911</code>(裸 DAO + SP)· <code>CASI001</code>(<code>modules/cas.md §5</code> 已寫深,反面教材多)</td></tr><tr><td>不適用</td><td>M 維護畫面(<code>add-screen.md</code>)· B 批次(<code>add-query-screen</code> 之外請看 <code>runbooks/add-batch.md</code>)· R 報表(<code>runbooks/add-report.md</code>)</td></tr><tr><td>前提工具</td><td>Visual Studio · Oracle 客戶端 · PTPFBlock DLL · TFS workspace</td></tr><tr><td>變數</td><td><code>%ATLAS_ROOT%</code> = <code><repo></code>〔客戶特定〕 · <code>%PTPF%</code> = <code>C:\Program Files\Vendor\PTPFBlock</code>〔客戶特定〕</td></tr><tr><td>佈位符</td><td><code>&lt;NEW&gt;</code> = 新代號 · <code>&lt;MOD&gt;</code> = 模組</td></tr></tbody></table></div>
+<h3 id="0-1-一句話版本">0.1 一句話版本</h3>
+<p><strong>I 不是「M 少幾層」,是同樣六層裡有四層退化。</strong>兩份 xsd 與六個 csproj 一個都不能少。省下來的只有:四眼那組欄位、Control 的 <code>InitializeVDBTypes()</code>、PO 的 <code>xTableMapping</code> 宣告、UI 的四眼工具列。</p>
+</div></section><section class="sec" data-sec="1-m-與-i-的差異總表-圖"><h2 id="1-m-與-i-的差異總表-圖"><button class="tg" aria-label="收合/展開" type="button"></button>1. M 與 I 的差異總表(圖)</h2><div class="sec-body">
+<figure><svg viewBox="0 0 1010 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="M 維護畫面與 I 查詢畫面的層級差異:四處退化、兩件不可省、PO 基底三選一"><defs><marker id="ah_query_diff" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">M 維護畫面 —— 六層滿血,四眼全走</text><g class="bx">
+<rect x="20" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="62" text-anchor="middle">PO : BaseEVADaoPO</text>
+<text class="t2" x="145" y="82" text-anchor="middle">xTableMapping 宣告</text>
+</g><g class="bx">
+<rect x="300" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="62" text-anchor="middle">Ctl 兩個必覆寫</text>
+<text class="t2" x="425" y="82" text-anchor="middle">Pool + VDBTypes</text>
+</g><g class="bx">
+<rect x="580" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="62" text-anchor="middle">Pxy 21 行</text>
+<text class="t2" x="695" y="82" text-anchor="middle">只有 InitializeControl</text>
+</g><g class="bx">
+<rect x="840" y="40" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="62" text-anchor="middle">UI 四眼工具列</text>
+<text class="t2" x="915" y="82" text-anchor="middle">送核 覆核 核准</text>
+</g><path class="ar" d="M 270 68 L 300 68" marker-end="url(#ah_query_diff)"/><path class="ar" d="M 550 68 L 580 68" marker-end="url(#ah_query_diff)"/><path class="ar" d="M 810 68 L 840 68" marker-end="url(#ah_query_diff)"/><text class="lane" x="20" y="130">I 查詢畫面 —— 同樣六層,但四處退化</text><g class="bx accent">
+<rect x="20" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="166" text-anchor="middle">PO 多半不繼承基底</text>
+<text class="t2" x="145" y="186" text-anchor="middle">43 支裡 24 支裸 DAO</text>
+</g><g class="bx accent">
+<rect x="300" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="166" text-anchor="middle">Ctl 只覆寫 Pool</text>
+<text class="t2" x="425" y="186" text-anchor="middle">沒有 VDBTypes</text>
+</g><g class="bx accent">
+<rect x="580" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="166" text-anchor="middle">Pxy 覆寫 Query</text>
+<text class="t2" x="695" y="186" text-anchor="middle">不覆寫 Add / Update</text>
+</g><g class="bx accent">
+<rect x="840" y="144" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="166" text-anchor="middle">UI 只有查詢鈕</text>
+<text class="t2" x="915" y="186" text-anchor="middle">執行鈕關掉</text>
+</g><path class="ar" d="M 145 96 L 145 144" marker-end="url(#ah_query_diff)"/><path class="ar" d="M 425 96 L 425 144" marker-end="url(#ah_query_diff)"/><path class="ar" d="M 695 96 L 695 144" marker-end="url(#ah_query_diff)"/><path class="ar" d="M 915 96 L 915 144" marker-end="url(#ah_query_diff)"/><text class="lane" x="20" y="234">不變的兩件事 —— 少做會直接壞掉</text><g class="bx accent">
+<rect x="20" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="270" text-anchor="middle">Model.xsd 一定要建</text>
+<text class="t2" x="145" y="290" text-anchor="middle">沒型別就沒 VDB</text>
+</g><g class="bx accent">
+<rect x="300" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="270" text-anchor="middle">View.xsd 一定要建</text>
+<text class="t2" x="425" y="290" text-anchor="middle">跨 Remoting 的型別</text>
+</g><g class="bx accent">
+<rect x="580" y="248" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="270" text-anchor="middle">六個 csproj 照掛</text>
+<text class="t2" x="695" y="290" text-anchor="middle">xsd 三段不可漏</text>
+</g><g class="bx dash">
+<rect x="840" y="248" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="270" text-anchor="middle">四眼 13 欄免了</text>
+<text class="t2" x="915" y="290" text-anchor="middle">查詢表多半沒有</text>
+</g><path class="ar" d="M 145 200 L 145 248" marker-end="url(#ah_query_diff)"/><path class="ar" d="M 270 276 L 300 276" marker-end="url(#ah_query_diff)"/><path class="ar" d="M 550 276 L 580 276" marker-end="url(#ah_query_diff)"/><path class="ar lnk" d="M 810 276 L 840 276"/><text class="lane" x="20" y="338">PO 基底三選一 —— 第三個是地雷</text><g class="bx">
+<rect x="20" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="374" text-anchor="middle">裸 DAO(24 支)</text>
+<text class="t2" x="145" y="394" text-anchor="middle">自己 new Database</text>
+</g><g class="bx accent">
+<rect x="300" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="374" text-anchor="middle">BaseEVADaoPO(15 支)</text>
+<text class="t2" x="425" y="394" text-anchor="middle">用 dbProduct</text>
+</g><g class="bx vend">
+<rect x="580" y="352" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="374" text-anchor="middle">BasicEVAPO(4 支)</text>
+<text class="t2" x="695" y="394" text-anchor="middle">dbTA 恆為 null</text>
+</g><g class="bx accent">
+<rect x="840" y="352" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="374" text-anchor="middle">新畫面二選一</text>
+<text class="t2" x="915" y="394" text-anchor="middle">絕不選第三個</text>
+</g><path class="ar" d="M 145 304 L 145 352" marker-end="url(#ah_query_diff)"/><path class="ar lnk" d="M 270 380 L 300 380"/><path class="ar lnk" d="M 550 380 L 580 380"/><path class="ar" d="M 810 380 L 840 380" marker-end="url(#ah_query_diff)"/></svg><figcaption>圖 1 M 與 I 的差別。I 不是「少幾層」,是同樣六層裡有四層退化;兩份 xsd 與六個 csproj 一個都不能少。橘色虛框=選到就是死畫面。</figcaption></figure>
+<p>這張表是本手冊的主體,其餘各節是它的展開。</p>
+<div class="tw"><table><thead><tr><th>#</th><th>項目</th><th>M(<code>add-screen.md</code>)</th><th>I</th><th>差在哪一節</th></tr></thead><tbody><tr><td>1</td><td>專案位置</td><td><code>Dev/ATLAS.&lt;MOD&gt;/Source/</code></td><td><strong><code>Dev/ATLAS.&lt;MOD&gt;.Query/Source/</code></strong>,每層資料夾加 <code>Query</code> 前綴</td><td><a class="sec" href="#2-步驟一-代號與專案">§2</a></td></tr><tr><td>2</td><td>代號第四碼</td><td><code>M</code></td><td><code>I</code></td><td><a class="sec" href="#2-步驟一-代號與專案">§2</a></td></tr><tr><td>3</td><td><code>Model.xsd</code> 與 <code>View.xsd</code></td><td>兩份都要建</td><td><strong>兩份都要建</strong>,但不放四眼那組欄位</td><td><a class="sec" href="#3-步驟二-兩份-xsd-要建-但不放四眼欄位">§3</a></td></tr><tr><td>5</td><td>xsd 的四眼欄位</td><td>主檔明細各 15 欄</td><td><strong>不放</strong></td><td><a class="sec" href="#3-2-改法-四眼那組欄位不要放">§3.2</a></td></tr><tr><td>6</td><td>PO 基底</td><td><code>BaseEVADaoPO</code> / <code>BaseMultiRowEVADaoPO</code></td><td>裸 DAO 或 <code>BaseEVADaoPO</code>,<strong>二選一</strong></td><td><a class="sec" href="#4-步驟三-po-基底選哪一個-實查-43-支">§4</a></td></tr><tr><td>7</td><td>PO 介面</td><td><code>: IEvaDataAccess</code></td><td>裸 DAO 不繼承任何東西;<code>BaseEVADaoPO</code> 那條仍要 <code>: IEvaDataAccess</code></td><td><a class="sec" href="#4-2-改法-二選一-怎麼選">§4.2</a></td></tr><tr><td>8</td><td><code>xTableMapping</code> 宣告</td><td><strong>必要</strong>,兩參數 + xsd 表名三處同名</td><td><strong>多半不宣告</strong>(43 支裡只有 2 支有)</td><td><a class="sec" href="#5-步驟四-沒有-mastertable-宣告-那-xtablemapping-那一步變成什麼">§5</a></td></tr><tr><td>9</td><td>PO 的兩支 <code>BuildXxxSQLString</code></td><td><code>BeforeSelect</code> 等三個事件觸發</td><td><strong>沒有事件</strong>,自己寫一支 <code>GetQuery</code></td><td><a class="sec" href="#5-步驟四-沒有-mastertable-宣告-那-xtablemapping-那一步變成什麼">§5</a> <a class="sec" href="#6-步驟五-查詢條件怎麼組-參數化-禁字串串接">§6</a></td></tr><tr><td>10</td><td>SQL 的四眼欄位</td><td>一定 <code>AllEVAColumnsForSelect</code></td><td><strong>不要</strong>加</td><td><a class="sec" href="#3-2-改法-四眼那組欄位不要放">§3.2</a></td></tr><tr><td>11</td><td>查詢條件</td><td>多半字串串接(現存缺陷)</td><td><strong>一律參數化</strong></td><td><a class="sec" href="#6-步驟五-查詢條件怎麼組-參數化-禁字串串接">§6</a></td></tr><tr><td>12</td><td>Control <code>InitializeDataAccessPool</code></td><td>要</td><td><strong>要</strong></td><td><a class="sec" href="#7-步驟六-control-與-formproxy">§7</a></td></tr><tr><td>13</td><td>Control <code>InitializeVDBTypes</code></td><td>要</td><td><strong>不要</strong>(43 支裡只有 1 支有)</td><td><a class="sec" href="#7-步驟六-control-與-formproxy">§7</a></td></tr><tr><td>14</td><td>Control <code>CustomTransfer*</code> 四件套</td><td>四個都寫</td><td>只寫 Oracle 那兩個,SQL 那兩個 <code>throw NotImplementedException</code></td><td><a class="sec" href="#7-步驟六-control-與-formproxy">§7</a></td></tr><tr><td>15</td><td>FormProxy 覆寫</td><td><code>InitializeControl()</code></td><td><strong><code>Query()</code> 與 <code>GetMaintainData()</code></strong></td><td><a class="sec" href="#7-步驟六-control-與-formproxy">§7</a></td></tr><tr><td>16</td><td>UI 基底</td><td><code>xMaintainForm</code></td><td><strong><code>xOneStepProcessForm</code></strong>(42/58)或 <code>xQueryForm</code>(8/58)</td><td><a class="sec" href="#8-步驟七-ui">§8</a></td></tr><tr><td>17</td><td>四眼工具列</td><td>有(送核 / 覆核 / 核准 / 退回)</td><td><strong>沒有</strong>,執行鈕直接 <code>e.Cancel = true</code></td><td><a class="sec" href="#8-1-現況-基底有兩種-執行鈕要自己關掉">§8.1</a></td></tr><tr><td>18</td><td>分頁與匯出</td><td>依畫面</td><td><code>TabPages = 2</code>(條件頁 + 結果頁)· <code>this.ExportGrid = &lt;某個 grid&gt;</code></td><td><a class="sec" href="#8-2-改法-分頁-條件頁-結果頁">§8.2</a> <a class="sec" href="#8-3-改法-匯出只要一行">§8.3</a></td></tr><tr><td>20</td><td>六個 csproj</td><td>要改</td><td><strong>要改</strong>(在 <code>.Query</code> 專案那六個)</td><td><a class="sec" href="#9-編譯與部署">§9</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="2-步驟一-代號與專案"><h2 id="2-步驟一-代號與專案"><button class="tg" aria-label="收合/展開" type="button"></button>2. 步驟一:代號與專案</h2><div class="sec-body">
+<h3 id="2-1-現況-i-畫面住在-query-專案">2.1 現況:I 畫面住在 <code>.Query</code> 專案</h3>
+<p><code>architecture.md §2</code> 的鐵律:<code>I</code> 型住在 <code>Dev/ATLAS.&lt;MOD&gt;.Query/</code>,六層資料夾與組件名都加 <code>Query</code> 前綴:</p>
+<pre class="code"><code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/
+Dev/ATLAS.OFD.Query/Source/FormProxy/QueryFormProxy.OFD/
+Dev/ATLAS.OFD.Query/Source/Control/QueryControl.OFD/
+Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/
+Dev/ATLAS.OFD.Query/Source/Entity/QueryDataEntity.OFD/
+Dev/ATLAS.OFD.Query/Source/Entity/QueryUIEntity.OFD/</code></pre>
+<p><strong>例外要先 <code>ls</code> 確認。</strong>OFD 的查詢畫面散在兩個專案:<code>Dev/ATLAS.OFD.Query/</code>(43 支)與 <code>Dev/ATLAS.OFDI/</code>(1 支,<code>Dev/ATLAS.OFDI/Source/PO/PO.OFDI/OFDI011_PO.cs</code>,而且它的層資料夾<strong>沒有</strong> <code>Query</code> 前綴)。<code>ofd8.md §5</code> 記過這件事。<strong>新畫面放 <code>.Query</code>,不要再往 <code>ATLAS.OFDI</code> 加。</strong></p>
+<h3 id="2-2-改法與驗證">2.2 改法與驗證</h3>
+<p>取號規則與 M 相同(<code>add-screen.md §2.2</code>):同模組同型別最大號 +1;<code>Dev/ATLAS.OFD.Query/Source/Entity/QueryDataEntity.OFD/</code> 底下有 36 份 <code>.xsd</code>(<code>QueryUIEntity.OFD</code> 同為 36 份),<strong>沒有分卷</strong>,直接放進去。驗證:<code>py -V:3.12 %ATLAS_ROOT%\docs\tools\atlas_scan.py --screen &lt;NEW&gt;</code> 回「找不到」才是對的。</p>
+</div></section><section class="sec" data-sec="3-步驟二-兩份-xsd-要建-但不放四眼欄位"><h2 id="3-步驟二-兩份-xsd-要建-但不放四眼欄位"><button class="tg" aria-label="收合/展開" type="button"></button>3. 步驟二:兩份 xsd —— 要建,但不放四眼欄位</h2><div class="sec-body">
+<h3 id="3-1-現況-xsd-一份都不能省">3.1 現況:xsd 一份都不能省</h3>
+<p><code>architecture.md §6.7</code> 講的是「I 沒有四眼」,不是「I 不用 entity」。實測 <code>Dev/ATLAS.OFD.Query/Source/Entity/QueryDataEntity.OFD/OFDI716Model.xsd</code> 與 <code>Dev/ATLAS.OFD.Query/Source/Entity/QueryUIEntity.OFD/OFDI716View.xsd</code> 兩份都在,而且 <code>*Model.Designer.cs</code> / <code>*ModelVDB.cs</code> / <code>.xsc</code> / <code>.xss</code> 五件套俱全。 <strong>沒有 xsd 就沒有 <code>&lt;NEW&gt;ModelVDB</code> / <code>&lt;NEW&gt;ViewVDB</code> 兩個型別</strong>,UI 的 <code>this.ProcessVDB = new &lt;NEW&gt;ViewVDB();</code> 連編都編不過。</p>
+<p>骨架、三層結構、10 個 <code>msprop</code>、主鍵、csproj 三段全部照 <code>add-screen.md §3</code> 與 <code>add-screen.md §4</code>,<strong>本節只講差異</strong>。</p>
+<h3 id="3-2-改法-四眼那組欄位不要放">3.2 改法:四眼那組欄位不要放</h3>
+<p>M 的每張表都帶 15 個四眼欄位,清單在 <code>Dev/Common/Source/Utility/TA.ServerUtility/OracleHelper.cs:114-133</code>: <code>STATUS</code> + <code>CREATEID</code> / <code>CREATEDATE</code> / <code>UPDATEID</code> / <code>UPDATEDATE</code> / <code>ENTRYID</code> / <code>ENTRYDATE</code> / <code>VERIFYID</code> / <code>VERIFYDATE</code> / <code>APPROVEID</code> / <code>APPROVEDATE</code> / <code>REJECTID</code> / <code>REJECTDATE</code>(這 13 欄是四眼的狀態與人時戳)+ <code>DATAID</code> / <code>DATAFLAG</code>(資料識別)。</p>
+<p><strong>I 的 xsd 不放這一組。</strong>實測對照:</p>
+<div class="tw"><table><thead><tr><th>xsd</th><th>表數</th><th><code>DATAID</code></th><th><code>STATUS</code></th><th><code>DATAFLAG</code></th></tr></thead><tbody><tr><td><code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM006Model.xsd</code>(M)</td><td>2</td><td>2 個</td><td>2 個</td><td>2 個</td></tr><tr><td><code>Dev/ATLAS.OFD.Query/Source/Entity/QueryDataEntity.OFD/OFDI716Model.xsd</code>(I)</td><td>3</td><td><strong>0</strong></td><td><strong>0</strong></td><td><strong>0</strong></td></tr></tbody></table></div>
+<p><code>OFDI716Model.xsd</code> 三張表裡只有一般的 <code>CreateID</code> / <code>CreateDate</code> 兩個稽核欄——那是<strong>來源表本來就有的業務欄位</strong>,不是四眼機制。</p>
+<p>跟著一起省掉的兩件事:</p>
+<ol><li><strong>SQL 裡不要呼叫 <code>AllEVAColumnsForSelect</code></strong>(對照 <code>add-screen.md §5.4</code> 第 2 條),查詢表多半根本沒有這些欄,加了就 <code>ORA-00904</code>。</li><li><strong>不需要 <code>xs:unique</code> 的四眼主鍵</strong>(<code>add-screen.md §3.4</code>);查詢結果集沒有異動,主鍵只影響 DataSet 的去重行為。</li></ol>
+<p><strong>驗證</strong>:<code>grep -c "Generator_TableClassName" &lt;NEW&gt;Model.xsd</code> 要等於你打算回傳幾張 DataTable(<code>OFDI716Model.xsd</code> 是 3);<code>grep -c "DATAID" &lt;NEW&gt;Model.xsd</code> 要回 0。</p>
+</div></section><section class="sec" data-sec="4-步驟三-po-基底選哪一個-實查-43-支"><h2 id="4-步驟三-po-基底選哪一個-實查-43-支"><button class="tg" aria-label="收合/展開" type="button"></button>4. 步驟三:PO 基底選哪一個(實查 43 支)</h2><div class="sec-body">
+<h3 id="4-1-現況-三種並存-第三種是地雷">4.1 現況:三種並存,第三種是地雷</h3>
+<p>剝掉 <code>//</code> 註解後掃 <code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/*_PO.cs</code> 的 43 支,基底分布:</p>
+<div class="tw"><table><thead><tr><th>基底</th><th>支數</th><th>連線從哪來</th><th>判定</th></tr></thead><tbody><tr><td><strong>裸 DAO</strong>(只實作 <code>I&lt;代號&gt;_PO</code>,沒有基底)</td><td><strong>24</strong></td><td>PO 自己 <code>new Database("TA", DbServerType.Oracle)</code></td><td><strong>可用</strong></td></tr><tr><td><strong><code>BaseEVADaoPO</code></strong></td><td><strong>15</strong></td><td>基底管,PO 內用 <code>dbProduct</code></td><td><strong>可用,而且最推薦</strong></td></tr><tr><td><strong><code>BasicEVAPO</code></strong></td><td><strong>4</strong></td><td><strong><code>dbTA</code> 恆為 null</strong></td><td><strong>禁用,一定 NRE</strong></td></tr></tbody></table></div>
+<p>三支實挑確認(<strong>不是從表格推的,是逐檔看過</strong>):</p>
+<div class="tw"><table><thead><tr><th>支</th><th>宣告</th><th>形狀</th></tr></thead><tbody><tr><td><code>OFDI716</code></td><td><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI716_PO.cs:22</code> <code>public class OFDI716_PO : BaseEVADaoPO, IOFDI716_PO</code></td><td>一支 <code>GetQuery&lt;T&gt;</code>,三段參數化 SQL,用 <code>dbProduct.LoadDataSet</code> 直接填三張 DataTable</td></tr><tr><td><code>OFDI911</code></td><td><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI911_PO.cs:28</code> <code>public class OFDI911_PO : IOFDI911_PO</code></td><td>裸 DAO,自己 <code>new Database("TA", …)</code>(<code>:30</code>),呼叫 SP + 11 個 RefCursor 出參</td></tr><tr><td><code>OFDI719</code></td><td><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI719_PO.cs:11</code> <code>public class OFDI719_PO : BasicEVAPO</code></td><td><strong>死畫面</strong>:<code>:30</code> 第一行就是 <code>dbTA.CreateConnection()</code>,而 <code>dbTA</code> 恆為 null;SQL 還是 T-SQL 方言(<code>CONVERT</code> / <code>ISNULL</code>)</td></tr></tbody></table></div>
+<p>四支 <code>BasicEVAPO</code> 的完整名單:<code>OFDI058B</code> <code>OFDI059</code> <code>OFDI375</code> <code>OFDI719</code>。理由與證據鏈見 <code>add-screen.md §5.7</code> 與 <code>architecture.md §3.1.1</code>。</p>
+<h3 id="4-2-改法-二選一-怎麼選">4.2 改法:二選一,怎麼選</h3>
+<div class="tw"><table><thead><tr><th>這支畫面</th><th>選</th><th>介面怎麼寫</th></tr></thead><tbody><tr><td>查詢邏輯是 C# 組 SQL,而且要用 typed DataSet 的表名</td><td><strong><code>BaseEVADaoPO</code></strong></td><td><code>public interface I&lt;NEW&gt;_PO : IEvaDataAccess { T GetQuery&lt;T&gt;(T model, params object[] args); }</code></td></tr><tr><td>查詢邏輯整包在 SP 裡,C# 只負責綁參數收 RefCursor</td><td><strong>裸 DAO</strong></td><td><code>public interface I&lt;NEW&gt;_PO { DataSet GetXxx(…); }</code>,不繼承任何東西</td></tr></tbody></table></div>
+<p><strong>兩種都要標 <code>[PODbType(DbServerType.Oracle)]</code></strong>(<code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI716_PO.cs:21</code>、<code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI911_PO.cs:27</code>),否則 <code>GetDaoInstance</code> 找不到。</p>
+<blockquote><p>⚠ <strong>判斷基底一定先剝 <code>//</code> 註解。</strong><code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM125A_PO.cs:28</code> 留著一行 <code>//public class OFDM125A_PO : BasicEVAPO</code>、第 <code>:30</code> 行才是現行的 <code>BaseEVADaoPO</code>。直接 <code>grep "class .*_PO *:"</code> 會誤判成死畫面。同一條坑在 <code>add-screen.md §5.7</code> 有完整說明。</p></blockquote>
+<h3 id="4-3-query-專案的-po-命名有兩種">4.3 ⚠ <code>.Query</code> 專案的 PO 命名有兩種</h3>
+<p><strong>這是掃描器踩過的坑(D7),接手時一定要知道。</strong></p>
+<div class="tw"><table><thead><tr><th>專案</th><th>PO 檔名</th><th>實例</th></tr></thead><tbody><tr><td><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/</code></td><td><code>&lt;代號&gt;_PO.cs</code></td><td><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI716_PO.cs</code></td></tr><tr><td><code>Dev/ATLAS.OTA.Query/Source/PO/…</code></td><td><code>&lt;代號&gt;_PO.cs</code></td><td>同上形狀</td></tr><tr><td><strong><code>Dev/ATLAS.EC.Query/Source/PO/QueryPO.EC/Oracle/</code></strong></td><td><strong><code>&lt;代號&gt;OracleDao.cs</code></strong></td><td><code>Dev/ATLAS.EC.Query/Source/PO/QueryPO.EC/Oracle/OFDI641OracleDao.cs</code></td></tr><tr><td><strong><code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/</code></strong></td><td><strong><code>&lt;代號&gt;OracleDao.cs</code></strong></td><td><code>ofdb3.md §3.5</code> 的 <code>OFDB615</code> / <code>OFDB616</code> / <code>OFDB671</code>–<code>OFDB673</code></td></tr></tbody></table></div>
+<p><code>Dev/ATLAS.EC.Query/Source/PO/QueryPO.EC/</code> 底下還多分三個子資料夾:<code>Interface/</code>(<code>I&lt;代號&gt;.cs</code>)、<code>Oracle/</code>(現行)、<code>MSSQL/</code>(舊世代,多半整檔註解)。</p>
+<p><strong><code>atlas_scan --screen</code> 對兩種命名都認得。</strong>實跑對照:</p>
+<pre class="code"><code>py -V:3.12 %ATLAS_ROOT%\docs\tools\atlas_scan.py --screen OFDI716
+  PO          Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI716_PO.cs
+py -V:3.12 %ATLAS_ROOT%\docs\tools\atlas_scan.py --screen OFDI641
+  PO          Dev/ATLAS.EC.Query/Source/PO/QueryPO.EC/Oracle/OFDI641OracleDao.cs</code></pre>
+<p>但兩支的「表」區段都印 <code>主檔 —</code> / <code>明細 —</code>。<strong>那不是缺層,是 I 型本來就不宣告 <code>xTableMapping</code>(<a class="sec" href="#5-步驟四-沒有-mastertable-宣告-那-xtablemapping-那一步變成什麼">§5</a>)。</strong></p>
+<p><strong>新畫面一律用 <code>&lt;NEW&gt;_PO.cs</code>。</strong><code>OracleDao</code> 那套是 EC 的歷史包袱,跟著它只會讓下一個人再踩一次。</p>
+<p><strong>驗證</strong>:用 <code>add-screen.md §5.7</code> 那支「剝註解取基底」的一行指令查新 PO,印出來的必須含 <code>BaseEVADaoPO</code> 或只有 <code>I&lt;NEW&gt;_PO</code>。<strong>看到 <code>BasicEVAPO</code> 就停手重寫。</strong></p>
+</div></section><section class="sec" data-sec="5-步驟四-沒有-mastertable-宣告-那-xtablemapping-那一步變成什麼"><h2 id="5-步驟四-沒有-mastertable-宣告-那-xtablemapping-那一步變成什麼"><button class="tg" aria-label="收合/展開" type="button"></button>5. 步驟四:沒有 <code>MasterTable</code> 宣告,那 <code>xTableMapping</code> 那一步變成什麼</h2><div class="sec-body">
+<h3 id="5-1-現況-43-支裡只有-2-支宣告">5.1 現況:43 支裡只有 2 支宣告</h3>
+<p><code>grep -rn "MasterTable" Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/</code> 只命中兩個檔: <code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI059_PO.cs:17</code>(舊型別 <code>TableMapping</code>,而且那支是 <code>BasicEVAPO</code> 死畫面)與 <code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI199_PO.cs:39</code>。 <code>OFDI199</code> 也是 43 支 Control 裡<strong>唯一</strong>有 <code>InitializeVDBTypes()</code> 的一支——它是 <code>architecture.md §6.7</code> 講的「查詢 + 放行」混合畫面,不是純 I。</p>
+<p><strong>純 I 畫面不宣告主明細。</strong><code>add-screen.md §5.2</code> 那三條規則在這裡全部不適用。</p>
+<h3 id="5-2-改法-那一步被拆成三處具名字串">5.2 改法:那一步被拆成三處具名字串</h3>
+<p>M 靠 <code>xTableMapping</code> 的兩個參數把「實體表名」與「VDB 裡的 DataTable 名」綁起來,I 則是<strong>在三個地方各自寫一次表名</strong>:</p>
+<div class="tw"><table><thead><tr><th>處</th><th>寫什麼</th><th>錨點</th></tr></thead><tbody><tr><td>PO 的 SQL</td><td>實體表名(<code>FROM TRP805A …</code>)</td><td><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI716_PO.cs:64-95</code></td></tr><tr><td>PO 的 <code>LoadDataSet</code> 第三參</td><td><strong>typed DataSet 的表名,從型別取,不要打字串</strong></td><td><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI716_PO.cs:111</code>、<code>:160</code></td></tr><tr><td>Control 的 <code>CustomTransferOracleModelToView</code></td><td>逐表 <code>TransferVDBHelper.TransferTable(view.UIView.X, model.DataEntity.X, …)</code></td><td><code>Dev/ATLAS.OFD.Query/Source/Control/QueryControl.OFD/OFDI716_Ctl.cs:73-97</code></td></tr></tbody></table></div>
+<p>第二處是關鍵,<code>OFDI716</code> 做對了:</p>
+<pre class="code lang-csharp"><code>dbProduct.LoadDataSet(cmd, model.DataEntity, model.DataEntity.TRP805_D.TableName);</code></pre>
+<p><strong>用 <code>model.DataEntity.&lt;表&gt;.TableName</code> 而不是字串常值</strong>,表名打錯會在編譯期紅字,不會變成執行期的「查詢永遠零筆」。 <code>add-screen.md §12</code> 症狀表裡的「查詢永遠零筆,DB 卻有資料」在 I 型就是靠這個寫法擋掉的。</p>
+<p>第三處同理:<code>TransferVDBHelper.TransferTable(view.UIView.TRP805, model.DataEntity.TRP805, base.TransferEVAColumn)</code> 兩邊都是強型別成員,Model 與 View 的表名對不上會編不過。</p>
+<p><strong>驗證</strong>:<code>grep -c "LoadDataSet" &lt;NEW&gt;_PO.cs</code> 要等於 xsd 的表數,而且每處的第三參都必須是 <code>model.DataEntity.&lt;表&gt;.TableName</code>,不可以是字串常值。</p>
+</div></section><section class="sec" data-sec="6-步驟五-查詢條件怎麼組-參數化-禁字串串接"><h2 id="6-步驟五-查詢條件怎麼組-參數化-禁字串串接"><button class="tg" aria-label="收合/展開" type="button"></button>6. 步驟五:查詢條件怎麼組 —— 參數化,禁字串串接</h2><div class="sec-body">
+<figure><svg viewBox="0 0 1010 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="I 查詢畫面的查詢流程:UI 驗證與組條件、過 Remoting 的三層、PO 參數化查詢、回到 UI 的換頁與匯出"><defs><marker id="ah_query_flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 按查詢之前 —— 全部在 UI</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="62" text-anchor="middle">DoValidate 起迄</text>
+<text class="t2" x="145" y="82" text-anchor="middle">起大於迄要擋</text>
+</g><g class="bx accent">
+<rect x="300" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="62" text-anchor="middle">至少一個條件</text>
+<text class="t2" x="425" y="82" text-anchor="middle">不擋就全表掃</text>
+</g><g class="bx accent">
+<rect x="580" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="62" text-anchor="middle">Parameters 命名</text>
+<text class="t2" x="695" y="82" text-anchor="middle">與 PO 端字串一致</text>
+</g><g class="bx dash">
+<rect x="840" y="40" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="62" text-anchor="middle">起空補迄</text>
+<text class="t2" x="915" y="82" text-anchor="middle">Leave 事件</text>
+</g><path class="ar" d="M 270 68 L 300 68" marker-end="url(#ah_query_flow)"/><path class="ar" d="M 550 68 L 580 68" marker-end="url(#ah_query_flow)"/><path class="ar lnk" d="M 810 68 L 840 68"/><text class="lane" x="20" y="130">② 過 Remoting 到伺服端 —— 三層都是薄的</text><g class="bx dash">
+<rect x="20" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="166" text-anchor="middle">Pxy.Query</text>
+<text class="t2" x="145" y="186" text-anchor="middle">try / catch 包起來</text>
+</g><g class="bx dash">
+<rect x="300" y="144" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="166" text-anchor="middle">Ctl.Select</text>
+<text class="t2" x="425" y="186" text-anchor="middle">ExecPOActionToViewVDB</text>
+</g><g class="bx accent">
+<rect x="580" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="166" text-anchor="middle">PO.GetQuery</text>
+<text class="t2" x="695" y="186" text-anchor="middle">唯一要自己寫的</text>
+</g><g class="bx accent">
+<rect x="840" y="144" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="166" text-anchor="middle">例外回 Result</text>
+<text class="t2" x="915" y="186" text-anchor="middle">不可吞成空字串</text>
+</g><path class="ar" d="M 145 96 L 145 144" marker-end="url(#ah_query_flow)"/><path class="ar" d="M 270 172 L 300 172" marker-end="url(#ah_query_flow)"/><path class="ar" d="M 550 172 L 580 172" marker-end="url(#ah_query_flow)"/><path class="ar" d="M 810 172 L 840 172" marker-end="url(#ah_query_flow)"/><text class="lane" x="20" y="234">③ PO 內部 —— 參數化是唯一正確寫法</text><g class="bx accent">
+<rect x="20" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="270" text-anchor="middle">SQL 用 :佔位</text>
+<text class="t2" x="145" y="290" text-anchor="middle">禁止串使用者輸入</text>
+</g><g class="bx accent">
+<rect x="300" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="270" text-anchor="middle">FindByName 再綁</text>
+<text class="t2" x="425" y="290" text-anchor="middle">null 就不加條件</text>
+</g><g class="bx accent">
+<rect x="580" y="248" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="270" text-anchor="middle">LoadDataSet 指定表</text>
+<text class="t2" x="695" y="290" text-anchor="middle">表名取自 DataEntity</text>
+</g><g class="bx accent">
+<rect x="840" y="248" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="270" text-anchor="middle">0 筆也要回</text>
+<text class="t2" x="915" y="290" text-anchor="middle">AddResultRow</text>
+</g><path class="ar" d="M 145 200 L 145 248" marker-end="url(#ah_query_flow)"/><path class="ar" d="M 270 276 L 300 276" marker-end="url(#ah_query_flow)"/><path class="ar" d="M 550 276 L 580 276" marker-end="url(#ah_query_flow)"/><path class="ar" d="M 810 276 L 840 276" marker-end="url(#ah_query_flow)"/><text class="lane" x="20" y="338">④ 回到 UI —— 換頁、明細、匯出</text><g class="bx accent">
+<rect x="20" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="374" text-anchor="middle">Ctl 逐表 Transfer</text>
+<text class="t2" x="145" y="394" text-anchor="middle">沒有 MasterTable</text>
+</g><g class="bx dash">
+<rect x="300" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="374" text-anchor="middle">ChangeTabPage</text>
+<text class="t2" x="425" y="394" text-anchor="middle">查詢條件頁鎖住</text>
+</g><g class="bx">
+<rect x="580" y="352" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="695" y="374" text-anchor="middle">明細在前端過濾</text>
+<text class="t2" x="695" y="394" text-anchor="middle">DataTable.Select</text>
+</g><g class="bx dash">
+<rect x="840" y="352" rx="10" ry="10" width="150" height="56"/>
+<text class="t1" x="915" y="374" text-anchor="middle">ExportGrid</text>
+<text class="t2" x="915" y="394" text-anchor="middle">匯出指哪張</text>
+</g><path class="ar" d="M 145 304 L 145 352" marker-end="url(#ah_query_flow)"/><path class="ar" d="M 270 380 L 300 380" marker-end="url(#ah_query_flow)"/><path class="ar" d="M 550 380 L 580 380" marker-end="url(#ah_query_flow)"/><path class="ar lnk" d="M 810 380 L 840 380"/></svg><figcaption>圖 2 查詢流程。橘色實框=自己要寫對的地方。整條路徑上沒有任何寫入,所以出錯的樣子一律是「查不到」或「查太多」,不會報錯 —— 這就是 I 難查的原因。</figcaption></figure>
+<h3 id="6-1-現況-兩種寫法並存-舊的那種是全庫最常見的缺陷型">6.1 現況:兩種寫法並存,舊的那種是全庫最常見的缺陷型</h3>
+<p><code>architecture.md §4.3</code> 已定調:參數化在 ATLAS「做了一半」。查詢類尤其嚴重——<code>CASI001</code> 的 11 個查詢條件<strong>全部是字串串接</strong>(<code>modules/cas.md §5.2</code>),而且串出來的 8 處起迄條件寫成 <code>&gt; =</code>(中間有空白),<code>modules/cas.md §5.3</code> 判定那是壞的 SQL。</p>
+<p><code>OFDI716</code> 是對照組,它是參數化的:</p>
+<pre class="code lang-csharp"><code>WHERE TRP805A.TRANS_DATE &gt;=:TRANS_DATE_ST
+  AND TRP805A.TRANS_DATE &lt;=:TRANS_DATE_END
+  AND (OFD081V.FUND_ID IN (SELECT * FROM TABLE(F_FormatStringToTable(:FUND_ID))))</code></pre>
+<p><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI716_PO.cs:90-95</code>,綁定在 <code>:99-108</code>。</p>
+<h3 id="6-2-改法-四條規則">6.2 改法:四條規則</h3>
+<ol><li><strong>SQL 裡一律用 <code>:名稱</code> 佔位,值走 <code>AddInParameter</code>。</strong> <code>`csharp if (model.Utility.Parameters.FindByName("TRANS_DATE_ST") != null) dbProduct.AddInParameter(cmd, "TRANS_DATE_ST", OracleDbType.Varchar2, Convert.ToString(model.Utility.Parameters.FindByName("TRANS_DATE_ST").Value));</code><code> </code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI716_PO.cs:101-104`。</li><li><strong>多值條件用 TVF 把字串拆開,不要組 <code>IN ('a','b','c')</code>。</strong><code>F_FormatStringToTable(:FUND_ID)</code> 收一個逗號分隔字串,UI 端把勾選的代碼串成 <code>"A,B,C"</code> 再送(<code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/OFDI716.cs:86-93</code>)。</li><li><strong>參數名要跟 UI 的 <code>AddParametersRow</code> 字串一模一樣</strong>(<code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/OFDI716.cs:98-102</code>)。又一個靠字串對上的跨層綁定,打錯不紅字、條件靜靜不生效。</li><li><strong><code>FindByName(…) != null</code> 才綁。</strong>參數不存在就不加該條件——但這也是 <code>CASI001</code> 那顆雷的來源(<a class="sec" href="#6-3-條件不存在時會靜默放大查詢範圍">§6.3</a>),所以<strong>「條件不存在」的語意要在 SQL 裡先想清楚</strong>。</li></ol>
+<h3 id="6-3-條件不存在時會靜默放大查詢範圍">6.3 ⚠ 條件不存在時會靜默放大查詢範圍</h3>
+<p><code>CASI001</code> 的權限條件靠 UI 端取員工代號:取不到就不加 <code>QUERY_EMP_NO</code> 參數,而 PO 端沒有「參數不存在就擋下」的分支,<strong>結果是唯讀畫面的資料範圍從「自己」放大到「全部」,而且無聲無息</strong>(<code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASI001.cs:135-136</code> 與 <code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASI001_PO.cs:206-207</code>,<code>modules/cas.md §5.3</code>)。</p>
+<p><strong>規則:凡是「限縮資料範圍」的條件(權限、機構、幣別),參數不存在時一律回零筆或丟例外,不可以當成沒有條件。</strong> 只有「使用者選填的篩選條件」才適用第 4 條的 <code>!= null</code> 寫法。</p>
+<h3 id="6-4-現況-五種會靜默濾掉資料的寫法-都不要抄">6.4 現況:五種會靜默濾掉資料的寫法,都不要抄</h3>
+<p><code>modules/cas.md §5.3</code> 把 <code>CASI001</code> 的六個靜默過濾逐一拆過,其中五種是通用的:</p>
+<div class="tw"><table><thead><tr><th>寫法</th><th>後果</th><th>錨點</th></tr></thead><tbody><tr><td>硬編的 <code>WHERE X = '3'</code>,畫面上沒有對應欄位</td><td>那一類資料<strong>永遠查不到</strong>,而且沒有提示</td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASI001_PO.cs:185-186</code></td></tr><tr><td>權限白名單寫死員工代號</td><td>換人要改 code 重編重部署〔客戶特定〕</td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASI001_PO.cs:206-207</code></td></tr><tr><td>日期當字串比</td><td>只要有一筆存成別的格式就落在區間外</td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASI001_PO.cs:329</code>、<code>:345</code></td></tr><tr><td>代碼說明 join 的分類碼寫死</td><td>分類碼一改,說明欄整片變空但主檔還在</td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASI001_PO.cs:152-183</code></td></tr><tr><td>比較運算子中間有空白(<code>&gt; =</code>)</td><td><strong>假設</strong>整段 SQL 語法錯,被 catch 吞成「執行失敗,請檢查」</td><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASI001_PO.cs:219</code></td></tr></tbody></table></div>
+<p>最後一條標<strong>假設</strong>:依據是 SQL 標準與 Oracle 詞法規則,<strong>無法在本機驗證</strong>,要連 DB 才能確認。同樣寫法在全庫只出現在四個檔,全部是同一份查詢樣板的後代。</p>
+<h3 id="6-5-改法-查無資料要回得明確">6.5 改法:查無資料要回得明確</h3>
+<pre class="code lang-csharp"><code>i = model.DataEntity.TRP805_D.Rows.Count;
+model.Utility.Result.Clear();
+model.Utility.Result.AddResultRow(i != 0, i, "");</code></pre>
+<p><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI716_PO.cs:162-173</code>(原文是 <code>if / else</code> 兩段)。例外時 <code>AddResultRow(false, 0, ex.Message)</code>(<code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI716_PO.cs:175-179</code>)——<strong>訊息不可是空字串</strong>,理由與批次相同(<code>add-batch.md §6.5</code>)。</p>
+<h3 id="6-6-驗證">6.6 驗證</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>查什麼</th><th>怎麼查</th></tr></thead><tbody><tr><td>1</td><td>有沒有字串串接</td><td><code>grep -n "+ \"'\"" &lt;NEW&gt;_PO.cs</code> 應回 0;SQL 裡的 <code>:名稱</code> 個數要等於 <code>AddInParameter</code> 的個數</td></tr><tr><td>2</td><td>條件名有沒有對上</td><td>PO 的 <code>FindByName("X")</code> 與 UI 的 <code>AddParametersRow("X", …)</code> 逐一比對;再查 <code>AddResultRow(false</code> 的第三參有沒有內容</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="7-步驟六-control-與-formproxy"><h2 id="7-步驟六-control-與-formproxy"><button class="tg" aria-label="收合/展開" type="button"></button>7. 步驟六:Control 與 FormProxy</h2><div class="sec-body">
+<h3 id="7-1-control-比-m-少一個覆寫-多兩個-notimplementedexception">7.1 Control:比 M 少一個覆寫,多兩個 <code>NotImplementedException</code></h3>
+<p><code>Dev/ATLAS.OFD.Query/Source/Control/QueryControl.OFD/OFDI716_Ctl.cs</code> 全檔 123 行,四件:</p>
+<div class="tw"><table><thead><tr><th>件</th><th>錨點</th><th>與 M 的差別</th></tr></thead><tbody><tr><td><code>InitializeDataAccessPool()</code></td><td><code>Dev/ATLAS.OFD.Query/Source/Control/QueryControl.OFD/OFDI716_Ctl.cs:27-30</code></td><td>一樣</td></tr><tr><td><strong>沒有 <code>InitializeVDBTypes()</code></strong></td><td>—</td><td><strong>M 有,I 沒有</strong>。43 支 Control 裡只有 <code>Dev/ATLAS.OFD.Query/Source/Control/QueryControl.OFD/OFDI199_Ctl.cs</code> 有</td></tr><tr><td>業務入口 <code>Select</code> / <code>GetMaintainData</code></td><td><code>Dev/ATLAS.OFD.Query/Source/Control/QueryControl.OFD/OFDI716_Ctl.cs:51-68</code></td><td>各一行 <code>ExecPOActionToViewVDB</code></td></tr><tr><td><code>CustomTransfer*</code> 四件套</td><td><code>Dev/ATLAS.OFD.Query/Source/Control/QueryControl.OFD/OFDI716_Ctl.cs:73-105</code></td><td><strong>Oracle 兩個逐表 <code>TransferTable</code>,SQL 兩個 <code>throw new NotImplementedException()</code></strong></td></tr></tbody></table></div>
+<p><code>CustomTransferSQLModelToView</code> / <code>CustomTransferViewToSQLModel</code> 直接丟 <code>NotImplementedException</code> 是<strong>正確做法</strong>,不是缺陷——這套系統的 I 型只跑 Oracle(<code>architecture.md §4.6</code>)。</p>
+<h3 id="7-2-formproxy-覆寫的是-query-不是-initializecontrol">7.2 FormProxy:覆寫的是 <code>Query</code>,不是 <code>InitializeControl</code></h3>
+<p><code>Dev/ATLAS.OFD.Query/Source/FormProxy/QueryFormProxy.OFD/OFDI716_Pxy.cs</code> 全檔 80 行,兩個覆寫:</p>
+<pre class="code lang-csharp"><code>public override BasicViewVDB Query(BasicViewVDB view)
+{
+    try { … return m_Ctl.Select(m_vdb); }
+    catch (Exception ex)
+    {
+        CommonExceptionBlocker.HandleFormProxyException(ex);
+        BasicViewVDB ExceptionVDB = new BasicViewVDB();
+        ExceptionVDB.Util.Result.AddResultRow(false, 0, ExceptionMessage.ServerSideError);
+        return ExceptionVDB;
+    }
+}</code></pre>
+<p><code>Dev/ATLAS.OFD.Query/Source/FormProxy/QueryFormProxy.OFD/OFDI716_Pxy.cs:36-52</code>,另一個是 <code>GetMaintainData</code>(<code>:59-74</code>)。 <strong>不要覆寫 <code>Add</code> / <code>Update</code> / <code>Delete</code></strong>——沒有寫入就沒有這三個入口,留著等於給人一條繞過設計的路。</p>
+<p><strong>驗證</strong>:<code>grep -c "InitializeVDBTypes" &lt;NEW&gt;_Ctl.cs</code> 應回 0;<code>grep -c "InitializeDataAccessPool" &lt;NEW&gt;_Ctl.cs</code> 應回 1。</p>
+</div></section><section class="sec" data-sec="8-步驟七-ui"><h2 id="8-步驟七-ui"><button class="tg" aria-label="收合/展開" type="button"></button>8. 步驟七:UI</h2><div class="sec-body">
+<h3 id="8-1-現況-基底有兩種-執行鈕要自己關掉">8.1 現況:基底有兩種,執行鈕要自己關掉</h3>
+<p><code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/</code> 的 58 個 <code>.cs</code>(含彈出子視窗,已排除 Designer)基底分布: <code>xOneStepProcessForm</code> <strong>42</strong> · <code>xQueryForm</code> 8 · <code>yPopUpForm</code> 7(彈出挑選視窗)· <code>xMaintainForm</code> 1。</p>
+<p><strong>新畫面用 <code>xOneStepProcessForm</code></strong>,跟 B 批次同一個基底(<code>architecture.md §6.4</code> 講的「I 與 B 是同一份樣板」)。它自帶查詢鈕與執行鈕,所以 I 要做兩件事:</p>
+<pre class="code lang-csharp"><code>this.ButtonExecuteEnable = false;                  // FormInitial 就關掉
+private void &lt;NEW&gt;_BeforeExecuteButtonClicked(object sender, CancelEventArgs e)
+{ e.Cancel = true; return; }                       // 保險再擋一次</code></pre>
+<p><code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/OFDI716.cs:51</code> 與 <code>:197-202</code>。</p>
+<p><code>FormInitial</code> 的四件與 M 相同(<code>add-screen.md §8.2</code>),差別是<strong>沒有四眼工具列要掛</strong>: <code>TabPages</code> / <code>ProcessVDB</code> / <code>FormProxy</code> / grid 的 <code>DataSource</code>(<code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/OFDI716.cs:35-63</code>)。</p>
+<p>grid 一律設成唯讀:<code>new GridLayoutManager(new GridLayoutReadOnly())</code>(<code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/OFDI716.cs:43-46</code>);要讓使用者勾選的那張才用 <code>GridLayoutUpdateOnly</code>(<code>:41-42</code>)。欄位白名單同 M:<code>UltraGridInitialHelper.SetupUltraGridShowColumns</code>(<code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/OFDI716.cs:147</code>),另外 I 常多掛一個二次篩選 <code>UltraGridInitialHelper.SetupUltraGridFilter</code>(<code>:61-62</code>)。</p>
+<h3 id="8-2-改法-分頁-條件頁-結果頁">8.2 改法:分頁 = 條件頁 + 結果頁</h3>
+<pre class="code lang-csharp"><code>this.TabPages = 2;                       // FormInitial
+base.ChangeTabPage(1);                   // 查完自動翻到結果頁
+this.ButtonSearchEnable = false;         // 查詢後鎖住查詢鈕
+this.udatTRANS_DATE_ST.Enabled = false;  // 條件欄位一併鎖住</code></pre>
+<p><code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/OFDI716.cs:37</code> 與 <code>:204-220</code>,解鎖在 <code>RefreshPage</code>(<code>:222-244</code>)。</p>
+<p><strong>這是 ATLAS 的「分頁」,不是資料庫分頁。</strong>整份結果一次撈回用戶端,沒有 <code>ROWNUM</code> / <code>OFFSET</code> 這類分批。主明細的「點一列帶明細」也在前端做——<code>DataTable.Select(...)</code> 過濾已經撈回來的明細,不再打伺服器(<code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/OFDI716.cs:110-122</code> 與 <code>:306-317</code>)。</p>
+<blockquote><p>⚠ <strong>所以查詢條件一定要能有效限縮筆數。</strong>沒有「至少填一個條件」的檢核時,使用者按下去就是全表撈回用戶端記憶體。<code>CASI001</code> 就少了這條檢核(<code>modules/cas.md §5.2</code>)。</p></blockquote>
+<h3 id="8-3-改法-匯出只要一行">8.3 改法:匯出只要一行</h3>
+<pre class="code lang-csharp"><code>private void ugrdMaster_Enter(object sender, EventArgs e) { this.ExportGrid = ugrdMaster; }
+private void ugrdDetail_Enter(object sender, EventArgs e) { this.ExportGrid = ugrdDetail; }</code></pre>
+<p><code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/OFDI716.cs:296-304</code>。 <code>ExportGrid</code> 是基底 <code>xOneStepProcessForm</code> 的屬性(<strong>無原始碼,從呼叫端反推</strong>),匯出鈕匯的就是它指到的那張 grid;<strong>兩張 grid 就掛兩個 <code>Enter</code> 事件</strong>,讓游標在哪張就匯哪張。</p>
+<p>要自己產 Excel 或特殊格式的才寫程式(<code>OFDI911</code> 那型:PO 提供 <code>GetExcelData</code> 回一整個 <code>DataSet</code>,<code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI911_PO.cs:53-94</code>),<strong>能用 <code>ExportGrid</code> 就不要自己寫</strong>。</p>
+<h3 id="8-4-改法-ui-端的驗證">8.4 改法:UI 端的驗證</h3>
+<p><code>DoValidate</code> 的形狀與 M 相同(<code>add-screen.md §8.6</code>),I 特有的兩條:<strong>每組起迄都要檢查「起 &gt; 迄」</strong>(<code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/OFDI716.cs:260-288</code>),並在 <code>Leave</code> 事件補「只填起就自動帶迄」(<code>:246-250</code>、<code>:319-323</code>);<strong>要有「至少填一個條件」的檢核</strong>(<a class="sec" href="#8-2-改法-分頁-條件頁-結果頁">§8.2</a> 的警告),<code>OFDI716</code> 的版本是「至少勾選一筆基金代碼」(<code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/OFDI716.cs:75-78</code>、<code>:280-284</code>)。</p>
+</div></section><section class="sec" data-sec="9-編譯與部署"><h2 id="9-編譯與部署"><button class="tg" aria-label="收合/展開" type="button"></button>9. 編譯與部署</h2><div class="sec-body">
+<p>六個 csproj 全部在 <code>.Query</code> 專案底下,加什麼與 M 完全相同(<code>add-screen.md §10.1</code>),只是專案名多了 <code>Query</code> 前綴: <code>QueryDataEntity.&lt;MOD&gt;</code> / <code>QueryUIEntity.&lt;MOD&gt;</code> 各 <code>Compile</code> × 2 + <code>None</code> × 3;<code>QueryPO</code> / <code>QueryControl</code> / <code>QueryFormProxy</code> 各 <code>Compile</code> × 1;<code>QueryUI</code> <code>Compile</code> × 2 + <code>EmbeddedResource</code> × 1。</p>
+<p>重編順序與部署照 <code>add-column.md §9.1</code>、<code>add-column.md §9.2</code> 與 <code>deploy.md §2</code>——<code>.Query</code> 的六個組件在部署對照表裡對應到同樣的欄位(<code>QueryUI.&lt;MOD&gt;</code> 佈客戶端、<code>QueryUIEntity.&lt;MOD&gt;</code> 兩端都佈、其餘佈伺服端)。</p>
+<blockquote><p><strong>〔假設〕缺:PTPFBlock DLL。</strong>整個 <a class="sec" href="#9-編譯與部署">§9</a> 未實測(<code>architecture.md 附錄 C.1</code>)。csproj 段落形狀來自 <code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/QueryPO.OFD.csproj</code> 原文; 部署對照表的 <code>.Query</code> 那一列是從 <code>deploy.md §2</code> 的 <code>&lt;MOD&gt;</code> 通則推的,<strong><code>deploy.md §2</code> 本身沒有單獨列 <code>.Query</code></strong>。</p></blockquote>
+</div></section><section class="sec" data-sec="10-驗證清單"><h2 id="10-驗證清單"><button class="tg" aria-label="收合/展開" type="button"></button>10. 驗證清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>#</th><th>動作</th><th>過的條件</th><th>沒過回去做</th></tr></thead><tbody><tr><td>1</td><td><code>atlas_scan.py --screen &lt;NEW&gt;</code></td><td>六層都有路徑;「主檔 —」是正常的</td><td><a class="sec" href="#3-步驟二-兩份-xsd-要建-但不放四眼欄位">§3</a> <a class="sec" href="#9-編譯與部署">§9</a></td></tr><tr><td>2</td><td>確認 PO 基底</td><td>印出來是 <code>BaseEVADaoPO</code> 或只有 <code>I&lt;NEW&gt;_PO</code></td><td><a class="sec" href="#4-2-改法-二選一-怎麼選">§4.2</a></td></tr><tr><td>3</td><td>依 <code>add-column.md §9.1</code> 順序重編六個專案</td><td>六個都成功</td><td><a class="sec" href="#9-編譯與部署">§9</a></td></tr><tr><td>4</td><td>開畫面</td><td>版面出得來、<strong>執行鈕是灰的</strong></td><td><a class="sec" href="#8-1-現況-基底有兩種-執行鈕要自己關掉">§8.1</a></td></tr><tr><td>5</td><td>什麼條件都不填按查詢</td><td>被擋住並提示「至少…」</td><td><a class="sec" href="#8-4-改法-ui-端的驗證">§8.4</a></td></tr><tr><td>6</td><td>只填「迄」不填「起」;起 &gt; 迄</td><td>兩者都被擋住</td><td><a class="sec" href="#8-4-改法-ui-端的驗證">§8.4</a></td></tr><tr><td>8</td><td>正常條件查詢</td><td>有資料;自動翻到結果頁;條件欄位鎖住</td><td><a class="sec" href="#8-2-改法-分頁-條件頁-結果頁">§8.2</a></td></tr><tr><td>9</td><td>查無資料的條件</td><td>回「查無資料」而不是空白訊息</td><td><a class="sec" href="#6-5-改法-查無資料要回得明確">§6.5</a></td></tr><tr><td>10</td><td>點主檔某一列,再把游標留在明細 grid 按匯出</td><td>明細 grid 跟著換;匯出的是明細不是主檔</td><td><a class="sec" href="#8-2-改法-分頁-條件頁-結果頁">§8.2</a> <a class="sec" href="#8-3-改法-匯出只要一行">§8.3</a></td></tr><tr><td>11</td><td>條件輸入含單引號的值</td><td><strong>不可</strong>出現 SQL 語法錯</td><td><a class="sec" href="#6-2-改法-四條規則">§6.2</a></td></tr></tbody></table></div>
+<p><strong>第 9、11 最容易失敗</strong>:前者驗例外路徑,後者驗參數化。</p>
+</div></section><section class="sec" data-sec="11-常見錯誤與症狀"><h2 id="11-常見錯誤與症狀"><button class="tg" aria-label="收合/展開" type="button"></button>11. 常見錯誤與症狀</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>症狀</th><th>病因</th><th>回去做</th></tr></thead><tbody><tr><td><strong>開畫面就 <code>NullReferenceException</code></strong></td><td>PO 繼承了 <code>BasicEVAPO</code>,<code>dbTA</code> 恆為 null</td><td><a class="sec" href="#4-1-現況-三種並存-第三種是地雷">§4.1</a>、<code>add-screen.md §5.7</code></td></tr><tr><td><strong>編譯過,執行期找不到 <code>&lt;NEW&gt;ViewVDB</code></strong></td><td>xsd 進了資料夾但 csproj 沒掛 <code>Generator</code></td><td><a class="sec" href="#3-1-現況-xsd-一份都不能省">§3.1</a>、<code>add-screen.md §3.5</code></td></tr><tr><td><strong>查詢永遠零筆,DB 卻有資料</strong></td><td><code>LoadDataSet</code> 的表名打成字串常值且拼錯</td><td><a class="sec" href="#5-2-改法-那一步被拆成三處具名字串">§5.2</a></td></tr><tr><td><strong><code>ORA-00904</code>,欄名是 <code>STATUS</code> 或 <code>DATAID</code></strong></td><td>SQL 抄了 M 的 <code>AllEVAColumnsForSelect</code></td><td><a class="sec" href="#3-2-改法-四眼那組欄位不要放">§3.2</a></td></tr><tr><td><strong>查詢條件填了沒作用</strong></td><td>UI 的 <code>AddParametersRow</code> 與 PO 的 <code>FindByName</code> 字串不同</td><td><a class="sec" href="#6-2-改法-四條規則">§6.2</a> 第 3 條</td></tr><tr><td><strong>某類資料永遠查不到 / 某人看得到全部人的資料</strong></td><td>SQL 裡有畫面上看不到的硬條件;或限縮條件的參數取不到時被當成「沒有條件」</td><td><a class="sec" href="#6-3-條件不存在時會靜默放大查詢範圍">§6.3</a> <a class="sec" href="#6-4-現況-五種會靜默濾掉資料的寫法-都不要抄">§6.4</a></td></tr><tr><td><strong>代碼有值但說明欄空白</strong></td><td><code>LEFT JOIN</code> 的分類碼寫死,值域改了</td><td><a class="sec" href="#6-4-現況-五種會靜默濾掉資料的寫法-都不要抄">§6.4</a> 第 4 列</td></tr><tr><td><strong>輸入含單引號的值就「執行失敗,請檢查」</strong></td><td>字串串接沒跳脫</td><td><a class="sec" href="#6-2-改法-四條規則">§6.2</a></td></tr><tr><td><strong>匯出永遠匯主檔;筆數一多畫面就卡住</strong></td><td>只掛了一個 grid 的 <code>Enter</code> 事件;或沒有「至少填一個條件」,全表撈回用戶端</td><td><a class="sec" href="#8-2-改法-分頁-條件頁-結果頁">§8.2</a> <a class="sec" href="#8-3-改法-匯出只要一行">§8.3</a></td></tr><tr><td><strong>掃描器說缺 PO</strong></td><td>該專案用 <code>&lt;代號&gt;OracleDao.cs</code> 命名</td><td><a class="sec" href="#4-3-query-專案的-po-命名有兩種">§4.3</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-a-本手冊引用的檔案清單"><h2 id="附錄-a-本手冊引用的檔案清單"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 A 本手冊引用的檔案清單</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>檔</th><th>錨點</th><th>用在</th></tr></thead><tbody><tr><td><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI716_PO.cs</code></td><td><code>:21</code> <code>:22</code> <code>:64-95</code> <code>:90-95</code> <code>:99-108</code> <code>:101-104</code> <code>:111</code> <code>:160</code> <code>:162-173</code> <code>:175-179</code></td><td><a class="sec" href="#4-步驟三-po-基底選哪一個-實查-43-支">§4</a> <a class="sec" href="#5-步驟四-沒有-mastertable-宣告-那-xtablemapping-那一步變成什麼">§5</a> <a class="sec" href="#6-步驟五-查詢條件怎麼組-參數化-禁字串串接">§6</a></td></tr><tr><td><code>Dev/ATLAS.OFD.Query/Source/Control/QueryControl.OFD/OFDI716_Ctl.cs</code></td><td><code>:27-30</code> <code>:51-68</code> <code>:73-97</code> <code>:73-105</code></td><td><a class="sec" href="#5-2-改法-那一步被拆成三處具名字串">§5.2</a> <a class="sec" href="#7-1-control-比-m-少一個覆寫-多兩個-notimplementedexception">§7.1</a></td></tr><tr><td><code>Dev/ATLAS.OFD.Query/Source/FormProxy/QueryFormProxy.OFD/OFDI716_Pxy.cs</code></td><td><code>:36-52</code> <code>:59-74</code></td><td><a class="sec" href="#7-2-formproxy-覆寫的是-query-不是-initializecontrol">§7.2</a></td></tr><tr><td><code>Dev/ATLAS.OFD.Query/Source/UI/QueryUI.OFD/OFDI716.cs</code></td><td><code>:35-63</code> <code>:37</code> <code>:41-46</code> <code>:51</code> <code>:61-62</code> <code>:75-78</code> <code>:86-93</code> <code>:98-102</code> <code>:110-122</code> <code>:147</code> <code>:197-202</code> <code>:204-220</code> <code>:222-244</code> <code>:246-250</code> <code>:260-288</code> <code>:280-284</code> <code>:296-304</code> <code>:306-317</code> <code>:319-323</code></td><td><a class="sec" href="#6-步驟五-查詢條件怎麼組-參數化-禁字串串接">§6</a> <a class="sec" href="#8-步驟七-ui">§8</a></td></tr><tr><td><code>Dev/ATLAS.OFD.Query/Source/Entity/QueryDataEntity.OFD/OFDI716Model.xsd</code> · <code>Dev/ATLAS.OFD.Query/Source/Entity/QueryUIEntity.OFD/OFDI716View.xsd</code></td><td>全檔</td><td><a class="sec" href="#3-步驟二-兩份-xsd-要建-但不放四眼欄位">§3</a></td></tr><tr><td><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/QueryPO.OFD.csproj</code></td><td>全檔</td><td><a class="sec" href="#9-編譯與部署">§9</a></td></tr><tr><td><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI911_PO.cs</code></td><td><code>:27</code> <code>:28</code> <code>:30</code> <code>:53-94</code></td><td><a class="sec" href="#4-1-現況-三種並存-第三種是地雷">§4.1</a> <a class="sec" href="#8-3-改法-匯出只要一行">§8.3</a></td></tr><tr><td><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI719_PO.cs</code></td><td><code>:11</code> <code>:30</code></td><td><a class="sec" href="#4-1-現況-三種並存-第三種是地雷">§4.1</a></td></tr><tr><td><code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI059_PO.cs</code> · <code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/OFDI199_PO.cs</code> · <code>Dev/ATLAS.OFD.Query/Source/Control/QueryControl.OFD/OFDI199_Ctl.cs</code></td><td><code>:17</code> / <code>:39</code> / 全檔</td><td><a class="sec" href="#5-1-現況-43-支裡只有-2-支宣告">§5.1</a> <a class="sec" href="#7-1-control-比-m-少一個覆寫-多兩個-notimplementedexception">§7.1</a></td></tr><tr><td><code>Dev/ATLAS.EC.Query/Source/PO/QueryPO.EC/Oracle/OFDI641OracleDao.cs</code> · <code>Dev/ATLAS.OFDI/Source/PO/PO.OFDI/OFDI011_PO.cs</code></td><td>全檔</td><td><a class="sec" href="#2-1-現況-i-畫面住在-query-專案">§2.1</a> <a class="sec" href="#4-3-query-專案的-po-命名有兩種">§4.3</a></td></tr><tr><td><code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM125A_PO.cs</code></td><td><code>:28</code> <code>:30</code></td><td><a class="sec" href="#4-2-改法-二選一-怎麼選">§4.2</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/PO/PO.CAS/CASI001_PO.cs</code></td><td><code>:152-183</code> <code>:185-186</code> <code>:206-207</code> <code>:219</code> <code>:329</code> <code>:345</code></td><td><a class="sec" href="#6-1-現況-兩種寫法並存-舊的那種是全庫最常見的缺陷型">§6.1</a> <a class="sec" href="#6-3-條件不存在時會靜默放大查詢範圍">§6.3</a> <a class="sec" href="#6-4-現況-五種會靜默濾掉資料的寫法-都不要抄">§6.4</a></td></tr><tr><td><code>Dev/ATLAS.CAS/Source/UI/UI.CAS/CASI001.cs</code> · <code>Dev/ATLAS.CAS/Source/Entity/DataEntity.CAS/CASM006Model.xsd</code></td><td><code>:135-136</code> / 全檔</td><td><a class="sec" href="#3-2-改法-四眼那組欄位不要放">§3.2</a> <a class="sec" href="#6-3-條件不存在時會靜默放大查詢範圍">§6.3</a></td></tr><tr><td><code>Dev/Common/Source/Utility/TA.ServerUtility/OracleHelper.cs</code></td><td><code>:114-133</code></td><td><a class="sec" href="#3-2-改法-四眼那組欄位不要放">§3.2</a></td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-b-待輸入回填"><h2 id="附錄-b-待輸入回填"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 B 待輸入回填</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>缺什麼</th><th>影響哪幾段</th><th>補進來後要改什麼</th></tr></thead><tbody><tr><td><strong>DB 連線</strong></td><td><a class="sec" href="#6-4-現況-五種會靜默濾掉資料的寫法-都不要抄">§6.4</a> <a class="sec" href="#10-驗證清單">§10</a></td><td><code>&gt; =</code> 那條只能標假設;查詢結果的正確性、日期字串比較的實際資料格式都無法驗</td></tr><tr><td><strong>PTPFBlock DLL</strong></td><td><a class="sec" href="#9-編譯與部署">§9</a> <a class="sec" href="#10-驗證清單">§10</a></td><td>六層重編全未實測</td></tr><tr><td><strong>選單 / 權限表</strong></td><td><a class="sec" href="#2-步驟一-代號與專案">§2</a> <a class="sec" href="#10-驗證清單">§10</a></td><td>新查詢畫面怎麼掛進選單、怎麼授權,與 <code>add-screen.md §9</code> 同一個缺口;<code>CASI001</code> 那種「權限寫死在 SQL」的替代做法也要等這個輸入</td></tr><tr><td><strong><code>deploy.md</code> 的 <code>.Query</code> 專用列</strong></td><td><a class="sec" href="#9-編譯與部署">§9</a></td><td>目前是從 <code>&lt;MOD&gt;</code> 通則推的,補上之後 <a class="sec" href="#9-編譯與部署">§9</a> 改成直接引用</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-c-版本紀錄"><h2 id="附錄-c-版本紀錄"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 C 版本紀錄</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>版本</th><th>日期</th><th>變更</th></tr></thead><tbody><tr><td>v1</td><td>2026-09-15</td><td>初版。以 <code>add-screen.md</code> 為底做差異版;PO 基底分布實測 <code>Dev/ATLAS.OFD.Query/Source/PO/QueryPO.OFD/</code> 全部 43 支,深讀 <code>OFDI716</code> / <code>OFDI911</code> / <code>OFDI719</code> 三支</td></tr></tbody></table></div></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-15 17:56 產生 · 標題 38 · 圖 2 · 表格 16 · 程式錨點 68 · § 連結 80 · 引用檢查：畫面 12（缺 0） · 結果集 1（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

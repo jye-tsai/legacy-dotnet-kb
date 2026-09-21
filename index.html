@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-21">
+<title>ATLAS 知識庫(去識別化版)</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-先讀這份">0. 先讀這份</a>
+<a class="l2" href="#1-我要查-三個離線查詢頁">1. 我要查(三個離線查詢頁)</a>
+<a class="l2" href="#2-我要改">2. 我要改</a>
+<a class="l3" href="#2-1-我要做-x-看哪本">2.1 我要做 X,看哪本</a>
+<a class="l3" href="#2-2-九本手冊">2.2 九本手冊</a>
+<a class="l3" href="#2-3-部署矩陣-縮版">2.3 部署矩陣(縮版)</a>
+<a class="l2" href="#3-我要懂">3. 我要懂</a>
+<a class="l3" href="#3-1-技術總覽">3.1 技術總覽</a>
+<a class="l3" href="#3-2-模組文件-29-篇">3.2 模組文件 29 篇</a>
+<a class="l2" href="#4-這一頁是怎麼來的">4. 這一頁是怎麼來的</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-21</span></div>
+<h1 id="atlas-知識庫">ATLAS 知識庫(去識別化版)</h1>
+<blockquote><p>⚠ <strong>去識別化版本</strong>(2026-09-21 14:33 產生)。客戶識別字樣已替換為中性名稱、程式錨點改為純文字;但<strong>系統結構、畫面代號、表名、錯誤訊息、已知缺陷位置全部保留</strong>——這些與命名無關,公開前請逐頁審閱。去識別化 ≠ 去風險。</p></blockquote>
+<blockquote><p><strong>一個人維護 ATLAS 的入口。</strong>這一頁不講內容,只負責把你送到對的那一份。全部離線可讀,雙擊 <code>.html</code> 即開,不需要起 server、不需要網路。規模:畫面 911 · 實體表 437 · 報表範本 608 · 缺陷 1,682 條 · <strong>兩條死碼線聯集 151 支畫面一按就 NRE</strong>。</p></blockquote>
+<section class="sec" data-sec="0-先讀這份"><h2 id="0-先讀這份"><button class="tg" aria-label="收合/展開" type="button"></button>0. 先讀這份</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>第一份</th><th>為什麼</th></tr></thead><tbody><tr><td><strong><a href="OVERVIEW.html">ATLAS 系統介紹(業務軸)</a></strong></td><td>接手的人讀的第一份。六條業務線從開戶讀到報表,一日作業時序、角色與四眼、模組地圖都在裡面。<strong>軸線是業務,不是程式。</strong></td></tr></tbody></table></div>
+<p><strong>讀序</strong>:<code>OVERVIEW</code> → <code>CHEATSHEET</code>(骨幹速查,可列印)→ <code>architecture</code>(技術通則)→ 自己負責模組的那一篇 → <code>runbooks</code>(要動手時)。</p>
+<div class="tw"><table><thead><tr><th>接著</th><th>一句話</th></tr></thead><tbody><tr><td><a href="CHEATSHEET.html">速查卡 CHEATSHEET</a></td><td>一頁 A4 雙面:代號規則、六層、主明細三處同名、四眼 13 欄、PO 基底黑白名單、部署矩陣、常用指令、已知坑前十型</td></tr><tr><td><a href="TROUBLESHOOT.html">症狀路由表 TROUBLESHOOT</a></td><td>「遇到 X → 先看哪份的哪節」;最後一節列<strong>文件裡還沒有答案</strong>的症狀,省得你白找</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="1-我要查-三個離線查詢頁"><h2 id="1-我要查-三個離線查詢頁"><button class="tg" aria-label="收合/展開" type="button"></button>1. 我要查(三個離線查詢頁)</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>頁</th><th>什麼時候開</th></tr></thead><tbody><tr><td><a href="query.html">畫面 / 表反查 query</a></td><td>手上有一個代號或表名:六層檔案路徑、主明細、<strong>PO 基底(死畫面標紅)</strong>、誰在 SQL 裡讀寫這張表、對應的文件章節</td></tr><tr><td><a href="messages.html">錯誤訊息反查 messages</a></td><td>線上噴了一句中文訊息:反查是哪支程式哪一行丟的。模組篇引用的訊息有意譯的,<strong>要原文以這頁為準</strong></td></tr><tr><td><a href="defects.html">缺陷總表 defects</a></td><td>要動某個模組之前:先看它已知有什麼坑。可依模組 / 畫面 / 嚴重度 / 型別篩選排序</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="2-我要改"><h2 id="2-我要改"><button class="tg" aria-label="收合/展開" type="button"></button>2. 我要改</h2><div class="sec-body">
+<h3 id="2-1-我要做-x-看哪本">2.1 我要做 X,看哪本</h3>
+<div class="tw"><table><thead><tr><th>我要…</th><th>看哪本</th><th>從哪節開始</th></tr></thead><tbody><tr><td>欄位要多一個</td><td><a href="runbooks/add-column.html">add-column</a></td><td><code>§2–§9</code></td></tr><tr><td>欄位改型別或長度</td><td><a href="runbooks/add-column.html">add-column</a></td><td><code>§0 不適用,先問</code></td></tr><tr><td>報表要多印一欄</td><td><a href="runbooks/add-report.html">add-report</a></td><td><code>§2 第一列</code></td></tr><tr><td>報表版面要調</td><td><a href="runbooks/add-report.html">add-report</a></td><td><code>§5</code></td></tr><tr><td>要一支全新的畫面</td><td><a href="runbooks/add-screen.html">add-screen</a></td><td><code>全篇</code></td></tr><tr><td>要一支新的查詢畫面</td><td><a href="runbooks/add-query-screen.html">add-query-screen</a></td><td><code>§1 差異表</code></td></tr><tr><td>要一支新的批次</td><td><a href="runbooks/add-batch.html">add-batch</a></td><td><code>全篇</code></td></tr><tr><td>覆核時要多一條檢核</td><td><a href="runbooks/change-eva-flow.html">change-eva-flow</a></td><td><code>§4.1</code></td></tr><tr><td>新增時要自動帶值 / 流水號</td><td><a href="runbooks/change-eva-flow.html">change-eva-flow</a></td><td><code>§4.2</code></td></tr><tr><td>要加稽核軌跡</td><td><a href="runbooks/change-eva-flow.html">change-eva-flow</a></td><td><code>§4.3</code></td></tr><tr><td>要改 SP / Function / Trigger</td><td><a href="runbooks/change-sp-fn-trigger.html">change-sp-fn-trigger</a></td><td><code>全篇</code></td></tr><tr><td>SP 在資料庫有、repo 沒有</td><td><a href="runbooks/change-sp-fn-trigger.html">change-sp-fn-trigger</a></td><td><code>§2</code></td></tr><tr><td>改完了要送測試 / 正式</td><td><a href="runbooks/deploy.html">deploy</a></td><td><code>§2 對照表</code></td></tr><tr><td>WindowsService 要重裝或改帳號</td><td><a href="runbooks/deploy.html">deploy</a></td><td><code>§5</code></td></tr><tr><td>新人要把環境架起來</td><td><a href="runbooks/build-env.html">build-env</a></td><td><code>§0.1 三個前提</code></td></tr><tr><td>編不過 / 改了沒效果</td><td><a href="runbooks/build-env.html">build-env</a></td><td><code>§8 症狀表</code></td></tr></tbody></table></div>
+<h3 id="2-2-九本手冊">2.2 九本手冊</h3>
+<div class="tw"><table><thead><tr><th>手冊</th><th>一句話</th><th>行數</th></tr></thead><tbody><tr><td><a href="runbooks/add-column.html">add-column</a></td><td>最常用。在既有畫面上加一個欄位</td><td>591</td></tr><tr><td><a href="runbooks/add-screen.html">add-screen</a></td><td>從零建一支 M 維護畫面</td><td>752</td></tr><tr><td><a href="runbooks/add-query-screen.html">add-query-screen</a></td><td>從零建一支 I 查詢畫面(M 的減法版)</td><td>452</td></tr><tr><td><a href="runbooks/add-batch.html">add-batch</a></td><td>從零建一支 B 批次</td><td>652</td></tr><tr><td><a href="runbooks/change-sp-fn-trigger.html">change-sp-fn-trigger</a></td><td>加 / 改 PL/SQL 物件</td><td>499</td></tr><tr><td><a href="runbooks/add-report.html">add-report</a></td><td>加 / 改 Crystal 報表</td><td>292</td></tr><tr><td><a href="runbooks/change-eva-flow.html">change-eva-flow</a></td><td>改四眼流程:加檢核、加稽核、改預設值</td><td>272</td></tr><tr><td><a href="runbooks/deploy.html">deploy</a></td><td>部署:改了什麼要佈哪些</td><td>354</td></tr><tr><td><a href="runbooks/build-env.html">build-env</a></td><td>建置環境:新人第一天</td><td>224</td></tr></tbody></table></div>
+<h3 id="2-3-部署矩陣-縮版">2.3 部署矩陣(縮版)</h3>
+<p>一句話:<strong>改 UI 佈客戶端,改其餘五層佈伺服端,<code>View.xsd</code> 兩端都要。</strong>完整表在 <a href="runbooks/deploy.html">部署手冊</a> <a class="sec" href="#2-我要改">§2</a>,展開說明在 <a href="CHEATSHEET.html">速查卡</a> §6。</p>
+<div class="tw"><table><thead><tr><th>改了</th><th>客戶端</th><th>伺服端 IIS</th><th>WindowsService</th><th>DB</th></tr></thead><tbody><tr><td><code>UI.&lt;MOD&gt;</code></td><td>✔</td><td></td><td></td><td></td></tr><tr><td><code>UIEntity.&lt;MOD&gt;</code>(<code>View.xsd</code>)</td><td>✔</td><td>✔</td><td>✔</td><td></td></tr><tr><td><code>FormProxy</code> / <code>Control</code> / <code>PO</code> / <code>DataEntity</code>(<code>Model.xsd</code>)</td><td></td><td>✔</td><td></td><td></td></tr><tr><td><code>TA.DataAccess</code>(四眼引擎)</td><td></td><td>✔</td><td></td><td></td></tr><tr><td>共用層(<code>TA.MappingCode</code> / <code>TA.Utility*</code> / <code>Exceptions</code>)</td><td>✔</td><td>✔</td><td>✔</td><td></td></tr><tr><td>報表範本</td><td>✔ 檢視</td><td>✔ 產出</td><td></td><td></td></tr><tr><td>SP / Function / Trigger / View / 表結構</td><td></td><td></td><td></td><td>✔</td></tr></tbody></table></div>
+<p>⚠ 先查你改的組件在不在 <strong>DLL 覆寫名單</strong>裡:在名單裡的話,只重編不更新預編 DLL 落點等於沒改,而且開發機上看不出來(<code>runbooks/deploy.md §2.1</code>)。</p>
+</div></section><section class="sec" data-sec="3-我要懂"><h2 id="3-我要懂"><button class="tg" aria-label="收合/展開" type="button"></button>3. 我要懂</h2><div class="sec-body">
+<h3 id="3-1-技術總覽">3.1 技術總覽</h3>
+<div class="tw"><table><thead><tr><th>篇</th><th>一句話</th></tr></thead><tbody><tr><td><a href="architecture.html">架構總覽 architecture</a></td><td>技術軸的總綱:六層與命名鐵律、四眼引擎、資料存取與 SQL、typed DataSet、Remoting 邊界、掃描母體與十一個掃描器缺陷。<strong>不要整份讀</strong>,用左側目錄跳到你要的那一節</td></tr></tbody></table></div>
+<h3 id="3-2-模組文件-29-篇">3.2 模組文件 29 篇</h3>
+<p>一模組一篇,講<strong>這個模組在做什麼業務</strong>:資料模型、每支畫面的檢核與四眼、批次與報表、改它的表會影響誰。每篇的附錄 E 是該片的踩雷清單。</p>
+<div class="tw"><table><thead><tr><th>篇</th><th>管什麼</th><th>行數</th></tr></thead><tbody><tr><td><a href="modules/bbs.html">bbs</a></td><td>BBS(受益憑證作業,推測)</td><td>1668</td></tr><tr><td><a href="modules/bms.html">bms</a></td><td>BMS(受益人基本資料與資料變更,推測)</td><td>1546</td></tr><tr><td><a href="modules/cas.html">cas</a></td><td>CAS（代銷通路業績管理，推測）</td><td>1916</td></tr><tr><td><a href="modules/cls.html">cls</a></td><td>CLS(直銷潛在客戶與拜訪管理,推測)</td><td>1323</td></tr><tr><td><a href="modules/cod.html">cod</a></td><td>COD（代碼檔與員工主檔，推測）</td><td>1401</td></tr><tr><td><a href="modules/cpm.html">cpm</a></td><td>CPM（需求處理件／抱怨記錄件／客訴件的簽核流程，推測）</td><td>1388</td></tr><tr><td><a href="modules/crm.html">crm</a></td><td>CRM（潛在客戶與直銷指派管理，推測）</td><td>1723</td></tr><tr><td><a href="modules/dsm.html">dsm</a></td><td>DSM(直銷業務管理,推測)</td><td>2000</td></tr><tr><td><a href="modules/ec.html">ec</a></td><td>EC(網路交易平台,推測)</td><td>1873</td></tr><tr><td><a href="modules/misc.html">misc</a></td><td>MISC(TRP / OTA / FSK / IJP 零星模組,推測)</td><td>1729</td></tr><tr><td><a href="modules/nfdr1.html">nfdr1</a></td><td>NFDR1（NFD 報表第 1 片，推測）</td><td>1339</td></tr><tr><td><a href="modules/nfdr2.html">nfdr2</a></td><td>NFDR2(NFD 報表第 2 片,推測)</td><td>1660</td></tr><tr><td><a href="modules/ofd123.html">ofd123</a></td><td>OFD1-3(OFD 模組第 1–3 片,推測)</td><td>1490</td></tr><tr><td><a href="modules/ofd4.html">ofd4</a></td><td>OFD4(OFD 模組第 4 片,推測)</td><td>1526</td></tr><tr><td><a href="modules/ofd5.html">ofd5</a></td><td>OFD5(OFD 模組第 5 片,推測)</td><td>1729</td></tr><tr><td><a href="modules/ofd6.html">ofd6</a></td><td>OFD6(OFD 模組第 6 片,推測)</td><td>1543</td></tr><tr><td><a href="modules/ofd7.html">ofd7</a></td><td>OFD7(OFD 模組第 7 片,推測)</td><td>1360</td></tr><tr><td><a href="modules/ofd8.html">ofd8</a></td><td>OFD8(OFD 模組第 8 片,推測)</td><td>1739</td></tr><tr><td><a href="modules/ofd9.html">ofd9</a></td><td>OFD9(OFD 模組第 9 片,推測)</td><td>2119</td></tr><tr><td><a href="modules/ofdb.html">ofdb</a></td><td>OFDB(OFD 模組批次片,推測)</td><td>1801</td></tr><tr><td><a href="modules/ofdb3.html">ofdb3</a></td><td>OFDB3(OFD 批次第 3 片,推測)</td><td>1678</td></tr><tr><td><a href="modules/ofdb4.html">ofdb4</a></td><td>OFDB4(OFD 批次第 4 片,推測)</td><td>1412</td></tr><tr><td><a href="modules/ofdb5.html">ofdb5</a></td><td>OFDB5(OFD 批次第 5 片:OFDB / OTAB 兩專案,推測)</td><td>1764</td></tr><tr><td><a href="modules/ofdi1.html">ofdi1</a></td><td>OFDI1(OFD 查詢畫面第 1 片:ATLAS.OFD.Query,推測)</td><td>1483</td></tr><tr><td><a href="modules/ofdi2.html">ofdi2</a></td><td>OFDI2(查詢畫面第 2 片:OTA.Query / EC.Query,推測)</td><td>1697</td></tr><tr><td><a href="modules/ofdr1.html">ofdr1</a></td><td>OFDR1(OFD 報表第 1 片:ATLAS.OFD.Report,推測)</td><td>1653</td></tr><tr><td><a href="modules/ofdr2.html">ofdr2</a></td><td>OFDR2(報表第 2 片:OTA.Report / EC.Report,推測)</td><td>1246</td></tr><tr><td><a href="modules/rsp.html">rsp</a></td><td>RSP(定期定額,推測)</td><td>2306</td></tr><tr><td><a href="modules/tmk.html">tmk</a></td><td>TMK(電話行銷 Telemarketing / CallOut,推測)</td><td>1457</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="4-這一頁是怎麼來的"><h2 id="4-這一頁是怎麼來的"><button class="tg" aria-label="收合/展開" type="button"></button>4. 這一頁是怎麼來的</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>項</th><th>值</th></tr></thead><tbody><tr><td>產生時間</td><td>2026-09-21 13:52</td></tr><tr><td>產生者</td><td><code>docs/tools/build_site_index.py</code>(可重跑;行數與一句話從兩份 README 動態抽)</td></tr><tr><td>站台規模</td><td>畫面 911 · 實體表 437 · 報表範本 608</td></tr><tr><td>已知缺陷</td><td>1,682 條;兩條死碼線聯集 151 支畫面一按就 NRE</td></tr><tr><td>文件份數</td><td>總覽 1 + 架構 1 + 速查卡 1 + 症狀表 1 + 手冊 9 + 模組篇 29 + 查詢頁 3</td></tr></tbody></table></div>
+<blockquote><p>數字與文件同步的方法:改過 <code>Dev/</code> 之後跑 <code>atlas_scan.py --index --refresh</code>,再依序重生查詢頁,最後重跑本支。</p></blockquote></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-21 13:52 產生 · 標題 11 · 圖 0 · 表格 9 · 程式錨點 0 · § 連結 1 · 引用檢查：停用<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

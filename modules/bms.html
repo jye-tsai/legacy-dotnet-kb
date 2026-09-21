@@ -1,0 +1,927 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-14">
+<title>ATLAS BMS 模組 全流程商業邏輯</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#0-系統邊界與角色">0. 系統邊界與角色</a>
+<a class="l3" href="#0-1-這個模組管什麼-推測">0.1 這個模組管什麼(推測)</a>
+<a class="l3" href="#0-2-不管什麼">0.2 不管什麼</a>
+<a class="l3" href="#0-3-使用角色">0.3 使用角色</a>
+<a class="l3" href="#0-4-上下游模組">0.4 上下游模組</a>
+<a class="l3" href="#0-5-全域開關">0.5 全域開關</a>
+<a class="l2" href="#1-全景與各式流程圖">1. 全景與各式流程圖</a>
+<a class="l3" href="#1-1-全景圖">1.1 全景圖</a>
+<a class="l3" href="#1-2-資料表關係">1.2 資料表關係</a>
+<a class="l3" href="#1-3-主要維護畫面的四眼與卡控順序">1.3 主要維護畫面的四眼與卡控順序</a>
+<a class="l3" href="#1-4-批次資料流">1.4 批次資料流</a>
+<a class="l3" href="#1-5-跨模組影響">1.5 跨模組影響</a>
+<a class="l2" href="#2-資料模型">2. 資料模型</a>
+<a class="l3" href="#2-1-chg-是什麼-12-張配對表的機制-本篇核心">2.1 CHG 是什麼:12 張配對表的機制(本篇核心)</a>
+<a class="l3" href="#2-2-12-張-chg-表與本表的配對">2.2 12 張 CHG 表與本表的配對</a>
+<a class="l3" href="#2-3-表的主鍵與四眼欄位">2.3 表的主鍵與四眼欄位</a>
+<a class="l3" href="#2-4-欄位中文名-只有一半的表填了-msdata-caption">2.4 欄位中文名:只有一半的表填了 msdata:Caption</a>
+<a class="l3" href="#2-5-三張沒有同名實體表的-vdb-表">2.5 三張沒有同名實體表的 vdb 表</a>
+<a class="l3" href="#2-6-狀態碼">2.6 狀態碼</a>
+<a class="l2" href="#3-畫面清冊">3. 畫面清冊</a>
+<a class="l3" href="#3-1-維護-m-8-支">3.1 維護 M(8 支)</a>
+<a class="l3" href="#3-2-查詢-i">3.2 查詢 I</a>
+<a class="l3" href="#3-3-批次-b-3-支">3.3 批次 B(3 支)</a>
+<a class="l3" href="#3-4-報表-r">3.4 報表 R</a>
+<a class="l3" href="#3-5-一個不在清冊上的檔案-bmsm006-1">3.5 一個不在清冊上的檔案:BMSM006_1</a>
+<a class="l2" href="#4-維護畫面-m-一支一節">4. 維護畫面(M)— 一支一節</a>
+<a class="l3" href="#4-1-bmsm001-受益人開戶-新戶-推測">4.1 BMSM001 受益人開戶(新戶)(推測)</a>
+<a class="l3" href="#4-2-bmsm004-受益人姓名與統編變更開單-推測">4.2 BMSM004 受益人姓名與統編變更開單(推測)</a>
+<a class="l3" href="#4-3-bmsm006-受益人資料變更-舊戶-推測">4.3 BMSM006 受益人資料變更(舊戶)(推測)</a>
+<a class="l3" href="#4-4-bmsm007-受益人專案註記-推測">4.4 BMSM007 受益人專案註記(推測)</a>
+<a class="l3" href="#4-5-bmsm924-fatca-與-giin-自我證明-推測">4.5 BMSM924 FATCA 與 GIIN 自我證明(推測)</a>
+<a class="l3" href="#4-6-bmsm925-crs-自我證明-推測">4.6 BMSM925 CRS 自我證明(推測)</a>
+<a class="l3" href="#4-7-bmsm926-crs-盡職審查結果-推測">4.7 BMSM926 CRS 盡職審查結果(推測)</a>
+<a class="l3" href="#4-8-bmsm927-crs-匯率維護-推測">4.8 BMSM927 CRS 匯率維護(推測)</a>
+<a class="l2" href="#5-查詢畫面-i">5. 查詢畫面(I)</a>
+<a class="l3" href="#5-1-本模組無此類畫面">5.1 本模組無此類畫面</a>
+<a class="l3" href="#5-2-會把資料濾掉而不提示的條件">5.2 會把資料濾掉而不提示的條件</a>
+<a class="l3" href="#5-3-查詢條件一覽">5.3 查詢條件一覽</a>
+<a class="l2" href="#6-批次-b-與-windowsservice">6. 批次(B)與 WindowsService</a>
+<a class="l3" href="#6-1-bmsb901-匯款帳號整批換號-推測">6.1 BMSB901 匯款帳號整批換號(推測)</a>
+<a class="l3" href="#6-2-bmsb901a-澳盛轉星展印鑑與扣款帳戶搬遷-推測-客戶特定">6.2 BMSB901A 澳盛轉星展印鑑與扣款帳戶搬遷(推測)〔客戶特定〕</a>
+<a class="l3" href="#6-3-bmsb925-crs-高資產客戶名單產生與匯出-推測">6.3 BMSB925 CRS 高資產客戶名單產生與匯出(推測)</a>
+<a class="l3" href="#6-4-三支批次的資料流對照">6.4 三支批次的資料流對照</a>
+<a class="l2" href="#7-報表-r">7. 報表(R)</a>
+<a class="l3" href="#7-1-本模組無-r-畫面-也沒有任何-rpt">7.1 本模組無 R 畫面,也沒有任何 rpt</a>
+<a class="l3" href="#7-2-原因-兩支需要輸出的畫面都改用-excel">7.2 原因:兩支需要輸出的畫面都改用 Excel</a>
+<a class="l3" href="#7-3-受益人相關的正式報表在哪">7.3 受益人相關的正式報表在哪</a>
+<a class="l2" href="#8-跨模組共用">8. 跨模組共用</a>
+<a class="l3" href="#8-1-四張重點共用表的反查結果">8.1 四張重點共用表的反查結果</a>
+<a class="l3" href="#8-2-逐張說明">8.2 逐張說明</a>
+<a class="l3" href="#8-3-auto-belong-emp-一個開關寫成兩個相反的常數">8.3 AUTO_BELONG_EMP:一個開關寫成兩個相反的常數</a>
+<a class="l2" href="#附錄-a-資料表總表">附錄 A. 資料表總表</a>
+<a class="l3" href="#a-1-母體的-25-張表">A.1 母體的 25 張表</a>
+<a class="l3" href="#a-2-實體表名與-xsd-datatable-名的對照">A.2 實體表名與 xsd DataTable 名的對照</a>
+<a class="l3" href="#a-3-母體之外-bms-實際也會動到的表">A.3 母體之外、BMS 實際也會動到的表</a>
+<a class="l3" href="#a-4-四張只存在於-sql-字串裡的暫存表">A.4 四張只存在於 SQL 字串裡的暫存表</a>
+<a class="l2" href="#附錄-b-sp-function-trigger-view">附錄 B. SP / Function / Trigger / View</a>
+<a class="l3" href="#b-1-repo-內有原始碼的-只有兩支-trigger">B.1 repo 內有原始碼的:只有兩支 Trigger</a>
+<a class="l3" href="#b-2-程式會呼叫-但-repo-內查不到原始碼的">B.2 程式會呼叫、但 repo 內查不到原始碼的</a>
+<a class="l2" href="#附錄-c-代碼對照">附錄 C. 代碼對照</a>
+<a class="l3" href="#c-1-變更單來源別">C.1 變更單來源別</a>
+<a class="l3" href="#c-2-crs-盡職審查結果">C.2 CRS 盡職審查結果</a>
+<a class="l3" href="#c-3-crs-代碼與排除申報原因的對應">C.3 CRS 代碼與排除申報原因的對應</a>
+<a class="l3" href="#c-4-其他在程式裡出現的字面量">C.4 其他在程式裡出現的字面量</a>
+<a class="l2" href="#附錄-d-掃描母體與覆蓋率">附錄 D. 掃描母體與覆蓋率</a>
+<a class="l3" href="#d-1-數字">D.1 數字</a>
+<a class="l3" href="#d-2-母體沒列到-但本文寫了的東西">D.2 母體沒列到、但本文寫了的東西</a>
+<a class="l3" href="#d-2-1-放進-meta-refcheck-ignore-的名字">D.2.1 放進 meta refcheck-ignore 的名字</a>
+<a class="l3" href="#d-3-母體列了-本文交代不足的">D.3 母體列了、本文交代不足的</a>
+<a class="l3" href="#d-4-標-假設-的地方總表">D.4 標〔假設〕的地方總表</a>
+<a class="l2" href="#附錄-e-讀本文時要注意的地方">附錄 E. 讀本文時要注意的地方</a>
+<a class="l3" href="#e1-bmsm006-1-4-098-行的平行實作-零引用">E1 BMSM006_1:4,098 行的平行實作,零引用</a>
+<a class="l3" href="#e2-歡迎信的觸發條件有兩套-而且不一致">E2 歡迎信的觸發條件有兩套,而且不一致</a>
+<a class="l3" href="#e3-空訊息的例外-throw-new-applicationexception">E3 空訊息的例外:throw new ApplicationException("")</a>
+<a class="l3" href="#e4-繞過框架對話框-用原生-messagebox-顯示英文訊息">E4 繞過框架對話框,用原生 MessageBox 顯示英文訊息</a>
+<a class="l3" href="#e5-sql-用字串串接-沒有參數化">E5 SQL 用字串串接,沒有參數化</a>
+<a class="l3" href="#e6-解構子用-而不是">E6 解構子用 += 而不是 -=</a>
+<a class="l3" href="#e7-auto-belong-emp-設定變常數-而且兩支畫面方向相反">E7 AUTO_BELONG_EMP:設定變常數,而且兩支畫面方向相反</a>
+<a class="l3" href="#e8-空殼-有事件沒內容-有檢核沒規則-有分支到不了">E8 空殼:有事件沒內容、有檢核沒規則、有分支到不了</a>
+<a class="l3" href="#e9-國別欄的-replace-0">E9 國別欄的 Replace("0","")</a>
+<a class="l3" href="#e10-bmsm924-的十組稅籍欄位逐欄寫死">E10 BMSM924 的十組稅籍欄位逐欄寫死</a>
+<a class="l3" href="#e11-訊息錯字-排捈">E11 訊息錯字:「排捈」</a>
+<a class="l3" href="#e12-未成年門檻-18-歲寫死在-sql-裡-而且寫兩次">E12 未成年門檻 18 歲寫死在 SQL 裡,而且寫兩次</a>
+<a class="l3" href="#e13-catch-sqlexception-在-oracle-環境永遠不會被觸發">E13 catch (SqlException) 在 Oracle 環境永遠不會被觸發</a>
+<a class="l3" href="#e14-bmsb901a-的暫存表清理沒帶批號-批號還是-static">E14 BMSB901A 的暫存表清理沒帶批號,批號還是 static</a>
+<a class="l3" href="#e15-chg-與本表的欄位不同步-本文最會咬人的一條">E15 CHG 與本表的欄位不同步:本文最會咬人的一條</a>
+<a class="l3" href="#e16-表名比對用錯-ofd374-與-ofd374a">E16 表名比對用錯:OFD374 與 OFD374A</a>
+<a class="l3" href="#e17-check601bfno-整支被停用-而且-throw-後面還有不可到達的-return">E17 Check601BFNO 整支被停用,而且 throw 後面還有不可到達的 return</a>
+<a class="l3" href="#e18-bmsm001-ctl-cs-是全模組唯一的-big5-檔">E18 BMSM001_Ctl.cs 是全模組唯一的 Big5 檔</a>
+<a class="l3" href="#e19-bmsb901-的暫存表不清-csv-靜默截斷">E19 BMSB901 的暫存表不清、CSV 靜默截斷</a>
+<a class="l3" href="#e20-大量被註解掉-但外殼還在的程式碼">E20 大量被註解掉、但外殼還在的程式碼</a>
+<a class="l2" href="#附錄-f-版本紀錄">附錄 F. 版本紀錄</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-14</span></div>
+<h1 id="atlas-bms-模組-全流程商業邏輯">ATLAS BMS 模組 全流程商業邏輯</h1>
+<blockquote><p>產出日期:2026-09-14(v1)。本文為<strong>純程式碼閱讀彙整</strong>,未修改任何 ATLAS 原始碼。每條規則附程式錨點(<code>Dev/…/X.cs:行號</code>),行號為分析當下版本。 <strong>建議讀法</strong>:先翻 <a class="sec" href="#1-全景與各式流程圖">§1</a> 的圖抓全貌,再讀 <a class="sec" href="#2-資料模型">§2</a> 把 <code>CHG</code> 配對表的機制搞清楚(這是本模組最容易誤解的地方),之後 <a class="sec" href="#3-畫面清冊">§3</a> 的清冊配 <a class="sec" href="#4-維護畫面-m-一支一節">§4</a> 起的畫面章節就讀得動了。</p>
+<p>⚠ <strong>本模組的業務意義</strong>(<a class="sec" href="#0-系統邊界與角色">§0</a>)由表名、欄位 <code>msdata:Caption</code>、<code>Dev/Common/Source/MappingCode/TA.MappingCode/BMSCode.cs:56-67</code> 的常數與兩支 Trigger 的內容<strong>推測</strong>,待選單表回填。 ⚠ <strong>〔客戶特定〕</strong>:機構代碼(<code>'039'</code> 澳盛 / <code>'810'</code> 星展)、日期字面量(<code>'20171207'</code> / <code>'20171219'</code>)、外部檔案格式(星展 O 檔固定欄位位移)為本站台的值。 ⚠ <strong>〔共用〕</strong>:<code>OFD601</code> <code>OFD607A</code> <code>OFD374A</code> <code>OFD272A</code> <code>OFD206</code> 同時服務 OFD / DSM / RSP(見 <a class="sec" href="#8-跨模組共用">§8</a>),改動要一起看。</p>
+<p>前提知識在 <code>architecture.md</code>:六層看 <code>architecture.md §2</code>、四眼(EVA)看 <code>architecture.md §3</code>、typed DataSet 看 <code>architecture.md §5</code>。<strong>不要整份讀</strong>。</p></blockquote>
+<section class="sec" data-sec="0-系統邊界與角色"><h2 id="0-系統邊界與角色"><button class="tg" aria-label="收合/展開" type="button"></button>0. 系統邊界與角色</h2><div class="sec-body">
+<h3 id="0-1-這個模組管什麼-推測">0.1 這個模組管什麼(推測)</h3>
+<p><strong>BMS = 受益人(Beneficiary)主檔與受益人資料變更</strong>。三條證據:</p>
+<div class="tw"><table><thead><tr><th>證據</th><th>內容</th><th>錨點</th></tr></thead><tbody><tr><td>常數字典直接寫出兩支畫面的角色</td><td><code>BMS_FUNC_NAME.New = "BMSM001"</code>(新戶)、<code>BMS_FUNC_NAME.Old = "BMSM006"</code>(舊戶)</td><td><code>Dev/Common/Source/MappingCode/TA.MappingCode/BMSCode.cs:56-67</code></td></tr><tr><td>流水號字典把「受益人戶號」掛在 <code>BMS001A</code>、「受益人資料變更書號」掛在 <code>BMS001ACHG</code></td><td><code>SrNo.BfNo = "BMS001A"</code> / <code>SrNo.BfChangeNo = "BMS001ACHG"</code></td><td><code>Dev/Common/Source/MappingCode/TA.MappingCode/SysCode.cs:53-84</code></td></tr><tr><td>兩支 Trigger 掛在 <code>BMS001A</code>,處理集保綜合帳戶與集保異動 Log</td><td>見 <code>change-sp-fn-trigger.md §6.1</code>,本文不重述</td><td><code>DB/Trigger/BMS001A_TDCC_BF_NO.SQL:230</code>、<code>DB/Trigger/BMS001A_TSCDLOG.SQL:13-16</code></td></tr></tbody></table></div>
+<p>再往下拆,11 支畫面實際落在<strong>四塊互不相干的業務</strong>上:</p>
+<div class="tw"><table><thead><tr><th>塊</th><th>畫面</th><th>在管什麼(推測)</th></tr></thead><tbody><tr><td>A 受益人開戶與資料變更</td><td><code>BMSM001</code> <code>BMSM004</code> <code>BMSM006</code></td><td>新戶建檔;受益人資料變更單的開單與內容維護</td></tr><tr><td>B 專案註記</td><td><code>BMSM007</code></td><td>受益人掛在哪個專案(<code>PROJECT_CD</code>)、是否結案</td></tr><tr><td>C FATCA / CRS 稅務遵循</td><td><code>BMSM924</code> <code>BMSM925</code> <code>BMSM926</code> <code>BMSM927</code> <code>BMSB925</code></td><td>GIIN 與自我證明、CRS 盡職審查結果、CRS 匯率、高資產客戶名單</td></tr><tr><td>D 一次性資料搬遷</td><td><code>BMSB901</code> <code>BMSB901A</code></td><td>匯款帳號整批換號;澳盛(<code>'039'</code>)轉星展(<code>'810'</code>)的印鑑與扣款帳戶搬遷</td></tr></tbody></table></div>
+<p>C 與 D 兩塊跟「受益人基本資料維護」只有 <code>BF_NO</code> / <code>ID_NO</code> 的關聯,<strong>共用模組前綴而不是共用流程</strong>。讀 BMS 的人如果預期整個模組是一條流程,會在 <a class="sec" href="#4-5-bmsm924-fatca-與-giin-自我證明-推測">§4.5</a> 之後完全對不上——先知道這件事比較省時間。</p>
+<h3 id="0-2-不管什麼">0.2 不管什麼</h3>
+<div class="tw"><table><thead><tr><th>不在 BMS</th><th>在哪</th><th>依據</th></tr></thead><tbody><tr><td><strong>把已覆核的變更單真正寫回 <code>BMS001A</code></strong></td><td>OFD 模組的批次 <code>OFDB003</code>,呼叫 SP <code>s_TA_OFDB003_Excute</code></td><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:64</code> 與 <code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:94</code></td></tr><tr><td>綜合帳戶集保戶號的產生與檢核碼</td><td>資料庫 Trigger</td><td><code>DB/Trigger/BMS001A_TDCC_BF_NO.SQL:230</code></td></tr><tr><td>缺件主檔維護</td><td><code>OFDM221A</code> / <code>OFDM231A</code>(BMS 只寫 <code>OFD272A</code> 的 <code>TRN_CD='5'</code> 那批)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:531</code></td></tr><tr><td>受益人歸屬業務員維護</td><td><code>DSMM060</code>(<code>OFD374A</code> 的主檔在那裡)</td><td>見 <a class="sec" href="#8-跨模組共用">§8</a></td></tr><tr><td>定期定額扣款人主檔</td><td><code>RSPM004</code> / <code>RSPM005</code>(BMS 只讀 <code>OFD701</code> 做警示)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:593</code></td></tr></tbody></table></div>
+<h3 id="0-3-使用角色">0.3 使用角色</h3>
+<p>全部 8 支 M 畫面都走標準四眼(輸入 / 驗證 / 覆核),角色由平台的 ToDo 機制指派,BMS 自己不定義角色——所有 PO 都只是把 <code>xTableHelper.AppendToDoString(...)</code> 接到查詢字串尾巴(例:<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM007_PO.cs:175</code>)。詳見 <code>architecture.md §3</code>。</p>
+<p>3 支 B 畫面(<code>BMSB901</code> <code>BMSB901A</code> <code>BMSB925</code>)繼承 <code>xOneStepProcessForm</code>(無原始碼,從呼叫端反推),<strong>沒有四眼</strong>:按下「執行」就直接改正式表。<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901.cs:22</code>、<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901A.cs:22</code>、<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:28</code>。</p>
+<h3 id="0-4-上下游模組">0.4 上下游模組</h3>
+<div class="tw"><table><thead><tr><th>方向</th><th>對象</th><th>介面</th></tr></thead><tbody><tr><td>上游</td><td>EC(電子商務)</td><td><code>BMSM006</code> 的「帶入 EC 資料」把 <code>OFD601</code> / <code>OFD607A</code> 的網路戶資料搬進變更單;覆核後寄歡迎信 <code>Dev/ATLAS.BMS/Source/Control/Control.BMS/BMSM006_Ctl.cs:103-135</code></td></tr><tr><td>上游</td><td>星展銀行 O 檔(定長文字檔)</td><td><code>BMSB901A</code> 以寫死的欄位位移解析 <code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901A.cs:171-174</code>〔客戶特定〕</td></tr><tr><td>下游</td><td>OFD 生效批次 <code>OFDB003</code></td><td>讀 <code>BMS001ACHG</code>,把 <code>AFT_*</code> 寫回本表並蓋 <code>CHG_UPD_DTTM</code></td></tr><tr><td>下游</td><td>OFD 印鑑 / 扣款批次 <code>OFDB701</code> <code>OFDB702</code> <code>OFDB705</code> <code>OFDB707</code> <code>OFDB310</code></td><td>全部以 <code>NVL(BMS001ACHG.CHG_UPD_DTTM,' ') = ' '</code> 篩「尚未生效」的變更單 <code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB701_PO.cs:275</code></td></tr><tr><td>下游</td><td>DSM</td><td><code>OFD374A</code>(受益人歸屬業務員),主檔在 <code>DSMM060</code></td></tr><tr><td>旁支</td><td>RSP(定期定額)</td><td><code>BMSB901</code> / <code>BMSB901A</code> 直接 UPDATE / MERGE <code>RSP006A</code>、<code>RSP005A</code></td></tr></tbody></table></div>
+<h3 id="0-5-全域開關">0.5 全域開關</h3>
+<p>只有一個,而且<strong>兩支畫面寫死成相反值</strong>:</p>
+<div class="tw"><table><thead><tr><th>開關</th><th>位置</th><th>現值</th><th>效果</th></tr></thead><tbody><tr><td><code>AUTO_BELONG_EMP</code> 是否把 <code>OFD374A</code> 掛成明細</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1901-1912</code></td><td><code>bool IsAUTO = false;</code></td><td><code>BMSM001</code> <strong>永遠不</strong>載入歸屬業務員</td></tr><tr><td>同上</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:2203-2214</code></td><td><code>bool IsAUTO = true;</code></td><td><code>BMSM006</code> <strong>永遠</strong>載入歸屬業務員</td></tr></tbody></table></div>
+<p>兩處的註解都寫「以 CTL015 判斷是否自動加業務員資料」(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:161</code>、<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:180</code>),但讀設定的那行已被註解掉,只剩一個寫死的布林。<strong>這不是設定,是兩個方向相反的常數</strong>。細節見 <a class="sec" href="#8-3-auto-belong-emp-一個開關寫成兩個相反的常數">§8.3</a> 與附錄 E7。</p>
+</div></section><section class="sec" data-sec="1-全景與各式流程圖"><h2 id="1-全景與各式流程圖"><button class="tg" aria-label="收合/展開" type="button"></button>1. 全景與各式流程圖</h2><div class="sec-body">
+<h3 id="1-1-全景圖">1.1 全景圖</h3>
+<figure><svg viewBox="0 0 1040 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="BMS 四塊互不相干的業務:開戶與變更、專案註記、稅務遵循、一次性搬遷"><defs><marker id="ah_bms_all" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">A 受益人開戶與資料變更(四眼)</text><g class="bx">
+<rect x="20" y="40" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="130" y="62" text-anchor="middle">BMSM001</text>
+<text class="t2" x="130" y="82" text-anchor="middle">新戶 · 直接寫本表</text>
+</g><g class="bx accent">
+<rect x="270" y="40" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="380" y="62" text-anchor="middle">BMSM004</text>
+<text class="t2" x="380" y="82" text-anchor="middle">姓名統編變更單</text>
+</g><g class="bx accent">
+<rect x="520" y="40" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="630" y="62" text-anchor="middle">BMSM006</text>
+<text class="t2" x="630" y="82" text-anchor="middle">一般資料變更單</text>
+</g><g class="bx">
+<rect x="20" y="130" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="130" y="152" text-anchor="middle">BMS001A</text>
+<text class="t2" x="130" y="172" text-anchor="middle">受益人主檔</text>
+</g><g class="bx accent">
+<rect x="270" y="130" rx="10" ry="10" width="470" height="56"/>
+<text class="t1" x="505" y="152" text-anchor="middle">BMS001ACHG</text>
+<text class="t2" x="505" y="172" text-anchor="middle">變更申請單 + 11 張配對表</text>
+</g><g class="bx ext">
+<rect x="790" y="130" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="905" y="152" text-anchor="middle">OFDB003</text>
+<text class="t2" x="905" y="172" text-anchor="middle">OFD 生效批次</text>
+</g><path class="ar" d="M 130 96 L 130 130" marker-end="url(#ah_bms_all)"/><path class="ar" d="M 380 96 L 380 130" marker-end="url(#ah_bms_all)"/><path class="ar" d="M 630 96 L 630 130" marker-end="url(#ah_bms_all)"/><path class="ar" d="M 740 158 L 790 158" marker-end="url(#ah_bms_all)"/><path class="ar" d="M 905 186 L 905 208 L 130 208 L 130 186" marker-end="url(#ah_bms_all)"/><text class="lane" x="20" y="245">B 專案註記</text><g class="bx">
+<rect x="20" y="259" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="170" y="281" text-anchor="middle">BMSM007</text>
+<text class="t2" x="170" y="301" text-anchor="middle">BMS007A · 專案與結案</text>
+</g><text class="lane" x="360" y="245">C FATCA 與 CRS 稅務遵循</text><g class="bx">
+<rect x="360" y="259" rx="10" ry="10" width="160" height="56"/>
+<text class="t1" x="440" y="281" text-anchor="middle">BMSM924</text>
+<text class="t2" x="440" y="301" text-anchor="middle">BMS924 · GIIN</text>
+</g><g class="bx">
+<rect x="530" y="259" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="630" y="281" text-anchor="middle">BMSM925</text>
+<text class="t2" x="630" y="301" text-anchor="middle">BMS925A 自我證明</text>
+</g><g class="bx ext">
+<rect x="740" y="259" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="830" y="281" text-anchor="middle">BMSB925</text>
+<text class="t2" x="830" y="301" text-anchor="middle">產生 CRSDTL 母體</text>
+</g><g class="bx">
+<rect x="930" y="259" rx="10" ry="10" width="90" height="56"/>
+<text class="t1" x="975" y="281" text-anchor="middle">BMSM927</text>
+<text class="t2" x="975" y="301" text-anchor="middle">匯率</text>
+</g><g class="bx accent">
+<rect x="530" y="335" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="630" y="357" text-anchor="middle">BMSM926</text>
+<text class="t2" x="630" y="377" text-anchor="middle">CRSDTL 盡職審查</text>
+</g><path class="ar" d="M 440 315 L 440 363 L 530 363" marker-end="url(#ah_bms_all)"/><path class="ar" d="M 830 315 L 830 325 L 630 325 L 630 335" marker-end="url(#ah_bms_all)"/><text class="lane" x="20" y="425">D 一次性資料搬遷(無四眼)</text><g class="bx">
+<rect x="20" y="439" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="140" y="461" text-anchor="middle">BMSB901</text>
+<text class="t2" x="140" y="481" text-anchor="middle">CSV 整批換匯款帳號</text>
+</g><g class="bx vend">
+<rect x="280" y="439" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="400" y="461" text-anchor="middle">BMSB901A</text>
+<text class="t2" x="400" y="481" text-anchor="middle">星展 O 檔 印鑑搬遷</text>
+</g><g class="bx dash">
+<rect x="560" y="439" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="690" y="461" text-anchor="middle">RSP006A 等正式表</text>
+<text class="t2" x="690" y="481" text-anchor="middle">直接 UPDATE 或 MERGE</text>
+</g><path class="ar" d="M 520 467 L 560 467" marker-end="url(#ah_bms_all)"/><path class="ar" d="M 140 495 L 140 515 L 690 515 L 690 495" marker-end="url(#ah_bms_all)"/></svg><figcaption>圖 1 全景。BMS 的 11 支畫面落在四塊彼此獨立的業務上,只有 A 塊是一條完整流程。橘色=開單或會改正式表的關鍵節點;黑箱=無原始碼或不在 BMS;注意 A 塊的回寫箭頭是 OFDB003 畫的,不是 BMS 自己畫的。</figcaption></figure>
+<h3 id="1-2-資料表關係">1.2 資料表關係</h3>
+<p><code>CHG</code> 配對表與本表的對應關係、主鍵串接方式,見下方插圖與 <a class="sec" href="#2-1-chg-是什麼-12-張配對表的機制-本篇核心">§2.1</a>。一句話版:<strong><code>BF_CHG_NO</code>(受益人資料變更書號)是整組 <code>CHG</code> 表的共同主鍵頭</strong>,<code>BMS001ACHG</code> 是單,其餘 <code>CHG</code> 表是單上的明細。</p>
+<h3 id="1-3-主要維護畫面的四眼與卡控順序">1.3 主要維護畫面的四眼與卡控順序</h3>
+<p><code>BMSM006</code> 是全模組唯一會同時碰 12 張 <code>CHG</code> 表的畫面,它的四眼推進與 <code>CHG</code> 寫入時機見下方插圖與 <a class="sec" href="#4-3-bmsm006-受益人資料變更-舊戶-推測">§4.3</a>。</p>
+<h3 id="1-4-批次資料流">1.4 批次資料流</h3>
+<p>3 支 B 畫面各走各的路:<code>BMSB901</code> 先塞暫存表再叫 SP、<code>BMSB901A</code> 全程在自己的 <code>_T1</code> / <code>_T2</code> / <code>_LOG</code> 三張暫存表上做 MERGE、<code>BMSB925</code> 只是 SP 的薄殼。見下方插圖與 <a class="sec" href="#6-批次-b-與-windowsservice">§6</a>。</p>
+<h3 id="1-5-跨模組影響">1.5 跨模組影響</h3>
+<p>改 <code>OFD601</code> / <code>OFD607A</code> / <code>OFD374A</code> / <code>OFD272A</code> 會波及誰,見下方插圖與 <a class="sec" href="#8-跨模組共用">§8</a>。</p>
+</div></section><section class="sec" data-sec="2-資料模型"><h2 id="2-資料模型"><button class="tg" aria-label="收合/展開" type="button"></button>2. 資料模型</h2><div class="sec-body"><figure><svg viewBox="0 0 1040 350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CHG 配對表與本表的對應,以及只有 OFDB003 能把值寫回本表"><defs><marker id="ah_bms_tab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">本表(正式資料)</text><g class="bx">
+<rect x="20" y="40" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="62" text-anchor="middle">BMS001A</text>
+<text class="t2" x="120" y="82" text-anchor="middle">受益人主檔</text>
+</g><g class="bx dash">
+<rect x="240" y="40" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="62" text-anchor="middle">BMS004A / BMS005A</text>
+<text class="t2" x="340" y="82" text-anchor="middle">授權帳號</text>
+</g><g class="bx dash">
+<rect x="460" y="40" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="62" text-anchor="middle">OFD130A / OFD131A</text>
+<text class="t2" x="560" y="82" text-anchor="middle">配息帳號</text>
+</g><g class="bx dash">
+<rect x="680" y="40" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="62" text-anchor="middle">OFD137A / OFD138A</text>
+<text class="t2" x="780" y="82" text-anchor="middle">停利買回</text>
+</g><g class="bx dash">
+<rect x="900" y="40" rx="10" ry="10" width="120" height="56"/>
+<text class="t1" x="960" y="62" text-anchor="middle">OFD272A</text>
+<text class="t2" x="960" y="82" text-anchor="middle">缺件</text>
+</g><text class="lane" x="20" y="140">配對表 · 共同主鍵是變更書號 BF_CHG_NO</text><g class="bx accent">
+<rect x="20" y="154" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="176" text-anchor="middle">BMS001ACHG</text>
+<text class="t2" x="120" y="196" text-anchor="middle">單頭 · BEF 與 AFT 成對</text>
+</g><g class="bx">
+<rect x="240" y="154" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="187" text-anchor="middle">BMS004ACHG / BMS005ACHG</text>
+</g><g class="bx">
+<rect x="460" y="154" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="560" y="187" text-anchor="middle">OFD130ACHG / OFD131ACHG</text>
+</g><g class="bx">
+<rect x="680" y="154" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="780" y="187" text-anchor="middle">OFD137ACHG / OFD138ACHG</text>
+</g><g class="bx">
+<rect x="900" y="154" rx="10" ry="10" width="120" height="56"/>
+<text class="t1" x="960" y="187" text-anchor="middle">OFD272ACHG</text>
+</g><path class="ar dsh" d="M 120 96 L 120 154" marker-end="url(#ah_bms_tab)"/><path class="ar dsh" d="M 340 96 L 340 154" marker-end="url(#ah_bms_tab)"/><path class="ar dsh" d="M 560 96 L 560 154" marker-end="url(#ah_bms_tab)"/><path class="ar dsh" d="M 780 96 L 780 154" marker-end="url(#ah_bms_tab)"/><path class="ar dsh" d="M 960 96 L 960 154" marker-end="url(#ah_bms_tab)"/><text class="lane" x="20" y="254">生效:只有批次能把變更後的值寫回本表</text><g class="bx ext">
+<rect x="20" y="268" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="130" y="290" text-anchor="middle">OFDB003</text>
+<text class="t2" x="130" y="310" text-anchor="middle">s_TA_OFDB003_Excute</text>
+</g><g class="bx accent">
+<rect x="270" y="268" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="370" y="290" text-anchor="middle">CHG_UPD_DTTM</text>
+<text class="t2" x="370" y="310" text-anchor="middle">空 = 尚未生效</text>
+</g><g class="bx vend">
+<rect x="520" y="268" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="645" y="290" text-anchor="middle">BMS001A</text>
+<text class="t2" x="645" y="310" text-anchor="middle">寫回的是開單當下的快照</text>
+</g><g class="bx vend">
+<rect x="800" y="268" rx="10" ry="10" width="220" height="56"/>
+<text class="t1" x="910" y="290" text-anchor="middle">例外 CRSDTLCHG</text>
+<text class="t2" x="910" y="310" text-anchor="middle">無單號 · 覆核即回寫</text>
+</g><path class="ar" d="M 120 210 L 120 268" marker-end="url(#ah_bms_tab)"/><path class="ar" d="M 240 296 L 270 296" marker-end="url(#ah_bms_tab)"/><path class="ar" d="M 470 296 L 520 296" marker-end="url(#ah_bms_tab)"/></svg><figcaption>圖 2 表關係。上下兩排是一一配對的本表與變更列,虛線箭頭代表「同一份業務資料的兩種形態」,不是外鍵。整組配對表靠變更書號串起來;`CRSDTLCHG` 名字像卻不屬於這套機制(§2.2 例外 1)。</figcaption></figure>
+<h3 id="2-1-chg-是什麼-12-張配對表的機制-本篇核心">2.1 <code>CHG</code> 是什麼:12 張配對表的機制(本篇核心)</h3>
+<p>先給結論,再給證據。</p>
+<blockquote><p><strong><code>CHG</code> 表不是「四眼的異動暫存表」,也不是單純的「異動歷史 log」。它是一張「受益人資料變更申請單」</strong>, 每一列同時帶著 <code>BEF_*</code>(變更前)與 <code>AFT_*</code>(變更後)兩份值,用 <code>BF_CHG_NO</code>(受益人資料變更書號)當單號, 帶生效日 <code>CHG_EFFECT_DATE</code>,<strong>四眼是掛在這張單上的,不是掛在 <code>BMS001A</code> 上</strong>。覆核通過之後資料<strong>還不會進本表</strong>;要等 OFD 模組的生效批次 <code>OFDB003</code> 跑, 由 SP <code>s_TA_OFDB003_Excute</code> 把 <code>AFT_*</code> 寫回本表並蓋上 <code>CHG_UPD_DTTM</code>。蓋了 <code>CHG_UPD_DTTM</code> 的單就退化成歷史資料,永久留在 <code>CHG</code> 表裡。</p></blockquote>
+<p>這解釋了 <code>architecture.md §3</code> 的一個矛盾:框架內的雙表四眼實作 <code>Basic4EyesPO</code> 是死碼(零繼承零實例化), 但 BMS 確實有成對的表 —— 因為這一套<strong>完全是業務程式自己用 <code>BaseEVADaoPO</code> 手寫的</strong>, 跟 <code>Basic4EyesPO</code> 的 <code>_Edit</code> 命名慣例毫無關係。</p>
+<h4 id="證據鏈">證據鏈</h4>
+<div class="tw"><table><thead><tr><th>#</th><th>觀察</th><th>錨點</th></tr></thead><tbody><tr><td>1</td><td><code>BMSM006_PO</code> 的主檔就是 <code>BMS001ACHG</code>,不是 <code>BMS001A</code>;四眼事件全部掛在它身上</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:80-81</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:32-47</code></td></tr><tr><td>2</td><td>欄位成對:<code>BEF_ACC_NO_TYPE</code> 的 <code>msdata:Caption</code> 是「變更前帳戶種類」、<code>AFT_ACC_NO_TYPE</code> 是「變更後帳戶種類」</td><td><code>Dev/ATLAS.BMS/Source/Entity/DataEntity.BMS/BMSM001Model.xsd:3122-3129</code></td></tr><tr><td>3</td><td>開單時 <code>BMSM004_PO</code> 把 <code>BMS001A</code> 的現值<strong>同時</strong>填進 <code>BEF_*</code> 與 <code>AFT_*</code>,再由使用者改 <code>AFT_*</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:105-116</code></td></tr><tr><td>4</td><td>單號由 <code>SerialNo.GetBF_Change()</code> 取,撞號就重取</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:100-104</code></td></tr><tr><td>5</td><td><code>AfterApprove</code> <strong>沒有</strong>任何把 <code>AFT_*</code> 寫回 <code>BMS001A</code> 的 SQL,只寫跳號註記</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:984-1039</code></td></tr><tr><td>6</td><td>真正的回寫在 OFD 的生效批次:<code>s_TA_OFDB003_Excute</code> 吃 <code>CHG_EFFECT_DATE</code> / <code>CHG_DATE</code> / <code>BF_CHG_NO</code> 三個參數,訊息是「執行成功,共變更 N 筆受益人資料」</td><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:64-78</code> 與 <code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:124</code></td></tr><tr><td>7</td><td>「是否已生效」的判準全庫一致:<code>TRIM(CHG_UPD_DTTM) IS NULL</code> 代表尚未生效</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1363</code>、<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:781</code>、<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB701_PO.cs:275</code></td></tr><tr><td>8</td><td>生效前 <code>OFDB003</code> 會先數「還有幾筆沒覆核」,用 <code>Status NOT IN (SELECT Status FROM TABLE(f_TA_GetEVAStatus('A')))</code></td><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:315-318</code></td></tr><tr><td>9</td><td>UI 直接用 <code>CHG_UPD_DTTM</code> 鎖按鈕,訊息是「資料已經生效,無法進行刪除」</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:495-501</code>、<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:541</code></td></tr></tbody></table></div>
+<p><strong><code>s_TA_OFDB003_Excute</code> 的原始碼不在 repo</strong>(<code>DB/SP/</code> 下沒有任何 BMS 或 OFDB003 相關檔案), 所以「回寫時到底把哪些 <code>AFT_*</code> 欄位搬到哪些本表欄位」這件事,<strong>從 repo 無法確認</strong>。本文把它標成 <strong>〔假設〕缺:DB 連線</strong> —— 結構上只能推到「<code>OFDB003</code> 負責回寫」為止。</p>
+<h4 id="一張單的生命週期">一張單的生命週期</h4>
+<div class="tw"><table><thead><tr><th>階段</th><th>誰做</th><th><code>STATUS</code></th><th><code>CHG_UPD_DTTM</code></th><th>資料在哪</th></tr></thead><tbody><tr><td>開單</td><td><code>BMSM004</code>(只改 ID / 姓名 / 缺件)或 <code>BMSM006</code>(改全部)</td><td><code>Entry*</code> 系</td><td>空</td><td>只在 <code>CHG</code> 表</td></tr><tr><td>驗證</td><td><code>BMSM004</code> / <code>BMSM006</code> 的 Verify</td><td><code>Verify*</code> 系</td><td>空</td><td>只在 <code>CHG</code> 表</td></tr><tr><td>覆核</td><td>同上的 Approve</td><td><code>Approve*</code> 系</td><td><strong>仍為空</strong></td><td>只在 <code>CHG</code> 表</td></tr><tr><td>生效</td><td><strong><code>OFDB003</code> 批次</strong></td><td>不變</td><td>被蓋上時戳</td><td>已寫回本表</td></tr><tr><td>歷史</td><td>—</td><td>不變</td><td>有值</td><td><code>CHG</code> 列變唯讀,UI 鎖住修改與刪除</td></tr></tbody></table></div>
+<p><code>STATUS</code> 的值域見 <code>architecture.md §3.10</code>,本文不重述。</p>
+<h3 id="2-2-12-張-chg-表與本表的配對">2.2 12 張 <code>CHG</code> 表與本表的配對</h3>
+<div class="tw"><table><thead><tr><th><code>CHG</code> 表</th><th>本表</th><th>本表主檔畫面</th><th><code>CHG</code> 表的 PK(xsd <code>msdata:PrimaryKey</code>)</th><th>在哪支畫面當明細</th></tr></thead><tbody><tr><td><code>BMS001ACHG</code></td><td><code>BMS001A</code></td><td><code>BMSM001</code></td><td><code>BF_CHG_NO</code></td><td><strong>主檔</strong>(<code>BMSM004</code> 與 <code>BMSM006</code>)</td></tr><tr><td><code>BMS004ACHG</code></td><td><code>BMS004A</code></td><td><code>BMSM001</code></td><td><code>BF_CHG_NO</code></td><td><code>BMSM006</code></td></tr><tr><td><code>BMS005ACHG</code></td><td><code>BMS005A</code></td><td><code>BMSM001</code></td><td><code>BF_CHG_NO</code>, <code>DATA_SEQ</code></td><td><code>BMSM006</code></td></tr><tr><td><code>OFD130ACHG</code></td><td><code>OFD130A</code></td><td><code>BMSM001</code></td><td><code>BF_CHG_NO</code></td><td><code>BMSM006</code></td></tr><tr><td><code>OFD131ACHG</code></td><td><code>OFD131A</code></td><td><code>BMSM001</code></td><td><code>BF_CHG_NO</code>, <code>DATA_SEQ</code></td><td><code>BMSM006</code></td></tr><tr><td><code>OFD132ACHG</code></td><td><code>OFD132A</code></td><td>—</td><td><code>BF_CHG_NO</code>, <code>DATA_SEQ</code></td><td><code>BMSM006</code></td></tr><tr><td><code>OFD137ACHG</code></td><td><code>OFD137A</code></td><td><code>BMSM001</code></td><td><code>BF_CHG_NO</code></td><td><code>BMSM006</code></td></tr><tr><td><code>OFD138ACHG</code></td><td><code>OFD138A</code></td><td><code>BMSM001</code></td><td><code>DATA_SEQ</code>, <code>BF_CHG_NO</code></td><td><code>BMSM006</code></td></tr><tr><td><code>OFD139ACHG</code></td><td><code>OFD139A</code></td><td><code>BMSM001</code></td><td><code>BF_CHG_NO</code>, <code>DATA_SEQ</code>, <code>BF_NO</code></td><td><code>BMSM006</code></td></tr><tr><td><code>OFD272ACHG</code></td><td><code>OFD272A</code></td><td><code>OFDM221A</code> 與 <code>OFDM231A</code></td><td><code>BF_CHG_NO</code>, <code>DATA_SEQ</code></td><td><code>BMSM006</code></td></tr><tr><td><code>OFD607ACHG</code></td><td><code>OFD607A</code></td><td>—</td><td><code>EC_BF_CHG_NO</code>, <code>DATA_SEQ</code>, <code>SYSTEM_ID</code></td><td><code>BMSM006</code></td></tr><tr><td><code>CRSDTLCHG</code></td><td><code>CRSDTL</code></td><td><code>BMSM926</code></td><td><code>BASE_DATE</code>, <code>BF_NO</code></td><td><code>BMSM926</code></td></tr></tbody></table></div>
+<p>PK 來源:<code>Dev/ATLAS.BMS/Source/Entity/DataEntity.BMS/BMSM001Model.xsd:12067-12340</code> 的 <code>xs:unique</code> 區塊、<code>Dev/ATLAS.BMS/Source/Entity/DataEntity.BMS/BMSM004Model.xsd:2864-2880</code>、 <code>Dev/ATLAS.BMS/Source/Entity/DataEntity.BMS/BMSM926Model.xsd:200-210</code>。</p>
+<p><strong>兩個要特別記住的例外</strong>:</p>
+<ol><li><strong><code>CRSDTLCHG</code> 不屬於上面那套機制。</strong> 它是 <code>BMSM926</code>(CRS 盡職審查)自己的「本次審查結果」表, PK 是 <code>BASE_DATE</code> 加 <code>BF_NO</code>,沒有 <code>BEF_*</code> 與 <code>AFT_*</code> 成對欄位,也沒有 <code>BF_CHG_NO</code>、沒有 <code>CHG_UPD_DTTM</code>。而且它<strong>是唯一會在 <code>AfterApprove</code> 當場回寫本表的 <code>CHG</code> 表</strong> —— 把 <code>CRSDTLCHG</code> 的 <code>DUE_DILIGENCE_CHK</code> 寫進 <code>CRSDTL</code> 的 <code>CRS_INDICATOR_M</code>(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:92-119</code>)。名字長得像,機制完全不同。</li><li><strong><code>OFD607ACHG</code> 的 PK 不含 <code>BF_CHG_NO</code></strong>,而是另一支 <code>EC_BF_CHG_NO</code>(EC 專屬變更書號,由 <code>SerialNo.GetEC_BF_CHG_NO()</code> 取, <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:582-592</code>)。<code>BF_CHG_NO</code> 只是它的一般欄位,由程式在 <code>BeforeUpdate</code> 回填 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:594-598</code>)。所以「同一張變更單」與「EC 異動列」是一對多,而且靠非 PK 欄位串起來。</li></ol>
+<h3 id="2-3-表的主鍵與四眼欄位">2.3 表的主鍵與四眼欄位</h3>
+<p>母體列的 25 張表,逐一如下。「四眼」欄看的是 xsd 裡有沒有 <code>architecture.md §3.5</code> 那組 EVA 欄位。</p>
+<div class="tw"><table><thead><tr><th>表</th><th>PK(來源 xsd)</th><th>四眼欄位</th><th>母體列的欄位數</th><th>備註</th></tr></thead><tbody><tr><td><code>BMS001ACHG</code></td><td><code>BF_CHG_NO</code></td><td>齊</td><td><strong>0</strong></td><td>欄位定義在 <code>BMSM001Model.xsd</code> 的 vdb 表 <code>BMS001CHG</code> 底下</td></tr><tr><td><code>BMS004ACHG</code></td><td><code>BF_CHG_NO</code></td><td>有</td><td><strong>0</strong></td><td>vdb 名 <code>BMS004CHG</code></td></tr><tr><td><code>BMS005A</code></td><td><code>REMIT_CFM_NO</code>, <code>DATA_SEQ</code></td><td>無</td><td>3</td><td>母體只看到 <code>BMSM006</code> 用的三欄投影;<code>BMSB901</code> 另有一份定義</td></tr><tr><td><code>BMS005ACHG</code></td><td><code>BF_CHG_NO</code>, <code>DATA_SEQ</code></td><td>有</td><td><strong>0</strong></td><td>vdb 名 <code>BMS005CHG</code></td></tr><tr><td><code>BMS007A</code></td><td><code>PROJECT_CD</code>, <code>BF_NO</code></td><td>有</td><td><strong>0</strong></td><td>vdb 名 <code>BMS007</code></td></tr><tr><td><code>BMS924</code></td><td><code>BF_NO</code></td><td>有(只有 <code>*DATE</code> 進 xsd)</td><td>55</td><td>FATCA 與 GIIN</td></tr><tr><td><code>BMS925A</code></td><td><code>IN_DATE</code>, <code>ID_NO</code></td><td>有(只有 <code>*DATE</code>)</td><td>21</td><td>CRS 自我證明主檔</td></tr><tr><td><code>BMS926A</code></td><td><code>IN_DATE</code>, <code>ID_NO</code>, <code>SRNO</code></td><td>有(只有 <code>*DATE</code>)</td><td>9</td><td>無法取得稅籍編號的理由</td></tr><tr><td><code>BMS927A</code></td><td><code>IN_DATE</code>, <code>ID_NO</code>, <code>SRNO</code></td><td>有(只有 <code>*DATE</code>)</td><td>19</td><td>控制人清單</td></tr><tr><td><code>CRSDTL</code></td><td><code>BASE_DATE</code>, <code>BF_NO</code></td><td>有</td><td><strong>0</strong></td><td>vdb 名 <code>BMSM926</code></td></tr><tr><td><code>CRSDTLCHG</code></td><td><code>BASE_DATE</code>, <code>BF_NO</code></td><td>有</td><td><strong>0</strong></td><td>vdb 名 <code>BMSM926CHG</code></td></tr><tr><td><code>OFD130ACHG</code></td><td><code>BF_CHG_NO</code></td><td>有</td><td><strong>0</strong></td><td>vdb 名 <code>OFD130CHG</code></td></tr><tr><td><code>OFD131ACHG</code></td><td><code>BF_CHG_NO</code>, <code>DATA_SEQ</code></td><td>有</td><td><strong>0</strong></td><td>vdb 名 <code>OFD131CHG</code></td></tr><tr><td><code>OFD132A</code></td><td><code>BF_NO</code>, <code>STATEMENT_CODE</code></td><td>有</td><td><strong>0</strong></td><td>vdb 名 <code>OFD132</code></td></tr><tr><td><code>OFD132ACHG</code></td><td><code>BF_CHG_NO</code>, <code>DATA_SEQ</code></td><td>有</td><td><strong>0</strong></td><td>vdb 名 <code>OFD132CHG</code></td></tr><tr><td><code>OFD137ACHG</code></td><td><code>BF_CHG_NO</code></td><td>只有 <code>*DATE</code></td><td>15</td><td>表名與 vdb 名相同,所以掃得到</td></tr><tr><td><code>OFD138ACHG</code></td><td><code>DATA_SEQ</code>, <code>BF_CHG_NO</code></td><td>只有 <code>*DATE</code></td><td>35</td><td>同上</td></tr><tr><td><code>OFD139ACHG</code></td><td><code>BF_CHG_NO</code>, <code>DATA_SEQ</code>, <code>BF_NO</code></td><td>只有 <code>*DATE</code></td><td>15</td><td>同上</td></tr><tr><td><code>OFD206</code></td><td><code>BF_SRNO</code>, <code>CAMPAIGN_CODE</code></td><td>只有 <code>*DATE</code></td><td>12</td><td>主檔在 <code>OFDM206</code></td></tr><tr><td><code>OFD272A</code></td><td><code>TRN_CD</code>, <code>SHORE_ID</code>, <code>ORG_COPY_CD</code>, <code>TRN_NO</code></td><td>有</td><td><strong>0</strong></td><td>vdb 名 <code>OFD272</code>;<code>BMSM004</code> 另取名 <code>BMSM004_Lack</code></td></tr><tr><td><code>OFD272ACHG</code></td><td><code>BF_CHG_NO</code>, <code>DATA_SEQ</code></td><td>有</td><td><strong>0</strong></td><td>vdb 名 <code>OFD272CHG</code></td></tr><tr><td><code>OFD374A</code></td><td><code>BF_NO</code></td><td><strong>齊(唯一被母體判為 Y 的)</strong></td><td>21</td><td>主檔在 <code>DSMM060</code></td></tr><tr><td><code>OFD601</code></td><td><code>BF_SRNO</code></td><td>只有 <code>*DATE</code></td><td>100</td><td>欄位數是跨 xsd 聯集,見下方警告</td></tr><tr><td><code>OFD607A</code></td><td><code>BF_SRNO</code></td><td>只有 <code>*DATE</code></td><td>50</td><td>EC 網路戶</td></tr><tr><td><code>OFD607ACHG</code></td><td><code>EC_BF_CHG_NO</code>, <code>DATA_SEQ</code>, <code>SYSTEM_ID</code></td><td>有</td><td>71</td><td></td></tr></tbody></table></div>
+<blockquote><p>⚠ <strong>母體裡 13 張表顯示「欄位 0」,不等於「欄位定義不在 repo」。</strong> <code>architecture.md 附錄 A</code> 說全庫有 208 張表(367 張裡的 57%)沒有任何 xsd 定義,<strong>BMS 這 13 張不屬於那一類</strong>。它們的欄位定義就在 <code>BMSM001Model.xsd</code> 裡,只是 <strong>xsd 的 DataTable 名跟實體表名不同</strong>: <code>new xTableMapping("BMS001ACHG", "BMS001CHG")</code>(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:80</code>)。掃描器以實體表名去 xsd 找,自然找不到。要查 <code>BMS001ACHG</code> 的欄位,得去 <code>BMSM001Model.xsd</code> 找 <code>BMS001CHG</code>。對應表見附錄 A.2。<strong>BMS 真正「repo 內查不到欄位」的只有批次用的四張暫存表</strong> (<code>BMSB901_T1</code>、<code>BMSB901A_T1</code>、<code>BMSB901A_T2</code>、<code>BMSB901A_LOG</code>),它們只出現在 SQL 字串裡。</p></blockquote>
+<blockquote><p>⚠ <strong><code>OFD601</code> 的「100 欄」有雜訊。</strong> 這個數字是跨 xsd 的聯集,其中 <code>TagNumber</code> 與 <code>age</code> 兩欄來自 EC 模組的 <code>Dev/ATLAS.EC/Source/Entity/DataEntity.EC/OFDB610Model.xsd:1127</code>,在 BMS 側的 <code>BMSM001Model.xsd</code> 並不存在。拿這個欄位清單去改 <code>OFD601</code> 之前,先確認欄位屬於哪一份定義。</p></blockquote>
+<h3 id="2-4-欄位中文名-只有一半的表填了-msdata-caption">2.4 欄位中文名:只有一半的表填了 <code>msdata:Caption</code></h3>
+<p>規則照 <code>architecture.md §5.5</code>:中文名唯一來源是 xsd 的 <code>msdata:Caption</code>,<strong>不自己翻</strong>。BMS 的實況:</p>
+<div class="tw"><table><thead><tr><th>表</th><th>中文名狀況</th></tr></thead><tbody><tr><td><code>BMS924</code> / <code>BMS925A</code> / <code>BMS926A</code> / <code>BMS927A</code> / <code>OFD137ACHG</code> / <code>OFD138ACHG</code> / <code>OFD139ACHG</code> / <code>OFD206</code> / <code>OFD374A</code></td><td>業務欄大多有填</td></tr><tr><td><code>BMS001CHG</code>(即 <code>BMS001ACHG</code>)的<strong>單頭欄位</strong></td><td><strong>全部沒填</strong>:<code>BF_CHG_NO</code>、<code>BF_NO</code>、<code>CHG_DATE</code>、<code>CHG_EFFECT_DATE</code>、<code>CHG_UPD_DTTM</code>、<code>AUTO_NUM</code> 在 <code>Dev/ATLAS.BMS/Source/Entity/DataEntity.BMS/BMSM001Model.xsd:5472-5530</code> 都沒有 <code>msdata:Caption</code></td></tr><tr><td><code>BMS001CHG</code> 的 <code>BEF_*</code> 與 <code>AFT_*</code> 欄</td><td>零星有填,而且<strong>成對的兩欄常常寫同一個中文名</strong>:<code>AFT_MKT_ID</code> 與 <code>BEF_MKT_ID</code> 都叫「行銷身份別」(<code>Dev/ATLAS.BMS/Source/Entity/DataEntity.BMS/BMSM001Model.xsd:5495-5502</code>)</td></tr><tr><td><code>OFD601</code></td><td>除了 EC 帶進來的兩欄,其餘 98 欄全空</td></tr></tbody></table></div>
+<p>「受益人資料變更書號」這幾個字是有出處的:<code>OFD138ACHG</code> 的 <code>BF_CHG_NO</code> 填了這個 Caption (<code>Dev/ATLAS.BMS/Source/Entity/DataEntity.BMS/BMSM001Model.xsd:11476</code>);<code>BMSM004Model.xsd</code> 的缺件表也填了「缺件種類」「缺件編號」「缺件代碼」「境內外基金識別碼」(<code>Dev/ATLAS.BMS/Source/Entity/DataEntity.BMS/BMSM004Model.xsd:957-994</code>)。本文用到的中文名一律出自這些 Caption。</p>
+<h3 id="2-5-三張沒有同名實體表的-vdb-表">2.5 三張沒有同名實體表的 vdb 表</h3>
+<p><code>BMSM004Model.xsd</code> 有三張 DataTable,其中兩張不是實體表:</p>
+<div class="tw"><table><thead><tr><th>vdb 表</th><th>實體表</th><th>用途</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMSM004</code></td><td><code>BMS001ACHG</code></td><td>變更單本體</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:38</code></td></tr><tr><td><code>BMSM004_Lack</code></td><td><code>OFD272A</code></td><td>只收 <code>SHORE_ID='2'</code> 且 <code>TRN_CD='5'</code> 的缺件列</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:39</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:531</code></td></tr><tr><td><code>BMSM004_Cer</code></td><td><strong>無</strong>,是 <code>BMS001A</code> 的即時快照</td><td>開單時把 <code>BMS001A</code> 現值撈進來,好填 <code>BEF_*</code> 與 <code>AFT_*</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:541-582</code></td></tr></tbody></table></div>
+<p><code>BMSM004_Cer</code> 用 <code>xTableHelper.GetNonWhereSelectString(dbProduct, "BMS001A")</code> 再字串接 <code>AND BF_NO = &lt;值&gt;</code> (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:554-556</code>)—— 這是附錄 E 要記一筆的字串串接。</p>
+<h3 id="2-6-狀態碼">2.6 狀態碼</h3>
+<p>BMS 沒有自己的狀態機。<code>STATUS</code> 完全交給框架的 <code>EVAStatusCode</code>(無原始碼,從呼叫端反推,見 <code>architecture.md §3.10</code>), BMS 只在三處直接比對:</p>
+<div class="tw"><table><thead><tr><th>比對</th><th>意義</th><th>錨點</th></tr></thead><tbody><tr><td><code>STATUS == EVAStatusCode.VerifyDelete</code></td><td>「刪除待覆核」,按覆核鍵要走刪除流程而不是一般覆核</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:726-731</code>、<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:680-684</code></td></tr><tr><td><code>!strStatus.EndsWith("3")</code></td><td>「不是刪除類動作」(推測:狀態碼尾數 3 等於 Delete 系)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1474-1477</code></td></tr><tr><td><code>row.STATUS != "203"</code></td><td>覆核刪除的 EC 列不發歡迎信</td><td><code>Dev/ATLAS.BMS/Source/Control/Control.BMS/BMSM006_Ctl.cs:114</code></td></tr><tr><td>寫死 <code>STATUS ='201'</code> 到 <code>OFD601</code></td><td>覆核刪除受益人時把 EC 戶打回某個狀態</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:3608-3613</code></td></tr></tbody></table></div>
+<p>第二、三條互相佐證:<code>"203"</code> 結尾是 <code>3</code>,語意是「覆核刪除」。<strong>這與 <code>architecture.md §3.10</code> 的「單字元」推測不一致</strong> —— BMS 給出的是三位數字面量。兩邊至少有一邊要修正,本文標<strong>假設</strong>,待 DB 或反編譯 <code>Vendor.Product.Utility.MappingCode</code> 確認。</p>
+</div></section><section class="sec" data-sec="3-畫面清冊"><h2 id="3-畫面清冊"><button class="tg" aria-label="收合/展開" type="button"></button>3. 畫面清冊</h2><div class="sec-body">
+<p>全模組 11 支:B 3 支、M 8 支、<strong>I 0 支、R 0 支</strong>。</p>
+<h3 id="3-1-維護-m-8-支">3.1 維護 M(8 支)</h3>
+<div class="tw"><table><thead><tr><th>代號</th><th>中文名(待選單表)</th><th>六層齊不齊</th><th>主表</th><th>明細</th><th>SP / Fn</th><th>繼承</th></tr></thead><tbody><tr><td><code>BMSM001</code></td><td>受益人開戶(新戶)(推測)</td><td>齊</td><td><code>BMS001A</code></td><td><code>OFD132A</code> <code>BMS004A</code> <code>BMS005A</code> <code>OFD130A</code> <code>OFD131A</code> <code>OFD137A</code> <code>OFD138A</code> <code>OFD139A</code> <code>OFD272A</code> <code>OFD607A</code> <code>OFD601</code> <code>OFD206</code></td><td><strong>無</strong>(<code>s_ta_bms001_delec</code> 的呼叫已被註解,見附錄 E)</td><td><code>BaseEVADaoPO</code> / <code>xMaintainForm</code></td></tr><tr><td><code>BMSM004</code></td><td>受益人姓名 ID 變更開單(推測)</td><td>齊</td><td><code>BMS001ACHG</code></td><td><code>OFD272A</code></td><td>—</td><td><code>BaseEVADaoPO</code> / <code>xMaintainForm</code></td></tr><tr><td><code>BMSM006</code></td><td>受益人資料變更(舊戶)(推測)</td><td><strong>缺 model / view</strong></td><td><code>BMS001ACHG</code>(查詢 / 維護)或 <code>BMS001A</code>(帶值)</td><td>16 張,見 <a class="sec" href="#4-3-bmsm006-受益人資料變更-舊戶-推測">§4.3</a></td><td><code>s_TA_BMSM006_Get</code></td><td><code>BaseEVADaoPO</code> / <code>xMaintainForm</code></td></tr><tr><td><code>BMSM007</code></td><td>受益人專案註記(推測)</td><td>齊</td><td><code>BMS007A</code></td><td>—</td><td>—</td><td><code>BaseEVADaoPO</code> / <code>xMaintainForm</code></td></tr><tr><td><code>BMSM924</code></td><td>FATCA 與 GIIN 自我證明(推測)</td><td>齊</td><td><code>BMS924</code></td><td>—</td><td>—</td><td><code>BaseEVADaoPO</code> / <code>xMaintainForm</code></td></tr><tr><td><code>BMSM925</code></td><td>CRS 自我證明(推測)</td><td>齊</td><td><code>BMS925A</code></td><td><code>BMS926A</code> <code>BMS927A</code></td><td>—</td><td><code>BaseEVADaoPO</code> / <code>xMaintainForm</code></td></tr><tr><td><code>BMSM926</code></td><td>CRS 盡職審查結果(推測)</td><td>齊</td><td><code>CRSDTL</code></td><td><code>CRSDTLCHG</code></td><td>—</td><td><code>BaseEVADaoPO</code> / <code>xMaintainForm</code></td></tr><tr><td><code>BMSM927</code></td><td>CRS 匯率維護(推測)</td><td>齊</td><td><code>CRSEXRATE</code></td><td>—(多筆主檔)</td><td>—</td><td><strong><code>BaseMultiRowEVADaoPO</code></strong> / <code>xMaintainForm</code></td></tr></tbody></table></div>
+<p><code>BMSM927</code> 是全模組唯一的多筆主檔畫面:<code>this.MasterTable.Add(new xTableMapping("CRSEXRATE", "BMSM927"))</code> 加上 <code>this.MasterPKey.Add("BASE_DATE")</code>(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM927_PO.cs:33-34</code>)。多筆與單筆的差別見 <code>architecture.md §3.9</code>。</p>
+<h3 id="3-2-查詢-i">3.2 查詢 I</h3>
+<p><strong>本模組無此類畫面。</strong> 原因是查詢功能被併進 M 畫面的查詢頁:8 支 M 畫面全部繼承 <code>xMaintainForm</code>, 框架本身就給一個查詢頁(<code>this.TabPages = 2</code>,例:<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM007.cs:28</code>), 每支都實作了 <code>Before…SearchButtonClicked</code> 把查詢條件塞進 <code>QueryVDB.Util.Parameters</code>。詳見 <a class="sec" href="#5-查詢畫面-i">§5</a>。</p>
+<h3 id="3-3-批次-b-3-支">3.3 批次 B(3 支)</h3>
+<div class="tw"><table><thead><tr><th>代號</th><th>中文名(待選單表)</th><th>六層齊不齊</th><th>讀 / 寫的表</th><th>SP</th><th>繼承</th></tr></thead><tbody><tr><td><code>BMSB901</code></td><td>匯款帳號整批換號(推測)</td><td>齊</td><td>寫 <code>BMSB901_T1</code>;更新 <code>BMS005A</code> <code>OFD610A</code> <code>RSP006A</code></td><td><code>S_TA_BMSB901_GET</code></td><td><code>xOneStepProcessForm</code>,PO 不繼承任何 EVA 基底</td></tr><tr><td><code>BMSB901A</code></td><td>澳盛轉星展印鑑與扣款帳戶搬遷(推測)</td><td>齊</td><td>寫 <code>BMSB901A_T1</code> <code>BMSB901A_T2</code> <code>BMSB901A_LOG</code>;MERGE <code>RSP006A</code> <code>RSP005A</code>;讀 <code>BMS001A</code></td><td>—(全部 inline SQL)</td><td>同上</td></tr><tr><td><code>BMSB925</code></td><td>CRS 高資產客戶名單產生與匯出(推測)</td><td>齊</td><td>由 SP 決定;讀回 <code>CRSDTL01</code> / <code>CRSDTL02</code> 兩個結果集</td><td><code>S_TA_BMSB925_EXECUTE</code>、<code>S_TA_BMSB925_Get</code></td><td>同上</td></tr></tbody></table></div>
+<p>三支的 PO <strong>都沒有繼承 <code>BaseEVADaoPO</code></strong>,而是自己宣告一個小介面再直接開 <code>Database dbTA = new Database("TA", DbServerType.Oracle)</code> (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901_PO.cs:37</code>、<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:37</code>、 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB925_PO.cs:34</code>)。這符合 <code>architecture.md §6.4</code> 說的「B 跟 I 是同一份程式碼」。</p>
+<h3 id="3-4-報表-r">3.4 報表 R</h3>
+<p><strong>本模組無此類畫面,也沒有任何 <code>.rpt</code>。</strong> 兩支需要輸出的畫面改用 Excel:</p>
+<div class="tw"><table><thead><tr><th>畫面</th><th>輸出方式</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMSB925</code></td><td><code>ExcelCreator.CreateExcelDocument(dt, sFileName)</code>,個人與法人各存一個 xlsx</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:120-127</code> 與 <code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:148-155</code></td></tr><tr><td><code>BMSB901</code></td><td><code>DoExp1()</code> 只輸出一行 CSV 標題列當範本檔,不輸出資料</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901.cs:211-228</code></td></tr></tbody></table></div>
+<p><code>BMSB925</code> 匯出前會把 <code>DataColumn.ColumnName</code> 整批改成 <code>Caption</code> (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:107-108</code>)—— 也就是 <a class="sec" href="#2-4-欄位中文名-只有一半的表填了-msdata-caption">§2.4</a> 說的 Caption 在這裡是<strong>輸出檔的欄位標題</strong>, 沒填 Caption 的欄位匯出後會是英文欄名。</p>
+<h3 id="3-5-一個不在清冊上的檔案-bmsm006-1">3.5 一個不在清冊上的檔案:<code>BMSM006_1</code></h3>
+<p><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006_1.cs</code> 有 4,098 行,類別宣告是 <code>public partial class BMSM006_1 : BMSM001</code> (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006_1.cs:34</code>)。它是 <code>BMSM006</code> 的第二套實作,而且走的是<strong>繼承</strong> <code>BMSM001</code> 的路線, 跟現役的 <code>BMSM006</code>(<code>public partial class BMSM006 : xMaintainForm</code>,<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:33</code>)完全不同。</p>
+<p>全 repo 除了它自己的兩個檔(<code>.cs</code> 與 <code>.Designer.cs</code>)以外,<strong>沒有任何地方引用 <code>BMSM006_1</code></strong>。 <code>architecture.md §2.1</code> 說畫面代號固定 7 碼,<code>BMSM006_1</code> 是 9 碼,走不了標準的代號啟動路徑。 <strong>假設</strong>:這是一份沒刪掉的平行實作,現在是死碼。依據是零引用 + 代號不合鐵律;要否定這個假設只能查選單表。它與 <code>BMSM006</code> 的關係見附錄 E1。</p>
+</div></section><section class="sec" data-sec="4-維護畫面-m-一支一節"><h2 id="4-維護畫面-m-一支一節"><button class="tg" aria-label="收合/展開" type="button"></button>4. 維護畫面(M)— 一支一節</h2><div class="sec-body"><figure><svg viewBox="0 0 1060 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="受益人資料變更單從開單、驗證、覆核、OFDB003 生效到變成歷史的五個階段"><defs><marker id="ah_bms_life" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">① 開單(BMSM004 或 BMSM006)</text><g class="bx accent">
+<rect x="20" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="62" text-anchor="middle">取變更書號</text>
+<text class="t2" x="145" y="82" text-anchor="middle">SerialNo.GetBF_Change</text>
+</g><g class="bx accent">
+<rect x="300" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="425" y="62" text-anchor="middle">本表現值填入</text>
+<text class="t2" x="425" y="82" text-anchor="middle">BEF 與 AFT 都填一樣</text>
+</g><g class="bx accent">
+<rect x="580" y="40" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="705" y="62" text-anchor="middle">使用者只改 AFT</text>
+<text class="t2" x="705" y="82" text-anchor="middle">M004 三欄 / M006 全部</text>
+</g><g class="bx dash">
+<rect x="860" y="40" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="950" y="62" text-anchor="middle">生效時戳是空的</text>
+<text class="t2" x="950" y="82" text-anchor="middle">資料只在 CHG 表</text>
+</g><path class="ar" d="M 270 68 L 300 68" marker-end="url(#ah_bms_life)"/><path class="ar" d="M 550 68 L 580 68" marker-end="url(#ah_bms_life)"/><path class="ar" d="M 830 68 L 860 68" marker-end="url(#ah_bms_life)"/><text class="lane" x="20" y="130">② 驗證 → ③ 覆核(四眼掛在單子上,不是掛在本表)</text><g class="bx">
+<rect x="20" y="144" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="110" y="166" text-anchor="middle">Verify</text>
+<text class="t2" x="110" y="186" text-anchor="middle">只寫跳號註記</text>
+</g><g class="bx">
+<rect x="230" y="144" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="320" y="166" text-anchor="middle">Approve</text>
+<text class="t2" x="320" y="186" text-anchor="middle">只寫跳號註記</text>
+</g><g class="bx vend">
+<rect x="440" y="144" rx="10" ry="10" width="270" height="56"/>
+<text class="t1" x="575" y="166" text-anchor="middle">生效時戳仍是空的</text>
+<text class="t2" x="575" y="186" text-anchor="middle">資料還是只在 CHG 表</text>
+</g><g class="bx dash">
+<rect x="740" y="144" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="890" y="166" text-anchor="middle">AfterApprove 不碰本表</text>
+<text class="t2" x="890" y="186" text-anchor="middle">§2.1 的證據 5</text>
+</g><path class="ar" d="M 950 96 L 950 144" marker-end="url(#ah_bms_life)"/><path class="ar" d="M 200 172 L 230 172" marker-end="url(#ah_bms_life)"/><path class="ar" d="M 410 172 L 440 172" marker-end="url(#ah_bms_life)"/><path class="ar" d="M 710 172 L 740 172" marker-end="url(#ah_bms_life)"/><text class="lane" x="20" y="234">④ 生效(OFD 的批次,不是 BMS)</text><g class="bx ext">
+<rect x="20" y="248" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="150" y="270" text-anchor="middle">OFDB003 排程</text>
+<text class="t2" x="150" y="290" text-anchor="middle">先數還有幾筆沒覆核</text>
+</g><g class="bx ext">
+<rect x="310" y="248" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="450" y="270" text-anchor="middle">s_TA_OFDB003_Excute</text>
+<text class="t2" x="450" y="290" text-anchor="middle">原始碼不在 repo〔假設〕</text>
+</g><g class="bx accent">
+<rect x="620" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="745" y="270" text-anchor="middle">AFT 寫回 BMS001A</text>
+<text class="t2" x="745" y="290" text-anchor="middle">Trigger 也會跟著跑</text>
+</g><g class="bx accent">
+<rect x="900" y="248" rx="10" ry="10" width="140" height="56"/>
+<text class="t1" x="970" y="270" text-anchor="middle">蓋上生效時戳</text>
+<text class="t2" x="970" y="290" text-anchor="middle">單子變歷史</text>
+</g><path class="ar" d="M 150 200 L 150 248" marker-end="url(#ah_bms_life)"/><path class="ar" d="M 280 276 L 310 276" marker-end="url(#ah_bms_life)"/><path class="ar" d="M 590 276 L 620 276" marker-end="url(#ah_bms_life)"/><path class="ar" d="M 870 276 L 900 276" marker-end="url(#ah_bms_life)"/><text class="lane" x="20" y="338">⑤ 歷史</text><g class="bx dash">
+<rect x="20" y="352" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="374" text-anchor="middle">CHG 列永久保留</text>
+<text class="t2" x="145" y="394" text-anchor="middle">UI 鎖住修改與刪除</text>
+</g><g class="bx vend">
+<rect x="300" y="352" rx="10" ry="10" width="560" height="56"/>
+<text class="t1" x="580" y="374" text-anchor="middle">風險</text>
+<text class="t2" x="580" y="394" text-anchor="middle">開單後本表仍可被 BMSM001 改,生效時被舊快照蓋回</text>
+</g><path class="ar" d="M 970 304 L 970 322 L 145 322 L 145 352" marker-end="url(#ah_bms_life)"/></svg><figcaption>圖 3 一張變更單的生命週期(本篇最重要的一張)。要記住的是第②③階段 —— 覆核通過資料仍然只在 CHG 表,本表沒有任何變化;真正動到本表的是第④階段的 OFD 批次。橘色虛框是兩個陷阱:寫回去的是開單當下的快照,而開單之後本表並沒有被鎖住(附錄 E15)。</figcaption></figure>
+<p>8 支 M 畫面分屬 <a class="sec" href="#0-1-這個模組管什麼-推測">§0.1</a> 的四塊業務,<strong>彼此不是一條流程</strong>。先看一眼誰對誰:</p>
+<div class="tw"><table><thead><tr><th>畫面</th><th>誰按</th><th>開的是什麼單</th><th>改哪些欄位</th><th>覆核通過後資料進哪</th></tr></thead><tbody><tr><td><code>BMSM001</code></td><td>開戶櫃台</td><td><strong>沒有單</strong>,直接建 <code>BMS001A</code> 正式資料</td><td>全部受益人欄位</td><td>覆核當下就在 <code>BMS001A</code></td></tr><tr><td><code>BMSM004</code></td><td>櫃台(姓名 / ID 變更)</td><td><code>BMS001ACHG</code> 一張變更單</td><td>只有變更後統編 / 中文姓名 / 英文姓名 + 缺件</td><td><strong>不進</strong>,等 <code>OFDB003</code></td></tr><tr><td><code>BMSM006</code></td><td>櫃台(一般資料變更)</td><td><code>BMS001ACHG</code> 一張變更單 + 11 張 <code>CHG</code> 明細</td><td>幾乎所有 <code>AFT_</code> 開頭的欄位</td><td><strong>不進</strong>,等 <code>OFDB003</code></td></tr><tr><td><code>BMSM007</code></td><td>專案人員</td><td>沒有單,直接建 <code>BMS007A</code></td><td>專案代碼 / 備註 / 是否結案</td><td>覆核當下</td></tr><tr><td><code>BMSM924</code></td><td>稅務遵循</td><td>沒有單,直接建 <code>BMS924</code></td><td>GIIN 與 FATCA 欄位</td><td>覆核當下</td></tr><tr><td><code>BMSM925</code></td><td>稅務遵循</td><td>沒有單,直接建 <code>BMS925A</code></td><td>自我證明 + 兩張明細</td><td>覆核當下</td></tr><tr><td><code>BMSM926</code></td><td>稅務遵循</td><td>明細 <code>CRSDTLCHG</code> 是「本次審查結果」</td><td>盡職審查結果</td><td>覆核當下回寫 <code>CRSDTL</code></td></tr><tr><td><code>BMSM927</code></td><td>稅務遵循</td><td>沒有單,多筆主檔 <code>CRSEXRATE</code></td><td>基準日 + 各幣別匯率</td><td>覆核當下</td></tr></tbody></table></div>
+<p><strong>只有 <code>BMSM004</code> 與 <code>BMSM006</code> 是「開單」</strong>,其餘 6 支都是直接維護正式表,覆核通過即生效。兩支開單畫面的差別是<strong>能改的欄位範圍</strong>,不是流程 —— 流程完全一樣(見 <a class="sec" href="#2-1-chg-是什麼-12-張配對表的機制-本篇核心">§2.1</a> 的生命週期表)。</p>
+<h3 id="4-1-bmsm001-受益人開戶-新戶-推測">4.1 <code>BMSM001</code> 受益人開戶(新戶)(推測)</h3>
+<h4 id="4-1-1-用途與主-明細">4.1.1 用途與主 / 明細</h4>
+<p>全模組最大的一支(UI 8,448 行 / PO 4,081 行)。主檔 <code>BMS001A</code>,<strong><code>MasterTable</code> 是透過區域變數設定的</strong> (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:85-86</code>),不是一行式的 <code>this.MasterTable = new xTableMapping(...)</code> —— 這就是母體 <code>docs/_candidates/bms.md</code> 的主檔欄空白的原因, 不是真的沒有主檔。明細的宣告在 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:100-158</code>, 其中 11 行被註解掉(<code>OFD101</code> 到 <code>OFD562</code> 那批),<strong>掛上去的只有還活著的那幾張</strong>。</p>
+<blockquote><p><strong>本節寫成當時掃描器認不出這種寫法,現在認得了。</strong>那個缺陷後來編號 D8 (<code>architecture.md 附錄 D.3</code> 第三輪),全庫共 6 張主檔、16 張明細受影響, <code>BMSM001</code> 與 <code>BMSM006</code> 各佔 8 張明細——是全庫受影響最重的兩支。重掃後索引記的是:<strong><code>BMSM001</code> 13 張明細</strong> (<code>BMS004A</code> <code>BMS005A</code> <code>OFD130A</code> <code>OFD131A</code> <code>OFD132A</code> <code>OFD137A</code> <code>OFD138A</code> <code>OFD139A</code> <code>OFD206</code> <code>OFD272A</code> <code>OFD374A</code> <code>OFD601</code> <code>OFD607A</code>)、 <strong><code>BMSM006</code> 22 張</strong>(上列同名的 <code>CHG</code> 版加上本表版)。其中 <code>OFD374A</code> 條件被寫死成 <code>false</code> 實際永遠不掛(見下段),所以<strong>索引數字比實際掛上去的多一張</strong>。</p></blockquote>
+<p>還有一張 <code>OFD374A</code> 走條件掛載,但條件被寫死成 <code>false</code>,實際永遠不掛 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1901-1915</code>,見 <a class="sec" href="#0-5-全域開關">§0.5</a> 與附錄 E7)。</p>
+<h4 id="4-1-2-誰開單-誰改什麼">4.1.2 誰開單、誰改什麼</h4>
+<p><code>BMSM001</code> <strong>不開單</strong>。它直接寫 <code>BMS001A</code> 正式表,四眼掛在 <code>BMS001A</code> 自己的 EVA 欄位上。所以「新戶」這條線不會出現變更前 / 變更後成對欄位,也不需要等 <code>OFDB003</code>。</p>
+<p>取號全在 <code>BeforeAdd</code>:</p>
+<div class="tw"><table><thead><tr><th>號</th><th>取法</th><th>條件</th><th>錨點</th></tr></thead><tbody><tr><td>受益人戶號</td><td><code>genSrNo.GetBFNo()</code>,撞號或撞跳號註記就重取</td><td>使用者沒指定戶號時</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:732-739</code></td></tr><tr><td>同上(使用者指定)</td><td>不取號,但撞號直接丟 <code>此戶號已使用，請重新指定</code></td><td>使用者指定了戶號</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:740-741</code></td></tr><tr><td>法人分戶號</td><td><code>genSrNo.GetBMS001COR()</code></td><td>境外開戶且境外身分別為 <code>05</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:747-753</code></td></tr><tr><td>集保戶號</td><td><code>genSrNo.GetBMS001TDC()</code> 再過 <code>GetTSCD_BF_NO</code> 補檢核碼</td><td>境外開戶且原本沒有集保戶號</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:755-767</code></td></tr><tr><td>EC 自動編號</td><td><code>genSrNo.GetAUTO_NUM()</code>,<strong>無條件取</strong></td><td>永遠</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:772-774</code></td></tr></tbody></table></div>
+<p><code>BeforeUpdate</code> 只做 <code>GetNO</code> 加 <code>InsertOFD197</code> 加清舊 KYC,<strong>境外開戶那整段被註解掉</strong> (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:674-703</code>)—— 也就是<strong>開戶之後才改成境外戶,這支不會補集保戶號</strong>。這件事實際上由 Trigger <code>BMS001A_TDCC_BF_NO</code> 補,完整分析見 <code>change-sp-fn-trigger.md §6.1</code>。</p>
+<h4 id="4-1-3-四眼各階段附加動作">4.1.3 四眼各階段附加動作</h4>
+<div class="tw"><table><thead><tr><th>階段</th><th>做什麼</th><th>錨點</th></tr></thead><tbody><tr><td><code>BeforeAdd</code></td><td>取五種號、寫密碼狀態(取自 <code>CTL014</code> 的 <code>082</code>)、<code>GetNO</code>、<code>InsertOFD197</code>、清舊 KYC</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:723-803</code></td></tr><tr><td><code>BeforeAdd</code>(明細)</td><td><code>OFD206</code> 先清掉舊的 EC 優惠活動</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:792-802</code></td></tr><tr><td><code>AfterAdd</code></td><td>送印鑑審核 <code>SendAuditSeal</code>,再直接呼叫 <code>AfterUpdate</code> 的全部內容</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:256-263</code></td></tr><tr><td><code>AfterUpdate</code></td><td>流程別為一步完成時當場補 <code>Confirm</code>;把 <code>OFD601</code> 的受益人戶號從 0 換成新戶號</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:265-317</code></td></tr><tr><td><code>BeforeUpdate</code></td><td><code>GetNO</code> / <code>InsertOFD197</code> / 清舊 KYC;第一張明細送印鑑審核;<code>OFD374A</code> 補業務部門</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:639-721</code></td></tr><tr><td><code>AfterVerify</code></td><td>只寫跳號註記</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:3554-3559</code></td></tr><tr><td><code>AfterApprove</code></td><td>見下表(本畫面最重的一段)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:319-637</code></td></tr><tr><td><code>BeforeApproveDelete</code></td><td>把 KYC 明細的 Row 清空,讓底層不刪 KYC</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:805-815</code></td></tr><tr><td><code>AfterApproveDelete</code></td><td>寫跳號註記、把 <code>OFD601</code> 打回戶號 0 與狀態 <code>201</code>、作廢舊印鑑</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:3561-3645</code></td></tr><tr><td><code>AfterDelete</code> / <code>AfterUnDelete</code></td><td>只寫跳號註記</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:3539-3552</code></td></tr><tr><td><code>AfterReject</code> / <code>AfterResend</code></td><td>只寫跳號註記</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:3647-3659</code></td></tr></tbody></table></div>
+<p><code>AfterApprove</code> 逐段:</p>
+<div class="tw"><table><thead><tr><th>段</th><th>動作</th><th>條件</th><th>錨點</th></tr></thead><tbody><tr><td>1</td><td><code>OFD607A</code> 覆核時把處理旗標蓋成 <code>Y</code>;傳輸旗標為 <code>Y</code> 再補寫一筆 <code>OFD6072A</code></td><td>明細表為 <code>OFD607A</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:321-323</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1560-1602</code></td></tr><tr><td>2</td><td>寫跳號註記,寫失敗丟例外</td><td>主檔</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:371-374</code></td></tr><tr><td>3</td><td><code>Confirm</code>:把 <code>BMS001A</code> 的確認者與確認時間補成覆核者與覆核時間;<strong>更新筆數不是 1 就丟例外</strong>(訊息是空字串)</td><td>狀態尾碼不是 <code>3</code>(非刪除系)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1471-1500</code></td></tr><tr><td>4</td><td>該統編在 <code>BMS001A</code> 只有這一戶時,把 <code>OFD337A</code> 中戶號為 <code>-1</code> 的同名同統編列補上戶號</td><td>同上</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1502-1532</code></td></tr><tr><td>5</td><td><strong>同步改名</strong>:<code>OFD701</code> / <code>OFD706</code> / <code>RSP006A</code> / <code>RSP008A</code> / <code>RSP013A</code> 的扣款人姓名一起換成新姓名(以統編對應)</td><td>主檔</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:401-533</code></td></tr></tbody></table></div>
+<p>第 5 段是本畫面對外影響最大的一塊:<strong>改一個受益人姓名會一次動到 5 張別的模組的表</strong>, 其中 <code>RSP013A</code> 還只挑「尚未生效」的定額變更單改 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:501-517</code>,判準與 <a class="sec" href="#2-1-chg-是什麼-12-張配對表的機制-本篇核心">§2.1</a> 第 7 條同一條)。</p>
+<h4 id="4-1-4-卡控總表">4.1.4 卡控總表</h4>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>查詢</td><td>開戶日期(起)(迄)必須皆填或皆不填、起不可大於迄</td><td>只填一邊 / 起大於迄</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:1030-1037</code></td></tr><tr><td>查詢</td><td>戶號(起)(迄)同上</td><td>同上</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:1038-1041</code></td></tr><tr><td>查詢</td><td>客戶統編 / 戶號 / 開戶日期必須擇一</td><td>三者皆空且非 ToDo 模式</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:1042-1046</code></td></tr><tr><td>新增 / 修改前</td><td>受益人本人、法定代理人一與二、負責人逐一查交易列管</td><td>命中列管</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:617-651</code></td></tr><tr><td>新增 / 修改前</td><td>國籍或出生地屬歐盟國家</td><td>屬歐盟</td><td>阻擋(<code>本公司暫不接受歐盟居民開戶 不可存檔!</code>)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:4437-4445</code></td></tr><tr><td>新增 / 修改前</td><td>非本國籍或非本國出生地時,英文現行居住地必填</td><td>空白</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:4425-4436</code></td></tr><tr><td>新增 / 修改前</td><td>共同持有人統編不得等於受益人統編</td><td>相同</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:4585-4591</code></td></tr><tr><td>新增 / 修改前</td><td>出生日期不可大於開戶日、不可大於系統日</td><td>違反</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:4455-4461</code> 與 <code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:4865-4872</code></td></tr><tr><td>新增 / 修改前</td><td>通知書寄發設定勾了 EMAIL 或開戶類別為網路客戶時,EMAIL 必填且格式要對</td><td>空白 / 格式錯</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:4535-4550</code></td></tr><tr><td>新增 / 修改前</td><td>有配息帳號就必須填受益人扣繳類別</td><td>未填</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:4636-4639</code></td></tr><tr><td>新增 / 修改前</td><td>通知書寄送方式與寄發碼要一致;有自動傳真就要勾傳真寄發碼</td><td>不一致</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:4646-4680</code></td></tr><tr><td>新增 / 修改前</td><td>推薦人必須存在於該通路代碼</td><td>查不到</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:4560-4571</code></td></tr><tr><td>覆核前</td><td>狀態為「刪除待覆核」時改走刪除檢核</td><td>狀態為刪除待覆核</td><td>轉向(不是卡控)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:726-732</code></td></tr><tr><td>覆核前</td><td><strong>正常開戶直接放行,不重跑欄位檢核</strong>;只有簡易開戶才重跑</td><td>開戶註記為正常開戶</td><td>過濾(無提示)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:733-740</code></td></tr><tr><td>刪除前</td><td>已確認的資料直接取消動作,<strong>沒有任何訊息</strong></td><td>確認者欄位不為空</td><td>過濾(無提示)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:942-950</code></td></tr><tr><td>刪除前</td><td>有行銷身分別時提醒要去行銷群組系統調整</td><td>行銷身分別非空且非刪除待覆核</td><td>詢問(Yes 才繼續,並寫 ByPass 記錄)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:952-964</code></td></tr><tr><td>刪除前</td><td>已有交易資料不可刪除</td><td><code>IsHasTrans</code> 大於 0</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:976-989</code></td></tr><tr><td>存檔(伺服端)</td><td>使用者指定的戶號已存在</td><td>撞號</td><td>阻擋(<code>此戶號已使用，請重新指定</code>)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:740-741</code></td></tr><tr><td>覆核(伺服端)</td><td><code>Confirm</code> 更新筆數不等於 1</td><td>不等於 1</td><td>阻擋(但<strong>例外訊息是空字串</strong>,見附錄 E3)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1496-1498</code></td></tr></tbody></table></div>
+<p>「文件調閱」按鈕會把戶號帶去開 <code>OFDM053</code>(<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM001.cs:8428-8441</code>); 沒填戶號只有一句警示,不是卡控。</p>
+<h3 id="4-2-bmsm004-受益人姓名與統編變更開單-推測">4.2 <code>BMSM004</code> 受益人姓名與統編變更開單(推測)</h3>
+<h4 id="4-2-1-用途與主-明細">4.2.1 用途與主 / 明細</h4>
+<p><strong>這是「開單」畫面,而且只能改三件事</strong>:客戶統編、中文姓名、英文姓名,外加開戶缺件。主檔就是變更單 <code>BMS001ACHG</code>,唯一明細是缺件 <code>OFD272A</code> (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:39-40</code>)。查詢只撈來源別為 <code>1</code> 的單(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:495-496</code>)—— <strong>這是一個會把資料濾掉而不提示的條件</strong>,見 <a class="sec" href="#5-2-會把資料濾掉而不提示的條件">§5.2</a>。</p>
+<h4 id="4-2-2-誰開單-誰改什麼">4.2.2 誰開單、誰改什麼</h4>
+<p>開單全在 <code>BeforeAdd</code> 這一支方法裡(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:86-438</code>),順序是:</p>
+<ol><li>用畫面上的戶號去撈 <code>BMS001A</code> 現值,放進不是實體表的暫存 DataTable <code>BMSM004_Cer</code> (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:544-582</code>;取 SQL 用字串接條件,見附錄 E5)</li><li>取變更書號:<code>SerialNo.GetBF_Change()</code>,撞號就重取(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:100-105</code>)</li><li><strong>把 <code>BMS001A</code> 的每一個欄位同時塞進變更前與變更後兩份</strong>,長達 320 行的逐欄指派 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:108-434</code>)。三個關鍵欄位(統編 / 中文姓名 / 英文姓名) 只在使用者沒填時才覆蓋(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:110-119</code>)</li><li>把缺件明細的交易編號全部改成剛取到的變更書號,讓缺件掛在這張單上 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:435-436</code>)</li></ol>
+<p><strong>使用者只改那三欄</strong>,其餘變更後欄位一律等於變更前 (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:511-528</code>)。這解釋了為什麼 <code>OFDB003</code> 生效時「整列搬回去」不會誤改其他欄位 ——〔假設〕依據是這裡的成對指派,SP 本身不在 repo。</p>
+<h4 id="4-2-3-四眼各階段附加動作">4.2.3 四眼各階段附加動作</h4>
+<p>八個 <code>After</code> 事件<strong>做的事完全一樣</strong>:呼叫 <code>SrNoCommentProcessor.AddCommentHistory</code> 寫一筆跳號一覽表, 差別只有傳進去的 <code>EVAType</code>;寫失敗一律 <code>throw new ApplicationException("")</code>(空訊息) (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:856-910</code>)。 <strong>沒有任何一個階段把變更後的值寫回 <code>BMS001A</code></strong> —— 這是 <a class="sec" href="#2-1-chg-是什麼-12-張配對表的機制-本篇核心">§2.1</a> 證據 5 的來源。</p>
+<p>覆核或修改成功後,若統編或姓名真的被改過,寄一封「受益人姓名及ID變更作業通知信」 (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:169-173</code>),信件內容是變更前後對照 (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:558-570</code>)。</p>
+<h4 id="4-2-4-卡控總表">4.2.4 卡控總表</h4>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>查詢</td><td>收件日期(起)(迄)必須皆填或皆不填、起不可大於迄</td><td>違反</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:108-111</code></td></tr><tr><td>查詢</td><td>戶號(起)(迄)同上</td><td>違反</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:112-115</code></td></tr><tr><td>查詢</td><td>收件日期 / 戶號 / 變異前後統編必須擇一填寫</td><td>全空且非 ToDo</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:116-120</code></td></tr><tr><td>挑受益人時</td><td>該戶號還有未生效的變更單</td><td>有</td><td>詢問(Yes 才繼續,寫 ByPass 記錄)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:656-676</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:773-800</code></td></tr><tr><td>挑受益人時</td><td>該統編存在 <code>OFD701</code>(有定期定額扣款人或約定扣款帳號)</td><td>有</td><td>警示(按 OK 才繼續)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:678-697</code></td></tr><tr><td>新增 / 修改前</td><td>變更後的統編已經開過戶</td><td>已存在</td><td>詢問(Yes 才繼續)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:699-719</code></td></tr><tr><td>新增 / 修改前</td><td>變更後統編不符台灣身分證或統一編號邏輯</td><td>不符</td><td>詢問(No 就擋,Yes 寫 ByPass 記錄)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:369-382</code></td></tr><tr><td>新增 / 修改前</td><td>有變更前值就一定要有變更後值(三組欄位各查一次)</td><td>缺</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:579-584</code></td></tr><tr><td>新增 / 修改前</td><td>三欄都沒改而且缺件也沒增減</td><td>都沒改</td><td>阻擋(<code>資料未變更</code>)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:586-602</code></td></tr><tr><td>新增 / 修改前</td><td>變更生效日期不可小於收件日期</td><td>小於</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:603-604</code></td></tr><tr><td>新增 / 修改前</td><td>收件日期必須是公司營業日</td><td>非營業日</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:605-607</code></td></tr><tr><td>新增 / 修改前</td><td>收件日期不可大於缺件的到件日期</td><td>大於</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:608-610</code></td></tr><tr><td>新增 / 修改前</td><td>中文姓名不可含特殊字元</td><td>含</td><td>警示(只提示,不擋)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:251-270</code></td></tr><tr><td>載入既有單</td><td>已生效的單鎖掉修改與刪除鍵</td><td>已生效</td><td>阻擋(按鈕 disable)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:211-216</code> 與 <code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:500-504</code></td></tr><tr><td>載入既有單</td><td>缺件已有到件人員時鎖掉刪除鍵</td><td>有</td><td>阻擋(按鈕 disable)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:505-506</code></td></tr></tbody></table></div>
+<h3 id="4-3-bmsm006-受益人資料變更-舊戶-推測">4.3 <code>BMSM006</code> 受益人資料變更(舊戶)(推測)</h3>
+<h4 id="4-3-1-用途與主-明細">4.3.1 用途與主 / 明細</h4>
+<p>全模組最複雜的一支:UI 8,026 行 / PO 2,844 行 / Control 5,801 行,而且六層缺 model 與 view (它<strong>共用 <code>BMSM001</code> 的 typed DataSet</strong>,結論在 <a class="sec" href="#3-1-維護-m-8-支">§3.1</a>)。它是 <code>BMSM004</code> 的超集:同樣開 <code>BMS001ACHG</code> 這張單,但明細掛了 11 張配對表加 <code>OFD601</code> (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:80-117</code>),因此<strong>幾乎所有受益人欄位都能改</strong>。</p>
+<p>這支 PO 有兩套 <code>Initial</code>,靠切換主檔在兩種形狀之間跳:</p>
+<div class="tw"><table><thead><tr><th>方法</th><th>主檔</th><th>明細</th><th>用途</th><th>錨點</th></tr></thead><tbody><tr><td><code>Initial006</code></td><td><code>BMS001ACHG</code></td><td>11 張配對表加 <code>OFD607ACHG</code> 加 <code>OFD601</code>,旗標為真再加 <code>OFD272A</code></td><td>查詢 / 維護變更單</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:78-134</code></td></tr><tr><td><code>Initial</code></td><td><code>BMS001A</code></td><td>與 <code>BMSM001</code> 相同的那批正式表</td><td><strong>「帶值」</strong>:開新單時把現值撈進畫面</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:136-181</code></td></tr></tbody></table></div>
+<p>切換點在 <code>GetMaintainData</code>:參數沒有變更書號就走 <code>Initial</code>(帶值),有就走 <code>Initial006</code>(讀單) (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:857-877</code>)。 <code>Add</code> / <code>Update</code> / <code>Verify</code> / <code>Approve</code> / <code>Reject</code> / <code>Resend</code> / <code>Delete</code> 每一支都先呼叫 <code>ResetTable</code> 把形狀切回配對表 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:804-902</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1338-1348</code>)。 <strong>漏掉任何一支就會寫錯表</strong>,這是改這支 PO 時最容易踩的地方。</p>
+<h4 id="4-3-2-誰開單-誰改什麼">4.3.2 誰開單、誰改什麼</h4>
+<p><code>BeforeAdd</code>(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:299-444</code>):</p>
+<div class="tw"><table><thead><tr><th>序</th><th>動作</th><th>條件</th><th>錨點</th></tr></thead><tbody><tr><td>1</td><td>取變更書號,撞號重取</td><td>永遠</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:305-312</code></td></tr><tr><td>2</td><td><code>GetNO</code> 取各帳戶的授權書號</td><td>永遠</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:313-314</code></td></tr><tr><td>3</td><td>取 EC 自動編號</td><td><strong>只有</strong>全方位帳戶旗標有變,或原本是 <code>01</code> 型而被改掉時</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:316-323</code></td></tr><tr><td>4</td><td>有 EC 異動列而 <code>OFD601</code> 還沒有這一戶時,<strong>用 <code>BMS001A</code> 的現值整列複製出一筆 <code>OFD601</code></strong>,註冊別設 <code>N</code>、來源設 <code>2</code></td><td>EC 異動列存在且查不到網路戶流水號</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:365-411</code></td></tr><tr><td>5</td><td>取 EC 專屬變更書號,再把網路戶流水號、變更書號、EC 變更書號回填到每一列 <code>OFD607ACHG</code></td><td>EC 異動列存在</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:412-432</code></td></tr></tbody></table></div>
+<p>第 4 步是整個模組裡最隱晦的一段:<strong>在 BMS 的變更單上按存檔,會在 EC 的 <code>OFD601</code> 生一筆新網路戶</strong>。複製時對日期欄位做型別轉換、對國別欄位把字元 <code>0</code> 全部拿掉 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:391-400</code>)。這個取代是字面上的字串取代, <code>01</code> 會變成 <code>1</code>、<code>10</code> 也會變成 <code>1</code> ——〔假設〕原意是去前導零,但寫法會誤傷,見附錄 E9。</p>
+<p>「帶入 EC 資料」按鈕(<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:1089-1798</code>)是使用者主動按的: 用統編去 <code>EC_BF_NODataSrc</code> 找網路戶,把 <code>OFD601</code> 與 <code>OFD607A</code> 的資料整批搬進畫面的變更後欄位與明細; 成功後鎖住開戶類別欄位並寫一筆 ByPass 記錄(<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:1784-1790</code>); 查無網路戶只提示「無符合資料」(<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:1793-1796</code>)。</p>
+<h4 id="4-3-3-四眼各階段附加動作">4.3.3 四眼各階段附加動作</h4>
+<div class="tw"><table><thead><tr><th>階段</th><th>做什麼</th><th>錨點</th></tr></thead><tbody><tr><td><code>Add</code> / <code>Update</code>(伺服端收尾)</td><td>呼叫 SP <code>s_TA_BMSM006_Get</code> 數這張單有沒有欄位真的變了,<strong>數到 0 就丟 <code>受益人資料未變動</code></strong></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:816-836</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1132-1142</code></td></tr><tr><td><code>AfterAdd</code></td><td>主檔送印鑑審核</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:637-643</code></td></tr><tr><td><code>AfterVerify</code></td><td>只寫跳號註記</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:977-982</code></td></tr><tr><td><code>AfterApprove</code></td><td><strong>只寫跳號註記</strong>;回寫 EC 覆核者的那段整塊被註解</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:984-1039</code></td></tr><tr><td><code>Approve</code>(Control 層)</td><td>覆核成功後對符合條件的 EC 異動列寄歡迎信</td><td><code>Dev/ATLAS.BMS/Source/Control/Control.BMS/BMSM006_Ctl.cs:101-143</code></td></tr><tr><td><code>AfterApproveDelete</code></td><td>寫跳號註記,並用一段 <code>BEGIN</code> 匿名區塊作廢舊印鑑</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1041-1076</code></td></tr><tr><td><code>AfterDelete</code> / <code>AfterUnDelete</code></td><td>只寫跳號註記</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:963-975</code></td></tr><tr><td><code>AfterReject</code> / <code>AfterResend</code></td><td>只寫跳號註記</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1078-1090</code></td></tr></tbody></table></div>
+<p>寄歡迎信的條件(<code>Dev/ATLAS.BMS/Source/Control/Control.BMS/BMSM006_Ctl.cs:116-132</code>): 該列覆核者為空(第一次覆核)、異動別非空且不是 <code>D</code>、狀態不是 <code>203</code>, 再加上「異動別為 <code>A</code> 且註冊別為 <code>4</code> 且開戶進度為 <code>A0</code> 或 <code>B0</code>」或「開戶進度為 <code>B2</code>」。 <strong>同一件事 <code>BMSM001</code> 的判斷不一樣</strong>(註冊別比的是 <code>8</code>,而且前面那組條件被註解掉了), 見 <code>Dev/ATLAS.BMS/Source/Control/Control.BMS/BMSM001_Ctl.cs:136-157</code> 與附錄 E2。</p>
+<h4 id="4-3-4-卡控總表">4.3.4 卡控總表</h4>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>查詢</td><td>開戶日期 / 境外開戶日期 / 收件日期 / 戶號的(起)(迄)成對與大小</td><td>違反</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:616-631</code></td></tr><tr><td>查詢</td><td>收件日期 / 客戶統編 / 戶號必須擇一填寫</td><td>全空且非 ToDo</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:632-636</code></td></tr><tr><td>挑受益人時</td><td>該戶號還有未生效的變更單</td><td>有</td><td>詢問</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:2440-2486</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1355-1380</code></td></tr><tr><td>新增 / 修改前</td><td>受益人本人與相關人查交易列管</td><td>命中</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:692-700</code></td></tr><tr><td>新增 / 修改前</td><td>客戶統編必填、收件日期必填</td><td>空</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:2806-2814</code></td></tr><tr><td>新增 / 修改前</td><td>變更資料異動說明必填</td><td>空</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:3504-3506</code></td></tr><tr><td>新增 / 修改前</td><td>戶籍與通訊地址郵遞區號必填;非本國籍時英文現行居住地必填</td><td>空</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:3446-3466</code></td></tr><tr><td>新增 / 修改前</td><td>同一受益人另有尚未生效的 EC 權限異動單</td><td>有</td><td>阻擋(<code>尚有新增電子交易權限異動申請未生效，不可存檔</code>)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:3577-3583</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1387-1415</code></td></tr><tr><td>新增 / 修改前</td><td>變更生效日期不可小於收件日期</td><td>小於</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:3585-3586</code></td></tr><tr><td>新增 / 修改前</td><td>收件日期必須是公司營業日</td><td>非營業日</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:3601-3603</code></td></tr><tr><td>新增 / 修改前</td><td>收件日期不可大於缺件的到件日期</td><td>大於</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:3599-3600</code></td></tr><tr><td>新增 / 修改前</td><td>由未註銷改成註銷時提醒先確認在途交易</td><td>狀態轉換成立且無其他錯誤</td><td>警示(不擋)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:3605-3609</code></td></tr><tr><td>新增 / 修改前</td><td>密碼重發:尚未開 EC 戶 / 已停權 / 尚未發送</td><td>成立</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:1974-2057</code></td></tr><tr><td>存檔(伺服端)</td><td>整張單沒有任何欄位變動</td><td>SP 回 0</td><td>阻擋(<code>受益人資料未變動</code>)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1140-1141</code></td></tr><tr><td>覆核前</td><td><strong>除了「刪除待覆核」轉向刪除流程以外,不做任何欄位檢核</strong></td><td>一律</td><td>過濾(無提示)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:680-684</code></td></tr></tbody></table></div>
+<p>最後一條要特別記住:<strong><code>BMSM006</code> 的覆核鍵不會重跑欄位檢核</strong>。輸入階段擋掉的東西, 如果在覆核前被別的管道改掉(例如 <code>OFD601</code> 的狀態變了),覆核不會再擋一次。 <code>BMSM001</code> 至少對簡易開戶還會重跑(<a class="sec" href="#4-1-bmsm001-受益人開戶-新戶-推測">§4.1</a>.4),<code>BMSM006</code> 連那層都沒有。</p>
+<h3 id="4-4-bmsm007-受益人專案註記-推測">4.4 <code>BMSM007</code> 受益人專案註記(推測)</h3>
+<h4 id="4-4-1-用途與主-明細">4.4.1 用途與主 / 明細</h4>
+<p>全模組最小的 M 畫面(PO 186 行 / UI 215 行),主檔 <code>BMS007A</code>,<strong>沒有明細</strong> (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM007_PO.cs:39</code>)。一列代表「某受益人被掛在某個專案底下」,欄位只有專案代碼、受益人戶號、備註、是否結案四個業務欄。</p>
+<p>專案代碼的中文名來自 <code>COD006A</code> 裡分類為 <code>HO</code> 的那批代碼 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM007_PO.cs:116-123</code>),查詢時左外接帶出說明; 受益人姓名與統編由 <code>BMS001A</code> 左外接帶出(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM007_PO.cs:119-120</code>)。</p>
+<h4 id="4-4-2-誰開單-誰改什麼">4.4.2 誰開單、誰改什麼</h4>
+<p>不開單。使用者在畫面上挑專案代碼與受益人(統編與戶號互相帶值, <code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM007.cs:110-143</code>),填備註與結案勾選,存檔直接寫 <code>BMS007A</code>。修改模式下專案代碼、統編、戶號三個欄位變唯讀 (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM007.cs:53-60</code>)—— <strong>要換專案只能刪掉重開</strong>。</p>
+<h4 id="4-4-3-四眼各階段附加動作">4.4.3 四眼各階段附加動作</h4>
+<p><strong>一個都沒有。</strong> PO 只掛 <code>BeforeSelect</code> / <code>BeforeGetMaintainData</code> / <code>BeforeGetToDoData</code> 三支, 而且三支的內容一模一樣,都是呼叫同一個 <code>BuildMasterSQLString</code> (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM007_PO.cs:55-91</code>)。四眼流程完全交給框架。</p>
+<p>一個要注意的細節:三支都傳 <code>false</code> 給 <code>isToDoString</code>,連 <code>BeforeGetToDoData</code> 也一樣 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM007_PO.cs:86-90</code>),所以 ToDo 專用的 <code>xTableHelper.AppendToDoString</code> 那段(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM007_PO.cs:172-177</code>) <strong>永遠不會被接上去</strong>。這是附錄 E8 的一筆。</p>
+<h4 id="4-4-4-卡控總表">4.4.4 卡控總表</h4>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>新增 / 修改前</td><td>只有 <code>validatorManager1</code> 的宣告式必填檢核</td><td>必填欄位空白</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM007.cs:159-164</code></td></tr><tr><td>查詢</td><td>三個條件(專案代碼 / 戶號 / 統編)有填才進 SQL,<strong>全空就整表撈</strong></td><td>全空</td><td>過濾(無提示,反向:不過濾)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM007.cs:94-100</code></td></tr></tbody></table></div>
+<p><strong>沒有任何業務卡控。</strong> 同一個受益人可以被重複掛進不同專案,靠主鍵(專案代碼加戶號)擋重複而已。</p>
+<h3 id="4-5-bmsm924-fatca-與-giin-自我證明-推測">4.5 <code>BMSM924</code> FATCA 與 GIIN 自我證明(推測)</h3>
+<h4 id="4-5-1-用途與主-明細">4.5.1 用途與主 / 明細</h4>
+<p>主檔 <code>BMS924</code>,沒有明細(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM924_PO.cs:29</code>)。一列代表某受益人在某個開立日期的 FATCA 自我證明:FATCA 代碼、W 表別、GIIN 號碼與取得日、 W 表是否永久有效與到期日、同意與拒絕旗標,再加上<strong>十組</strong>外國稅籍資料(英文姓名 / 英文地址 / 稅籍編號) (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM924.cs:182-224</code>)。</p>
+<p>那十組是<strong>逐欄寫死的控制項對應</strong>,不是明細 grid;要支援第十一組必須改 xsd 加欄位再改 UI,見附錄 E10。</p>
+<h4 id="4-5-2-誰開單-誰改什麼">4.5.2 誰開單、誰改什麼</h4>
+<p>不開單,直接寫 <code>BMS924</code>。查詢條件只認戶號與開立日期兩個 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM924_PO.cs:109-136</code>),兩個都用 <code>Like</code> 或 <code>Equal</code>。主檔 SQL 是 <code>SELECT BMS924.*</code> 加 <code>JOIN BMS001A</code> 帶姓名 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM924_PO.cs:100-103</code>)—— 注意是 <code>JOIN</code> 不是 <code>LEFT JOIN</code>, <strong>受益人主檔被刪掉的話,這裡的 FATCA 資料會整筆查不到</strong>(過濾,無提示)。</p>
+<h4 id="4-5-3-四眼各階段附加動作">4.5.3 四眼各階段附加動作</h4>
+<p><strong>一個都沒有</strong>,形狀與 <code>BMSM007</code> 完全相同:三支 <code>Before</code> 事件、同一支 <code>BuildMasterSQLString</code>、 <code>isToDoString</code> 一律傳 <code>false</code>(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM924_PO.cs:45-82</code>)。</p>
+<h4 id="4-5-4-卡控總表">4.5.4 卡控總表</h4>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>新增 / 修改前</td><td>只有 <code>validatorManager1</code> 的宣告式檢核;<code>DoValidate</code> 本身沒有任何業務規則</td><td>必填空白</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM924.cs:160-165</code></td></tr><tr><td>查詢</td><td>受益人主檔不存在時整筆查不到(內部 <code>JOIN</code>)</td><td>主檔被刪</td><td>過濾(無提示)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM924_PO.cs:100-103</code></td></tr></tbody></table></div>
+<h3 id="4-6-bmsm925-crs-自我證明-推測">4.6 <code>BMSM925</code> CRS 自我證明(推測)</h3>
+<h4 id="4-6-1-用途與主-明細">4.6.1 用途與主 / 明細</h4>
+<p>主檔 <code>BMS925A</code>(以開立日期加統編為鍵),兩張明細: <code>BMS926A</code>(無法取得稅籍編號的理由)與 <code>BMS927A</code>(法人具控制權人清單) (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM925_PO.cs:37-39</code>)。</p>
+<h4 id="4-6-2-誰開單-誰改什麼">4.6.2 誰開單、誰改什麼</h4>
+<p>不開單。使用者挑統編,畫面自動帶出姓名、出生日期、出生地、英文通訊地址與受益人境內外別 (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:206-234</code>),再填 CRS 代碼、是否排除申報帳戶與排除原因, 兩張明細各自在 grid 上加列。</p>
+<p>GIIN 號碼不是手key:按專用按鈕去 <code>BMS924</code> 撈該戶最新一筆 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM925_PO.cs:114-129</code> 的 <code>row_number()</code> 取最新)。 <strong>這是 BMS 內部 CRS 與 FATCA 兩塊唯一的資料連結。</strong></p>
+<h4 id="4-6-3-四眼各階段附加動作">4.6.3 四眼各階段附加動作</h4>
+<p><strong>四個事件全是空殼。</strong> <code>BeforeSelect</code> / <code>BeforeGetMaintainData</code> / <code>BeforeGetToDoData</code> / <code>BeforeAdd</code> 各自只有一行 <code>strSQL = args.DbCmd.CommandText;</code>(註解直說是 for debug), 指派完就沒有下文(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM925_PO.cs:58-109</code>)。所以這支畫面的 SQL <strong>完全由框架自動組</strong>,PO 只是掛在那裡,見附錄 E8。</p>
+<h4 id="4-6-4-卡控總表">4.6.4 卡控總表</h4>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>按 GIIN 帶入鍵</td><td>戶號必填</td><td>空</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:268-275</code></td></tr><tr><td>按 GIIN 帶入鍵</td><td>該戶在 <code>BMS924</code> 查不到 GIIN</td><td>查不到</td><td>警示(<strong>用原生 <code>MessageBox</code> 顯示英文 <code>No GiinNo Data</code></strong>,見附錄 E4)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:279-284</code></td></tr><tr><td>新增 / 修改前</td><td>勾了「是否為排除申報帳戶」就要填排除原因</td><td>沒填</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:299-304</code></td></tr><tr><td>新增 / 修改前</td><td>排除原因要與 CRS 代碼相符:<code>B2</code> 只能配 <code>1</code>、<code>B3</code> 只能配 <code>2</code> / <code>3</code> / <code>4</code>、<code>A1</code> 與 <code>A2</code> 只能配 <code>5</code></td><td>不符</td><td>阻擋(訊息有錯字,見附錄 E11)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:306-341</code></td></tr><tr><td>新增 / 修改前</td><td>受益人稅務身份(<code>BMS926A</code>)至少一列</td><td>零列</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:345-353</code></td></tr><tr><td>新增 / 修改前</td><td>境內外別為 <code>02</code> 或 <code>03</code> 時,法人具控制權人(<code>BMS927A</code>)至少一列</td><td>零列</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:354-357</code></td></tr><tr><td>輸入稅籍編號</td><td>長度要落在 <code>TA_COUNTRY_ISO</code> 裡該國的上下限之間;查不到該國就回「輸入的稅籍編號檢核有誤!」</td><td>不符</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM925_PO.cs:155-205</code></td></tr></tbody></table></div>
+<p>那組 CRS 代碼與排除原因的對應是<strong>寫死在 UI 的 if 串</strong>,不是查表 (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:310-335</code>);法規改了要改程式重新部署。</p>
+<h3 id="4-7-bmsm926-crs-盡職審查結果-推測">4.7 <code>BMSM926</code> CRS 盡職審查結果(推測)</h3>
+<h4 id="4-7-1-用途與主-明細">4.7.1 用途與主 / 明細</h4>
+<p>主檔 <code>CRSDTL</code>(以基準日加戶號為鍵,由批次 <code>BMSB925</code> 產生), 明細 <code>CRSDTLCHG</code>(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:34-35</code>)。</p>
+<p><strong><code>CRSDTLCHG</code> 雖然叫 <code>CHG</code>,跟 <a class="sec" href="#2-1-chg-是什麼-12-張配對表的機制-本篇核心">§2.1</a> 那套機制毫無關係</strong>:沒有變更書號、沒有變更前後成對欄位、沒有生效時戳,它就是「這一期審查的人工判定結果」。<a class="sec" href="#2-2-12-張-chg-表與本表的配對">§2.2</a> 的例外 1 已經講過,這裡不重述。</p>
+<h4 id="4-7-2-誰開單-誰改什麼">4.7.2 誰開單、誰改什麼</h4>
+<p>不開單。母體由批次產生,人工只在明細上填「盡職審查結果」與備註 (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM926.cs:142-160</code>),一筆主檔對一筆明細。</p>
+<h4 id="4-7-3-四眼各階段附加動作">4.7.3 四眼各階段附加動作</h4>
+<div class="tw"><table><thead><tr><th>階段</th><th>做什麼</th><th>錨點</th></tr></thead><tbody><tr><td><code>AfterApprove</code></td><td><strong>覆核當場把明細的判定結果回寫主檔</strong> <code>CRSDTL</code>,同時更新異動者與異動時間</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:93-118</code></td></tr><tr><td><code>BeforeApproveDelete</code></td><td><strong>整支是空的</strong>,只剩註解與被註解掉的程式碼</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:120-132</code></td></tr></tbody></table></div>
+<p><code>AfterApprove</code> 是全模組唯一「覆核即回寫本表」的地方,判定值的四種語意 (<code>1</code> 無外國身分指標 / <code>2</code> 無外國稅務居民身分 / <code>3</code> 有外國稅務居民身分 / <code>4</code> 無資訊帳戶) 在查詢 SQL 裡用 <code>CASE</code> 寫死兩次 —— 主檔一份、明細一份 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:152-155</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:194-197</code>)。代碼值見附錄 C。</p>
+<p>還有一個要留意的寫法:解構子 <code>~BMSM926_PO</code> 用的是 <code>+=</code> 而不是 <code>-=</code> (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:37-45</code>),等於在物件要死的時候<strong>又掛一次事件</strong>。見附錄 E6。</p>
+<h4 id="4-7-4-卡控總表">4.7.4 卡控總表</h4>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>新增 / 修改前</td><td>只有 <code>validatorManager1</code> 的宣告式檢核</td><td>必填空白</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM926.cs:197-201</code></td></tr><tr><td>載入既有資料</td><td>主檔標記為「無外國身分指標」時鎖掉修改鍵</td><td>標記為 <code>Y</code></td><td>阻擋(按鈕 disable)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM926.cs:76-80</code></td></tr><tr><td>新增載入</td><td>進新增模式時把新增 / 修改 / 刪除三個鍵全部關掉</td><td>一律</td><td>阻擋(按鈕 disable)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM926.cs:51-61</code></td></tr></tbody></table></div>
+<h3 id="4-8-bmsm927-crs-匯率維護-推測">4.8 <code>BMSM927</code> CRS 匯率維護(推測)</h3>
+<h4 id="4-8-1-用途與主-明細">4.8.1 用途與主 / 明細</h4>
+<p><strong>全模組唯一的多筆主檔畫面</strong>,繼承 <code>BaseMultiRowEVADaoPO</code>:主檔 <code>CRSEXRATE</code>, 主鍵只宣告基準日一欄(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM927_PO.cs:33-34</code>)。一個基準日底下有多列(每個幣別一列),四眼是<strong>整組一起</strong>推進的,單筆與多筆的差別見 <code>architecture.md §3.9</code>。</p>
+<h4 id="4-8-2-誰開單-誰改什麼">4.8.2 誰開單、誰改什麼</h4>
+<p>不開單。使用者填一個基準日,再在 grid 上一列一列填幣別與匯率;存檔前程式把畫面上的基準日一次寫進每一列(<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM927.cs:35-42</code>,註解直接寫「一定要這樣寫」)。</p>
+<p>查詢與維護走兩段不同的 SQL:</p>
+<div class="tw"><table><thead><tr><th>用途</th><th>SQL 形狀</th><th>錨點</th></tr></thead><tbody><tr><td>查詢清單</td><td>用 <code>ROW_NUMBER() OVER (PARTITION BY BASE_DATE ...)</code> 每個基準日只取第一列,幣別塞空字串、匯率塞 <code>-1</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM927_PO.cs:55-76</code></td></tr><tr><td>進維護頁</td><td>撈該基準日的全部列</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM927_PO.cs:82-97</code></td></tr></tbody></table></div>
+<p>查詢那段的幣別與匯率是<strong>假值</strong>(<code>' '</code> 與 <code>-1</code>),純粹為了讓清單一個基準日只出現一列。看到清單上匯率是 <code>-1</code> 不是資料壞掉。</p>
+<h4 id="4-8-3-四眼各階段附加動作">4.8.3 四眼各階段附加動作</h4>
+<p><strong>一個都沒有。</strong> 三支 <code>Before</code> 事件各自只呼叫對應的 SQL 組裝方法 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM927_PO.cs:100-115</code>),四眼推進整個交給 <code>BaseMultiRowEVADaoPO</code>。</p>
+<h4 id="4-8-4-卡控總表">4.8.4 卡控總表</h4>
+<div class="tw"><table><thead><tr><th>時點</th><th>檢核</th><th>成立時</th><th>結果類型</th><th>錨點</th></tr></thead><tbody><tr><td>新增 / 修改前</td><td>grid 至少要有一列</td><td>零列</td><td>阻擋(<code>明細資料 必須輸入</code>)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM927.cs:54-57</code></td></tr><tr><td>新增 / 修改前</td><td>grid 每一列的主鍵欄位必填</td><td>缺</td><td>阻擋</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM927.cs:48-53</code></td></tr><tr><td>查詢</td><td>基準日只用「大於等於」比對,填了就只看那天以後</td><td>有填</td><td>過濾(無提示)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM927.cs:131-134</code></td></tr></tbody></table></div>
+<p><strong>沒有匯率合理性檢核</strong>:匯率可以填 0 或負數,程式不擋。</p>
+</div></section><section class="sec" data-sec="5-查詢畫面-i"><h2 id="5-查詢畫面-i"><button class="tg" aria-label="收合/展開" type="button"></button>5. 查詢畫面(I)</h2><div class="sec-body">
+<h3 id="5-1-本模組無此類畫面">5.1 本模組無此類畫面</h3>
+<p>母體掃到 0 支 I 畫面(<code>docs/_candidates/bms.md</code> 第 1 節),讀完 8 支 M 畫面之後可以確認<strong>這不是漏掃</strong>: 查詢功能全部被併進 M 畫面的第一個頁籤。三個佐證:</p>
+<div class="tw"><table><thead><tr><th>佐證</th><th>內容</th><th>錨點</th></tr></thead><tbody><tr><td>每支 M 畫面都宣告兩頁</td><td><code>this.TabPages = 2;</code>(查詢頁加維護頁)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM007.cs:26-35</code>、<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM926.cs:34-42</code></td></tr><tr><td>每支都實作查詢前事件,把條件塞進查詢用 VDB</td><td><code>AddParametersRow(...)</code></td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:127-143</code>、<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM924.cs:104-112</code></td></tr><tr><td>PO 端的 <code>BeforeSelect</code> 與 <code>BeforeGetMaintainData</code> 共用同一支 SQL 組裝</td><td>查詢與維護讀的是同一份語法</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM924_PO.cs:45-69</code></td></tr></tbody></table></div>
+<p><code>architecture.md §6.3</code> 說 I 畫面的 PO 會退化成裸 DAO;BMS 這邊連退化的機會都沒有, 因為根本沒有獨立的 I 畫面。三支 B 畫面(<a class="sec" href="#6-批次-b-與-windowsservice">§6</a>)反而比較接近 I 的形狀 —— 它們的 PO 也不繼承任何 EVA 基底。</p>
+<h3 id="5-2-會把資料濾掉而不提示的條件">5.2 會把資料濾掉而不提示的條件</h3>
+<p>這一節是本章的重點。M 畫面的查詢頁有幾條<strong>寫死在 SQL 裡、畫面上看不到、使用者也關不掉</strong>的條件:</p>
+<div class="tw"><table><thead><tr><th>畫面</th><th>條件</th><th>後果</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMSM004</code></td><td>主檔固定加 <code>AND SOURCE_CD='1'</code></td><td><strong><code>BMSM006</code> 開的單在 <code>BMSM004</code> 查不到</strong></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:495-496</code></td></tr><tr><td><code>BMSM006</code></td><td>主檔固定加 <code>AND BMS001ACHG.SOURCE_CD = '2'</code></td><td><strong><code>BMSM004</code> 開的單在 <code>BMSM006</code> 查不到</strong></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1633-1634</code></td></tr><tr><td><code>BMSM004</code></td><td>明細固定加 <code>WHERE SHORE_ID= '2' AND TRN_CD='5'</code></td><td>只看得到境內開戶缺件,其他缺件種類看不到</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:531</code></td></tr><tr><td><code>BMSM004</code></td><td>查詢時<strong>無條件</strong>加一條姓名 <code>Like</code> 參數,即使畫面上姓名欄是空的</td><td>變更後中文姓名為 NULL 的單查不出來</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:141</code></td></tr><tr><td><code>BMSM924</code></td><td>主檔用內部 <code>JOIN BMS001A</code></td><td>受益人主檔被刪掉,FATCA 資料整筆消失</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM924_PO.cs:100-103</code></td></tr><tr><td><code>BMSM927</code></td><td>查詢清單用 <code>ROW_NUMBER()</code> 每個基準日只留第一列,且幣別與匯率被換成 <code>' '</code> 與 <code>-1</code></td><td>清單上看到的匯率不是真值</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM927_PO.cs:58-70</code></td></tr><tr><td><code>BMSM927</code></td><td>基準日只用「大於等於」比對</td><td>填了基準日就看不到更早的資料</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM927.cs:131-134</code></td></tr></tbody></table></div>
+<p>第一與第二條是這一節最要記住的:<strong><code>BMS001ACHG</code> 這張表被 <code>SOURCE_CD</code> 切成兩半</strong>, <code>1</code> 是姓名與統編變更單(<code>BMSM004</code>)、<code>2</code> 是一般資料變更單(<code>BMSM006</code>)。兩支畫面各看各的一半,<strong>任何一支都不會顯示完整的變更單清單</strong>。要看全部只能下 SQL,或走 OFD 那邊的查詢畫面。</p>
+<p><code>BMSM001</code> 另外有三個<strong>由畫面勾選才生效</strong>的過濾,勾了才加條件,不算靜默過濾,但值得記一筆: 未成年(以 18 歲為界,寫死在 SQL 兩處)、非本國籍、姓名以英文字母開頭 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:829-837</code>)。年齡門檻寫死見附錄 E12。</p>
+<h3 id="5-3-查詢條件一覽">5.3 查詢條件一覽</h3>
+<div class="tw"><table><thead><tr><th>畫面</th><th>可查條件</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMSM001</code></td><td>統編、戶號(含起迄)、系統別、帳戶別、境內外別、姓名、國籍、開戶日期(起迄)、境外開戶日期(起迄)、三個勾選式過濾</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:838-839</code></td></tr><tr><td><code>BMSM004</code></td><td>變更書號、戶號(起迄)、變更前後統編、變更後姓名、收件日期(起迄)、變更生效日期</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:497-500</code></td></tr><tr><td><code>BMSM006</code></td><td>變更前統編、戶號(含起迄)、收件日期(起迄)、變更生效日期、變更前開戶日期(起迄)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1635-1638</code></td></tr><tr><td><code>BMSM007</code></td><td>專案代碼、戶號、統編</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM007_PO.cs:130-171</code></td></tr><tr><td><code>BMSM924</code></td><td>戶號、開立日期</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM924_PO.cs:109-136</code></td></tr><tr><td><code>BMSM925</code></td><td>戶號、開立日期</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:148-153</code></td></tr><tr><td><code>BMSM926</code></td><td>戶號、統編、基準日</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:163-165</code></td></tr><tr><td><code>BMSM927</code></td><td>基準日</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM927_PO.cs:71</code></td></tr></tbody></table></div>
+<p><code>BMSM007</code> 與 <code>BMSM924</code> 的條件是<strong>用字串串接</strong>組進 SQL 的(<code>" And BMS007A." + Row.Name + " = '" + Row.Value + "'"</code>), 不是參數化,見附錄 E5 與 <code>architecture.md §4.3</code>。</p>
+</div></section><section class="sec" data-sec="6-批次-b-與-windowsservice"><h2 id="6-批次-b-與-windowsservice"><button class="tg" aria-label="收合/展開" type="button"></button>6. 批次(B)與 WindowsService</h2><div class="sec-body"><figure><svg viewBox="0 0 1040 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三支批次各自的資料流:暫存表、SP 與最後寫入的正式表"><defs><marker id="ah_bms_batch" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">BMSB901 匯款帳號整批換號</text><g class="bx vend">
+<rect x="20" y="40" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="62" text-anchor="middle">使用者 CSV</text>
+<text class="t2" x="120" y="82" text-anchor="middle">5 欄 · 會靜默截斷</text>
+</g><g class="bx vend">
+<rect x="240" y="40" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="340" y="62" text-anchor="middle">BMSB901_T1</text>
+<text class="t2" x="340" y="82" text-anchor="middle">只 INSERT 不清</text>
+</g><g class="bx ext">
+<rect x="460" y="40" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="580" y="62" text-anchor="middle">S_TA_BMSB901_GET</text>
+<text class="t2" x="580" y="82" text-anchor="middle">SP 比出四個結果集</text>
+</g><g class="bx accent">
+<rect x="720" y="40" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="870" y="62" text-anchor="middle">BMS005A / OFD610A / RSP006A</text>
+<text class="t2" x="870" y="82" text-anchor="middle">逐列 UPDATE</text>
+</g><path class="ar" d="M 220 68 L 240 68" marker-end="url(#ah_bms_batch)"/><path class="ar" d="M 440 68 L 460 68" marker-end="url(#ah_bms_batch)"/><path class="ar" d="M 700 68 L 720 68" marker-end="url(#ah_bms_batch)"/><text class="lane" x="20" y="130">BMSB901A 澳盛轉星展〔客戶特定〕</text><g class="bx vend">
+<rect x="20" y="144" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="110" y="166" text-anchor="middle">星展 O 檔</text>
+<text class="t2" x="110" y="186" text-anchor="middle">定長 · 位移寫死</text>
+</g><g class="bx vend">
+<rect x="220" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="335" y="166" text-anchor="middle">BMSB901A_T1 與 _T2</text>
+<text class="t2" x="335" y="186" text-anchor="middle">DELETE 不帶批號</text>
+</g><g class="bx">
+<rect x="470" y="144" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="570" y="166" text-anchor="middle">BMSB901A_LOG</text>
+<text class="t2" x="570" y="186" text-anchor="middle">稽核軌跡</text>
+</g><g class="bx accent">
+<rect x="690" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="805" y="166" text-anchor="middle">RSP006A / RSP005A</text>
+<text class="t2" x="805" y="186" text-anchor="middle">MERGE 039 改 810</text>
+</g><path class="ar" d="M 200 172 L 220 172" marker-end="url(#ah_bms_batch)"/><path class="ar" d="M 450 172 L 470 172" marker-end="url(#ah_bms_batch)"/><path class="ar" d="M 670 172 L 690 172" marker-end="url(#ah_bms_batch)"/><text class="lane" x="20" y="234">BMSB925 CRS 高資產客戶名單</text><g class="bx">
+<rect x="20" y="248" rx="10" ry="10" width="200" height="56"/>
+<text class="t1" x="120" y="270" text-anchor="middle">畫面參數</text>
+<text class="t2" x="120" y="290" text-anchor="middle">作業別與基準日</text>
+</g><g class="bx ext">
+<rect x="240" y="248" rx="10" ry="10" width="260" height="56"/>
+<text class="t1" x="370" y="270" text-anchor="middle">S_TA_BMSB925_EXECUTE</text>
+<text class="t2" x="370" y="290" text-anchor="middle">寫哪些表未知〔假設〕</text>
+</g><g class="bx accent">
+<rect x="520" y="248" rx="10" ry="10" width="180" height="56"/>
+<text class="t1" x="610" y="270" text-anchor="middle">CRSDTL</text>
+<text class="t2" x="610" y="290" text-anchor="middle">BMSM926 的母體</text>
+</g><g class="bx ext">
+<rect x="720" y="248" rx="10" ry="10" width="280" height="56"/>
+<text class="t1" x="860" y="270" text-anchor="middle">S_TA_BMSB925_Get</text>
+<text class="t2" x="860" y="290" text-anchor="middle">兩個結果集 兩個 xlsx</text>
+</g><path class="ar" d="M 220 276 L 240 276" marker-end="url(#ah_bms_batch)"/><path class="ar" d="M 500 276 L 520 276" marker-end="url(#ah_bms_batch)"/><path class="ar" d="M 700 276 L 720 276" marker-end="url(#ah_bms_batch)"/><text class="lane" x="20" y="338">共同點:人工按鍵觸發 · 無四眼 · 直接改正式表</text></svg><figcaption>圖 4 批次資料流。三支各走各的路,唯一的共同點是都由人按鍵觸發而且沒有四眼。橘色虛框標的是會咬人的地方:CSV 靜默截斷、暫存表不清、DELETE 不帶批號(附錄 E14 與 E19)。</figcaption></figure>
+<p>三支 B 畫面<strong>都不是排程跑的</strong>,是人在畫面上按「執行」鍵跑的一次性作業; 三支的 PO 都不繼承 <code>BaseEVADaoPO</code>,而是自己 <code>new Database("TA", DbServerType.Oracle)</code> (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901_PO.cs:37</code>、 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:37</code>、 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB925_PO.cs:35</code>),<strong>沒有四眼</strong>。本模組<strong>沒有任何 WindowsService</strong>(母體第 5 節為空)。</p>
+<p>三支共用一組操作節奏:先按「查詢」預跑一次(<code>Select</code>),看結果無誤再按「執行」(<code>Execute</code>)。兩段是分開的交易,中間隔著使用者的判斷。</p>
+<h3 id="6-1-bmsb901-匯款帳號整批換號-推測">6.1 <code>BMSB901</code> 匯款帳號整批換號(推測)</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th><th>錨點</th></tr></thead><tbody><tr><td>觸發</td><td>人工:選 CSV 檔上傳 → 按查詢 → 按執行</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901.cs:148-209</code></td></tr><tr><td>輸入</td><td>CSV 五欄:戶號、舊分行代碼、舊帳號、新分行代碼、新帳號</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901.cs:211-228</code> 的範本標題列</td></tr><tr><td>查詢階段寫哪</td><td>把每一列 <code>INSERT INTO BMSB901_T1</code>(自帶一個 <code>Guid</code> 當批號),然後呼叫 SP <code>S_TA_BMSB901_GET</code> 取回四個結果集</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901_PO.cs:51-86</code></td></tr><tr><td>執行階段寫哪</td><td>逐列 <code>UPDATE</code>:<code>BMS005A</code>(授權帳號明細)、<code>OFD610A</code>(EC 匯款確認)、<code>RSP006A</code>(定額扣款)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901_PO.cs:113-165</code></td></tr><tr><td>失敗處理</td><td>整段包在一個交易裡,任何例外就 <code>catch</code> 住不 rollback(靠 <code>using</code> 離開時自動回滾),結果列填「執行失敗，請檢查」</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901_PO.cs:172-177</code></td></tr><tr><td>與 M 畫面的關係</td><td>無。它直接改正式表,不經過 <code>BMSM006</code> 的變更單,也不留跳號註記</td><td>—</td></tr></tbody></table></div>
+<p><strong>三個要注意的地方</strong>:</p>
+<ol><li><code>BMSB901_T1</code> <strong>只 INSERT 不 DELETE</strong>(對照 <code>BMSB901A</code> 每次都先清),資料靠批號區隔, 表會一直長大(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901_PO.cs:51-75</code>)。</li><li>CSV 解析遇到欄數不足或戶號空白就 <code>break</code> 跳出迴圈,<strong>不提示、不報錯</strong>, 後面的資料整段被吃掉(<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901.cs:165-168</code>)。過濾(無提示),見附錄 E19。</li><li>查詢階段失敗時結果訊息被寫成空字串(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901_PO.cs:93-98</code>), 使用者只會看到查無資料,不知道是出錯。</li></ol>
+<h3 id="6-2-bmsb901a-澳盛轉星展印鑑與扣款帳戶搬遷-推測-客戶特定">6.2 <code>BMSB901A</code> 澳盛轉星展印鑑與扣款帳戶搬遷(推測)〔客戶特定〕</h3>
+<p>這是一支<strong>一次性資料搬遷</strong>程式,整支寫死了機構代碼與日期,見下表。</p>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th><th>錨點</th></tr></thead><tbody><tr><td>觸發</td><td>人工:選星展 O 檔(定長文字檔)→ 按查詢 → 按執行</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901A.cs:131-192</code></td></tr><tr><td>輸入格式</td><td>定長,靠寫死的位移切欄:分行代碼在第 13 位起 7 碼、帳號第 20 位起 16 碼、統編第 47 位起 11 碼、狀態碼第 74 位起 2 碼</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901A.cs:169-172</code></td></tr><tr><td>尾筆檢查</td><td>長度不足 78 且以 <code>3</code> 開頭、長度剛好 46 的列視為尾筆,取第 37 位起 9 碼當筆數與實際筆數比對</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901A.cs:151-167</code></td></tr><tr><td>查詢階段寫哪</td><td><strong>先 <code>DELETE BMSB901A_T1</code> 與 <code>BMSB901A_T2</code>(沒有任何 WHERE)</strong>,再把檔案內容寫進 <code>_T1</code>,以 <code>SUB_BANK_CODE = '039'</code> 比對 <code>RSP006A</code> 產生 <code>_T2</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:51-116</code></td></tr><tr><td>執行階段寫哪</td><td>先把要改的列存一份到 <code>BMSB901A_LOG</code>,再 <code>MERGE</code> 更新 <code>RSP006A</code>(分行代碼換成 <code>'810'</code>、核印方式 <code>'3'</code>、核印日 <code>'20171207'</code>、回件日 <code>'20171219'</code>),再 <code>MERGE</code> 更新 <code>RSP005A</code> 的備註,最後清掉兩張暫存表</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:138-204</code></td></tr><tr><td>失敗處理</td><td>寫 LOG 的筆數與 <code>MERGE</code> 的更新筆數不一致就中止並回「更新筆數不符」,交易不 commit</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:182-186</code></td></tr><tr><td>與 M 畫面的關係</td><td>無</td><td>—</td></tr></tbody></table></div>
+<p>〔客戶特定〕寫死值:來源機構 <code>'039'</code>、目的機構 <code>'810'</code>、核印日 <code>'20171207'</code>、回件日 <code>'20171219'</code>、備註文字「澳盛(039)由ACH票交所平台已改為星展(810)財金扣款平台;」 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:163-196</code>)。 <strong>這支程式只對 2017 年那一次搬遷有意義</strong>,現在跑會把日期蓋成 2017 年。</p>
+<p><strong>併發風險</strong>:批號是 Form 上的 <code>static</code> 欄位(<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901A.cs:23</code>), 而暫存表的 <code>DELETE</code> 沒有帶批號條件(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:51-56</code>)。 <strong>兩個人同時跑,後按的人會把前一個人的暫存資料整個刪掉</strong>,前一個人按執行時會查不到自己的資料。這是附錄 E14。</p>
+<h3 id="6-3-bmsb925-crs-高資產客戶名單產生與匯出-推測">6.3 <code>BMSB925</code> CRS 高資產客戶名單產生與匯出(推測)</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th><th>錨點</th></tr></thead><tbody><tr><td>觸發</td><td>人工:選作業別與基準日 → 按執行</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:58-84</code></td></tr><tr><td>輸入</td><td>作業別(產生 / 刪除,<code>D</code> 代表刪除)與基準日</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:71-82</code></td></tr><tr><td>寫哪些表</td><td><strong>由 SP <code>S_TA_BMSB925_EXECUTE</code> 決定,repo 內查不到</strong>。從 <code>BMSM926</code> 的主檔推測是寫 <code>CRSDTL</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB925_PO.cs:79-87</code></td></tr><tr><td>匯出</td><td>另一支 SP <code>S_TA_BMSB925_Get</code> 回兩個結果集(個人與法人),各存一個 xlsx</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB925_PO.cs:151-159</code> 與 <code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:96-163</code></td></tr><tr><td>失敗處理</td><td>SP 的輸出參數有訊息就 rollback 並把訊息原樣回給使用者;否則 commit</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB925_PO.cs:88-102</code></td></tr><tr><td>與 M 畫面的關係</td><td><strong>產生 <code>BMSM926</code> 的母體</strong>:先跑這支產出 <code>CRSDTL</code>,人工再到 <code>BMSM926</code> 逐筆填盡職審查結果</td><td>—</td></tr></tbody></table></div>
+<p>刪除作業有一道確認:作業別選到 <code>D</code> 時跳「是否確定要執行刪除?」,按 Yes 才送出 (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:71-79</code>)。詢問類卡控,這是三支 B 畫面裡唯一的一道。</p>
+<p>匯出前會把 DataColumn 的名字整批換成 Caption (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:110-111</code> 與 <code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:137-138</code>), 所以 <a class="sec" href="#2-4-欄位中文名-只有一半的表填了-msdata-caption">§2.4</a> 說的「沒填 Caption 的欄位」在這裡會以英文欄名輸出到 Excel。</p>
+<p>兩個缺陷:<code>catch (SqlException)</code> 這一段在 Oracle 環境<strong>永遠不會被觸發</strong> (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB925_PO.cs:114-120</code>,見附錄 E13); <code>DoValidate()</code> 的內容整個被註解掉但仍被呼叫(<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:52-64</code>,見附錄 E8)。</p>
+<h3 id="6-4-三支批次的資料流對照">6.4 三支批次的資料流對照</h3>
+<div class="tw"><table><thead><tr><th>項</th><th><code>BMSB901</code></th><th><code>BMSB901A</code></th><th><code>BMSB925</code></th></tr></thead><tbody><tr><td>輸入來源</td><td>CSV(使用者自製)</td><td>星展 O 檔(外部定長檔)</td><td>畫面參數</td></tr><tr><td>暫存表</td><td><code>BMSB901_T1</code></td><td><code>BMSB901A_T1</code> / <code>BMSB901A_T2</code> / <code>BMSB901A_LOG</code></td><td>無</td></tr><tr><td>暫存表清理</td><td><strong>不清</strong></td><td>每次全清(不帶批號)</td><td>—</td></tr><tr><td>主要邏輯在哪</td><td>SP 加 C# 各一半</td><td><strong>全部 inline SQL</strong></td><td>全部在 SP</td></tr><tr><td>寫入方式</td><td>逐列 <code>UPDATE</code></td><td><code>MERGE</code></td><td>SP 內部</td></tr><tr><td>寫入的表</td><td><code>BMS005A</code> / <code>OFD610A</code> / <code>RSP006A</code></td><td><code>RSP006A</code> / <code>RSP005A</code></td><td>推測為 <code>CRSDTL</code></td></tr><tr><td>有沒有留稽核軌跡</td><td>沒有</td><td>有(<code>BMSB901A_LOG</code>)</td><td>由 SP 決定,未知</td></tr><tr><td>可重跑嗎</td><td>可(冪等,改成同樣的新值)</td><td>可,但會再寫一次 LOG</td><td>有刪除作業別可先清</td></tr></tbody></table></div>
+<p><strong>四張暫存表的欄位定義不在 repo 內</strong>(只出現在 SQL 字串裡),見 <a class="sec" href="#2-3-表的主鍵與四眼欄位">§2.3</a> 的警告與附錄 A.3。</p>
+</div></section><section class="sec" data-sec="7-報表-r"><h2 id="7-報表-r"><button class="tg" aria-label="收合/展開" type="button"></button>7. 報表(R)</h2><div class="sec-body">
+<h3 id="7-1-本模組無-r-畫面-也沒有任何-rpt">7.1 本模組無 R 畫面,也沒有任何 rpt</h3>
+<p>母體掃到 0 支 R 畫面、0 個 <code>.rpt</code> 檔(<code>docs/_candidates/bms.md</code> 第 1 與第 4 節)。 <code>architecture.md §6.5</code> 說 R 畫面是命名鐵律的正式例外、報表另有 <code>.Report</code> 專案; BMS 連那個專案都沒有 —— <code>Dev/</code> 底下沒有 <code>ATLAS.BMS.Report</code>。</p>
+<h3 id="7-2-原因-兩支需要輸出的畫面都改用-excel">7.2 原因:兩支需要輸出的畫面都改用 Excel</h3>
+<div class="tw"><table><thead><tr><th>畫面</th><th>輸出什麼</th><th>怎麼輸出</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMSB925</code></td><td>CRS 高資產客戶名單,個人與法人各一個 xlsx</td><td><code>ExcelCreator.CreateExcelDocument(dt, sFileName)</code>,由使用者挑存檔路徑</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:120-131</code> 與 <code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:148-159</code></td></tr><tr><td><code>BMSB901</code></td><td><strong>只有一行 CSV 標題列</strong>,當作使用者填資料的範本檔,不輸出任何資料</td><td><code>StreamWriter</code> 直接寫字串</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901.cs:211-228</code></td></tr></tbody></table></div>
+<p><code>BMSB925</code> 的 UI 檔頂端還留著被註解掉的 <code>using CrystalDecisions.CrystalReports.Engine;</code> (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:22</code>)——〔假設〕這支原本打算走 Crystal Reports, 後來改成 Excel;依據是那行註解加上全模組零個 <code>.rpt</code>。</p>
+<p>其餘畫面的「輸出」都是把 grid 交給框架的匯出機制處理 (例:<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901A.cs:200-205</code> 只是決定匯出哪一個 grid), 不算報表。</p>
+<h3 id="7-3-受益人相關的正式報表在哪">7.3 受益人相關的正式報表在哪</h3>
+<p><strong>不在 BMS。</strong> 用 <code>atlas_scan.py --table</code> 反查 <code>BMS001A</code> 的使用者可以看到報表都掛在別的模組 (例 <code>Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR813_PO.cs</code> 用到 <code>OFD272A</code>)。要找「受益人基本資料表」這類報表,往 <code>ATLAS.OFD.Report</code> 與 <code>ATLAS.NFD.Report</code> 找,不要在 BMS 裡找。</p>
+</div></section><section class="sec" data-sec="8-跨模組共用"><h2 id="8-跨模組共用"><button class="tg" aria-label="收合/展開" type="button"></button>8. 跨模組共用</h2><div class="sec-body"><figure><svg viewBox="0 0 1040 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="四張共用表被哪些模組使用,以及改動時的守則"><defs><marker id="ah_bms_xmod" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker></defs><text class="lane" x="20" y="26">BMS 這一側</text><g class="bx">
+<rect x="20" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="62" text-anchor="middle">BMSM001</text>
+<text class="t2" x="135" y="82" text-anchor="middle">明細掛 OFD601 與 OFD607A</text>
+</g><g class="bx">
+<rect x="270" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="385" y="62" text-anchor="middle">BMSM006</text>
+<text class="t2" x="385" y="82" text-anchor="middle">明細掛 OFD607ACHG</text>
+</g><g class="bx">
+<rect x="520" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="635" y="62" text-anchor="middle">BMSM004</text>
+<text class="t2" x="635" y="82" text-anchor="middle">明細掛 OFD272A</text>
+</g><g class="bx vend">
+<rect x="770" y="40" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="885" y="62" text-anchor="middle">BMSM001 與 BMSM006</text>
+<text class="t2" x="885" y="82" text-anchor="middle">條件掛載 實際為 false</text>
+</g><text class="lane" x="20" y="130">四張共用表</text><g class="bx accent">
+<rect x="20" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="135" y="166" text-anchor="middle">OFD601</text>
+<text class="t2" x="135" y="186" text-anchor="middle">EC 網路戶主檔</text>
+</g><g class="bx accent">
+<rect x="270" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="385" y="166" text-anchor="middle">OFD607A</text>
+<text class="t2" x="385" y="186" text-anchor="middle">EC 交易權限</text>
+</g><g class="bx accent">
+<rect x="520" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="635" y="166" text-anchor="middle">OFD272A</text>
+<text class="t2" x="635" y="186" text-anchor="middle">缺件</text>
+</g><g class="bx accent">
+<rect x="770" y="144" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="885" y="166" text-anchor="middle">OFD374A</text>
+<text class="t2" x="885" y="186" text-anchor="middle">歸屬業務員 BMS 不掛</text>
+</g><path class="ar" d="M 135 96 L 135 144" marker-end="url(#ah_bms_xmod)"/><path class="ar" d="M 385 96 L 385 144" marker-end="url(#ah_bms_xmod)"/><path class="ar" d="M 635 96 L 635 144" marker-end="url(#ah_bms_xmod)"/><path class="ar dsh" d="M 885 96 L 885 144" marker-end="url(#ah_bms_xmod)"/><text class="lane" x="20" y="234">誰還在用(依 .cs 檔數)</text><g class="bx ext">
+<rect x="20" y="248" rx="10" ry="10" width="250" height="56"/>
+<text class="t1" x="145" y="270" text-anchor="middle">EC 三個專案 共 40 檔</text>
+<text class="t2" x="145" y="290" text-anchor="middle">OFD601 最高風險</text>
+</g><g class="bx ext">
+<rect x="300" y="248" rx="10" ry="10" width="230" height="56"/>
+<text class="t1" x="415" y="270" text-anchor="middle">Common 共用資料源</text>
+<text class="t2" x="415" y="290" text-anchor="middle">BasicEC_PO 等</text>
+</g><g class="bx ext">
+<rect x="560" y="248" rx="10" ry="10" width="240" height="56"/>
+<text class="t1" x="680" y="270" text-anchor="middle">OFD 與 OFDB 與 OFDI</text>
+<text class="t2" x="680" y="290" text-anchor="middle">批次與查詢</text>
+</g><g class="bx ext">
+<rect x="830" y="248" rx="10" ry="10" width="210" height="56"/>
+<text class="t1" x="935" y="270" text-anchor="middle">DSM 與 RSP 與 NFD</text>
+<text class="t2" x="935" y="290" text-anchor="middle">DSMM060 是 OFD374A 主檔</text>
+</g><path class="ar" d="M 135 200 L 135 248" marker-end="url(#ah_bms_xmod)"/><path class="ar" d="M 385 200 L 415 248" marker-end="url(#ah_bms_xmod)"/><path class="ar" d="M 635 200 L 680 248" marker-end="url(#ah_bms_xmod)"/><path class="ar" d="M 885 200 L 935 248" marker-end="url(#ah_bms_xmod)"/><text class="lane" x="20" y="338">改動守則</text><g class="bx accent">
+<rect x="20" y="352" rx="10" ry="10" width="330" height="56"/>
+<text class="t1" x="185" y="374" text-anchor="middle">改欄位</text>
+<text class="t2" x="185" y="394" text-anchor="middle">兩邊 xsd 都要改 否則靜默失敗</text>
+</g><g class="bx accent">
+<rect x="370" y="352" rx="10" ry="10" width="330" height="56"/>
+<text class="t1" x="535" y="374" text-anchor="middle">改 OFD272A</text>
+<text class="t2" x="535" y="394" text-anchor="middle">確認別的 TRN_CD 分區有沒有用到</text>
+</g><g class="bx accent">
+<rect x="720" y="352" rx="10" ry="10" width="300" height="56"/>
+<text class="t1" x="870" y="374" text-anchor="middle">改 OFD607A</text>
+<text class="t2" x="870" y="394" text-anchor="middle">先確認 OFDB003 那段是否又打開</text>
+</g></svg><figcaption>圖 5 跨模組影響。BMS 只是這四張表的使用者之一,`OFD601` 與 `OFD607A` 的主人是 EC、`OFD374A` 的主人是 DSM、`OFD272A` 的主人是 OFD。虛線箭頭代表那條掛載被寫死成 false,實際不成立(§8.3)。</figcaption></figure>
+<p>BMS 自有的表只有 9 張 <code>BMS</code> 開頭的(<code>BMS001ACHG</code> <code>BMS004ACHG</code> <code>BMS005A</code> <code>BMS005ACHG</code> <code>BMS007A</code> <code>BMS924</code> <code>BMS925A</code> <code>BMS926A</code> <code>BMS927A</code>),其餘 16 張是<strong>借別的模組的表來當明細</strong>。改這些表要先知道還有誰在用。</p>
+<h3 id="8-1-四張重點共用表的反查結果">8.1 四張重點共用表的反查結果</h3>
+<p>以 <code>atlas_scan.py --table &lt;表&gt;</code> 反查,再用檔案層級的全 repo 搜尋補上索引沒收錄的引用:</p>
+<div class="tw"><table><thead><tr><th>表</th><th>主檔畫面</th><th>也在哪些模組出現(依 <code>.cs</code> 檔數)</th><th>改動風險</th></tr></thead><tbody><tr><td><code>OFD601</code></td><td><strong>沒有主檔畫面</strong></td><td>EC 25 · EC.Query 15 · Common 15 · BMS 6 · OTA.Query 5 · OTA 3 · OFDI 3 · OFD 3 · EC.Report 2 · TMK 1</td><td>最高</td></tr><tr><td><code>OFD607A</code></td><td><strong>沒有主檔畫面</strong></td><td>EC 18 · BMS 10 · Common 4 · EC.Query 3 · OFDB 2 · 其餘各 1</td><td>高</td></tr><tr><td><code>OFD374A</code></td><td><code>DSMM060</code></td><td>OFDI 4 · DSM 3 · BMS 2 · RSP 1</td><td>中</td></tr><tr><td><code>OFD272A</code></td><td><code>OFDM221A</code> / <code>OFDM231A</code></td><td>OFD 4 · BMS 3 · RSP 2 · OFDI 1 · OFDB 1 · OFD.Query 1 · NFD.Report 1 · Common 1</td><td>中</td></tr></tbody></table></div>
+<h3 id="8-2-逐張說明">8.2 逐張說明</h3>
+<h4 id="ofd601-ec-網路戶主檔"><code>OFD601</code> EC 網路戶主檔</h4>
+<p><strong>這張表的主人是 EC,不是 BMS。</strong> BMS 只是在三個時機碰它:</p>
+<div class="tw"><table><thead><tr><th>時機</th><th>動作</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMSM001</code> 覆核 / 存檔後</td><td>把 <code>OFD601</code> 裡該統編、戶號還是 0 的那一列補上新戶號與 EC 自動編號</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:275-311</code></td></tr><tr><td><code>BMSM001</code> 覆核刪除後</td><td>把戶號打回 0、狀態蓋成 <code>201</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:3598-3624</code></td></tr><tr><td><code>BMSM006</code> 開單時</td><td>有 EC 異動列而 <code>OFD601</code> 沒有這一戶時,<strong>整列複製 <code>BMS001A</code> 新增一筆</strong></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:365-411</code></td></tr></tbody></table></div>
+<p>改 <code>OFD601</code> 的欄位要一起看的:EC 模組的一整排 <code>OFDB6xx</code> 批次 (例 <code>Dev/ATLAS.EC/Source/PO/PO.EC/Oracle/OFDB610OracleDao.cs</code>)、 Common 的共用資料源(<code>Common/Source/DataSource/PO.DataSource/Basic/BasicEC_PO.cs</code>、 <code>Common/Source/DataSource/UI.DataSource/TableSrc/EC_BF_NODataSrc.cs</code>)、以及 OTA / OFDI / TMK 的查詢。 <strong>特別注意 <a class="sec" href="#2-3-表的主鍵與四眼欄位">§2.3</a> 的警告</strong>:母體算出的 100 欄是跨 xsd 聯集,其中兩欄只存在於 EC 側的定義。</p>
+<h4 id="ofd607a-ec-交易權限"><code>OFD607A</code> EC 交易權限</h4>
+<p>BMS 這邊碰它的方式:</p>
+<div class="tw"><table><thead><tr><th>時機</th><th>動作</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMSM001</code> 覆核</td><td>把處理旗標蓋成 <code>Y</code>;傳輸旗標為 <code>Y</code> 時再補一筆 <code>OFD6072A</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1560-1602</code></td></tr><tr><td><code>BMSM006</code></td><td>不直接改,改的是配對表 <code>OFD607ACHG</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:115</code></td></tr><tr><td><code>BMSM006</code> 帶入 EC 資料</td><td>讀回畫面</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:1312-1320</code></td></tr></tbody></table></div>
+<p>下游最重要的是 OFD 的生效批次 <code>OFDB003</code>:它原本也會更新 <code>OFD607A</code> 的密碼欄位, 但 2022-10-14 起整段被註解掉,理由寫在檔頭 (<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:26</code> 與 <code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:176</code>)。 <strong>改 <code>OFD607A</code> 前先確認那段是不是又被打開了。</strong></p>
+<h4 id="ofd374a-受益人歸屬業務員"><code>OFD374A</code> 受益人歸屬業務員</h4>
+<p>主檔在 DSM 的 <code>DSMM060</code>(<code>Dev/ATLAS.DSM/Source/PO/PO.DSM/DSMM060_PO.cs:33</code>)。 BMS 這邊是<strong>唯讀加條件掛載</strong>,而且條件永遠為假(<a class="sec" href="#8-3-auto-belong-emp-一個開關寫成兩個相反的常數">§8.3</a>)。其他使用者:<code>OFDI011</code> 有一支 <code>CheckOFD374A</code> 專門檢查歸屬 (<code>Dev/ATLAS.OFDI/Source/PO/PO.OFDI/OFDI011_PO.cs:5980-5994</code>), <code>RSPM004</code> 會直接 <code>INSERT OFD374A</code>(<code>Dev/ATLAS.RSP/Source/PO/PO.RSP/RSPM004_PO.cs:700</code>)。</p>
+<p><strong>改 <code>OFD374A</code> 的欄位要同時改 <code>DSMM060</code> 的 xsd 與 <code>BMSM001Model.xsd</code></strong> —— BMS 側有一份自己的定義,兩邊不同步就會出現 <code>architecture.md §5.4</code> 講的那種靜默失敗。</p>
+<h4 id="ofd272a-缺件資料"><code>OFD272A</code> 缺件資料</h4>
+<p>主檔在 OFD 的 <code>OFDM221A</code> 與 <code>OFDM231A</code>(<code>Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM221A_PO.cs:69</code>)。 BMS 只寫「境內開戶缺件」那一批(<code>SHORE_ID = '2'</code> 且 <code>TRN_CD = '5'</code>), 而且交易編號借用變更書號(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:435-436</code>)。其他使用者:<code>RSPM004</code> / <code>RSPM005</code> 也拿它當明細 (<code>Dev/ATLAS.RSP/Source/PO/PO.RSP/RSPM004_PO.cs:80</code>)、 <code>OFDB310</code> 批次會讀(<code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB310_PO.cs:1025-1030</code>)、 <code>NFDR813</code> 報表會讀。</p>
+<p><strong>這張表是靠 <code>TRN_CD</code> 分區使用的</strong>:每個模組只認自己那個代碼,改欄位要確認別的 <code>TRN_CD</code> 分區有沒有用到。</p>
+<h3 id="8-3-auto-belong-emp-一個開關寫成兩個相反的常數">8.3 <code>AUTO_BELONG_EMP</code>:一個開關寫成兩個相反的常數</h3>
+<p><code>BMSM001</code> 與 <code>BMSM006</code> 各有一支同名方法,決定要不要把 <code>OFD374A</code> 掛成明細:</p>
+<div class="tw"><table><thead><tr><th>畫面</th><th>寫死的值</th><th>效果</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMSM001</code></td><td><code>bool IsAUTO = false;</code></td><td><strong>永遠不</strong>載入歸屬業務員,<code>BeforeAdd</code> 裡補業務部門那段也不會跑</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1901-1915</code></td></tr><tr><td><code>BMSM006</code></td><td><code>bool IsAUTO = true;</code></td><td><strong>永遠</strong>載入</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:2203-2214</code></td></tr></tbody></table></div>
+<p>兩處的原始註解都是「以 CTL015 判斷是否自動加業務員資料」 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:161</code>、<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:180</code>), 讀設定的那一行被註解掉,只留下註解裡的 <code>Convert.ToString(i) == YES_NO.Yes</code> 殘骸。</p>
+<p>判設定的方法 <code>IsCheckCTL015</code> <strong>六層全都還在</strong>(PO / Control / FormProxy 各一份), 唯一的呼叫點在 <code>BMSM006</code> 而且被註解掉:</p>
+<div class="tw"><table><thead><tr><th>層</th><th>錨點</th></tr></thead><tbody><tr><td>PO</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:3717</code></td></tr><tr><td>Control</td><td><code>Dev/ATLAS.BMS/Source/Control/Control.BMS/BMSM001_Ctl.cs:907-911</code></td></tr><tr><td>FormProxy</td><td><code>Dev/ATLAS.BMS/Source/FormProxy/FormProxy.BMS/BMSM001_Pxy.cs:487-493</code></td></tr><tr><td>唯一呼叫點(已註解)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:3774</code></td></tr></tbody></table></div>
+<p><strong>要恢復這個開關,四層都要改</strong>;只把 <code>IsAUTO</code> 改成讀設定還不夠, 還要處理 <code>BMSM001</code> 的 <code>BeforeAdd</code> 拿錯表名的問題(附錄 E16)。</p>
+</div></section><section class="sec" data-sec="附錄-a-資料表總表"><h2 id="附錄-a-資料表總表"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 A. 資料表總表</h2><div class="sec-body">
+<h3 id="a-1-母體的-25-張表">A.1 母體的 25 張表</h3>
+<p>配對關係與主鍵見 <a class="sec" href="#2-2-12-張-chg-表與本表的配對">§2.2</a> 與 <a class="sec" href="#2-3-表的主鍵與四眼欄位">§2.3</a>,這裡只列歸屬與用途。</p>
+<div class="tw"><table><thead><tr><th>表</th><th>誰的</th><th>用途(推測)</th><th>在 BMS 的角色</th></tr></thead><tbody><tr><td><code>BMS001ACHG</code></td><td>BMS</td><td>受益人資料變更申請單</td><td><code>BMSM004</code> / <code>BMSM006</code> 的主檔</td></tr><tr><td><code>BMS004ACHG</code></td><td>BMS</td><td>授權帳號主檔的變更列</td><td><code>BMSM006</code> 明細</td></tr><tr><td><code>BMS005A</code></td><td>BMS</td><td>授權帳號明細</td><td><code>BMSM006</code> 明細;<code>BMSB901</code> 更新對象</td></tr><tr><td><code>BMS005ACHG</code></td><td>BMS</td><td>授權帳號明細的變更列</td><td><code>BMSM006</code> 明細</td></tr><tr><td><code>BMS007A</code></td><td>BMS</td><td>受益人專案註記</td><td><code>BMSM007</code> 主檔</td></tr><tr><td><code>BMS924</code></td><td>BMS</td><td>FATCA 與 GIIN 自我證明</td><td><code>BMSM924</code> 主檔;<code>BMSM925</code> 取 GIIN</td></tr><tr><td><code>BMS925A</code></td><td>BMS</td><td>CRS 自我證明主檔</td><td><code>BMSM925</code> 主檔</td></tr><tr><td><code>BMS926A</code></td><td>BMS</td><td>無法取得稅籍編號的理由</td><td><code>BMSM925</code> 明細</td></tr><tr><td><code>BMS927A</code></td><td>BMS</td><td>法人具控制權人清單</td><td><code>BMSM925</code> 明細</td></tr><tr><td><code>CRSDTL</code></td><td>BMS</td><td>CRS 盡職審查母體</td><td><code>BMSM926</code> 主檔;<code>BMSB925</code> 產生</td></tr><tr><td><code>CRSDTLCHG</code></td><td>BMS</td><td>本期審查判定結果</td><td><code>BMSM926</code> 明細</td></tr><tr><td><code>OFD130ACHG</code></td><td>OFD</td><td>配息帳號主檔的變更列</td><td><code>BMSM006</code> 明細</td></tr><tr><td><code>OFD131ACHG</code></td><td>OFD</td><td>配息帳號明細的變更列</td><td><code>BMSM006</code> 明細</td></tr><tr><td><code>OFD132A</code></td><td>OFD</td><td>通知書寄發途徑</td><td><code>BMSM001</code> / <code>BMSM006</code> 明細</td></tr><tr><td><code>OFD132ACHG</code></td><td>OFD</td><td>同上的變更列</td><td><code>BMSM006</code> 明細</td></tr><tr><td><code>OFD137ACHG</code></td><td>OFD</td><td>停利買回帳號主檔的變更列</td><td><code>BMSM006</code> 明細</td></tr><tr><td><code>OFD138ACHG</code></td><td>OFD</td><td>停利買回帳號明細的變更列</td><td><code>BMSM006</code> 明細</td></tr><tr><td><code>OFD139ACHG</code></td><td>OFD</td><td>資產證明資料的變更列</td><td><code>BMSM006</code> 明細</td></tr><tr><td><code>OFD206</code></td><td>OFD</td><td>EC 優惠活動</td><td><code>BMSM001</code> 明細</td></tr><tr><td><code>OFD272A</code></td><td>OFD</td><td>缺件資料</td><td><code>BMSM001</code> / <code>BMSM004</code> / <code>BMSM006</code> 明細</td></tr><tr><td><code>OFD272ACHG</code></td><td>OFD</td><td>缺件的變更列</td><td><code>BMSM006</code> 明細</td></tr><tr><td><code>OFD374A</code></td><td>DSM</td><td>受益人歸屬業務員</td><td>條件掛載,實際不掛(<a class="sec" href="#8-3-auto-belong-emp-一個開關寫成兩個相反的常數">§8.3</a>)</td></tr><tr><td><code>OFD601</code></td><td>EC</td><td>網路戶主檔</td><td><code>BMSM001</code> / <code>BMSM006</code> 明細</td></tr><tr><td><code>OFD607A</code></td><td>EC</td><td>網路戶交易權限</td><td><code>BMSM001</code> 明細</td></tr><tr><td><code>OFD607ACHG</code></td><td>EC</td><td>交易權限的變更列</td><td><code>BMSM006</code> 明細</td></tr></tbody></table></div>
+<h3 id="a-2-實體表名與-xsd-datatable-名的對照">A.2 實體表名與 xsd DataTable 名的對照</h3>
+<p><a class="sec" href="#2-3-表的主鍵與四眼欄位">§2.3</a> 的警告說過:母體顯示「欄位 0」是因為 xsd 裡的 DataTable 名與實體表名不同, 掃描器以實體表名去找自然找不到。對照如下(來源:各 PO 的 <code>xTableMapping</code> 宣告)。</p>
+<div class="tw"><table><thead><tr><th>實體表</th><th>xsd DataTable 名</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMS001A</code></td><td><code>BMS001</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:85</code></td></tr><tr><td><code>BMS001ACHG</code></td><td><code>BMS001CHG</code>(<code>BMSM006</code>)/ <code>BMSM004</code>(<code>BMSM004</code>)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:80</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:39</code></td></tr><tr><td><code>BMS004ACHG</code></td><td><code>BMS004CHG</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:82</code></td></tr><tr><td><code>BMS005ACHG</code></td><td><code>BMS005CHG</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:83</code></td></tr><tr><td><code>BMS005A</code></td><td><code>TARemitConfirmDetail_O</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:86</code></td></tr><tr><td><code>BMS007A</code></td><td><code>BMS007</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM007_PO.cs:39</code></td></tr><tr><td><code>OFD130ACHG</code></td><td><code>OFD130CHG</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:96</code></td></tr><tr><td><code>OFD131ACHG</code></td><td><code>OFD131CHG</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:97</code></td></tr><tr><td><code>OFD132A</code></td><td><code>OFD132</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:100</code></td></tr><tr><td><code>OFD132ACHG</code></td><td><code>OFD132CHG</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:98</code></td></tr><tr><td><code>OFD272A</code></td><td><code>OFD272</code>(<code>BMSM001</code> / <code>BMSM006</code>)/ <code>BMSM004_Lack</code>(<code>BMSM004</code>)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:147</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:40</code></td></tr><tr><td><code>OFD272ACHG</code></td><td><code>OFD272CHG</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:100</code></td></tr><tr><td><code>OFD374A</code></td><td><code>OFD374</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1908</code></td></tr><tr><td><code>CRSDTL</code></td><td><code>BMSM926</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:34</code></td></tr><tr><td><code>CRSDTLCHG</code></td><td><code>BMSM926CHG</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:35</code></td></tr><tr><td><code>CRSEXRATE</code></td><td><code>BMSM927</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM927_PO.cs:33</code></td></tr></tbody></table></div>
+<p><code>OFD137ACHG</code> / <code>OFD138ACHG</code> / <code>OFD139ACHG</code> / <code>OFD607ACHG</code> / <code>BMS924</code> / <code>BMS925A</code> / <code>BMS926A</code> / <code>BMS927A</code> 的兩邊名字相同,所以掃得到欄位。</p>
+<h3 id="a-3-母體之外-bms-實際也會動到的表">A.3 母體之外、BMS 實際也會動到的表</h3>
+<p>這些表沒有出現在 <code>docs/_candidates/bms.md</code>,因為它們不是 <code>xTableMapping</code> 宣告的主 / 明細, 而是在 <code>After*</code> 事件裡用 inline SQL 直接改的。<strong>做影響分析時不能漏掉這一張表</strong>。</p>
+<div class="tw"><table><thead><tr><th>表</th><th>BMS 對它做什麼</th><th>觸發畫面</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMS001A</code></td><td>建檔 / 更新 / 補確認者</td><td><code>BMSM001</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1471-1500</code></td></tr><tr><td><code>OFD337A</code></td><td>覆核時把戶號 <code>-1</code> 的列補上戶號</td><td><code>BMSM001</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1502-1532</code></td></tr><tr><td><code>OFD197A</code></td><td>開戶 / 更新時視行銷身分別補一筆</td><td><code>BMSM001</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1604-1620</code></td></tr><tr><td><code>OFD701</code></td><td>覆核時同步扣款人姓名</td><td><code>BMSM001</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:404-426</code></td></tr><tr><td><code>OFD706</code></td><td>同上</td><td><code>BMSM001</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:428-446</code></td></tr><tr><td><code>RSP006A</code></td><td>同上;<code>BMSB901</code> / <code>BMSB901A</code> 另會改帳號與印鑑</td><td><code>BMSM001</code> / <code>BMSB901</code> / <code>BMSB901A</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:448-468</code></td></tr><tr><td><code>RSP008A</code></td><td>覆核時同步扣款人姓名</td><td><code>BMSM001</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:470-488</code></td></tr><tr><td><code>RSP013A</code></td><td>只改尚未生效的定額變更單上的姓名</td><td><code>BMSM001</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:501-533</code></td></tr><tr><td><code>RSP005A</code></td><td>加一段搬遷備註</td><td><code>BMSB901A</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:188-197</code></td></tr><tr><td><code>OFD610A</code></td><td>換匯款帳號</td><td><code>BMSB901</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901_PO.cs:131-147</code></td></tr><tr><td><code>OFD6072A</code></td><td>覆核時視傳輸旗標補一筆</td><td><code>BMSM001</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1584-1599</code></td></tr><tr><td><code>OFD624</code> / <code>OFD625</code></td><td>覆核刪除時<strong>保留不刪</strong>(把 Row 清掉讓底層跳過)</td><td><code>BMSM001</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:805-815</code></td></tr><tr><td><code>OFD041A</code></td><td>讀帳戶備註範本</td><td><code>BMSM006</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:906-928</code></td></tr><tr><td><code>COD009</code></td><td>讀業務員的部門代碼</td><td><code>BMSM001</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1886-1899</code></td></tr><tr><td><code>COD006A</code></td><td>讀專案代碼的中文說明</td><td><code>BMSM007</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM007_PO.cs:121-123</code></td></tr><tr><td><code>CRSEXRATE</code></td><td>CRS 匯率主檔</td><td><code>BMSM927</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM927_PO.cs:33</code></td></tr><tr><td><code>TA_COUNTRY_ISO</code></td><td>讀各國稅籍編號的長度上下限</td><td><code>BMSM925</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM925_PO.cs:164-172</code></td></tr></tbody></table></div>
+<h3 id="a-4-四張只存在於-sql-字串裡的暫存表">A.4 四張只存在於 SQL 字串裡的暫存表</h3>
+<div class="tw"><table><thead><tr><th>表</th><th>誰建的</th><th>欄位(從 <code>INSERT</code> 反推)</th><th>清理</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMSB901_T1</code></td><td><code>BMSB901</code></td><td>批號、戶號、舊分行、舊帳號、新分行、新帳號</td><td><strong>不清</strong></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901_PO.cs:56-62</code></td></tr><tr><td><code>BMSB901A_T1</code></td><td><code>BMSB901A</code></td><td>批號、統編、分行、帳號、印鑑狀態、狀態碼</td><td>每次全清</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:60-67</code></td></tr><tr><td><code>BMSB901A_T2</code></td><td><code>BMSB901A</code></td><td>批號、戶號、統編、姓名、定額編號、定額序號、扣款行、扣款帳號</td><td>每次全清</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:82-92</code></td></tr><tr><td><code>BMSB901A_LOG</code></td><td><code>BMSB901A</code></td><td>批號加更新前後的印鑑與機構欄位共 13 欄</td><td>不清(這是稽核軌跡)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:138-163</code></td></tr></tbody></table></div>
+<p><strong>這四張表的 DDL 不在 <code>DB/Table/</code>,也沒有 xsd。</strong> 要改它們只能照著 SQL 字串裡的欄位順序推, 或連進資料庫看。〔假設〕缺:DB 連線。</p>
+</div></section><section class="sec" data-sec="附錄-b-sp-function-trigger-view"><h2 id="附錄-b-sp-function-trigger-view"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 B. SP / Function / Trigger / View</h2><div class="sec-body">
+<h3 id="b-1-repo-內有原始碼的-只有兩支-trigger">B.1 repo 內有原始碼的:只有兩支 Trigger</h3>
+<div class="tw"><table><thead><tr><th>類</th><th>名稱</th><th>檔</th><th>行數</th><th>內容</th></tr></thead><tbody><tr><td>Trigger</td><td><code>BMS001A_TDCC_BF_NO</code></td><td><code>DB/Trigger/BMS001A_TDCC_BF_NO.SQL</code></td><td>262</td><td>綜合帳戶開關切換時產生或清除集保戶號(含檢核碼);找不到集保總公司代號丟 <code>-20001</code></td></tr><tr><td>Trigger</td><td><code>BMS001A_TSCDLOG</code></td><td><code>DB/Trigger/BMS001A_TSCDLOG.SQL</code></td><td>82</td><td>綜合帳戶異動時寫一筆集保異動 Log</td></tr></tbody></table></div>
+<p>兩支都掛在 <code>BMS001A</code> 上,完整分析在 <code>change-sp-fn-trigger.md §6.1</code>,本文不重述。要留意的是:<strong>這兩支 Trigger 會在 <code>BMSM001</code> 與 <code>OFDB003</code> 兩條路徑上都被觸發</strong> —— <code>OFDB003</code> 把變更單的值寫回 <code>BMS001A</code> 時,Trigger 一樣會跑。</p>
+<h3 id="b-2-程式會呼叫-但-repo-內查不到原始碼的">B.2 程式會呼叫、但 repo 內查不到原始碼的</h3>
+<p><code>DB/SP/</code> 與 <code>DB/Function/</code> 底下沒有任何 BMS 相關檔案(母體第 3 節為空表)。以下全部只看得到呼叫端。</p>
+<div class="tw"><table><thead><tr><th>類</th><th>名稱</th><th>誰呼叫</th><th>參數與回傳(從呼叫端反推)</th><th>錨點</th></tr></thead><tbody><tr><td>SP</td><td><code>S_TA_BMSB901_GET</code></td><td><code>BMSB901</code></td><td>吃批號;回四個 refcursor(授權帳號 / 定額 / EC 匯款 / 比對不到的)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901_PO.cs:78-85</code></td></tr><tr><td>SP</td><td><code>S_TA_BMSB925_EXECUTE</code></td><td><code>BMSB925</code></td><td>吃作業別、基準日、異動者;回一個訊息字串,非空即代表失敗</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB925_PO.cs:79-91</code></td></tr><tr><td>SP</td><td><code>S_TA_BMSB925_Get</code></td><td><code>BMSB925</code></td><td>吃基準日;回兩個 refcursor(個人 / 法人)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB925_PO.cs:151-158</code></td></tr><tr><td>SP</td><td><code>s_TA_BMSM006_Get</code></td><td><code>BMSM006</code></td><td>吃變更書號;回一個 refcursor,只用其中的筆數欄位判斷「有沒有變動」</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1134-1141</code></td></tr><tr><td>SP</td><td><code>s_TA_OFDB003_Excute</code></td><td>OFD 的 <code>OFDB003</code></td><td>吃生效日、變更日、變更書號;<strong>把變更單寫回本表的就是它</strong></td><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:64-78</code></td></tr><tr><td>SP</td><td><code>s_ta_bms001_delec</code></td><td><code>BMSM001</code>(<strong>呼叫已註解</strong>)</td><td>原本吃網路戶流水號,刪 EC 資料</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:3602-3604</code></td></tr><tr><td>SP</td><td><code>s_OFDR043_Get</code></td><td><code>BMSM006</code>(<strong>呼叫已註解</strong>,標示 debug 用)</td><td>—</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1145-1156</code></td></tr><tr><td>Function</td><td><code>F_TA_SPLITWORDS</code></td><td><code>BMSM004</code> 的 <code>AddParam</code></td><td>把逗號字串切成表,供 <code>IN</code> 條件用</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:716</code></td></tr><tr><td>Function</td><td><code>F_TA_GETAGENT</code></td><td><code>BMSM926</code> 的主檔查詢</td><td>回銷售機構清單,用來帶出機構簡稱</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:161</code></td></tr><tr><td>Function</td><td><code>f_TA_GetEVAStatus</code></td><td>OFD 的 <code>OFDB003</code></td><td>回某個階段對應的狀態碼集合;<code>OFDB003</code> 用它數「還有幾筆沒覆核」</td><td><code>Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB003_PO.cs:315-318</code></td></tr></tbody></table></div>
+<p><strong>View:本模組零支。</strong></p>
+<p><code>s_TA_OFDB003_Excute</code> 查不到原始碼這件事是本文最大的空白: 「哪些變更後欄位搬到本表的哪些欄位」只能推到「由它負責」為止,已在 <a class="sec" href="#2-1-chg-是什麼-12-張配對表的機制-本篇核心">§2.1</a> 標〔假設〕缺:DB 連線。</p>
+</div></section><section class="sec" data-sec="附錄-c-代碼對照"><h2 id="附錄-c-代碼對照"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 C. 代碼對照</h2><div class="sec-body">
+<p>以下代碼值全部<strong>從程式的字面量反推</strong>,不是查代碼表得來的;中文語意取自程式裡的訊息或 <code>CASE</code> 敘述, 沒有訊息可佐證的標「推測」。</p>
+<h3 id="c-1-變更單來源別">C.1 變更單來源別</h3>
+<div class="tw"><table><thead><tr><th>值</th><th>語意</th><th>依據</th></tr></thead><tbody><tr><td><code>1</code></td><td>姓名與統編變更單(<code>BMSM004</code> 開的)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:495-496</code></td></tr><tr><td><code>2</code></td><td>一般資料變更單(<code>BMSM006</code> 開的)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1633-1634</code></td></tr></tbody></table></div>
+<h3 id="c-2-crs-盡職審查結果">C.2 CRS 盡職審查結果</h3>
+<div class="tw"><table><thead><tr><th>值</th><th>語意</th><th>依據</th></tr></thead><tbody><tr><td><code>1</code></td><td>無外國身分指標</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:152-155</code></td></tr><tr><td><code>2</code></td><td>無外國稅務居民身分</td><td>同上</td></tr><tr><td><code>3</code></td><td>有外國稅務居民身分</td><td>同上</td></tr><tr><td><code>4</code></td><td>無資訊帳戶</td><td>同上</td></tr></tbody></table></div>
+<h3 id="c-3-crs-代碼與排除申報原因的對應">C.3 CRS 代碼與排除申報原因的對應</h3>
+<div class="tw"><table><thead><tr><th>CRS 代碼</th><th>允許的排除原因</th><th>依據</th></tr></thead><tbody><tr><td><code>B2</code></td><td><code>1</code></td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:310-317</code></td></tr><tr><td><code>B3</code></td><td><code>2</code> / <code>3</code> / <code>4</code></td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:319-326</code></td></tr><tr><td><code>A1</code> / <code>A2</code></td><td><code>5</code></td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:328-335</code></td></tr></tbody></table></div>
+<p>其餘 CRS 代碼不檢查(預設放行)。<strong>這組對應寫死在 UI,不是查表。</strong></p>
+<h3 id="c-4-其他在程式裡出現的字面量">C.4 其他在程式裡出現的字面量</h3>
+<div class="tw"><table><thead><tr><th>欄位概念</th><th>值</th><th>語意(推測)</th><th>依據</th></tr></thead><tbody><tr><td>開戶型態</td><td><code>2</code></td><td>境外開戶</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:744</code></td></tr><tr><td>境外身分別</td><td><code>05</code></td><td>法人,要取法人分戶號</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:747-753</code></td></tr><tr><td>國籍</td><td><code>0001</code></td><td>本國籍</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:835</code></td></tr><tr><td>受益人境內外別</td><td><code>01</code></td><td>本國自然人</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:829</code></td></tr><tr><td>受益人境內外別</td><td><code>02</code> / <code>03</code></td><td>法人類,要填具控制權人</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:354-357</code></td></tr><tr><td>EC 開戶進度</td><td><code>A0</code> / <code>B0</code> / <code>B2</code></td><td>會觸發歡迎信的三種進度</td><td><code>Dev/ATLAS.BMS/Source/Control/Control.BMS/BMSM006_Ctl.cs:120-121</code></td></tr><tr><td>EC 異動別</td><td><code>A</code> / <code>D</code> / <code>U</code></td><td>新增 / 刪除 / 修改</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1397</code></td></tr><tr><td>EC 註冊別</td><td><code>4</code> / <code>8</code> / <code>N</code></td><td>兩支畫面對「已開通」的判斷不一致,見附錄 E2</td><td><code>Dev/ATLAS.BMS/Source/Control/Control.BMS/BMSM006_Ctl.cs:120</code> 與 <code>Dev/ATLAS.BMS/Source/Control/Control.BMS/BMSM001_Ctl.cs:143</code></td></tr><tr><td>四眼狀態</td><td><code>201</code></td><td>覆核刪除後 <code>OFD601</code> 被打回的狀態</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:3613</code></td></tr><tr><td>四眼狀態</td><td><code>203</code></td><td>覆核刪除(尾碼 <code>3</code> 為刪除系)</td><td><code>Dev/ATLAS.BMS/Source/Control/Control.BMS/BMSM006_Ctl.cs:118</code></td></tr><tr><td>缺件</td><td><code>SHORE_ID = '2'</code> 加 <code>TRN_CD = '5'</code></td><td>境內開戶缺件</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:531</code></td></tr><tr><td>專案代碼分類</td><td><code>HO</code></td><td><code>COD006A</code> 裡專案代碼的分類</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM007_PO.cs:122</code></td></tr><tr><td>機構代碼〔客戶特定〕</td><td><code>039</code> / <code>810</code></td><td>澳盛 / 星展</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:174-178</code></td></tr><tr><td>核印方式〔客戶特定〕</td><td><code>3</code></td><td>搬遷後統一設定的核印方式</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:175</code></td></tr><tr><td>密碼狀態來源</td><td><code>CTL014</code> 的 <code>082</code></td><td>新戶預設密碼狀態</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:776-777</code></td></tr></tbody></table></div>
+<p><code>STATUS</code> 的完整值域不在 BMS,見 <code>architecture.md §3.10</code>;<a class="sec" href="#2-6-狀態碼">§2.6</a> 已經記下 BMS 給的三位數字面量與該節「單字元」推測不一致這件事。</p>
+</div></section><section class="sec" data-sec="附錄-d-掃描母體與覆蓋率"><h2 id="附錄-d-掃描母體與覆蓋率"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 D. 掃描母體與覆蓋率</h2><div class="sec-body">
+<h3 id="d-1-數字">D.1 數字</h3>
+<p><code>atlas_scan.py --module BMS</code> 的母體:畫面 11(B 3 / I 0 / M 8 / R 0)· 表 25 · SP 0 · Function 0 · Trigger 0 · View 0 · rpt 0 · Service 0。</p>
+<div class="tw"><table><thead><tr><th>類</th><th>母體</th><th>本文提及</th><th>覆蓋率</th></tr></thead><tbody><tr><td>畫面</td><td>11</td><td>11</td><td>100%</td></tr><tr><td>表</td><td>25</td><td>25</td><td>100%</td></tr><tr><td>SP / Fn / Trigger / View / rpt / Service</td><td>0</td><td>—</td><td>不適用</td></tr></tbody></table></div>
+<p>畫面逐支落點:<code>BMSM001</code> <a class="sec" href="#4-1-bmsm001-受益人開戶-新戶-推測">§4.1</a> · <code>BMSM004</code> <a class="sec" href="#4-2-bmsm004-受益人姓名與統編變更開單-推測">§4.2</a> · <code>BMSM006</code> <a class="sec" href="#4-3-bmsm006-受益人資料變更-舊戶-推測">§4.3</a> · <code>BMSM007</code> <a class="sec" href="#4-4-bmsm007-受益人專案註記-推測">§4.4</a> · <code>BMSM924</code> <a class="sec" href="#4-5-bmsm924-fatca-與-giin-自我證明-推測">§4.5</a> · <code>BMSM925</code> <a class="sec" href="#4-6-bmsm925-crs-自我證明-推測">§4.6</a> · <code>BMSM926</code> <a class="sec" href="#4-7-bmsm926-crs-盡職審查結果-推測">§4.7</a> · <code>BMSM927</code> <a class="sec" href="#4-8-bmsm927-crs-匯率維護-推測">§4.8</a> · <code>BMSB901</code> <a class="sec" href="#6-1-bmsb901-匯款帳號整批換號-推測">§6.1</a> · <code>BMSB901A</code> <a class="sec" href="#6-2-bmsb901a-澳盛轉星展印鑑與扣款帳戶搬遷-推測-客戶特定">§6.2</a> · <code>BMSB925</code> <a class="sec" href="#6-3-bmsb925-crs-高資產客戶名單產生與匯出-推測">§6.3</a>。表全部落在 <a class="sec" href="#2-2-12-張-chg-表與本表的配對">§2.2</a> 與 <a class="sec" href="#2-3-表的主鍵與四眼欄位">§2.3</a>,附錄 A.1 再列一次歸屬。</p>
+<h3 id="d-2-母體沒列到-但本文寫了的東西">D.2 母體沒列到、但本文寫了的東西</h3>
+<p>母體是結構推測,以下是本文額外納入的,逐項交代來源:</p>
+<div class="tw"><table><thead><tr><th>項</th><th>來源</th><th>為什麼母體沒有</th></tr></thead><tbody><tr><td><code>BMS001A</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:85-86</code></td><td>主檔是先指派給區域變數再掛上去,不是掃描器認得的一行式</td></tr><tr><td>附錄 A.3 的 16 張表</td><td>各 <code>After</code> 事件的 inline SQL</td><td>不是 <code>xTableMapping</code> 宣告的主 / 明細</td></tr><tr><td>附錄 A.4 的 4 張暫存表</td><td>批次 PO 的 SQL 字串</td><td>只以字串形式存在,沒有 xsd 也沒有 DDL</td></tr><tr><td>兩支 Trigger</td><td><code>DB/Trigger/</code></td><td>掃描器把 Trigger 歸在 <code>BMS001A</code> 名下,而 <code>BMS001A</code> 不在母體表清單裡</td></tr><tr><td>十支 SP / Function</td><td>各 PO 的呼叫端</td><td><code>DB/SP/</code> 與 <code>DB/Function/</code> 內沒有這些檔</td></tr><tr><td><code>BMSM006_1</code></td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006_1.cs:34</code></td><td>代號 9 碼,不符 7 碼鐵律,掃描器不認</td></tr></tbody></table></div>
+<h3 id="d-2-1-放進-meta-refcheck-ignore-的名字">D.2.1 放進 meta <code>refcheck-ignore</code> 的名字</h3>
+<p>這些是<strong>真實存在但索引收不到</strong>的物件,不是本文編造的。放進 <code>refcheck-ignore</code> 只是讓引用檢查過關, 名字本身有程式出處:</p>
+<div class="tw"><table><thead><tr><th>名字</th><th>類</th><th>出處</th><th>索引收不到的原因</th></tr></thead><tbody><tr><td><code>BMS004A</code> / <code>OFD130A</code> / <code>OFD131A</code> / <code>OFD041A</code> / <code>OFD6072A</code></td><td>表</td><td>各 PO 的 <code>xTableMapping</code> 或 inline SQL</td><td>沒有 xsd 定義,也沒有同名 DataTable</td></tr><tr><td><code>CTL015</code></td><td>設定表</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:161</code> 的註解</td><td>只出現在註解裡</td></tr><tr><td><code>BMSB901_T1</code></td><td>暫存表</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901_PO.cs:56</code></td><td>只以 SQL 字串存在;名字長得像畫面代號,被誤判</td></tr><tr><td><code>BMSM006_1</code></td><td>畫面(死碼)</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006_1.cs:34</code></td><td>代號 9 碼</td></tr><tr><td>十支 SP 與 Function</td><td>DB 物件</td><td>附錄 B.2</td><td><code>DB/SP/</code> 與 <code>DB/Function/</code> 內沒有這些檔</td></tr></tbody></table></div>
+<h3 id="d-3-母體列了-本文交代不足的">D.3 母體列了、本文交代不足的</h3>
+<p><strong>沒有。</strong> 25 張表與 11 支畫面都有專節或專列。比較弱的是 <code>OFD601</code> 的 100 欄:本文只說明了 BMS 會動的那幾欄(戶號、EC 自動編號、狀態、註冊別), 其餘欄位屬於 EC 的職權範圍,不在本文範圍內(<a class="sec" href="#8-2-逐張說明">§8.2</a>)。</p>
+<h3 id="d-4-標-假設-的地方總表">D.4 標〔假設〕的地方總表</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>假設內容</th><th>依據</th><th>要怎麼否證</th></tr></thead><tbody><tr><td><a class="sec" href="#2-1-chg-是什麼-12-張配對表的機制-本篇核心">§2.1</a></td><td><code>s_TA_OFDB003_Excute</code> 把變更後欄位寫回本表</td><td>呼叫端的參數與訊息、<code>CHG_UPD_DTTM</code> 的用法</td><td>連 DB 看 SP 原始碼</td></tr><tr><td><a class="sec" href="#2-6-狀態碼">§2.6</a></td><td>狀態碼尾數 <code>3</code> 等於刪除系</td><td><code>203</code> 與 <code>!EndsWith("3")</code> 互相佐證</td><td>反編譯 <code>EVAStatusCode</code> 或查 DB</td></tr><tr><td><a class="sec" href="#3-5-一個不在清冊上的檔案-bmsm006-1">§3.5</a></td><td><code>BMSM006_1</code> 是沒刪掉的平行實作</td><td>零引用加代號 9 碼</td><td>查選單表</td></tr><tr><td><a class="sec" href="#4-2-bmsm004-受益人姓名與統編變更開單-推測">§4.2</a>.2</td><td>生效時整列搬回去不會誤改其他欄位</td><td>開單時變更前後成對指派、UI 只改三欄</td><td>同上,看 SP</td></tr><tr><td><a class="sec" href="#4-3-bmsm006-受益人資料變更-舊戶-推測">§4.3</a>.2</td><td>國別欄的字元取代原意是去前導零</td><td>只有這個解釋說得通;沒有註解</td><td>問原作者或查規格</td></tr><tr><td><a class="sec" href="#7-2-原因-兩支需要輸出的畫面都改用-excel">§7.2</a></td><td><code>BMSB925</code> 原本打算走 Crystal Reports</td><td>被註解的 using 加全模組零個 rpt</td><td>查版控歷史</td></tr><tr><td>附錄 A.4</td><td>四張暫存表的欄位順序</td><td><code>INSERT</code> 沒有欄位清單,只能照值的順序推</td><td>連 DB 看 DDL</td></tr><tr><td>附錄 C</td><td>全部代碼值的中文語意</td><td>程式訊息與 <code>CASE</code> 敘述</td><td>查代碼表</td></tr><tr><td><a class="sec" href="#0-1-這個模組管什麼-推測">§0.1</a></td><td>模組中文名與四塊業務的切分</td><td>常數字典、表名、Trigger 內容</td><td>查選單表</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="附錄-e-讀本文時要注意的地方"><h2 id="附錄-e-讀本文時要注意的地方"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 E. 讀本文時要注意的地方</h2><div class="sec-body">
+<p>嚴重度:<strong>高</strong>=會造成資料錯誤或作業中斷 · <strong>中</strong>=會誤導維護者或讓功能默默失效 · <strong>低</strong>=品質問題。</p>
+<h3 id="e1-bmsm006-1-4-098-行的平行實作-零引用">E1 <code>BMSM006_1</code>:4,098 行的平行實作,零引用</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006_1.cs:34</code> 宣告 <code>BMSM006_1 : BMSM001</code>,是 <code>BMSM006</code> 的另一套實作,走繼承路線;現役的 <code>BMSM006</code> 走 <code>xMaintainForm</code>(<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:33</code>)</td></tr><tr><td>影響</td><td>搜尋 <code>BMSM006</code> 相關邏輯時會同時命中兩份程式碼,改錯邊完全沒有效果也不會編譯失敗</td></tr><tr><td>判別方式</td><td>檔名 9 碼;全 repo 除了它自己的兩個檔以外零引用</td></tr><tr><td>嚴重度</td><td>中</td></tr></tbody></table></div>
+<h3 id="e2-歡迎信的觸發條件有兩套-而且不一致">E2 歡迎信的觸發條件有兩套,而且不一致</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td><code>BMSM001</code> 判 EC 註冊別等於 <code>8</code>,<code>BMSM006</code> 判等於 <code>4</code>;<code>BMSM001</code> 那邊「第一次覆核且非覆核刪除」的前置條件被整段註解掉</td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/Control/Control.BMS/BMSM001_Ctl.cs:136-157</code> 與 <code>Dev/ATLAS.BMS/Source/Control/Control.BMS/BMSM006_Ctl.cs:116-132</code></td></tr><tr><td>影響</td><td>同一個客戶走新戶或走變更單,收不收得到歡迎信不一樣;<code>BMSM001</code> 因為前置條件被拿掉,覆核刪除也可能發信</td></tr><tr><td>嚴重度</td><td>高</td></tr></tbody></table></div>
+<h3 id="e3-空訊息的例外-throw-new-applicationexception">E3 空訊息的例外:<code>throw new ApplicationException("")</code></h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td>跳號註記寫失敗、<code>Confirm</code> 更新筆數不對,一律丟訊息為空字串的例外</td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1496-1498</code>、<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:867</code>、<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1037</code></td></tr><tr><td>影響</td><td>使用者只看到通用錯誤畫面,沒有任何線索;查問題只能翻 log</td></tr><tr><td>出現次數</td><td><code>BMSM001_PO</code> 6 處、<code>BMSM004_PO</code> 8 處、<code>BMSM006_PO</code> 7 處</td></tr><tr><td>嚴重度</td><td>中</td></tr></tbody></table></div>
+<h3 id="e4-繞過框架對話框-用原生-messagebox-顯示英文訊息">E4 繞過框架對話框,用原生 <code>MessageBox</code> 顯示英文訊息</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td><code>BMSM925</code> 查不到 GIIN 時跳 <code>MessageBox.Show("No GiinNo Data")</code>;上面兩行走框架的寫法被註解掉了</td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:279-284</code></td></tr><tr><td>影響</td><td>樣式與其他訊息不一致、中文語系下出現英文、不會進 ByPass 記錄</td></tr><tr><td>嚴重度</td><td>低</td></tr></tbody></table></div>
+<h3 id="e5-sql-用字串串接-沒有參數化">E5 SQL 用字串串接,沒有參數化</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td>查詢條件直接串進 SQL:<code>" And BMS007A." + Row.Name + " = '" + Row.Value + "'"</code></td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM007_PO.cs:130-171</code>、<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM924_PO.cs:109-136</code>、<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:554-556</code>、<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1398</code></td></tr><tr><td>影響</td><td>值裡有單引號就語法錯誤;<code>architecture.md §4.3</code> 已經把這個當成全庫共通問題記過</td></tr><tr><td>嚴重度</td><td>中</td></tr></tbody></table></div>
+<h3 id="e6-解構子用-而不是">E6 解構子用 <code>+=</code> 而不是 <code>-=</code></h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td><code>~BMSM926_PO()</code> 裡五個事件全部用 <code>+=</code>,等於在解構時又掛一次</td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:37-45</code></td></tr><tr><td>影響</td><td>同一份 PO 若被重複使用,事件可能被觸發多次;實務上 PO 是每次 new 一個,所以目前看不出症狀</td></tr><tr><td>嚴重度</td><td>低(但是一顆定時炸彈)</td></tr></tbody></table></div>
+<h3 id="e7-auto-belong-emp-設定變常數-而且兩支畫面方向相反">E7 <code>AUTO_BELONG_EMP</code>:設定變常數,而且兩支畫面方向相反</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td>讀 <code>CTL015</code> 的那一行被註解,只剩 <code>bool IsAUTO = false;</code>(<code>BMSM001</code>)與 <code>= true;</code>(<code>BMSM006</code>)</td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:1901-1915</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:2203-2214</code></td></tr><tr><td>連帶</td><td>判設定的 <code>IsCheckCTL015</code> 六層都在,唯一呼叫點被註解(<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:3774</code>)</td></tr><tr><td>影響</td><td>新戶不會載入歸屬業務員、舊戶變更會;要恢復開關得改四層</td></tr><tr><td>嚴重度</td><td>中</td></tr></tbody></table></div>
+<h3 id="e8-空殼-有事件沒內容-有檢核沒規則-有分支到不了">E8 空殼:有事件沒內容、有檢核沒規則、有分支到不了</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMSM925_PO</code> 的四支 <code>Before</code> 事件</td><td>各自只有一行 <code>strSQL = args.DbCmd.CommandText;</code>,指派完就結束(註解寫 for debug)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM925_PO.cs:58-109</code></td></tr><tr><td><code>BMSB925</code> 的 <code>DoValidate</code></td><td>內容整個被註解,但仍被呼叫</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB925.cs:52-64</code></td></tr><tr><td><code>BMSM924</code> 的 <code>DoValidate</code></td><td>只有 <code>ValidateErrList.Clear()</code> 加框架檢核,末尾 <code>if (...) return;</code> 沒有作用</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM924.cs:160-165</code></td></tr><tr><td><code>BMSM007</code> / <code>BMSM924</code> 的 ToDo 語法</td><td><code>BeforeGetToDoData</code> 傳 <code>false</code> 給 <code>isToDoString</code>,<code>AppendToDoString</code> 那段永遠接不上</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM007_PO.cs:82-91</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM924_PO.cs:71-82</code></td></tr><tr><td><code>BMSM926</code> 的 <code>BeforeApproveDelete</code></td><td>整支只有註解</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM926_PO.cs:120-132</code></td></tr><tr><td><code>BMSM006</code> 的「請先帶入EC資料」檢核</td><td>條件與訊息都還在,整段被 <code>/* */</code> 包起來,只留下上面那行 <code>BMSM006_Pxy pxy</code> 給別的檢核用</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM006.cs:3562-3576</code></td></tr></tbody></table></div>
+<p>嚴重度:<strong>中</strong>。最後一條特別要注意 —— 註解外面還留著說明用的中文註解, 不細看會以為這條檢核還在跑。</p>
+<h3 id="e9-國別欄的-replace-0">E9 國別欄的 <code>Replace("0","")</code></h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td><code>BMSM006</code> 從 <code>BMS001A</code> 複製到 <code>OFD601</code> 時,對境內外別欄位做字面上的字元取代</td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:396-397</code></td></tr><tr><td>影響</td><td><code>01</code> 變 <code>1</code>(可能是原意),但 <code>10</code> 也會變 <code>1</code>、<code>20</code> 會變 <code>2</code>;若該欄位值域超過個位數就會對應錯</td></tr><tr><td>嚴重度</td><td>中(取決於該欄位的實際值域,repo 內查不到)</td></tr></tbody></table></div>
+<h3 id="e10-bmsm924-的十組稅籍欄位逐欄寫死">E10 <code>BMSM924</code> 的十組稅籍欄位逐欄寫死</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td>外國稅籍資料(英文姓名 / 地址 / 稅籍編號)做成 10 組獨立欄位與控制項,不是明細表</td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM924.cs:182-224</code></td></tr><tr><td>影響</td><td>客戶有第 11 個稅籍國就填不下,要改 xsd 加欄位、改 Designer、改 UI、改 DDL</td></tr><tr><td>嚴重度</td><td>中</td></tr></tbody></table></div>
+<h3 id="e11-訊息錯字-排捈">E11 訊息錯字:「排捈」</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td><code>請檢查[是否為排捈申報帳戶]欄設定是否正確!</code> —— 應為「排除」</td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM925.cs:339</code></td></tr><tr><td>影響</td><td>只是錯字,但同一支檔案裡其他地方寫的是「排除」,搜尋訊息時會漏</td></tr><tr><td>嚴重度</td><td>低</td></tr></tbody></table></div>
+<h3 id="e12-未成年門檻-18-歲寫死在-sql-裡-而且寫兩次">E12 未成年門檻 18 歲寫死在 SQL 裡,而且寫兩次</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td>顯示欄位與過濾條件各寫一次 <code>DATEDIFF('Y', ...) &gt;= 18</code> / <code>&lt; 18</code></td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:829</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:831-832</code></td></tr><tr><td>影響</td><td>法定成年年齡改了要改兩處,漏改一處就出現「顯示已成年但被未成年過濾器撈出來」</td></tr><tr><td>嚴重度</td><td>中</td></tr></tbody></table></div>
+<h3 id="e13-catch-sqlexception-在-oracle-環境永遠不會被觸發">E13 <code>catch (SqlException)</code> 在 Oracle 環境永遠不會被觸發</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td><code>BMSB925_PO</code> 用 <code>using System.Data.SqlClient;</code> 再 <code>catch (SqlException sqlex)</code>,但這支 PO 連的是 Oracle,丟出來的是 <code>OracleException</code></td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB925_PO.cs:114-120</code></td></tr><tr><td>影響</td><td>想給使用者看的資料庫原始錯誤訊息永遠走不到,一律掉進下面的通用 <code>catch</code></td></tr><tr><td>嚴重度</td><td>低(下面的 <code>catch</code> 有接,不會漏掉例外)</td></tr></tbody></table></div>
+<h3 id="e14-bmsb901a-的暫存表清理沒帶批號-批號還是-static">E14 <code>BMSB901A</code> 的暫存表清理沒帶批號,批號還是 <code>static</code></h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td>查詢階段一開頭 <code>DELETE BMSB901A_T1; DELETE BMSB901A_T2;</code> <strong>沒有 WHERE</strong>;批號是 Form 的 <code>static</code> 欄位</td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901A_PO.cs:51-56</code> 與 <code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901A.cs:23</code></td></tr><tr><td>影響</td><td>兩個人同時操作,後按查詢的人會清掉前一個人的暫存資料;前一個人按執行會查無資料或更新筆數不符</td></tr><tr><td>嚴重度</td><td>高</td></tr></tbody></table></div>
+<h3 id="e15-chg-與本表的欄位不同步-本文最會咬人的一條">E15 <code>CHG</code> 與本表的欄位不同步:本文最會咬人的一條</h3>
+<p>這是整個模組風險最高的結構性問題,分兩層。</p>
+<p><strong>第一層:欄位對應是手寫的,加欄位會漏。</strong> <code>BMSM004</code> 開單時把 <code>BMS001A</code> 的值搬進變更單,是<strong>逐欄手寫的 320 行指派</strong> (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:108-434</code>),不是泛型複製。程式裡留著每次加欄位的痕跡:「2013/01/16 因BMS001CHG的欄位增加而調整程式」 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:413</code>)、「20151224 銷售地代號」 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:425-427</code>)、「20160129 全方位理財帳戶」 (<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM004_PO.cs:428-430</code>)。 <strong><code>BMS001A</code> 加一個欄位,這裡沒跟著加,變更單上那一欄就永遠是空的</strong>; 生效時 <code>s_TA_OFDB003_Excute</code> 把空值寫回去,本表的值就被清掉 ——〔假設〕,取決於 SP 怎麼寫。</p>
+<p><strong>第二層:開單之後本表沒有鎖。</strong> <code>BMSM004</code> 與 <code>BMSM006</code> 開新單時會問「尚有未生效的受益人異動資料,是否新增?」 (<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSM004.cs:656-676</code>),但<strong><code>BMSM001</code> 完全不檢查 <code>BMS001ACHG</code></strong> (全檔沒有任何一處提到這張表)。所以這個順序是可能的:</p>
+<ol><li>櫃台在 <code>BMSM006</code> 開一張變更單,生效日設在三天後;此時單上帶著今天的快照</li><li>隔天有人用 <code>BMSM001</code> 直接改了 <code>BMS001A</code> 的電話</li><li>第三天 <code>OFDB003</code> 跑,把變更單上<strong>前天的快照</strong>寫回 <code>BMS001A</code></li><li>昨天改的電話被蓋掉,而且<strong>沒有任何警示或記錄</strong></li></ol>
+<p>第二層的推論鏈完全由程式碼支撐(步驟 1、2 有錨點;步驟 3 依賴 <code>s_TA_OFDB003_Excute</code> 的行為,標〔假設〕)。 <strong>要驗證只需要看 SP 是不是「整列 <code>AFT_</code> 欄位無條件寫回」。</strong> 如果是,這個情境一定會發生。</p>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>嚴重度</td><td><strong>高</strong></td></tr><tr><td>建議的驗證動作</td><td>連 DB 撈 <code>s_TA_OFDB003_Excute</code> 原始碼,確認是整列覆蓋還是只寫有變動的欄位</td></tr></tbody></table></div>
+<h3 id="e16-表名比對用錯-ofd374-與-ofd374a">E16 表名比對用錯:<code>OFD374</code> 與 <code>OFD374A</code></h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td><code>BeforeAdd</code> 比對 <code>args.TableName == "OFD374"</code>(這是 xsd 的 DataTable 名),<code>BeforeUpdate</code> 比對 <code>"OFD374A"</code>(實體表名);其他所有比對都用實體表名</td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:791</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:717-720</code></td></tr><tr><td>影響</td><td><strong>新增歸屬業務員時不會補業務部門代碼與歸屬日期</strong>,修改時才會補</td></tr><tr><td>目前看不出症狀的原因</td><td><code>BMSM001</code> 因為 E7 根本不掛 <code>OFD374A</code>,這條路徑跑不到;<strong>一旦把 E7 的開關打開,這個 bug 就會現形</strong></td></tr><tr><td>嚴重度</td><td>中(潛伏)</td></tr></tbody></table></div>
+<h3 id="e17-check601bfno-整支被停用-而且-throw-後面還有不可到達的-return">E17 <code>Check601BFNO</code> 整支被停用,而且 <code>throw</code> 後面還有不可到達的 <code>return</code></h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td>方法還在,唯一呼叫點被註解;方法內 <code>throw new ApplicationException("戶號有誤，請聯絡資訊室人員");</code> 下一行是 <code>return true;</code></td></tr><tr><td>錨點</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1167-1192</code> 與 <code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:604</code></td></tr><tr><td>影響</td><td>「更新 <code>OFD601</code> 前確認戶號」這道保護現在沒有在跑;<a class="sec" href="#8-2-逐張說明">§8.2</a> 說的 <code>OFD601</code> 戶號覆寫因此沒有防線</td></tr><tr><td>嚴重度</td><td>中</td></tr></tbody></table></div>
+<h3 id="e18-bmsm001-ctl-cs-是全模組唯一的-big5-檔">E18 <code>BMSM001_Ctl.cs</code> 是全模組唯一的 Big5 檔</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷</td><td>BMS 底下所有非 Designer 的 <code>.cs</code> 都是 UTF-8 with BOM,只有 <code>Dev/ATLAS.BMS/Source/Control/Control.BMS/BMSM001_Ctl.cs</code> 是 CP950</td></tr><tr><td>影響</td><td>用 UTF-8 開會看到亂碼中文註解;用一般文字工具批次取代會把整檔毀掉</td></tr><tr><td>怎麼確認</td><td>讀檔時指定 <code>cp950</code>;或用 <code>docs/tools/atlas_scan.py</code> 內的 <code>read_text</code></td></tr><tr><td>嚴重度</td><td>中(改這支檔案前一定要先確認編碼)</td></tr></tbody></table></div>
+<h3 id="e19-bmsb901-的暫存表不清-csv-靜默截斷">E19 <code>BMSB901</code> 的暫存表不清、CSV 靜默截斷</h3>
+<div class="tw"><table><thead><tr><th>項</th><th>內容</th></tr></thead><tbody><tr><td>缺陷 1</td><td><code>BMSB901_T1</code> 只 INSERT 從不 DELETE(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901_PO.cs:51-75</code>)</td></tr><tr><td>缺陷 2</td><td>CSV 解析遇到欄數不足或戶號空白就 <code>break</code>,後面整段不讀也不提示(<code>Dev/ATLAS.BMS/Source/UI/UI.BMS/BMSB901.cs:165-168</code>)</td></tr><tr><td>缺陷 3</td><td>查詢失敗時把結果訊息寫成空字串(<code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSB901_PO.cs:93-98</code>)</td></tr><tr><td>影響</td><td>檔案中間有一列格式不對,後面幾百列被吃掉而使用者以為全做完了</td></tr><tr><td>嚴重度</td><td>高(缺陷 2)</td></tr></tbody></table></div>
+<h3 id="e20-大量被註解掉-但外殼還在的程式碼">E20 大量被註解掉、但外殼還在的程式碼</h3>
+<p>除了 E8 列的幾處,還有這些整段被註解的區塊。<strong>共同特徵是註解與 <code>#region</code> 標題還在</strong>, 不細看會誤以為功能存在:</p>
+<div class="tw"><table><thead><tr><th>區塊</th><th>標題寫的是</th><th>錨點</th></tr></thead><tbody><tr><td><code>BMSM001</code> 覆核時寫 <code>OFD607A</code> 的覆核者</td><td><code>寫入OFD607A的ECAPPROVEID,ECAPPROVEDATE</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:325-346</code></td></tr><tr><td><code>BMSM001</code> 覆核時把 KYC 的代碼設為 <code>1</code></td><td><code>寫入OFD624的EC_PCODE覆核後設為"1"</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:349-368</code></td></tr><tr><td><code>BMSM001</code> 覆核時更新 <code>OFD601</code> 的註冊別</td><td><code>更新OFD601</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:381-399</code></td></tr><tr><td><code>BMSM001</code> 寫集保傳檔記錄</td><td><code>寫一筆新資料進 BMS001_TSCDLOG</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:537-608</code></td></tr><tr><td><code>BMSM001</code> 覆核刪除時清 <code>OFD607A</code> 的覆核欄位</td><td><code>清空OFD607A的ECAPPROVEID,ECAPPROVEDATE...等欄位</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:3566-3590</code></td></tr><tr><td><code>BMSM001</code> 判斷要不要重送印鑑</td><td><code>判斷是否執行CallBfSeal()</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:649-672</code></td></tr><tr><td><code>BMSM006</code> 覆核時寫 EC 覆核者</td><td><code>寫入OFD607ACHG的ECApproveID,ECApproveDate</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:989-1011</code></td></tr><tr><td><code>BMSM006</code> 覆核刪除時回復 <code>OFD601</code> 註冊別並刪除</td><td>(在 SQL 字串中間被註解)</td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM006_PO.cs:1050-1065</code></td></tr><tr><td><code>BMSM001</code> / <code>BMSM006</code> 掛 11 張帳戶明細</td><td><code>OFD101</code> 到 <code>OFD562</code></td><td><code>Dev/ATLAS.BMS/Source/PO/PO.BMS/BMSM001_PO.cs:103-121</code></td></tr></tbody></table></div>
+<p>嚴重度:<strong>中</strong>。做影響分析時<strong>一定要確認目標區塊是不是註解</strong>, 本模組被註解的程式碼量大約佔 PO 層的兩成。</p>
+</div></section><section class="sec" data-sec="附錄-f-版本紀錄"><h2 id="附錄-f-版本紀錄"><button class="tg" aria-label="收合/展開" type="button"></button>附錄 F. 版本紀錄</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>版本</th><th>日期</th><th>變更</th></tr></thead><tbody><tr><td>v1</td><td>2026-09-14</td><td>初版。<a class="sec" href="#0-系統邊界與角色">§0</a> 到 <a class="sec" href="#3-畫面清冊">§3</a> 與 <a class="sec" href="#2-1-chg-是什麼-12-張配對表的機制-本篇核心">§2.1</a> 的 <code>CHG</code> 機制證據鏈為第一階段產出;<a class="sec" href="#4-維護畫面-m-一支一節">§4</a> 到 <a class="sec" href="#8-跨模組共用">§8</a> 與附錄 A 到 F 為第二階段續寫</td></tr></tbody></table></div></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-21 10:52 產生 · 標題 131 · 圖 5 · 表格 80 · 程式錨點 445 · § 連結 64 · 引用檢查：畫面 26（缺 0） · Table 41（缺 0） · Trigger 2（缺 0） · 結果集 24（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>

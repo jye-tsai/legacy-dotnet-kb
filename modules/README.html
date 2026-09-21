@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="build_doc.py v2.0.0">
+<meta name="doc-version" content="v1">
+<meta name="doc-date" content="2026-09-14">
+<title>ATLAS 模組知識庫索引</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1b2028; --muted:#5b6472; --line:#e2e6ec;
+  --brand:#1f6f8b; --brand-soft:#e8f2f6; --accent:#b3541e; --accent-soft:#fbeee3;
+  --ext:#f0f1f4; --ext-line:#b8bfc9; --code-bg:#f2f4f7; --th:#eef2f6;
+  --vend:#9c4221; --vend-soft:#fdf0e6; --bad:#b42318; --bad-soft:#fde8e6; --mark:#fff3b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+    --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+    --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+    --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --panel:#1b1f26; --ink:#e6e9ee; --muted:#9aa4b2; --line:#2b313a;
+  --brand:#63b3c9; --brand-soft:#1d2c33; --accent:#e08c4f; --accent-soft:#33241a;
+  --ext:#232830; --ext-line:#3a424e; --code-bg:#161a20; --th:#222831;
+  --vend:#e8a06a; --vend-soft:#3a2418; --bad:#f28b82; --bad-soft:#3a1f1d; --mark:#5a4a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-text-size-adjust:100%;}
+.wrap{display:flex; align-items:flex-start; max-width:1560px; margin:0 auto;}
+nav{position:sticky; top:0; flex:0 0 280px; height:100vh; overflow-y:auto; display:flex; flex-direction:column;
+  padding:16px 12px 40px 18px; border-right:1px solid var(--line); background:var(--panel);}
+nav .navhead{display:flex; align-items:center; gap:8px; margin:0 0 10px 4px;}
+nav .navtitle{font-weight:700; font-size:13px; letter-spacing:.08em; color:var(--muted); flex:1;}
+nav .ibtn{border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:6px;
+  font-size:12px; padding:2px 8px; cursor:pointer;}
+nav .ibtn:hover{color:var(--ink); border-color:var(--brand);}
+nav .search{width:100%; margin:0 0 10px; padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); color:var(--ink); font-size:13px;}
+nav .search:focus{outline:2px solid var(--brand-soft); border-color:var(--brand);}
+nav .toc{flex:1;}
+nav a{display:block; text-decoration:none; color:var(--muted); font-size:13px;
+  padding:4px 8px; border-radius:6px; border-left:2px solid transparent;}
+nav a:hover{color:var(--ink); background:var(--brand-soft);}
+nav a.l2{font-weight:600; color:var(--ink); margin-top:8px;}
+nav a.l3{padding-left:20px;}
+nav a.active{border-left-color:var(--brand); background:var(--brand-soft); color:var(--ink);}
+nav a.hide{display:none;}
+nav .nohit{color:var(--muted); font-size:12px; padding:8px; display:none;}
+main{flex:1 1 auto; min-width:0; padding:28px 44px 96px; background:var(--bg);}
+.meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; font-size:12.5px; color:var(--muted);}
+.meta .badge{display:inline-block; padding:1px 9px; border-radius:999px; border:1px solid var(--line);
+  background:var(--panel); font-family:Consolas,monospace; font-size:12px;}
+.meta .badge.v{border-color:var(--brand); color:var(--brand); font-weight:700;}
+h1{font-size:28px; line-height:1.35; margin:0 0 12px; padding-bottom:14px; border-bottom:3px solid var(--brand);}
+h2{font-size:21px; margin:44px 0 14px; padding-left:12px; border-left:5px solid var(--brand); display:flex; align-items:center; gap:8px;}
+h2 .tg{width:22px; height:22px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer;
+  position:relative; flex:none;}
+h2 .tg::before{content:""; position:absolute; left:7px; top:5px; width:6px; height:6px;
+  border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); transition:transform .15s;}
+.sec.closed h2 .tg::before{transform:rotate(-45deg); top:7px;}
+.sec.closed .sec-body{display:none;}
+h3{font-size:16.5px; margin:28px 0 10px; color:var(--brand);}
+h4{font-size:15px; margin:20px 0 8px;}
+h2:target,h3:target,h4:target{background:var(--mark); border-radius:4px;}
+p{margin:10px 0;}
+p.bqh{font-weight:700; margin:0 0 6px;}
+p.muted{color:var(--muted); font-size:13px;}
+ul,ol{margin:10px 0 10px 22px; padding:0;}
+li{margin:5px 0;}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0;}
+blockquote{margin:16px 0; padding:12px 16px; border-left:4px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--ink); font-size:14px;}
+blockquote>p:first-child{margin-top:0;} blockquote>p:last-child{margin-bottom:0;}
+blockquote>pre.code{margin:10px 0;}
+code{font-family:"Cascadia Mono",Consolas,"SFMono-Regular",monospace; font-size:.88em;
+  background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 5px;}
+pre.code{background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; margin:14px 0;}
+pre.code code{background:none; border:0; padding:0; font-size:12.8px; line-height:1.6;}
+a.sec{color:var(--brand); text-decoration:none; border-bottom:1px dotted var(--brand);}
+a.sec:hover{background:var(--brand-soft);}
+a.src{text-decoration:none;}
+a.src code{border-color:var(--brand); color:var(--brand); background:var(--brand-soft);}
+a.src code::before{content:"⌕ "; opacity:.7;}
+a.src:hover code{background:var(--brand); color:#fff;}
+a.src.missing code,code.src.missing{border-color:var(--bad); color:var(--bad); background:var(--bad-soft); text-decoration:line-through;}
+.tw{overflow-x:auto; margin:14px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel);}
+table{border-collapse:collapse; width:100%; font-size:13.6px;}
+th,td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+th{background:var(--th); font-weight:700; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+tbody tr:hover{background:var(--brand-soft);}
+figure{margin:22px 0; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow-x:auto; cursor:zoom-in; position:relative;}
+figure::after{content:"點圖放大"; position:absolute; right:12px; top:8px; font-size:11px; color:var(--muted); opacity:.7;}
+figure svg{display:block; width:100%; min-width:900px; height:auto;}
+figcaption{margin-top:10px; font-size:12.5px; color:var(--muted); text-align:center;}
+.bx rect{fill:var(--panel); stroke:var(--brand); stroke-width:1.6;}
+.bx.ext rect{fill:var(--ext); stroke:var(--ext-line);}
+.bx.dash rect{fill:none; stroke:var(--muted); stroke-dasharray:5 4;}
+.bx.accent rect{fill:var(--accent-soft); stroke:var(--accent); stroke-width:2;}
+.bx.vend rect{fill:var(--vend-soft); stroke:var(--vend); stroke-width:2; stroke-dasharray:7 3;}
+.bx.vend text.t1{fill:var(--vend);}
+.bx text.t1{fill:var(--ink); font-size:13px; font-weight:700;}
+.bx text.t2{fill:var(--muted); font-size:11px; font-family:Consolas,monospace;}
+text.lane{fill:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.04em;}
+path.ar{fill:none; stroke:var(--brand); stroke-width:1.8;}
+path.ar.dsh{stroke:var(--muted); stroke-dasharray:5 4;}
+path.ar.lnk{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 3;}
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; cursor:zoom-out; padding:24px;}
+.lightbox.on{display:flex;}
+.lightbox .inner{background:var(--panel); border-radius:12px; padding:16px; max-width:96vw; max-height:92vh; overflow:auto;}
+.lightbox svg{width:max(1400px,90vw); height:auto; display:block;}
+#totop{position:fixed; right:22px; bottom:22px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel); color:var(--brand); font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+#totop.show{opacity:1; pointer-events:auto;}
+footer{margin-top:60px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+mark{background:var(--mark); color:inherit; padding:0 2px; border-radius:2px;}
+.kbd{font-family:Consolas,monospace; font-size:11px; border:1px solid var(--line); border-radius:4px; padding:0 4px; background:var(--bg);}
+@media (max-width:1000px){
+  .wrap{display:block;}
+  nav{position:static; height:auto; width:auto; flex:none; border-right:0; border-bottom:1px solid var(--line);}
+  main{padding:24px 18px 72px;}
+}
+@media print{ nav,#totop,figure::after,.tg{display:none !important} .sec.closed .sec-body{display:block} main{padding:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+<div class="navhead"><p class="navtitle">目錄</p><button class="ibtn" id="toggleall" type="button">全部收合</button><button class="ibtn" id="theme" type="button">主題:自動</button></div>
+<input class="search" id="q" type="search" placeholder="搜尋目錄（/ 或 Ctrl+K）" autocomplete="off">
+<div class="toc">
+<a class="l2" href="#1-已完成">1. 已完成</a>
+<a class="l2" href="#2-待撰寫">2. 待撰寫</a>
+<a class="l2" href="#3-每篇都有什麼">3. 每篇都有什麼</a>
+<a class="l2" href="#4-怎麼查">4. 怎麼查</a>
+<p class="nohit" id="nohit">沒有符合的章節</p>
+</div>
+</nav>
+<main>
+<div class="meta"><span class="badge v">v1</span> <span class="badge">2026-09-14</span></div>
+<h1 id="atlas-模組知識庫索引">ATLAS 模組知識庫索引</h1>
+<blockquote><p>一模組一篇,講<strong>這個模組在做什麼業務</strong>:資料模型、每支畫面的檢核與四眼、批次與報表、以及改它的表會影響誰。</p>
+<p>共同前提在 <code>architecture.md</code>,操作步驟在 <code>runbooks/README.md</code>。<strong>三者不重複</strong>——架構篇講通則、手冊講怎麼改、模組篇講這裡的業務長什麼樣。</p></blockquote>
+<section class="sec" data-sec="1-已完成"><h2 id="1-已完成"><button class="tg" aria-label="收合/展開" type="button"></button>1. 已完成</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>模組</th><th>中文名(推測)</th><th>畫面</th><th>表</th><th>行數</th><th>圖</th><th>錨點</th></tr></thead><tbody><tr><td>[<code>bbs.md</code>](bbs.md)</td><td>BBS(受益憑證作業,推測)</td><td>17</td><td>20</td><td>1668</td><td>—</td><td>—</td></tr><tr><td>[<code>bms.md</code>](bms.md)</td><td>BMS(受益人基本資料與資料變更,推測)</td><td>11</td><td>26</td><td>1538</td><td>—</td><td>—</td></tr><tr><td>[<code>cas.md</code>](cas.md)</td><td>CAS（代銷通路業績管理，推測）</td><td>16</td><td>10</td><td>1916</td><td>—</td><td>—</td></tr><tr><td>[<code>cls.md</code>](cls.md)</td><td>CLS(直銷潛在客戶與拜訪管理,推測)</td><td>7</td><td>5</td><td>1323</td><td>—</td><td>—</td></tr><tr><td>[<code>cod.md</code>](cod.md)</td><td>COD（代碼檔與員工主檔，推測）</td><td>12</td><td>7</td><td>1401</td><td>—</td><td>—</td></tr><tr><td>[<code>cpm.md</code>](cpm.md)</td><td>CPM（需求處理件／抱怨記錄件／客訴件的簽核流程，推測）</td><td>13</td><td>8</td><td>1388</td><td>—</td><td>—</td></tr><tr><td>[<code>crm.md</code>](crm.md)</td><td>CRM（潛在客戶與直銷指派管理，推測）</td><td>18</td><td>9</td><td>1723</td><td>—</td><td>—</td></tr><tr><td>[<code>dsm.md</code>](dsm.md)</td><td>DSM(直銷業務管理,推測)</td><td>29</td><td>17</td><td>2000</td><td>—</td><td>—</td></tr><tr><td>[<code>ec.md</code>](ec.md)</td><td>EC(網路交易平台,推測)</td><td>—</td><td>—</td><td>1873</td><td>—</td><td>—</td></tr><tr><td>[<code>ofd7.md</code>](ofd7.md)</td><td>OFD7(OFD 模組第 7 片,推測)</td><td>—</td><td>—</td><td>1360</td><td>—</td><td>—</td></tr><tr><td>[<code>ofd8.md</code>](ofd8.md)</td><td>OFD8(OFD 模組第 8 片,推測)</td><td>—</td><td>—</td><td>1739</td><td>—</td><td>—</td></tr><tr><td>[<code>ofd9.md</code>](ofd9.md)</td><td>OFD9(OFD 模組第 9 片,推測)</td><td>—</td><td>—</td><td>2119</td><td>—</td><td>—</td></tr><tr><td>[<code>ofdb.md</code>](ofdb.md)</td><td>OFDB(OFD 模組批次片,推測)</td><td>—</td><td>—</td><td>1801</td><td>—</td><td>—</td></tr><tr><td>[<code>rsp.md</code>](rsp.md)</td><td>RSP(定期定額,推測)</td><td>56</td><td>23</td><td>2306</td><td>—</td><td>—</td></tr><tr><td>[<code>tmk.md</code>](tmk.md)</td><td>TMK(電話行銷 Telemarketing / CallOut,推測)</td><td>14</td><td>5</td><td>1457</td><td>—</td><td>—</td></tr></tbody></table></div>
+</div></section><section class="sec" data-sec="2-待撰寫"><h2 id="2-待撰寫"><button class="tg" aria-label="收合/展開" type="button"></button>2. 待撰寫</h2><div class="sec-body">
+<p>依 <code>plans/05-phase4-module-docs.md</code> 的批次規劃排。畫面數與表數由掃描器即時算出:</p>
+<div class="tw"><table><thead><tr><th>批</th><th>模組</th><th>畫面</th><th>B</th><th>I</th><th>M</th><th>R</th><th>表</th></tr></thead><tbody><tr><td>3</td><td><code>ofd</code></td><td>550</td><td>165</td><td>77</td><td>214</td><td>94</td><td>291</td></tr><tr><td>4</td><td><code>nfd</code></td><td>136</td><td>0</td><td>0</td><td>0</td><td>136</td><td>0</td></tr><tr><td>4</td><td><code>ota</code></td><td>3</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td></tr><tr><td>5</td><td><code>ipj</code></td><td>15</td><td>7</td><td>5</td><td>1</td><td>2</td><td>0</td></tr><tr><td>5</td><td><code>trp</code></td><td>6</td><td>0</td><td>1</td><td>4</td><td>1</td><td>2</td></tr><tr><td>5</td><td><code>sdm</code></td><td>2</td><td>2</td><td>0</td><td>0</td><td>0</td><td>2</td></tr><tr><td>5</td><td><code>ctl</code></td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>5</td><td><code>fsk</code></td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td></tr><tr><td>5</td><td><code>ijp</code></td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td></tr></tbody></table></div>
+<p>進度:<strong>193 / 908 支畫面</strong>(21%)· <strong>15 / 19 個模組</strong>。</p>
+<blockquote><p>⚠ <strong>前七篇(<code>bms</code> <code>cas</code> <code>cls</code> <code>cod</code> <code>crm</code> <code>dsm</code> <code>bbs</code>)寫於掃描器第二輪修正之前。</strong> 那次修正(<code>architecture.md 附錄 D.3</code> 的 D4 / D5)讓實體表由 367 增為 413、並修好 inline <code>simpleType</code> 欄位的解析——<strong>所以這七篇內文引用的「某表幾欄」可能偏低</strong>。覆蓋率(哪些表被提到)已全部重驗為 100%,但內文數字未逐一重對。 <strong>欄位數以 <code>atlas_scan.py --table &lt;表名&gt;</code> 的即時輸出為準</strong>,不要引用內文的數字。已知一例:<code>bms.md</code> 記 <code>OFD206</code> 為 12 欄,實際 21 欄(由 <code>ofd7.md</code> 交叉驗證發現)。</p></blockquote>
+</div></section><section class="sec" data-sec="3-每篇都有什麼"><h2 id="3-每篇都有什麼"><button class="tg" aria-label="收合/展開" type="button"></button>3. 每篇都有什麼</h2><div class="sec-body">
+<div class="tw"><table><thead><tr><th>章</th><th>內容</th></tr></thead><tbody><tr><td><code>§0</code></td><td>這模組管什麼業務。<strong>目前都是從表名與欄位中文名推測的</strong>,待選單 / 對照表回填</td></tr><tr><td><code>§1</code></td><td>圖群:全景、表關係、四眼與卡控、批次報表流</td></tr><tr><td><code>§2</code></td><td>資料模型:表、主鍵、四眼欄位齊不齊、欄位中文名總表</td></tr><tr><td><code>§3</code></td><td>畫面清冊 B / I / M / R 四張表</td></tr><tr><td><code>§4</code>–<code>§7</code></td><td>逐支畫面:M 維護、I 查詢、B 批次、R 報表</td></tr><tr><td><code>§8</code></td><td><strong>跨模組共用</strong>:改這裡的表會影響誰</td></tr><tr><td>附錄 A–F</td><td>表總表 / DB 物件 / 代碼值 / 母體覆蓋率 / 踩雷 / 版本</td></tr></tbody></table></div>
+<p><strong>卡控結果一律分五類</strong>:阻擋 / 警示 / 詢問 / 過濾(無提示)/ 記錄不擋。「過濾(無提示)」最容易被忽略——資料被條件濾掉而畫面不說,使用者以為沒資料。</p>
+</div></section><section class="sec" data-sec="4-怎麼查"><h2 id="4-怎麼查"><button class="tg" aria-label="收合/展開" type="button"></button>4. 怎麼查</h2><div class="sec-body">
+<pre class="code lang-bash"><code>py -V:3.12 <repo>\docs\tools\atlas_scan.py --module &lt;MOD&gt;
+py -V:3.12 <repo>\docs\tools\atlas_scan.py --table &lt;表名&gt;</code></pre>
+<p>第一支列該模組的畫面、表、SP、報表;第二支反查一張表被哪些畫面用到——<strong>改表之前一定要跑第二支</strong>,跨模組共用在這套系統裡是常態不是例外。</p></div></section>
+<footer>由 build_doc.py v2.0.0 於 2026-09-15 11:53 產生 · 標題 5 · 圖 0 · 表格 3 · 程式錨點 0 · § 連結 0 · 引用檢查：Table 1（缺 0）<br>快速鍵：<span class="kbd">/</span> 或 <span class="kbd">Ctrl+K</span> 搜尋目錄 · <span class="kbd">Esc</span> 清除／關閉放大圖 · 點章節標題左側方塊可收合</footer>
+</main>
+</div>
+<button id="totop" type="button" title="回頂端">↑</button>
+<div class="lightbox" id="lightbox"><div class="inner"></div></div>
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- 主題切換（auto → light → dark）----
+  var tb=document.getElementById('theme');
+  function applyTheme(t){ if(t==='auto'){root.removeAttribute('data-theme');} else {root.setAttribute('data-theme',t);} tb.textContent={auto:'主題:自動',light:'主題:亮',dark:'主題:暗'}[t]; }
+  var theme='auto'; try{ theme=localStorage.getItem('bf-theme')||'auto'; }catch(e){}
+  applyTheme(theme);
+  tb.addEventListener('click',function(){ theme={auto:'light',light:'dark',dark:'auto'}[theme]; applyTheme(theme); try{localStorage.setItem('bf-theme',theme);}catch(e){} });
+  // ---- 章節折疊 ----
+  var secs=[].slice.call(document.querySelectorAll('section.sec'));
+  document.querySelectorAll('h2 .tg').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); b.closest('section').classList.toggle('closed'); }); });
+  var all=document.getElementById('toggleall'), allOpen=true;
+  all.addEventListener('click',function(){ allOpen=!allOpen; secs.forEach(function(s){ s.classList.toggle('closed',!allOpen); }); all.textContent=allOpen?'全部收合':'全部展開'; });
+  // 點目錄或錨點時，確保目標章節展開
+  function openFor(id){ var el=document.getElementById(id); if(!el) return; var s=el.closest('section.sec'); if(s) s.classList.remove('closed'); }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#"]'); if(a){ openFor(decodeURIComponent(a.getAttribute('href').slice(1))); } });
+  if(location.hash){ openFor(decodeURIComponent(location.hash.slice(1))); }
+  // ---- 目錄搜尋 ----
+  var q=document.getElementById('q'), links=[].slice.call(document.querySelectorAll('nav .toc a')), nohit=document.getElementById('nohit');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), hit=0;
+    links.forEach(function(a){ var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0; a.classList.toggle('hide',!ok); if(ok) hit++; });
+    nohit.style.display=(v&&!hit)?'block':'none';
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
+    if(e.key==='Escape'){ if(document.activeElement===q){ q.value=''; q.dispatchEvent(new Event('input')); q.blur(); } lb.classList.remove('on'); }
+  });
+  // ---- 目錄追蹤目前章節 ----
+  var hs=[].slice.call(document.querySelectorAll('main h2[id],main h3[id]'));
+  var map={}; links.forEach(function(a){ map[decodeURIComponent(a.getAttribute('href').slice(1))]=a; });
+  var cur=null;
+  function setActive(id){ if(cur===id) return; cur=id; links.forEach(function(a){a.classList.remove('active');}); var a=map[id]; if(a){ a.classList.add('active'); var r=a.getBoundingClientRect(), nr=a.closest('nav').getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) a.scrollIntoView({block:'center'}); } }
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var y=window.scrollY+90, best=null; for(var i=0;i<hs.length;i++){ if(hs[i].offsetParent===null) continue; if(hs[i].getBoundingClientRect().top+window.scrollY<=y) best=hs[i]; else break; } if(best) setActive(best.id); tt.classList.toggle('show',window.scrollY>600); }); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  // ---- 回頂端 ----
+  var tt=document.getElementById('totop'); tt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  // ---- 圖放大 ----
+  var lb=document.getElementById('lightbox'), lbi=lb.querySelector('.inner');
+  document.querySelectorAll('figure').forEach(function(f){ f.addEventListener('click',function(){ lbi.innerHTML=f.innerHTML; lb.classList.add('on'); }); });
+  lb.addEventListener('click',function(){ lb.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>
