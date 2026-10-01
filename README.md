@@ -58,9 +58,8 @@ repo 已附一個 Copilot 自訂 agent:**`atlas-kb`**(`.github/agents/atlas-kb.a
 
 | 檔案 | 用途 |
 |---|---|
-| `m365-setup.html` | 逐步建置清單(複製鈕 + 下載連結),首頁 §4 有連結 |
-| `m365/atlas-kb-m365.zip` | 下面全部打成一包,下載這個就好 |
-| `m365/atlas-kb-skill.zip` | 「技能 Skills」上傳用:`SKILL.md`(來源 `tools/m365_skill/SKILL.md`)+ `references/` 完整知識庫 |
+| `m365-setup.html` | 逐步建置清單(複製鈕 + 逐檔下載連結),首頁 §4 有連結 |
+| `m365/skill/` | 「技能 Skills」用:`SKILL.md`(來源 `tools/m365_skill/SKILL.md`)+ `references/` 16 個 .md;下載後自己壓 zip,SKILL.md 要在 zip 最上層 |
 | `m365/knowledge/` | 16 個 `.txt` 知識檔(Agent Builder 上限 20 檔、不收 `.md`,所以合併成 txt) |
 | `m365/instructions.txt` | 貼到「指示 Instructions」 |
 | `m365/agent-settings.txt` | 名稱、描述、建議提示等各欄要填的值 |
