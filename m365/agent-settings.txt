@@ -11,7 +11,7 @@ ATLAS 維護顧問
 → 貼上 instructions.txt 的全部內容
 
 【技能 Skills】(有「技能」區塊時用這個,優先)
-→ 先把 skill/ 裡的 SKILL.md 與 references/ 一起壓成 atlas-kb-skill.zip
+→ 先把 skill/ 裡的 SKILL.md 與 references/ 一起壓成 atlas-kb.zip
   (選取這兩項壓縮,SKILL.md 要在 zip 最上層;不要壓外層資料夾)
 → 新增 → 上傳這個 zip(不要只傳 SKILL.md)
 
