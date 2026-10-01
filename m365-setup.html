@@ -61,6 +61,8 @@ button:focus-visible, a:focus-visible, input:focus-visible{outline:2px solid var
 details summary{cursor:pointer; color:var(--brand); font-size:14px}
 details .files-list{margin-top:8px}
 @media (max-width:560px){ .files{grid-template-columns:minmax(0,1fr)} }
+.alt{font-size:13px; color:var(--muted); margin:8px 0 0}
+.alt a{color:var(--brand)}
 .note{background:var(--warn-soft); color:var(--ink); border-radius:8px; padding:10px 14px; font-size:14px}
 .note b{color:var(--warn)}
 .prompts{display:flex; flex-direction:column; gap:10px}
@@ -94,7 +96,7 @@ footer a{color:var(--brand)}
   </ol>
   <p class="note"><b>要選資料夾「裡面」的兩項來壓縮，不要壓外層的 atlas-kb 資料夾。</b>SKILL.md 必須在 zip 的最上層，否則上傳會被拒絕。</p>
   <div class="files">
-    <div class="files-col"><p class="files-h">放在 atlas-kb/</p><ul><li><a href="m365/skill/SKILL.md">SKILL.md</a></li></ul></div>
+    <div class="files-col"><p class="files-h">放在 atlas-kb/</p><ul><li><a href="m365/skill/SKILL.md">SKILL.md</a></li></ul><p class="alt">.md 下載不了？改下載 <a href="m365/SKILL.txt">SKILL.txt</a>，存好後<b>改名成 SKILL.md</b>（要先開「顯示副檔名」，確認不是 SKILL.md.txt）。</p></div>
     <div class="files-col"><p class="files-h">放在 atlas-kb/references/（16 個）</p><ul>
 <li><a href="m365/skill/references/01-guide.md">01-guide.md</a></li>
 <li><a href="m365/skill/references/02-overview.md">02-overview.md</a></li>

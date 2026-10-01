@@ -4,6 +4,7 @@
 Agent Builder 限制:「知識」每個 agent 最多 20 個檔、不收 .md,所以合併成 .txt。
 輸出到 m365/(會先清空;不產 zip,有些公司網路擋 zip 下載):
   m365/knowledge/   — 「知識」上傳用(16 個 .txt)
+  m365/SKILL.txt    — SKILL.md 的 .txt 版(擋 .md 下載時用,下載後改名回 SKILL.md)
   m365/skill/       — 「技能」用:SKILL.md + references/ 16 個 .md;
                       使用者自己把 SKILL.md 與 references/ 一起壓成 zip(SKILL.md 要在 zip 根目錄)
 技能的 SKILL.md 來源是 tools/m365_skill/SKILL.md。
@@ -143,6 +144,8 @@ def build_skill():
     refs = SKILL / "references"
     refs.mkdir(parents=True)
     shutil.copyfile(SKILL_SRC, SKILL / "SKILL.md")
+    # 同內容的 .txt:有些公司網路擋 .md 下載,下載後改名回 SKILL.md 再壓 zip
+    shutil.copyfile(SKILL_SRC, OUT / "SKILL.txt")
     for dst, src in SKILL_REFS.items():
         shutil.copyfile(KNOW / src, refs / dst)
     skill_md = SKILL_SRC.read_text(encoding="utf-8")
