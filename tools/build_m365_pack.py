@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """把 kb/ 打包成 Microsoft 365 Copilot Agent Builder 可上傳的知識檔。
 
-Agent Builder 限制:每個 agent 最多上傳 20 個檔;不收 .md,所以合併成 .txt。
-輸出到 m365/(會先清空):
-  m365/knowledge/ + m365/atlas-kb-m365.zip   — 「知識」上傳用(16 個 .txt)
-  m365/atlas-kb-skill.zip                    — 「技能」上傳用(SKILL.md 在 zip 根目錄 + references/)
+Agent Builder 限制:「知識」每個 agent 最多 20 個檔、不收 .md,所以合併成 .txt。
+輸出到 m365/(會先清空;不產 zip,有些公司網路擋 zip 下載):
+  m365/knowledge/   — 「知識」上傳用(16 個 .txt)
+  m365/skill/       — 「技能」用:SKILL.md + references/ 16 個 .md;
+                      使用者自己把 SKILL.md 與 references/ 一起壓成 zip(SKILL.md 要在 zip 根目錄)
 技能的 SKILL.md 來源是 tools/m365_skill/SKILL.md。
 先跑 tools/build_copilot_kb.py 產生 kb/,再跑本腳本。
 """
@@ -12,7 +13,6 @@ import csv
 import re
 import shutil
 import sys
-import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -116,30 +116,42 @@ def build_data():
 
 
 SKILL_SRC = Path(__file__).resolve().parent / "m365_skill" / "SKILL.md"
-SKILL_DATA = {  # references/data/ 檔名 → knowledge/ 裡的來源
-    "screens.txt": "20-資料-畫面清冊.txt",
-    "tables.txt": "21-資料-實體表.txt",
-    "objects.txt": "22-資料-SP報表服務.txt",
-    "messages.txt": "23-資料-錯誤訊息反查.txt",
-    "defects.txt": "24-資料-已知缺陷.txt",
+SKILL = OUT / "skill"
+# references/ 檔名(英文,避免 Windows 壓縮亂碼)→ knowledge/ 裡的來源
+SKILL_REFS = {
+    "01-guide.md": "01-導覽-索引速查症狀.txt",
+    "02-overview.md": "02-系統介紹-業務軸.txt",
+    "03-architecture.md": "03-技術架構.txt",
+    "04-runbooks.md": "04-維護手冊-runbooks.txt",
+    "10-modules-bbs-bms-cas-cls-cod.md": "10-模組-BBS-BMS-CAS-CLS-COD.txt",
+    "11-modules-cpm-crm-dsm-tmk.md": "11-模組-CPM-CRM-DSM-TMK.txt",
+    "12-modules-ec-misc-rsp-nfdr.md": "12-模組-EC-MISC-RSP-NFDR.txt",
+    "13-modules-ofd1-5.md": "13-模組-OFD1至5.txt",
+    "14-modules-ofd6-9.md": "14-模組-OFD6至9.txt",
+    "15-modules-ofdb.md": "15-模組-OFDB批次.txt",
+    "16-modules-ofdi-ofdr.md": "16-模組-OFDI查詢-OFDR報表.txt",
+    "20-screens.md": "20-資料-畫面清冊.txt",
+    "21-tables.md": "21-資料-實體表.txt",
+    "22-objects.md": "22-資料-SP報表服務.txt",
+    "23-messages.md": "23-資料-錯誤訊息反查.txt",
+    "24-defects.md": "24-資料-已知缺陷.txt",
 }
 
 
 def build_skill():
-    """技能套件:SKILL.md 在根目錄,references/ 放完整 Markdown 知識庫。"""
-    zpath = OUT / "atlas-kb-skill.zip"
-    with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
-        z.write(SKILL_SRC, "SKILL.md")
-        for f in sorted(KB.rglob("*.md")):
-            if f.parent.name == "data":
-                continue
-            z.writestr(f"references/{f.relative_to(KB).as_posix()}",
-                       strip_md_comments(f.read_text(encoding="utf-8")) + "\n")
-        for dst, src in SKILL_DATA.items():
-            z.write(KNOW / src, f"references/data/{dst}")
-    assert zpath.stat().st_size < 50e6, "技能套件上限 50 MB"
-    assert len(SKILL_SRC.read_text(encoding="utf-8")) < 20000, "SKILL.md 指示上限 20,000 字"
-    return zpath
+    """技能資料夾:SKILL.md + references/ 16 個 .md(內容同知識檔)。"""
+    refs = SKILL / "references"
+    refs.mkdir(parents=True)
+    shutil.copyfile(SKILL_SRC, SKILL / "SKILL.md")
+    for dst, src in SKILL_REFS.items():
+        shutil.copyfile(KNOW / src, refs / dst)
+    skill_md = SKILL_SRC.read_text(encoding="utf-8")
+    assert len(skill_md) < 20000, "SKILL.md 指示上限 20,000 字"
+    for name in SKILL_REFS:
+        assert f"references/{name}" in skill_md, f"SKILL.md 沒提到 references/{name}"
+    total = sum(f.stat().st_size for f in SKILL.rglob("*") if f.is_file())
+    assert total < 50e6, "技能套件上限 50 MB"
+    return total
 
 
 def main():
@@ -155,15 +167,10 @@ def main():
     build_data()
     files = sorted(KNOW.iterdir())
     assert len(files) <= 20, f"Agent Builder 最多 20 個檔,目前 {len(files)}"
-    with zipfile.ZipFile(OUT / "atlas-kb-m365.zip", "w", zipfile.ZIP_DEFLATED) as z:
-        for f in files:
-            z.write(f, f"knowledge/{f.name}")
-        for f in sorted(OUT.glob("*.txt")):
-            z.write(f, f.name)
-    skill = build_skill()
+    skill_bytes = build_skill()
     for f in files:
         print(f"{f.stat().st_size/1e6:6.2f} MB  {f.name}", file=sys.stderr)
-    print(f"skill: {skill.relative_to(ROOT)} ({skill.stat().st_size/1e6:.1f} MB)", file=sys.stderr)
+    print(f"skill: {SKILL.relative_to(ROOT)}/ ({skill_bytes/1e6:.1f} MB, {len(SKILL_REFS) + 1} files)", file=sys.stderr)
     print(f"{len(files)} files -> {KNOW.relative_to(ROOT)}/", file=sys.stderr)
 
 

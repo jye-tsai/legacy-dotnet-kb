@@ -11,11 +11,16 @@ ATLAS 維護顧問
 → 貼上 instructions.txt 的全部內容
 
 【技能 Skills】(有「技能」區塊時用這個,優先)
-→ Add / 新增 → 上傳 atlas-kb-skill.zip(整包上傳,不要只傳 SKILL.md)
+→ 先把 skill/ 裡的 SKILL.md 與 references/ 一起壓成 atlas-kb-skill.zip
+  (選取這兩項壓縮,SKILL.md 要在 zip 最上層;不要壓外層資料夾)
+→ 新增 → 上傳這個 zip(不要只傳 SKILL.md)
 
 【知識 Knowledge】(沒有技能區塊、或想雙保險時)
 → 上傳 knowledge/ 資料夾內全部 16 個 .txt
 → 開啟「僅使用指定的來源 / Only use specified sources」
+
+【網頁搜尋 Web search】
+→ 關閉(ATLAS 是內部系統,網路上沒有它的資料)
 
 【功能 Capabilities】
 → 全部不用開(不需要程式碼解譯器、圖片產生器)

@@ -53,10 +53,14 @@ button.copy{font:inherit; font-size:13px; border:1px solid var(--brand); color:v
 button.copy:hover{background:var(--brand-soft)}
 button.copy.ok{border-color:var(--ok); color:var(--ok); background:var(--ok-soft)}
 button:focus-visible, a:focus-visible, input:focus-visible{outline:2px solid var(--brand); outline-offset:2px}
-.dl{display:flex; flex-wrap:wrap; gap:10px}
-.dl a{display:inline-flex; flex-direction:column; gap:2px; text-decoration:none; color:var(--ink); border:1px solid var(--brand); background:var(--brand-soft); border-radius:8px; padding:10px 14px; min-width:0}
-.dl a b{color:var(--brand); font-size:14px}
-.dl a span{font-size:12px; color:var(--muted)}
+.files{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,2fr); gap:12px}
+.files-col{min-width:0}
+.files-h{font-size:12px; font-weight:700; letter-spacing:.06em; color:var(--muted); margin:0 0 4px}
+.files ul, .files-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; font-family:var(--f-mono); font-size:13px}
+.files a, .files-list a{color:var(--brand); word-break:break-all}
+details summary{cursor:pointer; color:var(--brand); font-size:14px}
+details .files-list{margin-top:8px}
+@media (max-width:560px){ .files{grid-template-columns:minmax(0,1fr)} }
 .note{background:var(--warn-soft); color:var(--ink); border-radius:8px; padding:10px 14px; font-size:14px}
 .note b{color:var(--warn)}
 .prompts{display:flex; flex-direction:column; gap:10px}
@@ -82,10 +86,33 @@ footer a{color:var(--brand)}
 </header>
 
 <section class="step" data-step="0">
-  <div class="step-head"><label><input type="checkbox" id="s0"><div><h2>下載兩個檔案</h2><p class="where">用電腦下載；技能包不用解壓縮</p></div></label></div>
-  <div class="dl">
-    <a href="m365/atlas-kb-skill.zip"><b>atlas-kb-skill.zip</b><span>技能包 · 2.1 MB · 步驟 3 用</span></a>
-    <a href="m365/atlas-kb-m365.zip"><b>atlas-kb-m365.zip</b><span>知識檔 16 個 .txt · 2.0 MB · 步驟 4 備用</span></a>
+  <div class="step-head"><label><input type="checkbox" id="s0"><div><h2>下載技能檔案，自己壓成 zip</h2><p class="where">共 17 個檔：1 個 SKILL.md + references 資料夾 16 個 .md</p></div></label></div>
+  <ol>
+    <li>在電腦上建一個資料夾，例如 <code>atlas-kb</code>，裡面再建一個子資料夾 <code>references</code>。</li>
+    <li>逐一<b>右鍵 → 另存連結為</b>下載下面的檔案：<code>SKILL.md</code> 放在 <code>atlas-kb</code>，其他 16 個放進 <code>references</code>。檔名不要改。</li>
+    <li>打開 <code>atlas-kb</code> 資料夾，<b>選取裡面的 SKILL.md 和 references 兩項</b> → 右鍵 → 傳送到 → 壓縮的 (zipped) 資料夾，命名為 <code>atlas-kb-skill.zip</code>。</li>
+  </ol>
+  <p class="note"><b>要選資料夾「裡面」的兩項來壓縮，不要壓外層的 atlas-kb 資料夾。</b>SKILL.md 必須在 zip 的最上層，否則上傳會被拒絕。</p>
+  <div class="files">
+    <div class="files-col"><p class="files-h">放在 atlas-kb/</p><ul><li><a href="m365/skill/SKILL.md">SKILL.md</a></li></ul></div>
+    <div class="files-col"><p class="files-h">放在 atlas-kb/references/（16 個）</p><ul>
+<li><a href="m365/skill/references/01-guide.md">01-guide.md</a></li>
+<li><a href="m365/skill/references/02-overview.md">02-overview.md</a></li>
+<li><a href="m365/skill/references/03-architecture.md">03-architecture.md</a></li>
+<li><a href="m365/skill/references/04-runbooks.md">04-runbooks.md</a></li>
+<li><a href="m365/skill/references/10-modules-bbs-bms-cas-cls-cod.md">10-modules-bbs-bms-cas-cls-cod.md</a></li>
+<li><a href="m365/skill/references/11-modules-cpm-crm-dsm-tmk.md">11-modules-cpm-crm-dsm-tmk.md</a></li>
+<li><a href="m365/skill/references/12-modules-ec-misc-rsp-nfdr.md">12-modules-ec-misc-rsp-nfdr.md</a></li>
+<li><a href="m365/skill/references/13-modules-ofd1-5.md">13-modules-ofd1-5.md</a></li>
+<li><a href="m365/skill/references/14-modules-ofd6-9.md">14-modules-ofd6-9.md</a></li>
+<li><a href="m365/skill/references/15-modules-ofdb.md">15-modules-ofdb.md</a></li>
+<li><a href="m365/skill/references/16-modules-ofdi-ofdr.md">16-modules-ofdi-ofdr.md</a></li>
+<li><a href="m365/skill/references/20-screens.md">20-screens.md</a></li>
+<li><a href="m365/skill/references/21-tables.md">21-tables.md</a></li>
+<li><a href="m365/skill/references/22-objects.md">22-objects.md</a></li>
+<li><a href="m365/skill/references/23-messages.md">23-messages.md</a></li>
+<li><a href="m365/skill/references/24-defects.md">24-defects.md</a></li>
+    </ul></div>
   </div>
 </section>
 
@@ -123,15 +150,34 @@ footer a{color:var(--brand)}
 <section class="step" data-step="3">
   <div class="step-head"><label><input type="checkbox" id="s3"><div><h2>技能</h2><p class="where">「技能」區塊 → ＋ 新增 → 上傳技能</p></div></label></div>
   <ol>
-    <li>把 <code>atlas-kb-skill.zip</code> 整包拖進虛線框，按「上傳」。</li>
+    <li>把步驟 0 自己壓好的 <code>atlas-kb-skill.zip</code> 拖進虛線框，按「上傳」。</li>
     <li>上傳後技能清單會出現 <code>atlas-kb</code>。</li>
   </ol>
-  <p class="note"><b>不要解壓縮、不要只傳 SKILL.md。</b>上傳視窗要求的兩個條件（zip 內含 SKILL.md、YAML 有名稱與描述）這包都符合。</p>
+  <p class="note"><b>不要只傳 SKILL.md，要傳整個 zip。</b>上傳視窗要求的兩個條件（zip 內含 SKILL.md、YAML 有名稱與描述）這包都符合。</p>
 </section>
 
 <section class="step" data-step="4">
-  <div class="step-head"><label><input type="checkbox" id="s4"><div><h2>知識（選用，先跳過）</h2><p class="where">「知識」區塊 → ＋ 新增知識</p></div></label></div>
-  <p>先只放技能測試。若測試時常找不到錯誤訊息或代號，再把 <code>atlas-kb-m365.zip</code> 解壓，上傳 <code>knowledge/</code> 裡的 16 個 .txt（上限 20 個），並在齒輪設定裡開「僅使用指定的來源」。不需要就直接勾掉這步。</p>
+  <div class="step-head"><label><input type="checkbox" id="s4"><div><h2>知識與網頁搜尋</h2><p class="where">「知識」區塊</p></div></label></div>
+  <p class="note"><b>網頁搜尋：關閉。</b>ATLAS 是內部系統，網路上沒有它的資料；開著只會把網路上的東西混進答案。若畫面要你填網址，留空即可。</p>
+  <p>知識檔先不放，只用技能測試。若測試時常找不到錯誤訊息或代號，再按「＋ 新增知識」上傳下面 16 個 .txt（上限 20 個），並在齒輪設定開「僅使用指定的來源」。</p>
+  <details><summary>知識檔 16 個 .txt（備用）</summary><ul class="files-list">
+<li><a href="m365/knowledge/01-%E5%B0%8E%E8%A6%BD-%E7%B4%A2%E5%BC%95%E9%80%9F%E6%9F%A5%E7%97%87%E7%8B%80.txt">01-導覽-索引速查症狀.txt</a></li>
+<li><a href="m365/knowledge/02-%E7%B3%BB%E7%B5%B1%E4%BB%8B%E7%B4%B9-%E6%A5%AD%E5%8B%99%E8%BB%B8.txt">02-系統介紹-業務軸.txt</a></li>
+<li><a href="m365/knowledge/03-%E6%8A%80%E8%A1%93%E6%9E%B6%E6%A7%8B.txt">03-技術架構.txt</a></li>
+<li><a href="m365/knowledge/04-%E7%B6%AD%E8%AD%B7%E6%89%8B%E5%86%8A-runbooks.txt">04-維護手冊-runbooks.txt</a></li>
+<li><a href="m365/knowledge/10-%E6%A8%A1%E7%B5%84-BBS-BMS-CAS-CLS-COD.txt">10-模組-BBS-BMS-CAS-CLS-COD.txt</a></li>
+<li><a href="m365/knowledge/11-%E6%A8%A1%E7%B5%84-CPM-CRM-DSM-TMK.txt">11-模組-CPM-CRM-DSM-TMK.txt</a></li>
+<li><a href="m365/knowledge/12-%E6%A8%A1%E7%B5%84-EC-MISC-RSP-NFDR.txt">12-模組-EC-MISC-RSP-NFDR.txt</a></li>
+<li><a href="m365/knowledge/13-%E6%A8%A1%E7%B5%84-OFD1%E8%87%B35.txt">13-模組-OFD1至5.txt</a></li>
+<li><a href="m365/knowledge/14-%E6%A8%A1%E7%B5%84-OFD6%E8%87%B39.txt">14-模組-OFD6至9.txt</a></li>
+<li><a href="m365/knowledge/15-%E6%A8%A1%E7%B5%84-OFDB%E6%89%B9%E6%AC%A1.txt">15-模組-OFDB批次.txt</a></li>
+<li><a href="m365/knowledge/16-%E6%A8%A1%E7%B5%84-OFDI%E6%9F%A5%E8%A9%A2-OFDR%E5%A0%B1%E8%A1%A8.txt">16-模組-OFDI查詢-OFDR報表.txt</a></li>
+<li><a href="m365/knowledge/20-%E8%B3%87%E6%96%99-%E7%95%AB%E9%9D%A2%E6%B8%85%E5%86%8A.txt">20-資料-畫面清冊.txt</a></li>
+<li><a href="m365/knowledge/21-%E8%B3%87%E6%96%99-%E5%AF%A6%E9%AB%94%E8%A1%A8.txt">21-資料-實體表.txt</a></li>
+<li><a href="m365/knowledge/22-%E8%B3%87%E6%96%99-SP%E5%A0%B1%E8%A1%A8%E6%9C%8D%E5%8B%99.txt">22-資料-SP報表服務.txt</a></li>
+<li><a href="m365/knowledge/23-%E8%B3%87%E6%96%99-%E9%8C%AF%E8%AA%A4%E8%A8%8A%E6%81%AF%E5%8F%8D%E6%9F%A5.txt">23-資料-錯誤訊息反查.txt</a></li>
+<li><a href="m365/knowledge/24-%E8%B3%87%E6%96%99-%E5%B7%B2%E7%9F%A5%E7%BC%BA%E9%99%B7.txt">24-資料-已知缺陷.txt</a></li>
+  </ul></details>
 </section>
 
 <section class="step" data-step="5">

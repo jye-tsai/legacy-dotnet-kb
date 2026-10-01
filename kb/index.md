@@ -131,9 +131,9 @@
 
 | 要用在 | 怎麼做 |
 |---|---|
-| **M365 Copilot(Agent Builder)建置清單** | 逐步清單:要貼的名稱、描述、指示、建議提示都有複製鈕;技能包與知識檔直接下載 |
-| atlas-kb-skill.zip | Agent Builder「技能」上傳用(SKILL.md + 完整知識庫) |
-| atlas-kb-m365.zip | Agent Builder「知識」上傳用(16 個 .txt,備援) |
+| **M365 Copilot(Agent Builder)建置清單** | 逐步清單:要貼的名稱、描述、指示、建議提示都有複製鈕;技能檔與知識檔逐一下載 |
+| m365/skill/ | Agent Builder「技能」用:`SKILL.md` + `references/` 16 個 .md,下載後自己壓成 zip(SKILL.md 要在 zip 最上層) |
+| m365/knowledge/ | Agent Builder「知識」上傳用(16 個 .txt,備援) |
 | GitHub Copilot(VS Code / github.com) | 用 VS Code 開這個 repo,Copilot Chat 的 agent 下拉選 `atlas-kb`;定義在 `.github/agents/atlas-kb.agent.md` |
 
 ## 5. 這一頁是怎麼來的
