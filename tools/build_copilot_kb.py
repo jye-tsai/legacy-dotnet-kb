@@ -27,7 +27,7 @@ DOC_SOURCES = (
     + sorted((ROOT / "modules").glob("*.html"))
     + sorted((ROOT / "runbooks").glob("*.html"))
 )
-DATA_PAGES = {"query.html", "messages.html", "defects.html"}
+DATA_PAGES = {"query.html", "messages.html", "defects.html", "m365-setup.html"}
 
 SKIP_TAGS = {"style", "script", "nav", "button", "head", "title", "defs", "marker"}
 BLOCK_TAGS = {"p", "div", "section", "figure", "footer", "main", "header", "article"}
@@ -269,7 +269,7 @@ def load_json(name):
 def tsv(v):
     if isinstance(v, (list, tuple)):
         v = ", ".join(str(x) for x in v)
-    return str(v if v is not None else "").replace("\t", " ").replace("\n", " ").strip()
+    return str(v if v is not None else "").replace("\t", " ").replace("\r", " ").replace("\n", " ").strip()
 
 
 def build_query_data():

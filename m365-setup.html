@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLAS Agent 建置清單</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single reading column; each Agent Builder section is a step with its own copy fields, mirroring the builder's top-to-bottom order */
+:root{
+  --bg:#f5f7f8; --panel:#ffffff; --ink:#18232b; --muted:#5a6873; --line:#dde3e7;
+  --brand:#1f6f8b; --brand-soft:#e6f1f5; --ok:#2f7d4f; --ok-soft:#e5f3ea; --warn:#9a5b12; --warn-soft:#fbf1e3;
+  --code-bg:#eef2f4;
+  --f-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12181c; --panel:#1a2227; --ink:#e3e9ed; --muted:#97a5af; --line:#2a353c;
+    --brand:#6bb8d1; --brand-soft:#1b2d35; --ok:#6cc48f; --ok-soft:#183026; --warn:#e2a35a; --warn-soft:#33261a;
+    --code-bg:#141c21; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12181c; --panel:#1a2227; --ink:#e3e9ed; --muted:#97a5af; --line:#2a353c;
+  --brand:#6bb8d1; --brand-soft:#1b2d35; --ok:#6cc48f; --ok-soft:#183026; --warn:#e2a35a; --warn-soft:#33261a;
+  --code-bg:#141c21; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--f-body); font-size:15px; line-height:1.7}
+.wrap{max-width:860px; margin:0 auto; padding-inline:16px; padding-block:32px 64px; display:flex; flex-direction:column; gap:20px}
+header h1{font-size:1.75rem; line-height:1.3; margin:0 0 6px; text-wrap:balance}
+header p{margin:0; color:var(--muted); max-width:62ch}
+.progress{display:flex; align-items:center; gap:12px; margin-top:14px; font-size:13px; color:var(--muted)}
+.bar{flex:1; height:6px; background:var(--line); border-radius:3px; overflow:hidden}
+.bar i{display:block; height:100%; width:0; background:var(--ok); transition:width .25s}
+.step{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:20px; display:flex; flex-direction:column; gap:14px; min-width:0}
+.step.done{border-color:var(--ok)}
+.step-head{display:flex; align-items:flex-start; gap:12px}
+.step-head label{display:flex; gap:12px; align-items:flex-start; cursor:pointer; flex:1}
+.step-head input{width:20px; height:20px; margin-top:4px; accent-color:var(--ok); flex:none}
+.step h2{font-size:1.15rem; margin:0; line-height:1.4}
+.where{font-size:13px; color:var(--muted); margin:2px 0 0}
+.step p, .step li{margin:0; max-width:68ch}
+.step ol, .step ul{margin:0; padding-left:1.3em; display:flex; flex-direction:column; gap:4px}
+.field{display:flex; flex-direction:column; gap:6px; min-width:0}
+.field-top{display:flex; justify-content:space-between; align-items:center; gap:8px}
+.field-label{font-size:12px; font-weight:700; letter-spacing:.06em; color:var(--muted)}
+.copy-box{background:var(--code-bg); border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-family:var(--f-mono); font-size:13px; line-height:1.65; white-space:pre-wrap; word-break:break-word; margin:0; max-height:340px; overflow:auto}
+.copy-box.inline{font-family:var(--f-body); font-size:14px}
+button.copy{font:inherit; font-size:13px; border:1px solid var(--brand); color:var(--brand); background:transparent; border-radius:6px; padding:3px 12px; cursor:pointer; flex:none}
+button.copy:hover{background:var(--brand-soft)}
+button.copy.ok{border-color:var(--ok); color:var(--ok); background:var(--ok-soft)}
+button:focus-visible, a:focus-visible, input:focus-visible{outline:2px solid var(--brand); outline-offset:2px}
+.dl{display:flex; flex-wrap:wrap; gap:10px}
+.dl a{display:inline-flex; flex-direction:column; gap:2px; text-decoration:none; color:var(--ink); border:1px solid var(--brand); background:var(--brand-soft); border-radius:8px; padding:10px 14px; min-width:0}
+.dl a b{color:var(--brand); font-size:14px}
+.dl a span{font-size:12px; color:var(--muted)}
+.note{background:var(--warn-soft); color:var(--ink); border-radius:8px; padding:10px 14px; font-size:14px}
+.note b{color:var(--warn)}
+.prompts{display:flex; flex-direction:column; gap:10px}
+.prompt{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,2.4fr); gap:8px; align-items:start}
+.prompt .num{font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
+.tests{display:flex; flex-direction:column; gap:10px}
+.test{border-left:3px solid var(--ok); padding:2px 0 2px 12px}
+.test .q{font-weight:500}
+.test .a{font-size:14px; color:var(--muted)}
+code{font-family:var(--f-mono); font-size:.9em; background:var(--code-bg); padding:1px 5px; border-radius:4px}
+footer{font-size:13px; color:var(--muted)}
+footer a{color:var(--brand)}
+@media (max-width:560px){ .prompt{grid-template-columns:minmax(0,1fr)} .step{padding:16px} }
+@media (prefers-reduced-motion:reduce){ .bar i{transition:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>ATLAS 維護顧問 · M365 Agent Builder 建置清單</h1>
+  <p>照 Agent Builder 畫面由上到下填。每一格都有「複製」按鈕，貼上即可；完成一步就勾起來。</p>
+  <div class="progress"><div class="bar"><i id="bar"></i></div><span id="count">0 / 7</span></div>
+</header>
+
+<section class="step" data-step="0">
+  <div class="step-head"><label><input type="checkbox" id="s0"><div><h2>下載兩個檔案</h2><p class="where">用電腦下載；技能包不用解壓縮</p></div></label></div>
+  <div class="dl">
+    <a href="m365/atlas-kb-skill.zip"><b>atlas-kb-skill.zip</b><span>技能包 · 2.1 MB · 步驟 3 用</span></a>
+    <a href="m365/atlas-kb-m365.zip"><b>atlas-kb-m365.zip</b><span>知識檔 16 個 .txt · 2.0 MB · 步驟 4 備用</span></a>
+  </div>
+</section>
+
+<section class="step" data-step="1">
+  <div class="step-head"><label><input type="checkbox" id="s1"><div><h2>名稱與描述</h2><p class="where">頁面最上方：點名稱旁的鉛筆、點「描述您的代理程式」</p></div></label></div>
+  <div class="field">
+    <div class="field-top"><span class="field-label">名稱</span><button class="copy" type="button" data-for="t-name">複製</button></div>
+    <pre class="copy-box inline" id="t-name">ATLAS 維護顧問</pre>
+  </div>
+  <div class="field">
+    <div class="field-top"><span class="field-label">描述</span><button class="copy" type="button" data-for="t-desc">複製</button></div>
+    <pre class="copy-box inline" id="t-desc">依 ATLAS 知識庫回答老 .NET WinForms + Oracle 系統的畫面代號、資料表、錯誤訊息、四眼覆核、已知缺陷與維護步驟，每個結論附出處。</pre>
+  </div>
+</section>
+
+<section class="step" data-step="2">
+  <div class="step-head"><label><input type="checkbox" id="s2"><div><h2>指示</h2><p class="where">「指示」框：先刪掉原本的文字，再貼上</p></div></label></div>
+  <div class="field">
+    <div class="field-top"><span class="field-label">指示（約 600 字，上限 8,000）</span><button class="copy" type="button" data-for="t-inst">複製</button></div>
+<pre class="copy-box" id="t-inst">你是「ATLAS 維護顧問」，協助工程師維護老 .NET WinForms + Oracle 系統 ATLAS。一律用繁體中文回答。
+
+凡是問到 ATLAS 的畫面代號、資料表、SP／報表／服務、錯誤訊息、四眼(EVA)覆核、已知缺陷、架構或維護步驟，一律使用 atlas-kb 技能，先在它的 references 中查到依據再回答。若有上傳知識檔，也可搜尋知識檔交叉確認。
+
+鐵律：
+1. 先查再答，不憑一般常識回答 ATLAS 細節。
+2. 每個結論附出處（檔案 + 章節），程式錨點（Dev/…/X.cs:行號）原樣列出，並提醒行號為快照版本、動手前以最新程式為準。
+3. 保留原文「推測」「假設」「版控外」「〔客戶特定〕」「〔共用〕」標記；查不到就說「知識庫沒有」，不要編造。
+4. 代號、表名、訊息原文照抄，不翻譯。
+
+回答格式：一句話結論 → 依據（附出處）→ 風險／注意 → 若要修改，指向對應維護手冊並列出需一起改與回歸的畫面與表。
+問題太模糊時，先問畫面代號或完整錯誤訊息。</pre>
+  </div>
+</section>
+
+<section class="step" data-step="3">
+  <div class="step-head"><label><input type="checkbox" id="s3"><div><h2>技能</h2><p class="where">「技能」區塊 → ＋ 新增 → 上傳技能</p></div></label></div>
+  <ol>
+    <li>把 <code>atlas-kb-skill.zip</code> 整包拖進虛線框，按「上傳」。</li>
+    <li>上傳後技能清單會出現 <code>atlas-kb</code>。</li>
+  </ol>
+  <p class="note"><b>不要解壓縮、不要只傳 SKILL.md。</b>上傳視窗要求的兩個條件（zip 內含 SKILL.md、YAML 有名稱與描述）這包都符合。</p>
+</section>
+
+<section class="step" data-step="4">
+  <div class="step-head"><label><input type="checkbox" id="s4"><div><h2>知識（選用，先跳過）</h2><p class="where">「知識」區塊 → ＋ 新增知識</p></div></label></div>
+  <p>先只放技能測試。若測試時常找不到錯誤訊息或代號，再把 <code>atlas-kb-m365.zip</code> 解壓，上傳 <code>knowledge/</code> 裡的 16 個 .txt（上限 20 個），並在齒輪設定裡開「僅使用指定的來源」。不需要就直接勾掉這步。</p>
+</section>
+
+<section class="step" data-step="5">
+  <div class="step-head"><label><input type="checkbox" id="s5"><div><h2>建議的提示</h2><p class="where">「建議的提示」→ 按「新增建議的提示」加到 6 列，左填標題、右填訊息</p></div></label></div>
+  <div class="prompts" id="prompts"></div>
+</section>
+
+<section class="step" data-step="6">
+  <div class="step-head"><label><input type="checkbox" id="s6"><div><h2>測試，然後建立</h2><p class="where">右側預覽，或建立後點建議提示</p></div></label></div>
+  <div class="tests">
+    <div class="test"><div class="q">錯誤訊息反查</div><div class="a">答案要提到 <code>BaseEVADaoPO.cs:176</code></div></div>
+    <div class="test"><div class="q">畫面是做什麼的（CASM001）</div><div class="a">主檔 <code>CRM003A</code>、明細 <code>CAS003A</code></div></div>
+    <div class="test"><div class="q">改表影響範圍（CAS003A）</div><div class="a">要指向「加欄位」維護手冊，並列出要重編的層</div></div>
+  </div>
+  <p>三題都對就按右上角「建立」。答錯或沒附出處，把回答截圖回傳，再調整指示。</p>
+</section>
+
+<footer>檔案來源：本 repo 的 <code>m365/</code> 資料夾 · <a href="index.html">回知識庫首頁</a>。勾選進度只存在你這台瀏覽器。</footer>
+</div>
+
+<script>
+const PROMPTS = [
+  ["畫面是做什麼的", "CASM001 這支畫面在做什麼？主檔、明細是哪兩張表？存檔時檢核哪些欄位？"],
+  ["錯誤訊息反查", "使用者看到「資料已被其他使用者異動，請重新查詢後再按複製鍵」，是哪裡丟出來的？通常是什麼原因？"],
+  ["改表影響範圍", "CAS003A 要加一個欄位，要改哪些檔案、重編哪些層、回歸哪些畫面？"],
+  ["四眼覆核怎麼運作", "四眼(EVA)覆核怎麼運作？Entry、Verify、Approve 各寫了哪些欄位？"],
+  ["模組已知缺陷", "RSP 模組有哪些嚴重度「高」的已知缺陷？"],
+  ["部署步驟", "改了一支 PO 之後要怎麼部署？伺服端和客戶端各要佈哪些檔？"]
+];
+const box = document.getElementById("prompts");
+PROMPTS.forEach(([t, m], i) => {
+  const row = document.createElement("div");
+  row.className = "prompt";
+  row.innerHTML =
+    `<div class="field"><div class="field-top"><span class="field-label num">${i + 1} · 標題</span><button class="copy" type="button" data-for="p${i}t">複製</button></div><pre class="copy-box inline" id="p${i}t"></pre></div>` +
+    `<div class="field"><div class="field-top"><span class="field-label">訊息</span><button class="copy" type="button" data-for="p${i}m">複製</button></div><pre class="copy-box inline" id="p${i}m"></pre></div>`;
+  box.appendChild(row);
+  row.querySelector(`#p${i}t`).textContent = t;
+  row.querySelector(`#p${i}m`).textContent = m;
+});
+
+function selectText(el){
+  const r = document.createRange(); r.selectNodeContents(el);
+  const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("button.copy"); if (!b) return;
+  const el = document.getElementById(b.dataset.for);
+  const done = label => { b.textContent = label; b.classList.add("ok"); setTimeout(() => { b.textContent = "複製"; b.classList.remove("ok"); }, 1600); };
+  const fallback = () => { selectText(el); done("已選取，按 Ctrl+C"); };
+  try {
+    navigator.clipboard.writeText(el.textContent).then(() => done("已複製"), fallback);
+  } catch (_) { fallback(); }
+});
+
+const KEY = "atlas-agent-steps";
+const boxes = [...document.querySelectorAll('.step-head input[type="checkbox"]')];
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (_) {}
+function render(){
+  let n = 0;
+  boxes.forEach(cb => { cb.closest(".step").classList.toggle("done", cb.checked); if (cb.checked) n++; });
+  document.getElementById("bar").style.width = (n / boxes.length * 100) + "%";
+  document.getElementById("count").textContent = `${n} / ${boxes.length}`;
+}
+boxes.forEach(cb => {
+  cb.checked = !!saved[cb.id];
+  cb.addEventListener("change", () => {
+    saved[cb.id] = cb.checked;
+    try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (_) {}
+    render();
+  });
+});
+render();
+</script>
+
+</body>
+</html>
