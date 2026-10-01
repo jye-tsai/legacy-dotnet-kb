@@ -27,7 +27,7 @@ DOC_SOURCES = (
     + sorted((ROOT / "modules").glob("*.html"))
     + sorted((ROOT / "runbooks").glob("*.html"))
 )
-DATA_PAGES = {"query.html", "messages.html", "defects.html"}
+DATA_PAGES = {"query.html", "messages.html", "defects.html", "m365-setup.html"}
 
 SKIP_TAGS = {"style", "script", "nav", "button", "head", "title", "defs", "marker"}
 BLOCK_TAGS = {"p", "div", "section", "figure", "footer", "main", "header", "article"}
