@@ -10,7 +10,10 @@ ATLAS 維護顧問
 【指示 Instructions】
 → 貼上 instructions.txt 的全部內容
 
-【知識 Knowledge】
+【技能 Skills】(有「技能」區塊時用這個,優先)
+→ Add / 新增 → 上傳 atlas-kb-skill.zip(整包上傳,不要只傳 SKILL.md)
+
+【知識 Knowledge】(沒有技能區塊、或想雙保險時)
 → 上傳 knowledge/ 資料夾內全部 16 個 .txt
 → 開啟「僅使用指定的來源 / Only use specified sources」
 
