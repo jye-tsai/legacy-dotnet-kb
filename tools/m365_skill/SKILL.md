@@ -1,5 +1,5 @@
 ---
-name: atlas-kb
+name: atlaskb
 description: 查詢 ATLAS 老系統(.NET WinForms + Oracle)維護知識庫。凡是問到 ATLAS 的畫面代號(如 CASM001、OFDB061)、資料表(如 CAS003A)、SP / 報表 / Windows 服務、使用者回報的錯誤訊息、四眼(EVA)覆核、已知缺陷、六層架構,或要加欄位 / 加畫面 / 改 SP / 部署等維護步驟時使用。回答附出處,不編造。
 ---
 

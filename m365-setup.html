@@ -92,14 +92,14 @@ footer a{color:var(--brand)}
 <section class="step" data-step="0">
   <div class="step-head"><label><input type="checkbox" id="s0"><div><h2>下載技能檔案，自己壓成 zip</h2><p class="where">共 17 個檔：1 個 SKILL.md + references 資料夾 16 個 .md</p></div></label></div>
   <ol>
-    <li>在電腦上建一個資料夾，例如 <code>atlas-kb</code>，裡面再建一個子資料夾 <code>references</code>。</li>
-    <li>逐一<b>右鍵 → 另存連結為</b>下載下面的檔案：<code>SKILL.md</code> 放在 <code>atlas-kb</code>，其他 16 個放進 <code>references</code>。檔名不要改。</li>
-    <li>打開 <code>atlas-kb</code> 資料夾，<b>選取裡面的 SKILL.md 和 references 兩項</b> → 右鍵 → 傳送到 → 壓縮的 (zipped) 資料夾，命名為 <code>atlas-kb.zip</code>。</li>
+    <li>在電腦上建一個資料夾，例如 <code>atlaskb</code>，裡面再建一個子資料夾 <code>references</code>。</li>
+    <li>逐一<b>右鍵 → 另存連結為</b>下載下面的檔案：<code>SKILL.md</code> 放在 <code>atlaskb</code>，其他 16 個放進 <code>references</code>。檔名不要改。</li>
+    <li>打開 <code>atlaskb</code> 資料夾，<b>選取裡面的 SKILL.md 和 references 兩項</b> → 右鍵 → 傳送到 → 壓縮的 (zipped) 資料夾，命名為 <code>atlaskb.zip</code>。</li>
   </ol>
-  <p class="note"><b>要選資料夾「裡面」的兩項來壓縮，不要壓外層的 atlas-kb 資料夾。</b>SKILL.md 必須在 zip 的最上層，否則上傳會被拒絕。</p>
+  <p class="note"><b>要選資料夾「裡面」的兩項來壓縮，不要壓外層的 atlaskb 資料夾。技能名稱不要用連字號 -（Agent Builder 會拒絕）。</b>SKILL.md 必須在 zip 的最上層，否則上傳會被拒絕。</p>
   <div class="files">
-    <div class="files-col"><p class="files-h">放在 atlas-kb/</p><ul><li><a href="m365/skill/SKILL.md">SKILL.md</a></li></ul><p class="alt">.md 下載不了？改下載 <a href="m365/SKILL.txt">SKILL.txt</a>，存好後<b>改名成 SKILL.md</b>（要先開「顯示副檔名」，確認不是 SKILL.md.txt）。</p></div>
-    <div class="files-col"><p class="files-h">放在 atlas-kb/references/（16 個）</p><ul>
+    <div class="files-col"><p class="files-h">放在 atlaskb/</p><ul><li><a href="m365/skill/SKILL.md">SKILL.md</a></li></ul><p class="alt">.md 下載不了？改下載 <a href="m365/SKILL.txt">SKILL.txt</a>，存好後<b>改名成 SKILL.md</b>（要先開「顯示副檔名」，確認不是 SKILL.md.txt）。</p></div>
+    <div class="files-col"><p class="files-h">放在 atlaskb/references/（16 個）</p><ul>
 <li><a href="m365/skill/references/01-guide.md">01-guide.md</a></li>
 <li><a href="m365/skill/references/02-overview.md">02-overview.md</a></li>
 <li><a href="m365/skill/references/03-architecture.md">03-architecture.md</a></li>
@@ -126,7 +126,7 @@ footer a{color:var(--brand)}
   </ol>
   <div class="field"><div class="field-top"><span class="field-label">SKILL.md 全文</span><button class="copy" type="button" data-for="t-skill">複製</button></div>
 <pre class="copy-box" id="t-skill">---
-name: atlas-kb
+name: atlaskb
 description: 查詢 ATLAS 老系統(.NET WinForms + Oracle)維護知識庫。凡是問到 ATLAS 的畫面代號(如 CASM001、OFDB061)、資料表(如 CAS003A)、SP / 報表 / Windows 服務、使用者回報的錯誤訊息、四眼(EVA)覆核、已知缺陷、六層架構,或要加欄位 / 加畫面 / 改 SP / 部署等維護步驟時使用。回答附出處,不編造。
 ---
 
@@ -214,7 +214,7 @@ OFD 畫面不確定屬於哪片時,先看 `20-screens.md` 該行的「各層檔�
     <div class="field-top"><span class="field-label">指示（約 600 字，上限 8,000）</span><button class="copy" type="button" data-for="t-inst">複製</button></div>
 <pre class="copy-box" id="t-inst">你是「ATLAS 維護顧問」，協助工程師維護老 .NET WinForms + Oracle 系統 ATLAS。一律用繁體中文回答。
 
-凡是問到 ATLAS 的畫面代號、資料表、SP／報表／服務、錯誤訊息、四眼(EVA)覆核、已知缺陷、架構或維護步驟，一律使用 atlas-kb 技能，先在它的 references 中查到依據再回答。若有上傳知識檔，也可搜尋知識檔交叉確認。
+凡是問到 ATLAS 的畫面代號、資料表、SP／報表／服務、錯誤訊息、四眼(EVA)覆核、已知缺陷、架構或維護步驟，一律使用 atlaskb 技能，先在它的 references 中查到依據再回答。若有上傳知識檔，也可搜尋知識檔交叉確認。
 
 鐵律：
 1. 先查再答，不憑一般常識回答 ATLAS 細節。
@@ -230,8 +230,8 @@ OFD 畫面不確定屬於哪片時,先看 `20-screens.md` 該行的「各層檔�
 <section class="step" data-step="3">
   <div class="step-head"><label><input type="checkbox" id="s3"><div><h2>技能</h2><p class="where">「技能」區塊 → ＋ 新增 → 上傳技能</p></div></label></div>
   <ol>
-    <li>把步驟 0 自己壓好的 <code>atlas-kb.zip</code> 拖進虛線框，按「上傳」。</li>
-    <li>上傳後技能清單會出現 <code>atlas-kb</code>。</li>
+    <li>把步驟 0 自己壓好的 <code>atlaskb.zip</code> 拖進虛線框，按「上傳」。</li>
+    <li>上傳後技能清單會出現 <code>atlaskb</code>。</li>
   </ol>
   <p class="note"><b>不要只傳 SKILL.md，要傳整個 zip。</b>上傳視窗要求的兩個條件（zip 內含 SKILL.md、YAML 有名稱與描述）這包都符合。</p>
 </section>
