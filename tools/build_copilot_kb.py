@@ -269,7 +269,7 @@ def load_json(name):
 def tsv(v):
     if isinstance(v, (list, tuple)):
         v = ", ".join(str(x) for x in v)
-    return str(v if v is not None else "").replace("\t", " ").replace("\n", " ").strip()
+    return str(v if v is not None else "").replace("\t", " ").replace("\r", " ").replace("\n", " ").strip()
 
 
 def build_query_data():

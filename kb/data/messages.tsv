@@ -3445,7 +3445,7 @@ FSKM004_CHECK	AddResultRow(	Dev/ATLAS.FSK/Source/PO/PO.FSK/FSKM004_PO.cs:176
 EMAIL格式有誤	AddError(	Dev/ATLAS.FSK/Source/UI/UI.FSK/FSKM004.cs:238
 此代碼{0}尚有分公司資料，故不可刪除!	AddError(	Dev/ATLAS.FSK/Source/UI/UI.FSK/FSKM004.cs:260
 執行失敗，請檢查	AddResultRow(	Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR005_PO.cs:90
-產生完成 {…}	AddResultRow(	Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:235
+產生完成  {…}	AddResultRow(	Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:235
 無資料產生	AddResultRow(	Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:237
 執行失敗，請檢查	AddResultRow(	Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073A_PO.cs:253
 執行失敗，請檢查	AddResultRow(	Dev/ATLAS.NFD.Report/Source/PO/ReportPO.NFD/NFDR073B_PO.cs:133
@@ -3972,7 +3972,7 @@ Email資料產生成功，共{0}筆	ShowFormatMessage(	Dev/ATLAS.NFD.Report/Sour
 銷售機構區別碼(起) 不可大於 銷售機構區別碼(迄)	AddError(	Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR812.cs:60
 銷售機構代碼(起) 不可大於 銷售機構代碼(迄)	AddError(	Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR812.cs:69
 基金明細必須勾選!!	AddError(	Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR812.cs:81
-公會資料下載成功!! 申購總金額:{0} 贖回總金額:{1}	ShowMessage(	Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR812.cs:232
+公會資料下載成功!!  申購總金額:{0}  贖回總金額:{1}	ShowMessage(	Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR812.cs:232
 無符合查詢條件的資料。	ShowMessage(	Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR812.cs:282
 無符合查詢條件的資料。	ShowMessage(	Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR812.cs:306
 {0} 必須輸入。	AddError(	Dev/ATLAS.NFD.Report/Source/UI/ReportUI.NFD/NFDR813.cs:41
@@ -4610,7 +4610,7 @@ To 受益人戶號 已有費率資料存在	變數指派 =	Dev/ATLAS.OFD/Source/
 執行失敗，請檢查	AddResultRow(	Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM199_PO.cs:836
 新增失敗	AddResultRow(	Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM199_PO.cs:845
 每位受益人只能設定一筆開戶優惠	變數指派 =	Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM206_PO.cs:76
-此優惠活動已存在戶號：{…}	AddResultRow(	Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM206_PO.cs:171
+此優惠活動已存在戶號： {…}	AddResultRow(	Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM206_PO.cs:171
 匯入失敗，請檢查資料是否正確	AddResultRow(	Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM206_PO.cs:203
 執行失敗，請檢查	AddResultRow(	Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM206_PO.cs:215
 {…} |  | 執行成功	AddResultRow(	Dev/ATLAS.OFD/Source/PO/PO.OFD/OFDM206_PO.cs:255
@@ -4844,9 +4844,9 @@ OFDM931A HR尚未覆核，不可修改。	AddResultRow(	Dev/ATLAS.OFD/Source/PO/
 年度（西元）輸入邏輯異常	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM003p1.cs:62
 月份 輸入邏輯異常	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM003p1.cs:69
 複製行事曆成功!	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM003p1.cs:100
-複製來源行事曆尚未建立： {…}	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM003p1.cs:123
+複製來源行事曆尚未建立：  {…}	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM003p1.cs:123
 設定放假日成功!	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM003p2.cs:78
-設定放假日失敗： {…}	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM003p2.cs:95
+設定放假日失敗：  {…}	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM003p2.cs:95
 基金種類英文名稱,只限輸入英文!	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM004.cs:95
 基金型態英文名稱,只限輸入英文!	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM005.cs:90
 註冊地英文名稱,只限輸入英文!	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM009.cs:98
@@ -4963,7 +4963,7 @@ CDSC後收基金需輸入「銷售機構傳輸方式及銷售機構分成手續�
 基金代碼 重覆	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM070Ap0.cs:126
 請傳入Grid中點選的該筆資料，不可為Null	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM070Ap0.cs:155
 複製成功!	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM070Ap1.cs:90
-複製來源尚未建立： {…}	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM070Ap1.cs:113
+複製來源尚未建立：  {…}	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM070Ap1.cs:113
 銷售機構承銷境內基金設定明細資料 必須輸入	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM070B.cs:53
 無效起始日期 不可小於 生效日期!	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM070Bp0.cs:96
 生效日期 不可輸入 1900/01/01!	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM070Bp0.cs:101
@@ -4972,7 +4972,7 @@ CDSC後收基金需輸入「銷售機構傳輸方式及銷售機構分成手續�
 基金代碼 重覆	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM070Bp0.cs:122
 請傳入Grid中點選的該筆資料，不可為Null	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM070Bp0.cs:154
 複製成功!	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM070Bp1.cs:95
-複製來源尚未建立： {…}	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM070Bp1.cs:118
+複製來源尚未建立：  {…}	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM070Bp1.cs:118
 已存在相關中小通路資料,不可刪除	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM071.cs:231
 已存在相關小通路資料,不可刪除	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM071.cs:246
 '通路代碼'需為 5,9 或 15碼	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM071.cs:278
@@ -5168,7 +5168,7 @@ ISIN代碼+計價幣別已有資料存在，請重新輸入ISIN代碼!	AddError(
 年度（西元）輸入邏輯異常	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p1.cs:54
 月份 輸入邏輯異常	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p1.cs:61
 複製行事曆成功!	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p1.cs:88
-複製來源行事曆尚未建立： {…}	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p1.cs:113
+複製來源行事曆尚未建立：  {…}	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p1.cs:113
 '年度'必須輸入	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p1.cs:262
 '來源基金'必須輸入	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p1.cs:269
 '目的基金'必須輸入	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p1.cs:275
@@ -5176,7 +5176,7 @@ ISIN代碼+計價幣別已有資料存在，請重新輸入ISIN代碼!	AddError(
 複製行事曆成功!	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p1.cs:350
 複製行事曆失敗!	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p1.cs:361
 設定放假日成功!	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p2.cs:91
-設定放假日失敗： {…}	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p2.cs:108
+設定放假日失敗：  {…}	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p2.cs:108
 '基金公司'必須輸入	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p2.cs:231
 '放假日'必須輸入	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p2.cs:236
 設定放假日成功!	ShowMessage(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM088p2.cs:280
@@ -6281,9 +6281,9 @@ EMAIL 格式有誤，請檢查	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM731.
 最近更新日期(迄)yyyy/MM/dd欄位格式不正確，請修正後重新上傳	MessageBox.Show(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM907p0.cs:129
 最近更新日期(迄)不為9998/12/31，請修正後重新上傳	MessageBox.Show(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM907p0.cs:135
 戶號+最近更新日期(起)不可重覆，請修正後重新上傳	MessageBox.Show(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM907p0.cs:145
-{…} 該批資料不會匯入	MessageBox.Show(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM907p0.cs:159
-{…} 該批資料不會匯入	MessageBox.Show(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM907p0.cs:173
-{…} 該批資料不會匯入	MessageBox.Show(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM907p0.cs:187
+{…}  該批資料不會匯入	MessageBox.Show(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM907p0.cs:159
+{…}  該批資料不會匯入	MessageBox.Show(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM907p0.cs:173
+{…}  該批資料不會匯入	MessageBox.Show(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM907p0.cs:187
 最近更新日期(起)(迄) 必須皆(不)填寫	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM913A.cs:337
 最近更新日期(起) 不可大於 最近更新日期(迄)	AddError(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM913A.cs:339
 至少要有一筆資料	MessageBox.Show(	Dev/ATLAS.OFD/Source/UI/UI.OFD/OFDM913Ap0.cs:55
@@ -6377,7 +6377,7 @@ The method or operation is not implemented.	throw new Exception(	Dev/ATLAS.OFDB/
 執行失敗，請檢查{…}	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB161_PO.cs:236
 已執行過定期買回計算作業!	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB161_PO.cs:272
 執行失敗，請檢查{…}	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB161_PO.cs:282
-資料上載完畢！ 上傳資料總筆數：{0} 上傳成功筆數：{1} 上傳失敗筆數：{2}	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB221_PO.cs:135
+資料上載完畢！  上傳資料總筆數：{0}  上傳成功筆數：{1}  上傳失敗筆數：{2}	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB221_PO.cs:135
 執行失敗，請檢查	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB221_PO.cs:141
 執行失敗，請檢查	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB221_PO.cs:149
 執行失敗，請檢查	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB221_PO.cs:157
@@ -6600,7 +6600,7 @@ STF673S無檔案匯出{…}	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB7
 執行失敗，請檢查{…}	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB717_PO.cs:525
 基金 [{0}] 上次上傳結餘基準日有異動，請重新查詢再執行	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB718_PO.cs:86
 執行失敗，請檢查{…}	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB719_PO.cs:240
-受益憑證代號 {0} 於 [{1}] 已有收檔資料， 請刪除資料後再執行收檔	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB719_PO.cs:286
+受益憑證代號 {0} 於 [{1}] 已有收檔資料，  請刪除資料後再執行收檔	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB719_PO.cs:286
 執行失敗，請檢查{…}	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB719_PO.cs:296
 基金 {0} 於 [{1}] 尚未結帳	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB719_PO.cs:336
 執行失敗，請檢查{…}	AddResultRow(	Dev/ATLAS.OFDB/Source/PO/PO.OFDB/OFDB719_PO.cs:346
@@ -8901,7 +8901,7 @@ Email資料產生成功，共{0}筆	AddResultRow(	Dev/ATLAS.RSP/Source/PO/PO.RSP
 該契約書號{0}無扣款次數記錄	AddResultRow(	Dev/ATLAS.RSP/Source/PO/PO.RSP/RSPM004_PO.cs:2264
 取得扣款方式失敗，請檢查	AddResultRow(	Dev/ATLAS.RSP/Source/PO/PO.RSP/RSPM004_PO.cs:2348
 檢核失敗，請檢查	AddResultRow(	Dev/ATLAS.RSP/Source/PO/PO.RSP/RSPM004_PO.cs:2440
-此扣款帳戶已存在於不同扣款人ID，請確定仍要存檔?  參考資訊： {…}	AddResultRow(	Dev/ATLAS.RSP/Source/PO/PO.RSP/RSPM004_PO.cs:2491
+此扣款帳戶已存在於不同扣款人ID，請確定仍要存檔?    參考資訊：  {…}	AddResultRow(	Dev/ATLAS.RSP/Source/PO/PO.RSP/RSPM004_PO.cs:2491
 檢核失敗，請檢查	AddResultRow(	Dev/ATLAS.RSP/Source/PO/PO.RSP/RSPM004_PO.cs:2507
 Y	AddResultRow(	Dev/ATLAS.RSP/Source/PO/PO.RSP/RSPM004_PO.cs:2729
 N	AddResultRow(	Dev/ATLAS.RSP/Source/PO/PO.RSP/RSPM004_PO.cs:2734
